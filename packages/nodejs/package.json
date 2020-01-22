@@ -1,0 +1,27 @@
+{
+  "name": "@appsignal/nodejs",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "dependencies": {
+    "node-addon-api": "^2.0.0",
+    "node-gyp": "^6.1.0",
+    "tslib": "^1.10.0",
+    "uuid": "^3.4.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:ext": "node-gyp rebuild",
+    "build:watch": "yarn versionfile && tsc -p tsconfig.json -w --preserveWatchOutput",
+    "clean": "rimraf dist coverage",
+    "link:yarn": "yarn link",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "versionfile": "node scripts/create-versionfile.js",
+    "postversion": "yarn versionfile",
+    "install": "node scripts/extension.js && yarn build:ext"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
