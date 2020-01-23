@@ -1,34 +1,34 @@
-const AGENT_VERSION = "c348132"
+const AGENT_VERSION = "b371394"
 
 const TRIPLES = {
   "x86_64-darwin": {
     checksum:
-      "cb287c8e2072fe5b8cf14449bd6892989c392d0c651ce339895ae0302cb69785",
+      "75681dba99b3d0a6423d85276b942613e24fa45918c0fb50ce833be216648ccf",
     downloadUrl: `https://appsignal-agent-releases.global.ssl.fastly.net/${AGENT_VERSION}/appsignal-x86_64-darwin-all-static.tar.gz`
   },
   "x86_64-linux": {
     checksum:
-      "d11221c127c00128da16b419c503281407e429c0ea6f5bfe1691640b8e995e4e",
+      "2ececc7e0bfb114f4953dabf07d88b669db4afabd87ec5120ad79cc6700aa739",
     downloadUrl: `https://appsignal-agent-releases.global.ssl.fastly.net/${AGENT_VERSION}/appsignal-x86_64-linux-all-static.tar.gz`
   },
   "x86_64-linux-musl": {
     checksum:
-      "7ce44dc23c578933ca37a79d244bc367fdc2438408c2a61558adb92bcfebb1fa",
+      "4a8f690d518a981d94030442b995091781669577ce769e102283d0d383129449",
     downloadUrl: `https://appsignal-agent-releases.global.ssl.fastly.net/${AGENT_VERSION}/appsignal-x86_64-linux-musl-all-static.tar.gz`
   },
   "x86_64-freebsd": {
     checksum:
-      "df5f8b61e6ecca40f349cf5c83d5f37f031850d367793dee90dc56f13974431d",
+      "2405e8eb9d5cd1b832de9e5ddde2cb4ef5bfe5c015bd7a511721333b921bedab",
     downloadUrl: `https://appsignal-agent-releases.global.ssl.fastly.net/${AGENT_VERSION}/appsignal-x86_64-freebsd-all-static.tar.gz`
   },
   "i686-linux": {
     checksum:
-      "2c3bcd102592bf38fbdb27e7c70502dccbe54a0dc2739a9d54aaa694fcfb41fb",
+      "55d9f552354fa4740e7275c5cff7bd97dfcaf549ac639ad17473d8a3d3d641aa",
     downloadUrl: `https://appsignal-agent-releases.global.ssl.fastly.net/${AGENT_VERSION}/appsignal-i686-linux-all-static.tar.gz`
   },
   "i686-linux-musl": {
     checksum:
-      "0add9eed4452feda7fc5e1bbd0acdff32c353e4ea0b5d527959df57deb1bdcb2",
+      "07f633ab0cdcf278d6589745be732e8dda66c177fe6ebd3505563c89aa6ee83d",
     downloadUrl: `https://appsignal-agent-releases.global.ssl.fastly.net/${AGENT_VERSION}/appsignal-i686-linux-musl-all-static.tar.gz`
   }
 }
