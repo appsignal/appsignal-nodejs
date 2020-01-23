@@ -18,7 +18,7 @@ export class Tracer implements ITracer {
   /**
    * Creates a new `Span` instance.
    */
-  public createSpan(name: string, span?: Span): Span | undefined {
+  public createSpan(name: string, span?: Span): Span {
     if (!span) {
       return new RootSpan(name)
     } else {

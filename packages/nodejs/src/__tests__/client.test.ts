@@ -1,5 +1,6 @@
 import { Client } from "../client"
 import { Tracer } from "../tracer"
+import { NoopTracer } from "../noops"
 
 jest.mock("../tracer")
 
@@ -28,14 +29,14 @@ describe("Client", () => {
     expect(client.isActive).toBeTruthy()
   })
 
-  it("doesn't return a tracer if the agent isn't started", () => {
+  it("returns a NoopTracer if the agent isn't started", () => {
     const tracer = client.tracer()
-    expect(tracer).toBeUndefined()
+    expect(tracer).toBeInstanceOf(NoopTracer)
   })
 
   it("returns a tracer if the agent is started", () => {
     client = new Client({ name, apiKey, active: true })
     const tracer = client.tracer()
-    expect(tracer).toBeDefined()
+    expect(tracer).toBeInstanceOf(Tracer)
   })
 })
