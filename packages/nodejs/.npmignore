@@ -1,5 +1,6 @@
 *
 !/dist/**/*
-!/ext/**/*
-binding.gyp
+!/scripts/**/*
+!/ext/appsignal_extension.cpp
+!binding.gyp
 *.tsbuildinfo
