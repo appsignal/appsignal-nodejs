@@ -11,7 +11,7 @@ extern "C" {
 // Node will free it immediately after it goes out of scope and accessing the
 // string will result in random memory access.
 static inline appsignal_string_t MakeAppsignalString(const std::string &value) {
-  return appsignal_string_t{.buf = value.c_str(), .len = value.size()};
+  return appsignal_string_t{.len = value.size(), .buf = value.c_str()};
 }
 
 // Extension
