@@ -238,7 +238,7 @@ Napi::Value CreateRootSpan(const Napi::CallbackInfo &info) {
   const std::string &value = name.Utf8Value();
   const char *cstr = value.c_str();
   appsignal_string_t value_string_t =
-      appsignal_string_t{.buf = cstr, .len = value.size()};
+      appsignal_string_t{.len = value.size(), .buf = cstr};
 
   appsignal_span_t *span_ptr = appsignal_create_root_span(value_string_t);
 
