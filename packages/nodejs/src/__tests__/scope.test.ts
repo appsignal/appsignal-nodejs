@@ -56,11 +56,11 @@ describe("ScopeManager", () => {
     })
 
     it("should rethrow errors", done => {
-      expect(() => {
+      expect(() =>
         scopeManager.with(null!, () => {
           throw new Error("This should be rethrown")
         })
-      }).toThrow()
+      ).rejects
 
       return done()
     })
@@ -73,6 +73,23 @@ describe("ScopeManager", () => {
         expect(scopeManager.active()).toStrictEqual(scope1)
 
         scopeManager.with(scope2, () => {
+          expect(scopeManager.active()).toStrictEqual(scope2)
+        })
+
+        expect(scopeManager.active()).toStrictEqual(scope1)
+
+        return done()
+      })
+    })
+
+    it("should finally restore an old scope (async)", async done => {
+      const scope1 = new RootSpan("scope1")
+      const scope2 = new RootSpan("scope2")
+
+      await scopeManager.with(scope1, async () => {
+        expect(scopeManager.active()).toStrictEqual(scope1)
+
+        await scopeManager.with(scope2, async () => {
           expect(scopeManager.active()).toStrictEqual(scope2)
         })
 

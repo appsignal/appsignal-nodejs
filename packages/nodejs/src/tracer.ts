@@ -37,29 +37,43 @@ export class Tracer implements ITracer {
   }
 
   /**
-   * Executes a given function asynchronously within the context of a given
-   * `Span`. When the function has finished executing, the `Span` is closed
-   * and any value returned by the given function is returned.
+   * Executes a given function within the context of a given `Span`. When the
+   * function has finished executing, any value returned by the given function
+   * is returned, but the `Span` remains active unless it is explicitly closed.
    *
    * The `Span` is passed as the single argument to the given function. This
    * allows you to create children of the `Span` for instrumenting nested
    * operations.
+   * 
+   * The given function will be assumed to be either an async function, or a 
+   * function that returns a `Promise`. If a synchronous function (i.e. does 
+   * not return a `Promise`) is given, its returned value is wrapped in a 
+   * resolved `Promise`.
    */
-  public instrument(span: Span, fn: (s: Span) => any): Promise<any> {
-    return this._scopeManager.with(span, fn, true)
+  public withSpan(
+    span: Span,
+    fn: (s: Span) => Promise<any>
+  ): Promise<any> {
+    return this._scopeManager.with(span, fn)
   }
 
   /**
-   * Executes a given function asynchronously within the context of a given
-   * `Span`. When the function has finished executing, any value returned by
-   * the given function is returned, but the `Span` remains active unless it is
-   * explicitly closed.
+   * Executes a given function within the context of a given `Span`. When the
+   * function has finished executing, any value returned by the given function
+   * is returned, but the `Span` remains active unless it is explicitly closed.
    *
    * The `Span` is passed as the single argument to the given function. This
    * allows you to create children of the `Span` for instrumenting nested
    * operations.
+   * 
+   * The given function will be assumed to be a synchronous function that does not
+   * return a `Promise`. If an asynchronous function, or a function that returns
+   * a `Promise`, is given, then this may result in the `Span` ending early. 
    */
-  public withSpan(span: Span, fn: (s: Span) => any): Promise<any> {
-    return this._scopeManager.with(span, fn)
+  public withSpanSync(
+    span: Span,
+    fn: (s: Span) => any
+  ): any {
+    return this._scopeManager.withSync(span, fn)
   }
 }

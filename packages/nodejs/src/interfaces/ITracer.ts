@@ -15,17 +15,6 @@ export interface ITracer {
 
   /**
    * Executes a given function asynchronously within the context of a given
-   * `Span`. When the function has finished executing, the `Span` is closed
-   * and any value returned by the given function is returned.
-   *
-   * The `Span` is passed as the single argument to the given function. This
-   * allows you to create children of the `Span` for instrumenting nested
-   * operations.
-   */
-  instrument(span: ISpan, fn: (s: ISpan) => any): Promise<any>
-
-  /**
-   * Executes a given function asynchronously within the context of a given
    * `Span`. When the function has finished executing, any value returned by
    * the given function is returned, but the `Span` remains active unless it is
    * explicitly closed.
@@ -34,5 +23,8 @@ export interface ITracer {
    * allows you to create children of the `Span` for instrumenting nested
    * operations.
    */
-  withSpan(span: ISpan, fn: (s: ISpan) => any): Promise<any>
+  withSpan(
+    span: ISpan,
+    fn: (s: ISpan) => Promise<any> | any
+  ): Promise<any> | any
 }

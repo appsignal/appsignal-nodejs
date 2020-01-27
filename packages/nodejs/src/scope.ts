@@ -1,15 +1,13 @@
 import * as asyncHooks from "async_hooks"
 
 import { Span } from "./span"
-import { NoopSpan } from "./noops"
-
 import { ISpan } from "./interfaces/ISpan"
 
 /**
  * Propagates specific scope between function calls and async operations.
- * 
+ *
  * @class
- * 
+ *
  * @copyright
  * Uses portions of `opentelemetry-js`
  * https://github.com/open-telemetry/opentelemetry-js/blob/master/packages/opentelemetry-scope-async-hooks/src/AsyncHooksScopeManager.ts
@@ -67,13 +65,36 @@ export class ScopeManager {
   }
 
   /**
-   * Executes a given function within the context of a given `Span`.
+   * Executes a given function asynchronously within the context of a given `Span`.
    */
-  public with(
+  public async with(
     span: Span,
-    fn: (t: Span) => any,
-    shouldClose = false
-  ): any {
+    fn: (s: Span) => Promise<any> | any
+  ): Promise<any> {
+    const uid = asyncHooks.executionAsyncId()
+    const oldScope = this._scopes.get(uid)
+
+    this._scopes.set(uid, span)
+
+    try {
+      return await fn(span)
+    } catch (err) {
+      span.addError(err)
+      throw err
+    } finally {
+      // revert to the previous span
+      if (oldScope === undefined) {
+        this._scopes.delete(uid)
+      } else {
+        this._scopes.set(uid, oldScope)
+      }
+    }
+  }
+
+  /**
+   * Executes a given function synchronously within the context of a given `Span`.
+   */
+  public withSync(span: Span, fn: (s: Span) => any): any {
     const uid = asyncHooks.executionAsyncId()
     const oldScope = this._scopes.get(uid)
 
@@ -81,11 +102,10 @@ export class ScopeManager {
 
     try {
       return fn(span)
-    } catch (e) {
-      span.addError(e)
+    } catch (err) {
+      span.addError(err)
+      throw err
     } finally {
-      if (shouldClose) span.close()
-
       // revert to the previous span
       if (oldScope === undefined) {
         this._scopes.delete(uid)

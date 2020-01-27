@@ -6,14 +6,16 @@ function expressMiddleware(appsignal: any) {
     const tracer = appsignal.tracer()
     const rootSpan = tracer.createSpan(`${req.method} ${req.url}`)
 
-    rootSpan
-      .setNamespace("web")
-      .set("method", req.method)
-      .setSampleData("params", {
+    rootSpan.setNamespace("web").set("method", req.method)
+
+    if (req.params.password) {
+      rootSpan.setSampleData("params", {
         ...req.params,
-        password: '[FILTERED]',
-        password_confirmation: '[FILTERED]',
+        password: "[FILTERED]"
       })
+    } else {
+      rootSpan.setSampleData("params", req.params)
+    }
 
     req.on("error", (err: Error) => rootSpan.addError(err))
 

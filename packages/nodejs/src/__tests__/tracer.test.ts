@@ -2,6 +2,8 @@ import { Tracer } from "../tracer"
 import { RootSpan } from "../span"
 
 describe("Tracer", () => {
+  const name = "test_instrumentation"
+
   let tracer: Tracer
 
   beforeEach(() => {
@@ -18,15 +20,24 @@ describe("Tracer", () => {
   })
 
   it("can instrument a function", done => {
-    const name = "test_instrumentation"
-
-    const promise = tracer.instrument(tracer.createSpan(name), span => {
+    tracer.withSpanSync(tracer.createSpan(name), span => {
       const internal = JSON.parse(span.toJSON())
       expect(internal.name).toEqual(name)
-
-      done()
+      
+      span.close()
     })
 
-    expect(promise).resolves
+    return done()
+  })
+
+  it("can instrument a function (async)", async done => {
+    await tracer.withSpan(tracer.createSpan(name), async span => {
+      const internal = JSON.parse(span.toJSON())
+      expect(internal.name).toEqual(name)
+      
+      span.close()
+    })
+
+    return done()
   })
 })
