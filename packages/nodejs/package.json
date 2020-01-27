@@ -1,6 +1,6 @@
 {
   "name": "@appsignal/nodejs",
-  "version": "0.1.0-alpha.4",
+  "version": "0.1.0-alpha.5",
   "main": "dist/index.js",
   "license": "MIT",
   "dependencies": {
