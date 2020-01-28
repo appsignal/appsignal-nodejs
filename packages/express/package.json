@@ -14,5 +14,8 @@
     "link:yarn": "yarn link",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
