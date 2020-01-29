@@ -4,7 +4,7 @@ export interface ITracer {
   /**
    * Creates a new `Span` instance.
    */
-  createSpan(name: string, span?: ISpan): ISpan | undefined
+  createSpan(name: string, span?: ISpan): ISpan
 
   /**
    * Returns the current Span.

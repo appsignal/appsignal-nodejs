@@ -3,7 +3,7 @@ import { ISpan } from "../interfaces/ISpan"
 import { ITracer } from "../interfaces/ITracer"
 
 export class NoopTracer implements ITracer {
-  public createSpan(name: string, span?: ISpan): ISpan | undefined {
+  public createSpan(name: string, span?: ISpan): ISpan {
     return new NoopSpan()
   }
 

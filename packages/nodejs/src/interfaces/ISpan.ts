@@ -1,5 +1,15 @@
 export interface ISpan {
   /**
+   * The current ID of the trace.
+   */
+  traceId: string
+  
+  /**
+   * The current ID of the Span.
+   */
+  spanId: string
+
+  /**
    * Sets arbitrary data on the current `Span`.
    */
   set(key: string, value: string | number | boolean): this
