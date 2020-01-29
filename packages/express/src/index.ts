@@ -1,7 +1,8 @@
 import * as asyncHooks from "async_hooks"
-import { Request, Response, NextFunction } from "express"
+import { Appsignal } from "@appsignal/nodejs"
+import { Request, Response, NextFunction, RequestHandler } from "express"
 
-function expressMiddleware(appsignal: any) {
+function expressMiddleware(appsignal: Appsignal): RequestHandler {
   return function(req: Request, res: Response, next: NextFunction) {
     const tracer = appsignal.tracer()
     const rootSpan = tracer.createSpan(`${req.method} ${req.url}`)
@@ -22,7 +23,10 @@ function expressMiddleware(appsignal: any) {
     // HACK! super dirty, but gives the span a scope which is required for
     // the `ScopeManager` to recall it later (duh).
     // @TODO: needs a more permanent solution
-    tracer._scopeManager._scopes.set(asyncHooks.executionAsyncId(), rootSpan)
+    ;(tracer as any)._scopeManager._scopes.set(
+      asyncHooks.executionAsyncId(),
+      rootSpan
+    )
 
     res.once("finish", () => {
       rootSpan.close()
