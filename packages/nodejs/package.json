@@ -6,8 +6,7 @@
   "dependencies": {
     "node-addon-api": "^2.0.0",
     "node-gyp": "^6.1.0",
-    "tslib": "^1.10.0",
-    "uuid": "^3.4.0"
+    "tslib": "^1.10.0"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
