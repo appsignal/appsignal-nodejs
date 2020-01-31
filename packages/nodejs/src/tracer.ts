@@ -44,16 +44,13 @@ export class Tracer implements ITracer {
    * The `Span` is passed as the single argument to the given function. This
    * allows you to create children of the `Span` for instrumenting nested
    * operations.
-   * 
-   * The given function will be assumed to be either an async function, or a 
-   * function that returns a `Promise`. If a synchronous function (i.e. does 
-   * not return a `Promise`) is given, its returned value is wrapped in a 
+   *
+   * The given function will be assumed to be either an async function, or a
+   * function that returns a `Promise`. If a synchronous function (i.e. does
+   * not return a `Promise`) is given, its returned value is wrapped in a
    * resolved `Promise`.
    */
-  public withSpan(
-    span: Span,
-    fn: (s: Span) => Promise<any>
-  ): Promise<any> {
+  public withSpan(span: ISpan, fn: (s: ISpan) => Promise<any>): Promise<any> {
     return this._scopeManager.with(span, fn)
   }
 
@@ -65,15 +62,12 @@ export class Tracer implements ITracer {
    * The `Span` is passed as the single argument to the given function. This
    * allows you to create children of the `Span` for instrumenting nested
    * operations.
-   * 
+   *
    * The given function will be assumed to be a synchronous function that does not
    * return a `Promise`. If an asynchronous function, or a function that returns
-   * a `Promise`, is given, then this may result in the `Span` ending early. 
+   * a `Promise`, is given, then this may result in the `Span` ending early.
    */
-  public withSpanSync(
-    span: Span,
-    fn: (s: Span) => any
-  ): any {
+  public withSpanSync(span: ISpan, fn: (s: ISpan) => any): any {
     return this._scopeManager.withSync(span, fn)
   }
 }

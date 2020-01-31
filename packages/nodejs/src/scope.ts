@@ -1,6 +1,5 @@
 import * as asyncHooks from "async_hooks"
 
-import { Span } from "./span"
 import { ISpan } from "./interfaces/ISpan"
 
 /**
@@ -68,8 +67,8 @@ export class ScopeManager {
    * Executes a given function asynchronously within the context of a given `Span`.
    */
   public async with(
-    span: Span,
-    fn: (s: Span) => Promise<any> | any
+    span: ISpan,
+    fn: (s: ISpan) => Promise<any> | any
   ): Promise<any> {
     const uid = asyncHooks.executionAsyncId()
     const oldScope = this._scopes.get(uid)
@@ -94,7 +93,7 @@ export class ScopeManager {
   /**
    * Executes a given function synchronously within the context of a given `Span`.
    */
-  public withSync(span: Span, fn: (s: Span) => any): any {
+  public withSync(span: ISpan, fn: (s: ISpan) => any): any {
     const uid = asyncHooks.executionAsyncId()
     const oldScope = this._scopes.get(uid)
 
