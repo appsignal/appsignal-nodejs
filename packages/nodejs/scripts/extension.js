@@ -24,7 +24,7 @@ function download(url, outputPath) {
     https.get(url, response => {
       const { statusCode } = response
 
-      if (statusCode !== 200) {
+      if (statusCode >= 400) {
         return reject(
           new Error(`Request to CDN failed with code HTTP ${statusCode}`)
         )
