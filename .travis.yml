@@ -4,10 +4,12 @@ node_js:
 - 11
 - 12
 cache: yarn
-before_script:
+before_install:
   - yarn clean
   - lerna clean --yes
+install:
   - lerna bootstrap
   - lerna link
 script:
   - yarn build
+  - yarn test
