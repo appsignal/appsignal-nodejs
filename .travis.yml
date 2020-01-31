@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+- 10
+- 11
+- 12
+cache: yarn
+before_script:
+  - yarn clean
+  - lerna clean --yes
+  - lerna bootstrap
+  - lerna link
+script:
+  - yarn build
