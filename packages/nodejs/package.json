@@ -17,7 +17,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "versionfile": "node scripts/create-versionfile.js",
-    "postversion": "yarn versionfile",
+    "version": "yarn versionfile",
     "install": "node scripts/extension.js && yarn build:ext"
   },
   "publishConfig": {
