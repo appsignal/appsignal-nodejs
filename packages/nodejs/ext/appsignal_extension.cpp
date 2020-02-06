@@ -442,48 +442,101 @@ Napi::Value SetSpanAttributeDouble(const Napi::CallbackInfo &info) {
   return env.Null();
 }
 
+// Metrics
+
+Napi::Value SetGauge(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  Napi::String key = info[0].As<Napi::String>();
+  const std::string key_utf8 = key.Utf8Value();
+
+  Napi::Number value = info[1].As<Napi::Number>();
+
+  Napi::External<appsignal_data_t> payload =
+      info[2].As<Napi::External<appsignal_data_t>>();
+
+  appsignal_set_gauge(MakeAppsignalString(key_utf8), value.DoubleValue(),
+                      payload.Data());
+
+  return env.Null();
+}
+
+Napi::Value IncrementCounter(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  Napi::String key = info[0].As<Napi::String>();
+  const std::string key_utf8 = key.Utf8Value();
+
+  Napi::Number value = info[1].As<Napi::Number>();
+
+  Napi::External<appsignal_data_t> payload =
+      info[2].As<Napi::External<appsignal_data_t>>();
+
+  appsignal_set_gauge(MakeAppsignalString(key_utf8), value.DoubleValue(),
+                      payload.Data());
+
+  return env.Null();
+}
+
+Napi::Value AddDistributionValue(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  Napi::String key = info[0].As<Napi::String>();
+  const std::string key_utf8 = key.Utf8Value();
+
+  Napi::Number value = info[1].As<Napi::Number>();
+
+  Napi::External<appsignal_data_t> payload =
+      info[2].As<Napi::External<appsignal_data_t>>();
+
+  appsignal_set_gauge(MakeAppsignalString(key_utf8), value.DoubleValue(),
+                      payload.Data());
+
+  return env.Null();
+}
+
 // Expose JavaScript objects
 
 Napi::Object CreateDataArrayObject(Napi::Env env, Napi::Object exports) {
-  Napi::Object extension = Napi::Object::New(env);
+  Napi::Object dataarray = Napi::Object::New(env);
 
-  extension.Set(Napi::String::New(env, "create"),
+  dataarray.Set(Napi::String::New(env, "create"),
                 Napi::Function::New(env, CreateDataArray));
-  extension.Set(Napi::String::New(env, "appendString"),
+  dataarray.Set(Napi::String::New(env, "appendString"),
                 Napi::Function::New(env, AppendStringToDataArray));
-  extension.Set(Napi::String::New(env, "appendInteger"),
+  dataarray.Set(Napi::String::New(env, "appendInteger"),
                 Napi::Function::New(env, SetIntToDataMap));
-  extension.Set(Napi::String::New(env, "appendFloat"),
+  dataarray.Set(Napi::String::New(env, "appendFloat"),
                 Napi::Function::New(env, AppendFloatToDataArray));
-  extension.Set(Napi::String::New(env, "appendBoolean"),
+  dataarray.Set(Napi::String::New(env, "appendBoolean"),
                 Napi::Function::New(env, AppendBooleanToDataArray));
-  extension.Set(Napi::String::New(env, "appendNull"),
+  dataarray.Set(Napi::String::New(env, "appendNull"),
                 Napi::Function::New(env, AppendNullToDataArray));
-  extension.Set(Napi::String::New(env, "appendData"),
+  dataarray.Set(Napi::String::New(env, "appendData"),
                 Napi::Function::New(env, AppendDataToDataArray));
 
-  return extension;
+  return dataarray;
 }
 
 Napi::Object CreateDataMapObject(Napi::Env env, Napi::Object exports) {
-  Napi::Object extension = Napi::Object::New(env);
+  Napi::Object datamap = Napi::Object::New(env);
 
-  extension.Set(Napi::String::New(env, "create"),
-                Napi::Function::New(env, CreateDataMap));
-  extension.Set(Napi::String::New(env, "setString"),
-                Napi::Function::New(env, SetStringToDataMap));
-  extension.Set(Napi::String::New(env, "setInteger"),
-                Napi::Function::New(env, AppendIntToDataArray));
-  extension.Set(Napi::String::New(env, "setFloat"),
-                Napi::Function::New(env, SetFloatToDataMap));
-  extension.Set(Napi::String::New(env, "setBoolean"),
-                Napi::Function::New(env, SetBooleanToDataMap));
-  extension.Set(Napi::String::New(env, "setNull"),
-                Napi::Function::New(env, SetNullToDataMap));
-  extension.Set(Napi::String::New(env, "setData"),
-                Napi::Function::New(env, SetDataToDataMap));
+  datamap.Set(Napi::String::New(env, "create"),
+              Napi::Function::New(env, CreateDataMap));
+  datamap.Set(Napi::String::New(env, "setString"),
+              Napi::Function::New(env, SetStringToDataMap));
+  datamap.Set(Napi::String::New(env, "setInteger"),
+              Napi::Function::New(env, AppendIntToDataArray));
+  datamap.Set(Napi::String::New(env, "setFloat"),
+              Napi::Function::New(env, SetFloatToDataMap));
+  datamap.Set(Napi::String::New(env, "setBoolean"),
+              Napi::Function::New(env, SetBooleanToDataMap));
+  datamap.Set(Napi::String::New(env, "setNull"),
+              Napi::Function::New(env, SetNullToDataMap));
+  datamap.Set(Napi::String::New(env, "setData"),
+              Napi::Function::New(env, SetDataToDataMap));
 
-  return extension;
+  return datamap;
 }
 
 Napi::Object CreateExtensionObject(Napi::Env env, Napi::Object exports) {
@@ -496,6 +549,19 @@ Napi::Object CreateExtensionObject(Napi::Env env, Napi::Object exports) {
                 Napi::Function::New(env, DiagnoseRaw));
 
   return extension;
+}
+
+Napi::Object CreateMetricsObject(Napi::Env env, Napi::Object exports) {
+  Napi::Object metrics = Napi::Object::New(env);
+
+  metrics.Set(Napi::String::New(env, "setGauge"),
+              Napi::Function::New(env, SetGauge));
+  metrics.Set(Napi::String::New(env, "incrementCounter"),
+              Napi::Function::New(env, IncrementCounter));
+  metrics.Set(Napi::String::New(env, "addDistributionValue"),
+              Napi::Function::New(env, AddDistributionValue));
+
+  return metrics;
 }
 
 Napi::Object CreateSpanObject(Napi::Env env, Napi::Object exports) {
@@ -541,6 +607,8 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
               CreateDataMapObject(env, exports));
   exports.Set(Napi::String::New(env, "dataarray"),
               CreateDataArrayObject(env, exports));
+  exports.Set(Napi::String::New(env, "metrics"),
+              CreateMetricsObject(env, exports));
   return exports;
 }
 

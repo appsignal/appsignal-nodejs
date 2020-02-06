@@ -6,6 +6,7 @@ import { VERSION } from "./version"
 
 import { ITracer } from "./interfaces/ITracer"
 import { AppsignalOptions } from "./types/options"
+import { Metrics } from "./metrics"
 
 /**
  * AppSignal for Node.js's main class.
@@ -22,6 +23,7 @@ export class Client {
   public extension: Extension
 
   private _tracer: Tracer
+  private _metrics: Metrics
 
   /**
    * Creates a new instance of the `Appsignal` object
@@ -31,6 +33,7 @@ export class Client {
     const { active = false } = options
 
     this._tracer = new Tracer()
+    this._metrics = new Metrics()
 
     this.config = new Configuration(options)
     this.extension = new Extension({ active })
@@ -89,5 +92,29 @@ export class Client {
     }
 
     return this._tracer
+  }
+
+  /**
+   * Returns the current `Metrics` object.
+   *
+   * To track application-wide metrics, you can send custom metrics to AppSignal.
+   * These metrics enable you to track anything in your application, from newly
+   * registered users to database disk usage. These are not replacements for custom
+   * instrumentation, but provide an additional way to make certain data in your
+   * code more accessible and measurable over time.
+   *
+   * With different types of metrics (gauges, counters and measurements)
+   * you can track any kind of data from your apps and tag them with metadata
+   * to easily spot the differences between contexts.
+   */
+  public metrics(): Metrics | undefined {
+    if (!this.isActive) {
+      console.warn(
+        "Cannot access the metrics object when the extension is inactive"
+      )
+      return
+    }
+
+    return this._metrics
   }
 }
