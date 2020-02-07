@@ -8,17 +8,26 @@ describe("Extension", () => {
   })
 
   it("starts the client", () => {
-    ext.start()
+    expect(() => {
+      ext.start()
+    }).not.toThrow()
+
     expect(ext.isLoaded).toBeTruthy()
   })
 
   it("stops the client", () => {
-    ext.stop()
+    expect(() => {
+      ext.stop()
+    }).not.toThrow()
+
     expect(ext.isLoaded).toBeFalsy()
   })
 
   it("starts the client when the active option is true", () => {
-    ext = new Extension({ active: true })
+    expect(() => {
+      ext = new Extension({ active: true })
+    }).not.toThrow()
+
     expect(ext.isLoaded).toBeTruthy()
   })
 })
