@@ -18,7 +18,7 @@
     "test:watch": "jest --watch",
     "versionfile": "node scripts/create-versionfile.js",
     "version": "yarn versionfile",
-    "install": "node scripts/extension.js && yarn build:ext"
+    "install": "node scripts/extension.js && node-gyp rebuild"
   },
   "publishConfig": {
     "access": "public"
