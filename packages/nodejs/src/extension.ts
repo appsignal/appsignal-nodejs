@@ -1,7 +1,7 @@
 // the C++ extension is loaded here (via commonjs for compatibility).
 // we keep this as a locally scoped variable; the C++ bindings
 // should not be visible publicly.
-const { extension } = require("../build/Release/binding.node")
+const { extension } = require("../build/Release/extension.node")
 
 /**
  * The public interface for the extension.

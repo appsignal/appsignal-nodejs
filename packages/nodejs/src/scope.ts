@@ -1,6 +1,7 @@
 import * as asyncHooks from "async_hooks"
 
 import { ISpan } from "./interfaces/ISpan"
+import { Span } from './span'
 
 /**
  * Propagates specific scope between function calls and async operations.
