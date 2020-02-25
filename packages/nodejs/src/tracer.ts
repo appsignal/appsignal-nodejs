@@ -1,7 +1,11 @@
+import { EventEmitter } from "events"
+
 import { ScopeManager } from "./scope"
-import { RootSpan, Span, ChildSpan } from "./span"
-import { ISpan } from "./interfaces/ISpan"
-import { ITracer } from "./interfaces/ITracer"
+import { RootSpan, ChildSpan } from "./span"
+
+import { Func } from "./types/utils"
+import { Span } from "./interfaces/span"
+import { Tracer as ITracer } from "./interfaces/tracer"
 
 /**
  * The tracer object.
@@ -18,7 +22,7 @@ export class Tracer implements ITracer {
   /**
    * Creates a new `Span` instance.
    */
-  public createSpan(name: string, span?: ISpan): ISpan {
+  public createSpan(name: string, span?: Span): Span {
     if (!span) {
       return new RootSpan(name)
     } else {
@@ -32,7 +36,7 @@ export class Tracer implements ITracer {
    *
    * If there is no current Span available, `undefined` is returned.
    */
-  public currentSpan(): ISpan | undefined {
+  public currentSpan(): Span | undefined {
     return this._scopeManager.active()
   }
 
@@ -50,24 +54,21 @@ export class Tracer implements ITracer {
    * not return a `Promise`) is given, its returned value is wrapped in a
    * resolved `Promise`.
    */
-  public withSpan(span: ISpan, fn: (s: ISpan) => Promise<any>): Promise<any> {
-    return this._scopeManager.with(span, fn)
+  public withSpan<T>(span: Span, fn: (s: Span) => T): T {
+    return this._scopeManager.withContext(span, fn)
   }
 
   /**
-   * Executes a given function within the context of a given `Span`. When the
-   * function has finished executing, any value returned by the given function
-   * is returned, but the `Span` remains active unless it is explicitly closed.
-   *
-   * The `Span` is passed as the single argument to the given function. This
-   * allows you to create children of the `Span` for instrumenting nested
-   * operations.
-   *
-   * The given function will be assumed to be a synchronous function that does not
-   * return a `Promise`. If an asynchronous function, or a function that returns
-   * a `Promise`, is given, then this may result in the `Span` ending early.
+   * Wraps a given function in the current context.
    */
-  public withSpanSync(span: ISpan, fn: (s: ISpan) => any): any {
-    return this._scopeManager.withSync(span, fn)
+  public wrap<T>(fn: Func<T>): Func<T> {
+    return this._scopeManager.bindContext(fn)
+  }
+
+  /**
+   * Wraps an `EventEmitter` in the current context.
+   */
+  public wrapEmitter(emitter: EventEmitter): void {
+    return this._scopeManager.emitWithContext(emitter)
   }
 }

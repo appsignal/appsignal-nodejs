@@ -4,9 +4,11 @@ import { Tracer } from "./tracer"
 import { NoopTracer } from "./noops"
 import { VERSION } from "./version"
 
-import { ITracer } from "./interfaces/ITracer"
-import { AppsignalOptions } from "./types/options"
 import { Metrics } from "./metrics"
+import { Instrumentation } from "./instrument"
+import { instrumentHttp } from "./instrumentation/http"
+import { AppsignalOptions } from "./types/options"
+import { Tracer as ITracer } from "./interfaces/tracer"
 
 /**
  * AppSignal for Node.js's main class.
@@ -21,6 +23,7 @@ export class Client {
 
   public config: Configuration
   public extension: Extension
+  public instrumentation: Instrumentation
 
   private _tracer: Tracer
   private _metrics: Metrics
@@ -37,6 +40,9 @@ export class Client {
 
     this.config = new Configuration(options)
     this.extension = new Extension({ active })
+    this.instrumentation = new Instrumentation(this._tracer)
+
+    this.instrumentation.load("http", instrumentHttp)
   }
 
   /**
