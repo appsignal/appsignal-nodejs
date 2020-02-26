@@ -20,7 +20,8 @@ export class Tracer implements ITracer {
   }
 
   /**
-   * Creates a new `Span` instance.
+   * Creates a new `Span` instance. If a `Span` is passed as the optional second
+   * argument, then the returned `Span` will be a `ChildSpan`.
    */
   public createSpan(name: string, span?: Span): Span {
     if (!span) {
@@ -48,25 +49,20 @@ export class Tracer implements ITracer {
    * The `Span` is passed as the single argument to the given function. This
    * allows you to create children of the `Span` for instrumenting nested
    * operations.
-   *
-   * The given function will be assumed to be either an async function, or a
-   * function that returns a `Promise`. If a synchronous function (i.e. does
-   * not return a `Promise`) is given, its returned value is wrapped in a
-   * resolved `Promise`.
    */
   public withSpan<T>(span: Span, fn: (s: Span) => T): T {
     return this._scopeManager.withContext(span, fn)
   }
 
   /**
-   * Wraps a given function in the current context.
+   * Wraps a given function in the current `Span`s scope.
    */
   public wrap<T>(fn: Func<T>): Func<T> {
     return this._scopeManager.bindContext(fn)
   }
 
   /**
-   * Wraps an `EventEmitter` in the current context.
+   * Wraps an `EventEmitter` in the current `Span`s scope.
    */
   public wrapEmitter(emitter: EventEmitter): void {
     return this._scopeManager.emitWithContext(emitter)
