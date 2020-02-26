@@ -14,11 +14,13 @@ function incomingRequest(
 
     const [request, response] = args as [IncomingMessage, ServerResponse]
     const { url: reqUrl = "/", method = "GET" } = request
+    const { pathname } = url.parse(reqUrl)
 
     const rootSpan = tracer
-      .createSpan(`${method} ${url.parse(reqUrl).pathname || "/"}`)
+      .createSpan(`${method} ${pathname}`)
       .setNamespace("web")
       .set("method", method)
+      .set("path", pathname || "/")
 
     return tracer.withSpan(rootSpan, span => {
       tracer.wrapEmitter(request)
