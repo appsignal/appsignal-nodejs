@@ -1,6 +1,12 @@
-import { IncomingMessage, ServerResponse } from "http"
+/**
+ * Uses portions of `opentelemetry-js`
+ * https://github.com/open-telemetry/opentelemetry-js/blob/master/packages/opentelemetry-scope-async-hooks/src/AsyncHooksScopeManager.ts
+ * Copyright 2019, OpenTelemetry Authors
+ */
 
 import url from "url"
+import { IncomingMessage, ServerResponse } from "http"
+
 import { Tracer } from "../../../tracer"
 
 function incomingRequest(
@@ -23,11 +29,14 @@ function incomingRequest(
       .set("path", pathname || "/")
 
     return tracer.withSpan(rootSpan, span => {
+      // calling this binds the event handlers to our current
+      // async context
       tracer.wrapEmitter(request)
       tracer.wrapEmitter(response)
 
       const originalEnd = response.end
 
+      // wraps the "end" event to close the span
       response.end = function(this: ServerResponse, ...args: unknown[]) {
         response.end = originalEnd
 

@@ -5,16 +5,18 @@ import { Tracer } from "../../tracer"
 import { getPatchIncomingRequestFunction } from "../http/lifecycle/request"
 import { Plugin } from "../../interfaces/plugin"
 
-// quick patch to expose a type for the entire module
+// quick alias to expose a type for the entire module
 type HttpModule = typeof http
 
-export const instrumentHttp = (
+export const PLUGIN_NAME = "http"
+
+export const instrument = (
   mod: HttpModule,
   tracer: Tracer
 ): Plugin<HttpModule> => ({
-  name: "http",
-  version: process.versions.node,
+  version: ">= 12",
   install(): HttpModule {
+    // wrap incoming requests
     if (mod?.Server?.prototype) {
       shimmer.wrap(
         mod.Server.prototype,
@@ -25,7 +27,8 @@ export const instrumentHttp = (
 
     return mod
   },
-  uninstall() {
+  uninstall(): void {
+    // unwrap incoming requests
     if (mod?.Server?.prototype) {
       shimmer.unwrap(mod.Server.prototype, "emit")
     }
