@@ -1,3 +1,4 @@
+// @TODO: remove when "require-in-the-middle" has TS support
 declare module "require-in-the-middle" {
   interface Hook {
     unhook(): void
