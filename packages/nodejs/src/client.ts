@@ -6,7 +6,8 @@ import { VERSION } from "./version"
 
 import { Metrics } from "./metrics"
 import { Instrumentation } from "./instrument"
-import { instrumentHttp } from "./instrumentation/http"
+import * as http from "./instrumentation/http"
+
 import { AppsignalOptions } from "./types/options"
 import { Tracer as ITracer } from "./interfaces/tracer"
 
@@ -42,7 +43,7 @@ export class Client {
     this.extension = new Extension({ active })
     this.instrumentation = new Instrumentation(this._tracer)
 
-    this.instrumentation.load("http", instrumentHttp)
+    this.instrumentation.load(http.PLUGIN_NAME, http.instrument)
   }
 
   /**
