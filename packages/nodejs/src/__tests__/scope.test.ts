@@ -32,15 +32,15 @@ describe("ScopeManager", () => {
     })
   })
 
-  describe(".with()", () => {
+  describe(".withContext()", () => {
     it("should run the callback (null as target)", done => {
-      scopeManager.with(null!, done)
+      scopeManager.withContext(null!, done)
     })
 
     it("should run the callback (object as target)", done => {
       const test = new RootSpan("test")
 
-      scopeManager.with(test, () => {
+      scopeManager.withContext(test, () => {
         expect(scopeManager.active()).toStrictEqual(test)
         return done()
       })
@@ -49,7 +49,7 @@ describe("ScopeManager", () => {
     it("should run the callback (when disabled)", done => {
       scopeManager.disable()
 
-      scopeManager.with(null!, () => {
+      scopeManager.withContext(null!, () => {
         scopeManager.enable()
         return done()
       })
@@ -57,7 +57,7 @@ describe("ScopeManager", () => {
 
     it("should rethrow errors", done => {
       expect(() =>
-        scopeManager.with(null!, () => {
+        scopeManager.withContext(null!, () => {
           throw new Error("This should be rethrown")
         })
       ).rejects
@@ -69,27 +69,10 @@ describe("ScopeManager", () => {
       const scope1 = new RootSpan("scope1")
       const scope2 = new RootSpan("scope2")
 
-      scopeManager.with(scope1, () => {
+      scopeManager.withContext(scope1, () => {
         expect(scopeManager.active()).toStrictEqual(scope1)
 
-        scopeManager.with(scope2, () => {
-          expect(scopeManager.active()).toStrictEqual(scope2)
-        })
-
-        expect(scopeManager.active()).toStrictEqual(scope1)
-
-        return done()
-      })
-    })
-
-    it("should finally restore an old scope (async)", async done => {
-      const scope1 = new RootSpan("scope1")
-      const scope2 = new RootSpan("scope2")
-
-      await scopeManager.with(scope1, async () => {
-        expect(scopeManager.active()).toStrictEqual(scope1)
-
-        await scopeManager.with(scope2, async () => {
+        scopeManager.withContext(scope2, () => {
           expect(scopeManager.active()).toStrictEqual(scope2)
         })
 
