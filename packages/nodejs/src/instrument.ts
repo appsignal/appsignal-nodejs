@@ -1,4 +1,6 @@
+import path from "path"
 import Hook from "require-in-the-middle"
+import semver from "semver"
 
 import { Tracer } from "./tracer"
 import { Plugin } from "./interfaces/plugin"
@@ -21,15 +23,37 @@ export class Instrumentation {
    * loaded when a modules is required using the global `require` function.
    */
   public load<T>(name: string, fn: (module: T, tracer: Tracer) => Plugin<T>) {
-    let plugin: Plugin<T>
+    let plugin: Plugin<T> | undefined
 
-    const hook = Hook([name], (mod: T) => {
+    const hook = Hook([name], (mod: T, _, basedir: string) => {
+      // we use the current node version as the given version
+      // if the module is internal (i.e. no `package.json`)
+      const version = basedir
+        ? this._getPackageVerson(basedir)
+        : process.versions.node
+
+      // init the plugin
       plugin = fn(mod, this._tracer)
-      return plugin.install()
+
+      // install if version range matches
+      if (semver.satisfies(version, plugin.version)) {
+        return plugin.install()
+      } else {
+        console.warn(
+          `Unable to instrument module ${name}, module version needs to satisfy version range ${plugin.version}`
+        )
+
+        // abandon the plugin
+        plugin = undefined
+
+        return mod
+      }
     })
 
-    // @ts-ignore: `plugin` is really assigned before being used
-    this.active.push({ name, plugin, hook })
+    if (plugin !== undefined) {
+      this.active.push({ name, plugin, hook })
+    }
+
     return this.active
   }
 
@@ -47,5 +71,16 @@ export class Instrumentation {
 
     this.active = []
     return this.active
+  }
+
+  /**
+   * Retrieve a valid version number from a `package.json` in a given
+   * `basedir`.
+   *
+   * @private
+   */
+  private _getPackageVerson(basedir: string): string {
+    const { version } = require(path.join(basedir, "package.json"))
+    return version
   }
 }
