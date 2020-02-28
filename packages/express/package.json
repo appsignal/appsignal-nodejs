@@ -5,7 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@appsignal/nodejs": "^0.1.0-alpha.8",
-    "tslib": "^1.11.0"
+    "tslib": "^1.11.1"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
