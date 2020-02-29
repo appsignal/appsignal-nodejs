@@ -1,9 +1,31 @@
 export type AppsignalOptions = {
-  active?: boolean
   name: string
-  log?: string
-  endpoint?: string
   apiKey: string
-  debug?: boolean
-  logPath?: string
+} & Partial<Optional>
+
+type Optional = {
+  active: boolean
+  debug: boolean
+  logPath: string
+  log: string
+  endpoint: string
+  caFilePath: string
+  hostname: string
+  sendParams: string[]
+  filterParameters: string[]
+  filterSessionData: string[]
+  dnsServers: string[]
+  ignoreActions: string[]
+  ignoreErrors: string[]
+  ignoreNamespaces: string[]
+  httpProxy: string
+  runningInContainer: boolean
+  workingDirPath: string
+  workingDirectoryPath: string
+  enableHostMetrics: boolean
+  enableMinutelyProbes: boolean
+  skipSessionData: boolean
+  filesWorldAccessible: boolean
+  requestHeaders: string[]
+  revision: string
 }
