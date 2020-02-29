@@ -5,14 +5,14 @@ const { extension } = require("../build/Release/extension.node")
 
 /**
  * The public interface for the extension.
- * 
+ *
  * @class
  */
 export class Extension {
   public isLoaded = false
 
-  constructor(options: { [key: string]: any }) {
-    if (options.active) this.start()
+  constructor(options?: { active: boolean }) {
+    if (options?.active) this.start()
   }
 
   /**

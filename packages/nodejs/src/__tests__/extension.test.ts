@@ -4,7 +4,7 @@ describe("Extension", () => {
   let ext: Extension
 
   beforeEach(() => {
-    ext = new Extension({})
+    ext = new Extension()
   })
 
   it("starts the client", () => {
