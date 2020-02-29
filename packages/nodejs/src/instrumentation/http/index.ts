@@ -14,7 +14,7 @@ export const instrument = (
   mod: HttpModule,
   tracer: Tracer
 ): Plugin<HttpModule> => ({
-  version: ">= 12",
+  version: ">= 10",
   install(): HttpModule {
     // wrap incoming requests
     if (mod?.Server?.prototype) {
