@@ -20,6 +20,9 @@
     "version": "yarn versionfile",
     "install": "node scripts/extension.js && node-gyp rebuild"
   },
+  "engines": {
+    "node": ">= 10"
+  },
   "publishConfig": {
     "access": "public"
   }
