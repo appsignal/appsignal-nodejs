@@ -98,7 +98,7 @@ function writePrivateConstants() {
     _APPSIGNAL_ENVIRONMENT: process.env.NODE_ENV || "development",
     _APPSIGNAL_PROCESS_NAME: process.title,
     _APPSIGNAL_LANGUAGE_INTEGRATION_VERSION: `nodejs-${VERSION}`,
-    _APPSIGNAL_APP_PATH: ""
+    _APPSIGNAL_APP_PATH: process.cwd()
   }
 
   Object.entries(priv).forEach(([k, v]) => (process.env[k] = v))
