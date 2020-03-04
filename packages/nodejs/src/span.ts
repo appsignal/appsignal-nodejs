@@ -4,7 +4,7 @@
 const { span } = require("../build/Release/extension.node")
 
 import { DataArray, DataMap } from "./internal"
-import { ISpan } from "./interfaces/ISpan"
+import { Span } from "./interfaces/span"
 
 /**
  * The `Span` object represents a length of time in the flow of execution
@@ -15,7 +15,7 @@ import { ISpan } from "./interfaces/ISpan"
  *
  * @class
  */
-export class Span implements ISpan {
+export class BaseSpan implements Span {
   protected _ref: any
 
   /**
@@ -145,7 +145,7 @@ export class Span implements ISpan {
  * A `ChildSpan` is a descendent of a `RootSpan`. A `ChildSpan` can also
  * be a parent to many `ChildSpan`s.
  */
-export class ChildSpan extends Span {
+export class ChildSpan extends BaseSpan {
   constructor(name: string, traceId: string, parentSpanId: string) {
     super()
     this._ref = span.createChildSpan(name, traceId, parentSpanId)
@@ -156,7 +156,7 @@ export class ChildSpan extends Span {
  * A `RootSpan` is the top-level `Span`, from which all `ChildSpan`s are
  * created from.
  */
-export class RootSpan extends Span {
+export class RootSpan extends BaseSpan {
   constructor(name: string) {
     super()
     this._ref = span.createRootSpan(name)

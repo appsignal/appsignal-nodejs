@@ -1,9 +1,9 @@
-export interface ISpan {
+export interface Span {
   /**
    * The current ID of the trace.
    */
   traceId: string
-  
+
   /**
    * The current ID of the Span.
    */
@@ -17,7 +17,7 @@ export interface ISpan {
   /**
    * Returns a new `Span` object that is a child of the current `Span`.
    */
-  child(name: string): ISpan
+  child(name: string): Span
 
   /**
    * Sets a namespace for the current `Span`. Namespaces allow grouping of `Span`s

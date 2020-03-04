@@ -1,4 +1,4 @@
-import { Span, ChildSpan, RootSpan } from "../span"
+import { ChildSpan, RootSpan } from "../span"
 
 type SpanData = {
   name: string

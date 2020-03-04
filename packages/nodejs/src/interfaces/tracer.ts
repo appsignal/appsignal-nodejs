@@ -1,17 +1,20 @@
-import { ISpan } from "./ISpan"
+import { EventEmitter } from "events"
 
-export interface ITracer {
+import { Span } from "./span"
+import { Func } from "../types/utils"
+
+export interface Tracer {
   /**
    * Creates a new `Span` instance.
    */
-  createSpan(name: string, span?: ISpan): ISpan
+  createSpan(name: string, span?: Span): Span
 
   /**
    * Returns the current Span.
    *
    * If there is no current Span available, `undefined` is returned.
    */
-  currentSpan(): ISpan | undefined
+  currentSpan(): Span | undefined
 
   /**
    * Executes a given function asynchronously within the context of a given
@@ -23,8 +26,5 @@ export interface ITracer {
    * allows you to create children of the `Span` for instrumenting nested
    * operations.
    */
-  withSpan(
-    span: ISpan,
-    fn: (s: ISpan) => Promise<any> | any
-  ): Promise<any> | any
+  withSpan<T>(span: Span, fn: (s: Span) => T): T
 }

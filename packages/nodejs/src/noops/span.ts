@@ -1,6 +1,6 @@
-import { ISpan } from "../interfaces/ISpan"
+import { Span } from "../interfaces/span"
 
-export class NoopSpan implements ISpan {
+export class NoopSpan implements Span {
   public get traceId(): string {
     return "0"
   }
