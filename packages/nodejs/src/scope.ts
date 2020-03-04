@@ -119,7 +119,7 @@ export class ScopeManager {
     try {
       return fn(span)
     } catch (err) {
-      span.addError(err)
+      span?.addError(err)
       throw err
     } finally {
       // revert to the previous span
