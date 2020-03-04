@@ -1,3 +1,5 @@
+import { EventEmitter } from "events"
+
 import { ScopeManager } from "../scope"
 import { RootSpan, ChildSpan } from "../span"
 
@@ -42,8 +44,9 @@ describe("ScopeManager", () => {
 
       scopeManager.withContext(test, () => {
         expect(scopeManager.active()).toStrictEqual(test)
-        return done()
       })
+
+      return done()
     })
 
     it("should run the callback (when disabled)", done => {
@@ -51,16 +54,19 @@ describe("ScopeManager", () => {
 
       scopeManager.withContext(null!, () => {
         scopeManager.enable()
-        return done()
       })
+
+      return done()
     })
 
     it("should rethrow errors", done => {
+      const err = new Error("This should be rethrown")
+
       expect(() =>
         scopeManager.withContext(null!, () => {
-          throw new Error("This should be rethrown")
+          throw err
         })
-      ).rejects
+      ).toThrow(err)
 
       return done()
     })
@@ -82,4 +88,31 @@ describe("ScopeManager", () => {
       })
     })
   })
+
+  describe(".bindContext()", () => {
+    it("Propagates context to bound functions", () => {
+      const test = new RootSpan("test")
+
+      let fn = () => {
+        const span = scopeManager.active()
+
+        expect(span).toBeDefined()
+        expect(span?.toJSON()).toMatch(/modified/)
+      }
+
+      scopeManager.withContext(test, span => {
+        span.setNamespace("default")
+        expect(span.toJSON()).toMatch(/default/)
+      })
+
+      scopeManager.withContext(test, span => {
+        span.setNamespace("modified")
+        fn = scopeManager.bindContext(fn)
+      })
+
+      fn()
+    })
+  })
+
+  describe(".emitWithContext()", () => {})
 })
