@@ -1,4 +1,7 @@
+import { EventEmitter } from "events"
+
 import { Span } from "./span"
+import { Func } from "../types/utils"
 
 export interface Tracer {
   /**
@@ -24,4 +27,14 @@ export interface Tracer {
    * operations.
    */
   withSpan<T>(span: Span, fn: (s: Span) => T): T
+
+  /**
+   * Wraps a given function in the current `Span`s scope.
+   */
+  wrap<T>(fn: Func<T>): Func<T>
+
+  /**
+   * Wraps an `EventEmitter` in the current `Span`s scope.
+   */
+  wrapEmitter(emitter: EventEmitter): void
 }
