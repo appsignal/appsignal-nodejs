@@ -472,8 +472,8 @@ Napi::Value IncrementCounter(const Napi::CallbackInfo &info) {
   Napi::External<appsignal_data_t> payload =
       info[2].As<Napi::External<appsignal_data_t>>();
 
-  appsignal_set_gauge(MakeAppsignalString(key_utf8), value.DoubleValue(),
-                      payload.Data());
+  appsignal_increment_counter(MakeAppsignalString(key_utf8),
+                              value.DoubleValue(), payload.Data());
 
   return env.Null();
 }
@@ -489,8 +489,8 @@ Napi::Value AddDistributionValue(const Napi::CallbackInfo &info) {
   Napi::External<appsignal_data_t> payload =
       info[2].As<Napi::External<appsignal_data_t>>();
 
-  appsignal_set_gauge(MakeAppsignalString(key_utf8), value.DoubleValue(),
-                      payload.Data());
+  appsignal_add_distribution_value(MakeAppsignalString(key_utf8),
+                                   value.DoubleValue(), payload.Data());
 
   return env.Null();
 }
