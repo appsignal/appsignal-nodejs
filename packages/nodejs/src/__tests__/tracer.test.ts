@@ -2,7 +2,7 @@ import { Tracer } from "../tracer"
 import { RootSpan } from "../span"
 
 describe("Tracer", () => {
-  const name = "test_instrumentation"
+  const name = "test"
 
   let tracer: Tracer
 
@@ -11,8 +11,7 @@ describe("Tracer", () => {
   })
 
   it("creates a RootSpan", () => {
-    const name = "test"
-    const span = tracer.createSpan(name)
+    const span = tracer.createSpan().setName(name)
     const internal = JSON.parse(span.toJSON())
 
     expect(span).toBeInstanceOf(RootSpan)
@@ -21,7 +20,9 @@ describe("Tracer", () => {
 
   describe("Span instrumentation", () => {
     it("can instrument a function (async)", async done => {
-      await tracer.withSpan(tracer.createSpan(name), async span => {
+      const rootSpan = tracer.createSpan().setName(name)
+
+      await tracer.withSpan(rootSpan, async span => {
         const internal = JSON.parse(span.toJSON())
         expect(internal.name).toEqual(name)
 

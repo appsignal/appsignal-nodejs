@@ -1,13 +1,10 @@
-import { EventEmitter } from "events"
-
 import { Span } from "./span"
-import { Func } from "../types/utils"
 
 export interface Tracer {
   /**
    * Creates a new `Span` instance.
    */
-  createSpan(name: string, span?: Span): Span
+  createSpan(namespace?: string, span?: Span): Span
 
   /**
    * Returns the current Span.

@@ -101,12 +101,12 @@ describe("ScopeManager", () => {
       }
 
       scopeManager.withContext(test, span => {
-        span.setNamespace("default")
+        span.setName("default")
         expect(span.toJSON()).toMatch(/default/)
       })
 
       scopeManager.withContext(test, span => {
-        span.setNamespace("modified")
+        span.setName("modified")
         fn = scopeManager.bindContext(fn)
       })
 

@@ -10,6 +10,12 @@ export interface Span {
   spanId: string
 
   /**
+   * Sets the name for a given Span. The Span name is used in the UI to group
+   * like requests together.
+   */
+  setName(name: string): this
+
+  /**
    * Sets arbitrary data on the current `Span`.
    */
   set(key: string, value: string | number | boolean): this
@@ -18,17 +24,6 @@ export interface Span {
    * Returns a new `Span` object that is a child of the current `Span`.
    */
   child(name: string): Span
-
-  /**
-   * Sets a namespace for the current `Span`. Namespaces allow grouping of `Span`s
-   * by concern.
-   *
-   * By default AppSignal provides two namespaces: the "web" and "background" namespaces.
-   *
-   * The "web" namespace holds all data for HTTP requests while the "background" namespace
-   * contains metrics from background job libraries and tasks.
-   */
-  setNamespace(value: string): this
 
   /**
    * Adds a given `Error` object to the current `Span`.

@@ -17,11 +17,11 @@ export class NoopSpan implements Span {
     return new NoopSpan()
   }
 
-  public setNamespace(value: string): this {
+  public addError(error: Error): this {
     return this
   }
 
-  public addError(error: Error): this {
+  public setName(name: string): this {
     return this
   }
 

@@ -233,9 +233,9 @@ Napi::Value SetDataToDataMap(const Napi::CallbackInfo &info) {
 Napi::Value CreateRootSpan(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  Napi::String name = info[0].As<Napi::String>();
+  Napi::String namesp = info[0].As<Napi::String>();
 
-  const std::string &value = name.Utf8Value();
+  const std::string &value = namesp.Utf8Value();
   const char *cstr = value.c_str();
   appsignal_string_t value_string_t =
       appsignal_string_t{.len = value.size(), .buf = cstr};
@@ -250,16 +250,14 @@ Napi::Value CreateRootSpan(const Napi::CallbackInfo &info) {
 Napi::Value CreateChildSpan(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  Napi::String name = info[0].As<Napi::String>();
-  const std::string name_utf8 = name.Utf8Value();
-  Napi::String trace_id = info[1].As<Napi::String>();
+  Napi::String trace_id = info[0].As<Napi::String>();
   const std::string trace_id_utf8 = trace_id.Utf8Value();
-  Napi::String parent_span_id = info[2].As<Napi::String>();
+  Napi::String parent_span_id = info[1].As<Napi::String>();
   const std::string parent_span_id_utf8 = parent_span_id.Utf8Value();
 
-  appsignal_span_t *span_ptr = appsignal_create_child_span(
-      MakeAppsignalString(name_utf8), MakeAppsignalString(trace_id_utf8),
-      MakeAppsignalString(parent_span_id_utf8));
+  appsignal_span_t *span_ptr =
+      appsignal_create_child_span(MakeAppsignalString(trace_id_utf8),
+                                  MakeAppsignalString(parent_span_id_utf8));
 
   return Napi::External<appsignal_span_t>::New(
       env, span_ptr,
@@ -340,20 +338,6 @@ Napi::Value SetSpanName(const Napi::CallbackInfo &info) {
   const std::string name_utf8 = name.Utf8Value();
 
   appsignal_set_span_name(span.Data(), MakeAppsignalString(name_utf8));
-
-  return env.Null();
-}
-
-Napi::Value SetSpanNamespace(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::External<appsignal_span_t> span =
-      info[0].As<Napi::External<appsignal_span_t>>();
-
-  Napi::String ns = info[1].As<Napi::String>();
-  const std::string ns_utf8 = ns.Utf8Value();
-
-  appsignal_set_span_namespace(span.Data(), MakeAppsignalString(ns_utf8));
 
   return env.Null();
 }
@@ -581,8 +565,6 @@ Napi::Object CreateSpanObject(Napi::Env env, Napi::Object exports) {
            Napi::Function::New(env, AddSpanError));
   span.Set(Napi::String::New(env, "setSpanName"),
            Napi::Function::New(env, SetSpanName));
-  span.Set(Napi::String::New(env, "setSpanNamespace"),
-           Napi::Function::New(env, SetSpanNamespace));
   span.Set(Napi::String::New(env, "setSpanSampleData"),
            Napi::Function::New(env, SetSpanSampleData));
   span.Set(Napi::String::New(env, "setSpanAttributeString"),

@@ -14,13 +14,12 @@ describe("RootSpan", () => {
   let internal: SpanData
 
   beforeEach(() => {
-    span = new RootSpan("test ☃")
+    span = new RootSpan()
     internal = JSON.parse(span.toJSON())
   })
 
   it("creates a RootSpan", () => {
     expect(span).toBeInstanceOf(RootSpan)
-    expect(internal.name).toEqual("test ☃")
   })
 
   it("exposes a spanId", () => {
@@ -40,7 +39,7 @@ describe("RootSpan", () => {
   })
 
   it("creates a new ChildSpan", () => {
-    const child = span.child("test_child")
+    const child = span.child()
 
     expect(child).toBeDefined()
     expect(child).toBeInstanceOf(ChildSpan)
@@ -48,10 +47,20 @@ describe("RootSpan", () => {
 
   it("belongs to a given namespace", () => {
     const ns = "test_namespace"
-    span.setNamespace(ns)
 
+    span = new RootSpan(ns)
     internal = JSON.parse(span.toJSON())
+
     expect(internal.namespace).toEqual(ns)
+  })
+
+  it("sets the name", () => {
+    const name = "test_span"
+
+    span = new RootSpan().setName(name)
+    internal = JSON.parse(span.toJSON())
+
+    expect(internal.name).toEqual(name)
   })
 })
 
@@ -60,14 +69,13 @@ describe("ChildSpan", () => {
   let internal: SpanData
 
   beforeEach(() => {
-    span = new ChildSpan("test", "test_trace_id", "parent_span_id")
+    span = new ChildSpan("test_trace_id", "parent_span_id")
     internal = JSON.parse(span.toJSON())
   })
 
   it("creates a ChildSpan", () => {
     expect(span).toBeInstanceOf(ChildSpan)
 
-    expect(internal.name).toEqual("test")
     expect(internal.trace_id).toEqual("test_trace_id")
     expect(internal.parent_span_id).toEqual("parent_span_id")
   })
@@ -89,17 +97,18 @@ describe("ChildSpan", () => {
   })
 
   it("creates a new ChildSpan", () => {
-    const child = span.child("test_child")
+    const child = span.child()
 
     expect(child).toBeDefined()
     expect(child).toBeInstanceOf(ChildSpan)
   })
 
-  it("belongs to a given namespace", () => {
-    const ns = "test_namespace"
-    span.setNamespace(ns)
+  it("sets the name", () => {
+    const name = "test_span"
 
+    span = new ChildSpan("test_trace_id", "parent_span_id").setName(name)
     internal = JSON.parse(span.toJSON())
-    expect(internal.namespace).toEqual(ns)
+
+    expect(internal.name).toEqual(name)
   })
 })

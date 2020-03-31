@@ -3,7 +3,7 @@ import { Span } from "../interfaces/span"
 import { Tracer } from "../interfaces/tracer"
 
 export class NoopTracer implements Tracer {
-  public createSpan(name: string, span?: Span): Span {
+  public createSpan(namespace?: string, span?: Span): Span {
     return new NoopSpan()
   }
 

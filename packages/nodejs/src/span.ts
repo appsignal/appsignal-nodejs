@@ -33,6 +33,13 @@ export class BaseSpan implements Span {
   }
 
   /**
+   * Returns a new `Span` object that is a child of the current `Span`.
+   */
+  public child(): ChildSpan {
+    return new ChildSpan(this.traceId, this.spanId)
+  }
+
+  /**
    * Sets arbitrary data on the current `Span`.
    */
   public set(key: string, value: string | number | boolean): this {
@@ -56,28 +63,6 @@ export class BaseSpan implements Span {
   }
 
   /**
-   * Returns a new `Span` object that is a child of the current `Span`.
-   */
-  public child(name: string): ChildSpan {
-    return new ChildSpan(name, this.traceId, this.spanId)
-  }
-
-  /**
-   * Sets a namespace for the current `Span`. Namespaces allow grouping of `Span`s
-   * by concern.
-   *
-   * By default AppSignal provides two namespaces: the "web" and "background" namespaces.
-   *
-   * The "web" namespace holds all data for HTTP requests while the "background" namespace
-   * contains metrics from background job libraries and tasks.
-   */
-  public setNamespace(value: string): this {
-    if (!value) return this
-    span.setSpanNamespace(this._ref, value)
-    return this
-  }
-
-  /**
    * Adds a given `Error` object to the current `Span`.
    */
   public addError(error: Error): this {
@@ -89,6 +74,16 @@ export class BaseSpan implements Span {
 
     span.addSpanError(this._ref, error.name, error.message, stackdata.ref)
 
+    return this
+  }
+
+  /**
+   * Sets the name for a given Span. The Span name is used in the UI to group
+   * like requests together.
+   */
+  public setName(name: string): this {
+    if (!name) return this
+    span.setSpanName(this._ref, name)
     return this
   }
 
@@ -146,9 +141,9 @@ export class BaseSpan implements Span {
  * be a parent to many `ChildSpan`s.
  */
 export class ChildSpan extends BaseSpan {
-  constructor(name: string, traceId: string, parentSpanId: string) {
+  constructor(traceId: string, parentSpanId: string) {
     super()
-    this._ref = span.createChildSpan(name, traceId, parentSpanId)
+    this._ref = span.createChildSpan(traceId, parentSpanId)
   }
 }
 
@@ -157,8 +152,8 @@ export class ChildSpan extends BaseSpan {
  * created from.
  */
 export class RootSpan extends BaseSpan {
-  constructor(name: string) {
+  constructor(namespace: string = "web") {
     super()
-    this._ref = span.createRootSpan(name)
+    this._ref = span.createRootSpan(namespace)
   }
 }

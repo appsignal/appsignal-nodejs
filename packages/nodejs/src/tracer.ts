@@ -23,12 +23,12 @@ export class Tracer implements ITracer {
    * Creates a new `Span` instance. If a `Span` is passed as the optional second
    * argument, then the returned `Span` will be a `ChildSpan`.
    */
-  public createSpan(name: string, span?: Span): Span {
+  public createSpan(namespace?: string, span?: Span): Span {
     if (!span) {
-      return new RootSpan(name)
+      return new RootSpan(namespace)
     } else {
       const { traceId, spanId } = span
-      return new ChildSpan(name, traceId, spanId)
+      return new ChildSpan(traceId, spanId)
     }
   }
 

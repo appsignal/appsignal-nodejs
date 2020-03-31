@@ -4,7 +4,6 @@
  * Copyright 2019, OpenTelemetry Authors
  */
 
-import url from "url"
 import { IncomingMessage, ServerResponse } from "http"
 
 import { Tracer } from "../../../tracer"
@@ -19,14 +18,12 @@ function incomingRequest(
     }
 
     const [request, response] = args as [IncomingMessage, ServerResponse]
-    const { url: reqUrl = "/", method = "GET" } = request
-    const { pathname } = url.parse(reqUrl)
+    const { method = "GET" } = request
 
     const rootSpan = tracer
-      .createSpan(`${method} ${pathname}`)
-      .setNamespace("web")
+      .createSpan()
+      .setName(`${method} [unknown route]`)
       .set("method", method)
-      .set("path", pathname || "/")
 
     return tracer.withSpan(rootSpan, span => {
       // calling this binds the event handlers to our current
