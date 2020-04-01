@@ -9,6 +9,7 @@ import { Instrumentation } from "./instrument"
 import * as http from "./instrumentation/http"
 
 import { AppsignalOptions } from "./types/options"
+import { Plugin } from "./interfaces/plugin"
 import { Tracer as ITracer } from "./interfaces/tracer"
 
 /**
@@ -43,7 +44,7 @@ export class Client {
     this.extension = new Extension({ active })
     this.instrumentation = new Instrumentation(this._tracer)
 
-    this.instrumentation.load(http.PLUGIN_NAME, http.instrument)
+    // this.instrumentation.load(http.PLUGIN_NAME, http.instrument)
   }
 
   /**
@@ -123,5 +124,18 @@ export class Client {
     }
 
     return this._metrics
+  }
+
+  /**
+   * Allows a named module to be modified by a function. The function `fn`
+   * returns a `Plugin`, which will be loaded by the instrumentation manager
+   * when the module is required.
+   */
+  public instrument<T>(
+    name: string,
+    fn: (module: T, tracer: Tracer) => Plugin<T>
+  ): this {
+    this.instrumentation.load(name, fn)
+    return this
   }
 }
