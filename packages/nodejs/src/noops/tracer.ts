@@ -11,11 +11,11 @@ export class NoopTracer implements Tracer {
   }
 
   public currentSpan(): Span | undefined {
-    return
+    return new NoopSpan()
   }
 
   public withSpan<T>(span: Span, fn: (s: Span) => T): T {
-    return {} as T
+    return fn(span)
   }
 
   public wrap<T>(fn: Func<T>): Func<T> {
