@@ -1,48 +1,20 @@
-// the C++ extension is loaded here (via commonjs for compatibility).
-// we keep this as a locally scoped variable; the C++ bindings
-// should not be visible publicly.
-const { extension } = require("../build/Release/extension.node")
+import { Extension } from "./interfaces/extension"
 
-/**
- * The public interface for the extension.
- *
- * @class
- */
-export class Extension {
-  public isLoaded = false
+let mod: Extension
 
-  constructor(options?: { active: boolean }) {
-    if (options?.active) this.start()
-  }
-
-  /**
-   * Starts the extension.
-   */
-  public start(): boolean {
-    try {
-      extension.start()
-      this.isLoaded = true
-    } catch (e) {
-      console.error(
-        `Failed to load extension ${e}, please run \`appsignal diagnose\`
-          and email us at support@appsignal.com`
-      )
-
-      this.isLoaded = false
+try {
+  mod = require("@appsignal/nodejs-ext") as Extension
+} catch (e) {
+  mod = {
+    extension: {
+      start() {
+        throw new Error("Extension module not loaded")
+      },
+      stop() {
+        return
+      }
     }
-
-    return this.isLoaded
-  }
-
-  /**
-   * Stops the extension.
-   */
-  public stop(): boolean {
-    if (this.isLoaded) {
-      extension.stop()
-      this.isLoaded = false
-    }
-
-    return this.isLoaded
-  }
+  } as Extension
 }
+
+export = mod

@@ -27,7 +27,7 @@
   "scripts": {
     "build": "lerna run --stream --concurrency 1 --sort build",
     "build:watch": "lerna run build:watch --stream --no-sort --concurrency 9999",
-    "build:ext": "lerna run --stream --scope=@appsignal/nodejs build:ext",
+    "build:ext": "lerna run --stream --scope=@appsignal/nodejs-ext build:ext",
     "clean": "lerna run --stream clean",
     "link:yarn": "lerna run --stream --concurrency 1 link:yarn",
     "test": "lerna run --stream --concurrency 1 --sort test",

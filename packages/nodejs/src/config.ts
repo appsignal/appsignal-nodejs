@@ -94,7 +94,10 @@ export class Configuration {
  */
 function writePrivateConstants() {
   const priv = {
-    _APPSIGNAL_AGENT_PATH: path.join(__dirname, "/../ext"),
+    _APPSIGNAL_AGENT_PATH: path.join(
+      __dirname,
+      "/../node_modules/@appsignal/nodejs-ext/ext"
+    ),
     _APPSIGNAL_ENVIRONMENT: process.env.NODE_ENV || "development",
     _APPSIGNAL_PROCESS_NAME: process.title,
     _APPSIGNAL_LANGUAGE_INTEGRATION_VERSION: `nodejs-${VERSION}`,

@@ -1,10 +1,10 @@
-import { Extension } from "../extension"
+import { Agent } from "../agent"
 
 describe("Extension", () => {
-  let ext: Extension
+  let ext: Agent
 
   beforeEach(() => {
-    ext = new Extension()
+    ext = new Agent()
   })
 
   it("starts the client", () => {
@@ -25,7 +25,7 @@ describe("Extension", () => {
 
   it("starts the client when the active option is true", () => {
     expect(() => {
-      ext = new Extension({ active: true })
+      ext = new Agent({ active: true })
     }).not.toThrow()
 
     expect(ext.isLoaded).toBeTruthy()

@@ -1,4 +1,4 @@
-import { Extension } from "./extension"
+import { Agent } from "./agent"
 import { Configuration } from "./config"
 import { Tracer } from "./tracer"
 import { NoopTracer } from "./noops"
@@ -24,7 +24,7 @@ export class Client {
   public VERSION = VERSION
 
   public config: Configuration
-  public extension: Extension
+  public agent: Agent
   public instrumentation: Instrumentation
 
   private _tracer: Tracer
@@ -41,17 +41,17 @@ export class Client {
     this._metrics = new Metrics()
 
     this.config = new Configuration(options)
-    this.extension = new Extension({ active })
+    this.agent = new Agent({ active })
     this.instrumentation = new Instrumentation(this._tracer)
 
     this.instrumentation.load(http.PLUGIN_NAME, http.instrument)
   }
 
   /**
-   * Returns `true` if the extension is loaded and configuration is valid
+   * Returns `true` if the agent is loaded and configuration is valid
    */
   get isActive(): boolean {
-    return this.extension.isLoaded && this.config.isValid
+    return this.agent.isLoaded && this.config.isValid
   }
 
   set isActive(arg) {
@@ -66,7 +66,7 @@ export class Client {
    */
   public start(): void {
     if (this.config.isValid) {
-      this.extension.start()
+      this.agent.start()
     } else {
       console.error("Not starting, no valid config for this environment")
     }
@@ -85,7 +85,7 @@ export class Client {
       console.log("Stopping AppSignal")
     }
 
-    this.extension.stop()
+    this.agent.stop()
   }
 
   /**
@@ -118,7 +118,7 @@ export class Client {
   public metrics(): Metrics | undefined {
     if (!this.isActive) {
       console.warn(
-        "Cannot access the metrics object when the extension is inactive"
+        "Cannot access the metrics object when the agent is inactive"
       )
       return
     }
