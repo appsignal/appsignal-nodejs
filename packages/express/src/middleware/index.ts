@@ -11,7 +11,7 @@ import {
 export function expressMiddleware(appsignal: Appsignal): RequestHandler {
   return function (req: Request, res: Response, next: NextFunction) {
     const tracer = appsignal.tracer()
-    const rootSpan = tracer.createSpan()
+    const rootSpan = tracer.currentSpan()
 
     if (!rootSpan) {
       return next()
@@ -36,7 +36,6 @@ export function expressMiddleware(appsignal: Appsignal): RequestHandler {
         res.end = originalEnd
 
         const { method = "GET" } = req
-        const returned = res.end.apply(this, arguments as any)
 
         // if there is no error passed to `next()`, the span name will
         // be updated to match the current path
@@ -44,9 +43,9 @@ export function expressMiddleware(appsignal: Appsignal): RequestHandler {
           span.setName(`${method} ${req.route.path}`)
         }
 
-        span.set("method", method).set("status_code", res.statusCode).close()
+        span.set("method", method).set("status_code", res.statusCode)
 
-        return returned
+        return res.end.apply(this, arguments as any)
       }
 
       return next()

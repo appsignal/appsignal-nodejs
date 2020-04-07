@@ -44,7 +44,7 @@ export class Client {
     this.extension = new Extension({ active })
     this.instrumentation = new Instrumentation(this._tracer)
 
-    // this.instrumentation.load(http.PLUGIN_NAME, http.instrument)
+    this.instrumentation.load(http.PLUGIN_NAME, http.instrument)
   }
 
   /**
