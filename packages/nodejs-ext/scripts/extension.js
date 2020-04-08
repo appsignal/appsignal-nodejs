@@ -47,7 +47,7 @@ function verify(filepath, checksum) {
   return new Promise((resolve, reject) => {
     fs.createReadStream(filepath)
       .pipe(crypto.createHash("SHA256").setEncoding("hex"))
-      .on("finish", function() {
+      .on("finish", function () {
         this.end()
 
         if (this.read() === checksum) {
@@ -72,7 +72,7 @@ function getMetadataForTarget(report) {
 }
 
 // Script logic begins here
-;(function() {
+;(function () {
   const report = createReport()
 
   if (hasLocalBuild()) {

@@ -4,24 +4,23 @@
   "main": "dist/index.js",
   "license": "MIT",
   "dependencies": {
-    "node-addon-api": "^2.0.0",
-    "node-gyp": "^6.1.0",
     "require-in-the-middle": "^5.0.3",
     "semver": "^7.2.1",
     "shimmer": "^1.2.1",
     "tslib": "^1.11.1"
   },
+  "optionalDependencies": {
+    "@appsignal/nodejs-ext": "^0.2.0"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "build:ext": "node-gyp rebuild",
     "build:watch": "yarn versionfile && tsc -p tsconfig.json -w --preserveWatchOutput",
     "clean": "rimraf dist coverage",
     "link:yarn": "yarn link",
     "test": "jest",
     "test:watch": "jest --watch",
     "versionfile": "node scripts/create-versionfile.js",
-    "version": "yarn versionfile",
-    "install": "node scripts/extension.js && node-gyp rebuild"
+    "version": "yarn versionfile"
   },
   "engines": {
     "node": ">= 10"

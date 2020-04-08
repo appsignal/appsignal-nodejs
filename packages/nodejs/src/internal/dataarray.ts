@@ -1,7 +1,4 @@
-// the C++ extension is loaded here (via commonjs for compatibility).
-// we keep this as a locally scoped variable; the C++ bindings
-// should not be visible publicly.
-const { dataarray } = require("../../build/Release/extension.node")
+import { dataarray } from "../extension"
 
 export class DataArray {
   private _ref: any
@@ -19,7 +16,7 @@ export class DataArray {
   }
 
   get ref() {
-    return this._ref;
+    return this._ref
   }
 
   set ref(arg) {
