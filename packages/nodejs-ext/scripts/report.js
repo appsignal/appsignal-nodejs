@@ -12,7 +12,7 @@ function createReport() {
       architecture: process.arch,
       target: process.platform,
       muslOverride: Boolean(process.env["APPSIGNAL_BUILD_FOR_MUSL"]),
-      library_type: "static"
+      libraryType: "static"
     },
     host: {
       rootUser: process.getuid && process.getuid() === 0,

@@ -60,12 +60,12 @@ function verify(filepath, checksum) {
 }
 
 function getMetadataForTarget(report) {
-  const { architecture, target, musl_override } = report.build
+  const { architecture, target, muslOverride } = report.build
 
   const triple = [
     architecture === "x64" ? "x86_64" : "i686",
     `-${target}`,
-    musl_override ? "-musl" : ""
+    muslOverride ? "-musl" : ""
   ]
 
   return TRIPLES[triple.join("")]
