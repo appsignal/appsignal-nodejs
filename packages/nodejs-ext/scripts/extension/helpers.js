@@ -1,5 +1,6 @@
 const path = require("path")
 const fs = require("fs")
+const child_process = require("child_process")
 
 /**
  * Returns `true` if the /ext directory contains a local build. and vice versa
