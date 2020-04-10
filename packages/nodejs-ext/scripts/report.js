@@ -1,4 +1,5 @@
 const path = require("path")
+const { hasMusl } = require("./extension/helpers")
 
 function createReport() {
   return {
@@ -11,7 +12,7 @@ function createReport() {
       packagePath: path.join(__dirname, "/../ext/"),
       architecture: process.arch,
       target: process.platform,
-      muslOverride: Boolean(process.env["APPSIGNAL_BUILD_FOR_MUSL"]),
+      muslOverride: hasMusl(),
       libraryType: "static"
     },
     host: {

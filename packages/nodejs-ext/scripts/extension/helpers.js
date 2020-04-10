@@ -28,4 +28,13 @@ function hasSupportedArchitecture(report) {
   )
 }
 
-module.exports = { hasLocalBuild, hasSupportedArchitecture }
+/**
+ * Returns `true` if the current linux system is using musl as its libc and vice versa
+ *
+ * @return  {boolean}
+ */
+function hasMusl() {
+  return /musl/.test(child_process.spawnSync("ldd", ["--version"]).stderr);
+}
+
+module.exports = { hasLocalBuild, hasSupportedArchitecture, hasMusl }
