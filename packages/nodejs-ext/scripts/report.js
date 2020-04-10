@@ -12,7 +12,7 @@ function createReport() {
       packagePath: path.join(__dirname, "/../ext/"),
       architecture: process.arch,
       target: process.platform,
-      muslOverride: hasMusl(),
+      muslOverride: (process.env["APPSIGNAL_BUILD_FOR_MUSL"] === "true") || hasMusl(),
       libraryType: "static"
     },
     host: {
