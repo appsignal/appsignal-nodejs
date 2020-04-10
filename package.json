@@ -14,7 +14,7 @@
     "@types/node": "^13.11.1",
     "@types/semver": "^7.1.0",
     "@types/shimmer": "^1.0.1",
-    "husky": "^4.2.3",
+    "husky": "^4.2.5",
     "jest": "^25.3.0",
     "lerna": "^3.20.2",
     "lint-staged": "^10.1.2",
