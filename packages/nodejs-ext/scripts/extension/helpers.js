@@ -1,5 +1,6 @@
 const path = require("path")
 const fs = require("fs")
+const child_process = require("child_process")
 
 /**
  * Returns `true` if the /ext directory contains a local build. and vice versa
@@ -28,4 +29,13 @@ function hasSupportedArchitecture(report) {
   )
 }
 
-module.exports = { hasLocalBuild, hasSupportedArchitecture }
+/**
+ * Returns `true` if the current linux system is using musl as its libc and vice versa
+ *
+ * @return  {boolean}
+ */
+function hasMusl() {
+  return /musl/.test(child_process.spawnSync("ldd", ["--version"]).stderr);
+}
+
+module.exports = { hasLocalBuild, hasSupportedArchitecture, hasMusl }
