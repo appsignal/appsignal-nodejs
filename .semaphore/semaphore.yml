@@ -1,0 +1,42 @@
+version: v1.0
+name: appsignal-nodejs
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+auto_cancel:
+  running:
+    when: branch != 'master' AND branch != 'develop'
+global_job_config:
+  env_vars:
+  - name: RUNNING_IN_CI
+    value: 'true'
+  - name: NODE_ENV
+    value: test
+  prologue:
+    commands:
+      - checkout
+      - cache restore
+blocks:
+  - name: "Node.js v12"
+    dependencies: []
+    task:
+      prologue:
+        commands:
+          - sem-version node 12
+      jobs:
+        - name: Install
+          commands:
+            - yarn install --frozen-lockfile
+            - yarn lerna bootstrap
+            - yarn lerna link
+            - cache store
+        - name: Build
+          commands:
+            - yarn lerna run build
+        - name: Test
+          commands:
+            - yarn lerna run test
+
+
+
