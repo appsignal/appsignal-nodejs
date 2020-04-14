@@ -1,10 +1,10 @@
 {
   "name": "@appsignal/express",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "main": "dist/index.js",
   "license": "MIT",
   "dependencies": {
-    "@appsignal/nodejs": "^0.3.0",
+    "@appsignal/nodejs": "^0.3.1",
     "tslib": "^1.11.1"
   },
   "scripts": {
