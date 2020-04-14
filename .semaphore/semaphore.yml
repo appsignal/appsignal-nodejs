@@ -1,0 +1,48 @@
+version: v1.0
+name: appsignal-nodejs
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+auto_cancel:
+  running:
+    when: branch != 'master' AND branch != 'develop'
+global_job_config:
+  env_vars:
+  - name: RUNNING_IN_CI
+    value: 'true'
+  - name: NODE_ENV
+    value: test
+  prologue:
+    commands:
+      - checkout
+blocks:
+  - name: "Build"
+    dependencies: []
+    task:
+      jobs:
+        - name: Build for Node $NODE_VERSION
+          matrix:
+            - env_var: NODE_VERSION
+              values: ["10", "11", "12", "13"]
+          commands:
+            - sem-version node $NODE_VERSION
+            - yarn install
+            - yarn lerna bootstrap
+            - yarn lerna link
+            - yarn lerna run build
+  # - name: "Unit tests"
+  #   dependencies: ["Integrations"]
+  #   task:
+  #     prologue:
+  #       commands:
+  #         - cache restore
+  #         - yarn lerna bootstrap
+  #         - yarn lerna link
+  #     jobs:
+  #       - name: @appsignal/nodejs
+  #         commands:
+  #           - yarn lerna run test
+
+
+
