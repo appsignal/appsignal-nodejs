@@ -29,6 +29,7 @@
     "build:watch": "lerna run build:watch --stream --no-sort --concurrency 9999",
     "build:ext": "lerna run --stream --scope=@appsignal/nodejs-ext build:ext",
     "clean": "lerna run --stream clean",
+    "link:npm": "lerna run --stream --concurrency 1 link:npm",
     "link:yarn": "lerna run --stream --concurrency 1 link:yarn",
     "test": "lerna run --stream --concurrency 1 --sort test",
     "prepublishOnly": "lerna link && yarn clean && yarn build"

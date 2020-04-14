@@ -12,6 +12,7 @@
     "build:ext": "node-gyp rebuild",
     "build:watch": "tsc -p tsconfig.json -w --preserveWatchOutput",
     "clean": "rimraf dist coverage",
+    "link:npm": "npm link",
     "link:yarn": "yarn link",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch"

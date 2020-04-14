@@ -16,6 +16,7 @@
     "build": "tsc -p tsconfig.json",
     "build:watch": "yarn versionfile && tsc -p tsconfig.json -w --preserveWatchOutput",
     "clean": "rimraf dist coverage",
+    "link:npm": "npm link",
     "link:yarn": "yarn link",
     "test": "jest",
     "test:watch": "jest --watch",
