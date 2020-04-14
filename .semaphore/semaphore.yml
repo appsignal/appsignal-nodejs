@@ -1,0 +1,52 @@
+version: v1.0
+name: Appsignal for Node.js
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+auto_cancel:
+  running:
+    when: branch != 'master' AND branch != 'develop'
+global_job_config:
+  env_vars:
+  - name: RUNNING_IN_CI
+    value: 'true'
+  - name: NODE_ENV
+    value: test
+  prologue:
+    commands:
+      - checkout
+      - sem-version node $NODE_VERSION
+blocks:
+  - name: "Install and Build"
+    dependencies: []
+    task:
+      prologue:
+        commands:
+          - yarn install --frozen-lockfile
+          - yarn lerna bootstrap
+          - yarn lerna link
+          - cache store
+      jobs:
+        - name: Build
+          matrix:
+            - env_var: NODE_VERSION
+              values: ["10", "11", "12", "13"]
+          commands:
+            - yarn lerna run build
+            - yarn build:ext
+            - cache store packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+  - name: "Unit tests"
+    dependencies: ["Install and Build"]
+    task:
+      prologue:
+        commands:
+          - cache restore
+      jobs:
+        - name: Jest
+          matrix:
+            - env_var: NODE_VERSION
+              values: ["10", "11", "12", "13"]
+          commands:
+            - cache restore packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+            - yarn lerna run test
