@@ -20,10 +20,13 @@ export class Agent {
       extension.start()
       this.isLoaded = true
     } catch (e) {
-      if (e.message !== "Extension module not loaded") {
+      if (e.message === "Extension module not loaded") {
+        console.warn(
+          "AppSignal extension not loaded. This could mean that your current environment isn't supported, or that another error has occured."
+        )
+      } else {
         console.error(
-          `Failed to load extension: ${e.message}. please run \`appsignal diagnose\`
-            and email us at support@appsignal.com`
+          `Failed to load AppSignal extension with error: ${e.message}. Please email us at support@appsignal.com for support.`
         )
       }
 
