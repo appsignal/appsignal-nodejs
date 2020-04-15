@@ -16,6 +16,15 @@
     "link:yarn": "yarn link",
     "install": "node scripts/extension.js && node-gyp rebuild"
   },
+  "os": [
+    "linux", 
+    "darwin",
+    "freebsd"
+  ],
+  "cpu": [
+    "x64",
+    "x86"
+  ],
   "engines": {
     "node": ">= 10"
   },
