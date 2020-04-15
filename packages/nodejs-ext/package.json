@@ -17,7 +17,7 @@
     "install": "node scripts/extension.js && node-gyp rebuild"
   },
   "os": [
-    "linux", 
+    "linux",
     "darwin",
     "freebsd"
   ],

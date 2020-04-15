@@ -6,7 +6,7 @@
   "dependencies": {
     "@appsignal/core": "^1.0.3",
     "require-in-the-middle": "^5.0.3",
-    "semver": "^7.2.2",
+    "semver": "^7.3.2",
     "shimmer": "^1.2.1",
     "tslib": "^1.11.1"
   },
