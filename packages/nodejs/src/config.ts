@@ -21,6 +21,7 @@ export class Configuration {
     this._data = {
       debug: false,
       log: "file",
+      logPath: "/tmp/appsignal.log",
       endpoint: "https://push.appsignal.com",
       ...this._loadFromEnvironment(),
       ...options
