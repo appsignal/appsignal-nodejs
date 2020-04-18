@@ -1,14 +1,4 @@
-import { metrics } from "./extension"
-import { Metrics as IMetrics } from "./interfaces/metrics"
-
-import { DataArray, DataMap } from "./internal"
-
-/**
- * The metrics object.
- *
- * @class
- */
-export class Metrics implements IMetrics {
+export interface Metrics {
   /**
    * A gauge is a metric value at a specific time. If you set more
    * than one gauge with the same key, the latest value for that
@@ -19,23 +9,11 @@ export class Metrics implements IMetrics {
    * accounts, etc.). Currently all AppSignal host metrics are stored
    * as gauges.
    */
-  public setGauge(
+  setGauge(
     key: string,
     value: number,
     tags?: { [key: string]: string | number | boolean }
-  ) {
-    if (!key || !value) return this
-
-    metrics.setGauge(
-      key,
-      value,
-      tags && Array.isArray(tags)
-        ? new DataArray(tags)?.ref
-        : new DataMap(tags)?.ref
-    )
-
-    return this
-  }
+  ): this
 
   /**
    * Measurements are used for things like response times. We allow you to
@@ -50,23 +28,11 @@ export class Metrics implements IMetrics {
    * - `P90`, the 90th percentile of the metric value for the point in time.
    * - `P95`, the 95th percentile of the metric value for the point in time.
    */
-  public addDistributionValue(
+  addDistributionValue(
     key: string,
     value: number,
     tags?: { [key: string]: string | number | boolean }
-  ) {
-    if (!key || !value) return this
-
-    metrics.addDistributionValue(
-      key,
-      value,
-      tags && Array.isArray(tags)
-        ? new DataArray(tags)?.ref
-        : new DataMap(tags)?.ref
-    )
-
-    return this
-  }
+  ): this
 
   /**
    * The counter metric type stores a number value for a given time frame. These
@@ -82,21 +48,9 @@ export class Metrics implements IMetrics {
    *
    * When this method is called multiple times, the total/sum of all calls is persisted.
    */
-  public incrementCounter(
+  incrementCounter(
     key: string,
     value: number,
     tags?: { [key: string]: string | number | boolean }
-  ) {
-    if (!key || !value) return this
-
-    metrics.incrementCounter(
-      key,
-      value,
-      tags && Array.isArray(tags)
-        ? new DataArray(tags)?.ref
-        : new DataMap(tags)?.ref
-    )
-
-    return this
-  }
+  ): this
 }

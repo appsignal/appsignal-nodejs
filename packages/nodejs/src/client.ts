@@ -1,16 +1,18 @@
+import { VERSION } from "./version"
+
 import { Agent } from "./agent"
 import { Configuration } from "./config"
 import { Tracer } from "./tracer"
-import { NoopTracer } from "./noops"
-import { VERSION } from "./version"
-
 import { Metrics } from "./metrics"
+import { NoopTracer, NoopMetrics } from "./noops"
+
 import { Instrumentation } from "./instrument"
 import * as http from "./instrumentation/http"
 
 import { AppsignalOptions } from "./types/options"
 import { Plugin } from "./interfaces/plugin"
 import { Tracer as ITracer } from "./interfaces/tracer"
+import { Metrics as IMetrics } from "./interfaces/metrics"
 
 /**
  * AppSignal for Node.js's main class.
@@ -115,12 +117,9 @@ export class Client {
    * you can track any kind of data from your apps and tag them with metadata
    * to easily spot the differences between contexts.
    */
-  public metrics(): Metrics | undefined {
+  public metrics(): IMetrics {
     if (!this.isActive) {
-      console.warn(
-        "Cannot access the metrics object when the agent is inactive"
-      )
-      return
+      return new NoopMetrics()
     }
 
     return this._metrics
