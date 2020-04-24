@@ -1,9 +1,9 @@
 import Hook from "require-in-the-middle"
 import semver from "semver"
 
-import { Tracer } from "./tracer"
 import { getPackageVerson } from "./utils"
 import { Plugin } from "./interfaces/plugin"
+import { Tracer } from "./interfaces/tracer"
 
 type InstrumentedModule<T> = { name: string; plugin: Plugin<T>; hook: Hook }
 

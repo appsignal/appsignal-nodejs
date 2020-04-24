@@ -44,7 +44,7 @@ export class Client {
 
     this.config = new Configuration(options)
     this.agent = new Agent({ active })
-    this.instrumentation = new Instrumentation(this._tracer)
+    this.instrumentation = new Instrumentation(this.tracer())
 
     this.instrumentation.load(http.PLUGIN_NAME, http.instrument)
   }
@@ -132,7 +132,7 @@ export class Client {
    */
   public instrument<T>(
     name: string,
-    fn: (module: T, tracer: Tracer) => Plugin<T>
+    fn: (module: T, tracer: ITracer) => Plugin<T>
   ): this {
     this.instrumentation.load(name, fn)
     return this

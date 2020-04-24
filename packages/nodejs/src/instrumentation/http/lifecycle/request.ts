@@ -6,13 +6,13 @@
 
 import { IncomingMessage, ServerResponse } from "http"
 
-import { Tracer } from "../../../tracer"
+import { Tracer } from "../../../interfaces/tracer"
 
 function incomingRequest(
   original: (event: string, ...args: unknown[]) => boolean,
   tracer: Tracer
 ) {
-  return function(this: {}, event: string, ...args: unknown[]): boolean {
+  return function (this: {}, event: string, ...args: unknown[]): boolean {
     if (event !== "request") {
       return original.apply(this, [event, ...args])
     }
@@ -34,7 +34,7 @@ function incomingRequest(
       const originalEnd = response.end
 
       // wraps the "end" event to close the span
-      response.end = function(this: ServerResponse, ...args: unknown[]) {
+      response.end = function (this: ServerResponse, ...args: unknown[]) {
         response.end = originalEnd
 
         const result = response.end.apply(this, [...args] as any)
@@ -49,7 +49,7 @@ function incomingRequest(
 }
 
 export function getPatchIncomingRequestFunction(tracer: Tracer) {
-  return function(original: (event: string, ...args: unknown[]) => boolean) {
+  return function (original: (event: string, ...args: unknown[]) => boolean) {
     return incomingRequest(original, tracer)
   }
 }

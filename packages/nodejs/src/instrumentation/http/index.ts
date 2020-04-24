@@ -1,8 +1,8 @@
 import shimmer from "shimmer"
 import http from "http"
 
-import { Tracer } from "../../tracer"
 import { getPatchIncomingRequestFunction } from "../http/lifecycle/request"
+import { Tracer } from "../../interfaces/tracer"
 import { Plugin } from "../../interfaces/plugin"
 
 // quick alias to expose a type for the entire module
