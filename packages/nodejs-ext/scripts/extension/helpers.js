@@ -30,12 +30,32 @@ function hasSupportedArchitecture(report) {
 }
 
 /**
+ * Returns `true` if the current operating systrm is supported by the agent. and vice versa
+ *
+ * @param   {object}  report  A valid report object
+ *
+ * @return  {boolean}
+ */
+function hasSupportedOs(report) {
+  return (
+    report.build.target === "darwin" ||
+    report.build.target === "freebsd" ||
+    report.build.target === "linux"
+  )
+}
+
+/**
  * Returns `true` if the current linux system is using musl as its libc and vice versa
  *
  * @return  {boolean}
  */
 function hasMusl() {
-  return /musl/.test(child_process.spawnSync("ldd", ["--version"]).stderr);
+  return /musl/.test(child_process.spawnSync("ldd", ["--version"]).stderr)
 }
 
-module.exports = { hasLocalBuild, hasSupportedArchitecture, hasMusl }
+module.exports = {
+  hasLocalBuild,
+  hasSupportedArchitecture,
+  hasMusl,
+  hasSupportedOs
+}

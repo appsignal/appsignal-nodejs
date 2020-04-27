@@ -10,7 +10,8 @@ const { TRIPLES } = require("./extension/constants")
 
 const {
   hasLocalBuild,
-  hasSupportedArchitecture
+  hasSupportedArchitecture,
+  hasSupportedOs
 } = require("./extension/helpers")
 
 const { createReport } = require("./report")
@@ -78,34 +79,46 @@ function getMetadataForTarget(report) {
   if (hasLocalBuild()) {
     // check for a local build (dev only)
     console.warn(`Using local build for agent. Skipping download.`)
-    process.exit(0)
-  } else if (hasSupportedArchitecture(report)) {
-    // try and get one from the CDN
-    const metadata = getMetadataForTarget(report)
-    const filename = metadata.downloadUrl.split("/")[4]
-    const outputPath = path.join(EXT_PATH, filename)
+    return process.exit(0)
+  }
 
-    return download(metadata.downloadUrl, outputPath)
-      .then(filepath => {
-        return verify(filepath, metadata.checksum).then(() => extract(filepath))
-      })
-      .then(() => {
-        // once extracted, we can then hand off to node-gyp for building
-        // @TODO: add cleanup step
-        console.log("The agent has installed successfully!")
-        process.exit(0)
-      })
-      .catch(error => {
-        console.error(error)
-        process.exit(1)
-      })
-  } else {
-    // bail :(
+  if (!hasSupportedArchitecture(report)) {
     console.error(
       `AppSignal currently does not support your system architecture 
-      (${process.platform} ${process.arch}). Please let us know at 
-      support@appsignal.com, we aim to support everything our customers run.`
+        (${process.platform} ${process.arch}). Please let us know at 
+        support@appsignal.com, we aim to support everything our customers run.`
     )
-    process.exit(1)
+
+    return process.exit(1)
   }
+
+  if (!hasSupportedOs(report)) {
+    console.error(
+      `AppSignal currently does not support your operating system (${process.platform}). 
+      Please let us know at support@appsignal.com, we aim to support everything 
+      our customers run.`
+    )
+
+    return process.exit(1)
+  }
+
+  // try and get one from the CDN
+  const metadata = getMetadataForTarget(report)
+  const filename = metadata.downloadUrl.split("/")[4]
+  const outputPath = path.join(EXT_PATH, filename)
+
+  return download(metadata.downloadUrl, outputPath)
+    .then(filepath => {
+      return verify(filepath, metadata.checksum).then(() => extract(filepath))
+    })
+    .then(() => {
+      // once extracted, we can then hand off to node-gyp for building
+      // @TODO: add cleanup step
+      console.log("The agent has installed successfully!")
+      process.exit(0)
+    })
+    .catch(error => {
+      console.error(error)
+      process.exit(1)
+    })
 })()
