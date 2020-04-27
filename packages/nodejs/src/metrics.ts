@@ -1,5 +1,5 @@
 import { metrics } from "./extension"
-import { Metrics as IMetrics } from "./interfaces/metrics"
+import { Metrics } from "./interfaces/metrics"
 
 import { DataArray, DataMap } from "./internal"
 
@@ -8,7 +8,7 @@ import { DataArray, DataMap } from "./internal"
  *
  * @class
  */
-export class Metrics implements IMetrics {
+export class BaseMetrics implements Metrics {
   /**
    * A gauge is a metric value at a specific time. If you set more
    * than one gauge with the same key, the latest value for that

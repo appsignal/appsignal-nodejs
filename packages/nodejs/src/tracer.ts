@@ -5,14 +5,14 @@ import { RootSpan, ChildSpan } from "./span"
 
 import { Func } from "./types/utils"
 import { Span } from "./interfaces/span"
-import { Tracer as ITracer } from "./interfaces/tracer"
+import { Tracer } from "./interfaces/tracer"
 
 /**
  * The tracer object.
  *
  * @class
  */
-export class Tracer implements ITracer {
+export class BaseTracer implements Tracer {
   private _scopeManager: ScopeManager
 
   constructor() {

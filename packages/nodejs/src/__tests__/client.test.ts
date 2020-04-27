@@ -1,6 +1,6 @@
 import { Client } from "../client"
-import { Tracer } from "../tracer"
-import { Metrics } from "../metrics"
+import { BaseTracer as Tracer } from "../tracer"
+import { BaseMetrics as Metrics } from "../metrics"
 import { NoopTracer, NoopMetrics } from "../noops"
 
 jest.mock("../tracer")

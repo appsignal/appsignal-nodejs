@@ -2,8 +2,8 @@ import { VERSION } from "./version"
 
 import { Agent } from "./agent"
 import { Configuration } from "./config"
-import { Tracer } from "./tracer"
-import { Metrics } from "./metrics"
+import { BaseTracer } from "./tracer"
+import { BaseMetrics } from "./metrics"
 import { NoopTracer, NoopMetrics } from "./noops"
 
 import { Instrumentation } from "./instrument"
@@ -11,8 +11,8 @@ import * as http from "./instrumentation/http"
 
 import { AppsignalOptions } from "./types/options"
 import { Plugin } from "./interfaces/plugin"
-import { Tracer as ITracer } from "./interfaces/tracer"
-import { Metrics as IMetrics } from "./interfaces/metrics"
+import { Tracer } from "./interfaces/tracer"
+import { Metrics } from "./interfaces/metrics"
 
 /**
  * AppSignal for Node.js's main class.
@@ -39,8 +39,8 @@ export class Client {
     // Agent is not started by default
     const { active = false } = options
 
-    this._tracer = new Tracer()
-    this._metrics = new Metrics()
+    this._tracer = new BaseTracer()
+    this._metrics = new BaseMetrics()
 
     this.config = new Configuration(options)
     this.agent = new Agent({ active })
@@ -96,7 +96,7 @@ export class Client {
    * If the agent is inactive when this method is called, the method
    * returns a `NoopTracer`, which will do nothing.
    */
-  public tracer(): ITracer {
+  public tracer(): Tracer {
     if (!this.isActive) {
       return new NoopTracer()
     }
@@ -117,7 +117,7 @@ export class Client {
    * you can track any kind of data from your apps and tag them with metadata
    * to easily spot the differences between contexts.
    */
-  public metrics(): IMetrics {
+  public metrics(): Metrics {
     if (!this.isActive) {
       return new NoopMetrics()
     }
@@ -132,7 +132,7 @@ export class Client {
    */
   public instrument<T>(
     name: string,
-    fn: (module: T, tracer: ITracer) => Plugin<T>
+    fn: (module: T, tracer: Tracer) => Plugin<T>
   ): this {
     this.instrumentation.load(name, fn)
     return this

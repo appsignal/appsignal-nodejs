@@ -1,4 +1,4 @@
-import { Metrics } from "../metrics"
+import { BaseMetrics as Metrics } from "../metrics"
 
 describe("Metrics", () => {
   let metrics: Metrics
