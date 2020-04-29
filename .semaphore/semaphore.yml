@@ -1,0 +1,66 @@
+version: v1.0
+name: appsignal-nodejs
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+auto_cancel:
+  running:
+    when: branch != 'master' AND branch != 'develop'
+global_job_config:
+  env_vars:
+  - name: RUNNING_IN_CI
+    value: 'true'
+  - name: NODE_ENV
+    value: test
+  prologue:
+    commands:
+      - checkout
+      - sem-version node 12
+blocks:
+  - name: "Setup"
+    dependencies: []
+    task:
+      jobs:
+        - name: Install
+          commands:
+            - yarn install
+            - yarn lerna bootstrap
+            - cache store
+  - name: "Build"
+    dependencies: ["Setup"]
+    task:
+      prologue:
+        commands:
+          - cache restore
+          - yarn lerna link
+      jobs:
+        - name: @appsignal/nodejs
+          commands:
+            - yarn lerna run build --scope="@appsignal/nodejs"
+        - name: @appsignal/nodejs-ext
+          commands:
+            - yarn lerna run build --scope="@appsignal/nodejs-ext"
+        - name: @appsignal/express
+          commands:
+            - yarn lerna run build --scope="@appsignal/express"
+  - name: "Unit tests"
+    dependencies: ["Build"]
+    task:
+      prologue:
+        commands:
+          - cache restore
+          - yarn lerna link
+      jobs:
+        - name: @appsignal/nodejs
+          commands:
+            - yarn lerna run test --scope="@appsignal/nodejs"
+        - name: @appsignal/nodejs-ext
+          commands:
+            - yarn lerna run test --scope="@appsignal/nodejs-ext"
+        - name: @appsignal/express
+          commands:
+            - yarn lerna run test --scope="@appsignal/express"
+
+
+
