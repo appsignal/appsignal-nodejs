@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "license": "MIT",
   "dependencies": {
-    "@appsignal/core": "^1.0.4",
+    "@appsignal/core": "^1.0.6",
     "require-in-the-middle": "^5.0.3",
     "semver": "^7.3.2",
     "shimmer": "^1.2.1",

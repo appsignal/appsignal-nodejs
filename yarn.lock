@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@appsignal/core@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.0.4.tgz#9de5d1c4421f2bb7a828e90dfd9a13f60fab2d4f"
-  integrity sha512-G/vOh2OVZjxgj5PBhhVxyv7qaemSlKZ2FqzvJwzT/s13pQyaS8Zh7qaLDY/8iUgupNqC8oI5KFRDSedDa0iGBg==
+"@appsignal/core@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.0.6.tgz#51a113ad088d9a44a04e4d4b138325ff35780b38"
+  integrity sha512-7NHExnnrIOTbv1zoFNIYjMZ1k32G04xJsFsOHxX3OYR+dfbB3f9Y2zBf1Dir5tMAZzzcJRkKIA7lgn4BPy0UlA==
   dependencies:
     tslib "^1.11.1"
 
