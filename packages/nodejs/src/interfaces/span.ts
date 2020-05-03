@@ -1,3 +1,5 @@
+import { HashMap } from "@appsignal/types"
+
 export interface Span {
   /**
    * The current ID of the trace.
@@ -33,7 +35,10 @@ export interface Span {
   /**
    * Sets a data collection as sample data on the current `Span`.
    */
-  setSampleData(key: string, data: Array<any> | { [key: string]: any }): this
+  setSampleData(
+    key: string,
+    data: Array<string | number | boolean> | HashMap<string | number | boolean>
+  ): this
 
   /**
    * Completes the current `Span`.

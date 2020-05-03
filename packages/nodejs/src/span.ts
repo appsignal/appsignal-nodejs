@@ -1,5 +1,6 @@
-import { span } from "./extension"
+import { HashMap } from "@appsignal/types"
 
+import { span } from "./extension"
 import { DataArray, DataMap } from "./internal"
 import { Span } from "./interfaces/span"
 
@@ -89,7 +90,7 @@ export class BaseSpan implements Span {
    */
   public setSampleData(
     key: string,
-    data: Array<any> | { [key: string]: any }
+    data: Array<string | number | boolean> | HashMap<string | number | boolean>
   ): this {
     if (!key || !data) return this
 

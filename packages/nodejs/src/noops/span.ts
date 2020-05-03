@@ -1,3 +1,5 @@
+import { HashMap } from "@appsignal/types"
+
 import { Span } from "../interfaces/span"
 
 export class NoopSpan implements Span {
@@ -13,7 +15,7 @@ export class NoopSpan implements Span {
     return this
   }
 
-  public child(name: string): NoopSpan {
+  public child(): NoopSpan {
     return new NoopSpan()
   }
 
@@ -27,7 +29,7 @@ export class NoopSpan implements Span {
 
   public setSampleData(
     key: string,
-    data: Array<any> | { [key: string]: any }
+    data: Array<string | number | boolean> | HashMap<string | number | boolean>
   ): this {
     return this
   }
