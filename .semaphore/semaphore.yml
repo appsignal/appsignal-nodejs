@@ -35,7 +35,7 @@ blocks:
           commands:
             - yarn build
             - yarn build:ext
-            - cache store packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+            - cache store packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION packages
   - name: "Unit tests"
     dependencies: ["Install and Build"]
     task:
@@ -48,5 +48,5 @@ blocks:
             - env_var: NODE_VERSION
               values: ["10", "11", "12", "13"]
           commands:
-            - cache restore packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+            - cache restore packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION
             - yarn test
