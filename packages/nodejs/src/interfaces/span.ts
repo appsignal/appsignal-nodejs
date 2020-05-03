@@ -25,7 +25,7 @@ export interface Span {
   /**
    * Returns a new `Span` object that is a child of the current `Span`.
    */
-  child(name: string): Span
+  child(): Span
 
   /**
    * Adds a given `Error` object to the current `Span`.
