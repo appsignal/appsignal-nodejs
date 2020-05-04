@@ -1,6 +1,6 @@
 export type AppsignalOptions = {
-  name: string
-  apiKey: string
+  name?: string
+  apiKey?: string
 } & Partial<Optional>
 
 type Optional = {
