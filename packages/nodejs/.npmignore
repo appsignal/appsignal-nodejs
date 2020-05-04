@@ -3,4 +3,5 @@
 !/scripts/**/*
 !/ext/appsignal_extension.cpp
 !binding.gyp
+!vendor.d.ts
 *.tsbuildinfo

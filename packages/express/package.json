@@ -1,7 +1,8 @@
 {
   "name": "@appsignal/express",
   "version": "0.3.2",
-  "main": "dist/index.js",
+  "main": "dist/index",
+  "types": "dist/index",
   "license": "MIT",
   "dependencies": {
     "@appsignal/nodejs": "^0.3.2",

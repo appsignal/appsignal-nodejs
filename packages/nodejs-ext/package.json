@@ -1,7 +1,8 @@
 {
   "name": "@appsignal/nodejs-ext",
   "version": "0.3.2",
-  "main": "dist/index.js",
+  "main": "dist/index",
+  "types": "dist/index",
   "license": "MIT",
   "dependencies": {
     "node-addon-api": "^3.0.0",

@@ -1,3 +1,5 @@
+/// <reference path="../vendor.d.ts" />
+
 /**
  * AppSignal for Node.js
  * @module Appsignal

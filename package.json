@@ -2,7 +2,7 @@
   "name": "appsignal-nodejs",
   "version": "0.0.0",
   "private": true,
-  "main": "dist/index.js",
+  "main": "dist/index",
   "license": "MIT",
   "engines": {
     "node": ">= 10"
