@@ -8,6 +8,10 @@ import {
   RequestHandler
 } from "express"
 
+/**
+ * Returns an Express middleware that can augment the current span
+ * with data.
+ */
 export function expressMiddleware(appsignal: Appsignal): RequestHandler {
   return function (req: Request, res: Response, next: NextFunction) {
     const tracer = appsignal.tracer()
@@ -15,15 +19,6 @@ export function expressMiddleware(appsignal: Appsignal): RequestHandler {
 
     if (!rootSpan) {
       return next()
-    }
-
-    if (req.params.password) {
-      rootSpan.setSampleData("params", {
-        ...req.params,
-        password: "[FILTERED]"
-      })
-    } else {
-      rootSpan.setSampleData("params", req.params)
     }
 
     return tracer.withSpan(rootSpan, span => {
@@ -42,8 +37,6 @@ export function expressMiddleware(appsignal: Appsignal): RequestHandler {
         if (req.route?.path) {
           span.setName(`${method} ${req.route.path}`)
         }
-
-        span.set("method", method).set("status_code", res.statusCode)
 
         return res.end.apply(this, arguments as any)
       }
