@@ -22,6 +22,13 @@ function incomingRequest(
     const { method = "GET", url = "/" } = req
     const { pathname, query = {} } = parse(url, true)
 
+    if (
+      url &&
+      /\.(css|js|jpg|jpeg|gif|png|svg|webp|json|ico|webmanifest)$/i.test(url)
+    ) {
+      return original.apply(this, [event, ...args])
+    }
+
     const rootSpan = tracer
       .createSpan()
       .setName(`${method} ${pathname === "/" ? pathname : "[unknown route]"}`)
