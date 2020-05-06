@@ -7,7 +7,7 @@ import { BaseMetrics } from "./metrics"
 import { NoopTracer, NoopMetrics } from "./noops"
 
 import { Instrumentation } from "./instrument"
-import * as http from "./instrumentation/http"
+import * as httpPlugin from "./instrumentation/http"
 
 import { AppsignalOptions } from "./types/options"
 import { Plugin } from "./interfaces/plugin"
@@ -46,7 +46,8 @@ export class Client {
     this.agent = new Agent({ active })
     this.instrumentation = new Instrumentation(this.tracer())
 
-    this.instrumentation.load(http.PLUGIN_NAME, http.instrument)
+    // load plugins
+    this.instrument(httpPlugin)
   }
 
   /**
@@ -130,10 +131,13 @@ export class Client {
    * returns a `Plugin`, which will be loaded by the instrumentation manager
    * when the module is required.
    */
-  public instrument<T>(
-    name: string,
-    fn: (module: T, tracer: Tracer) => Plugin<T>
-  ): this {
+  public instrument<T>({
+    PLUGIN_NAME: name,
+    instrument: fn
+  }: {
+    PLUGIN_NAME: string
+    instrument: (module: T, tracer: Tracer) => Plugin<T>
+  }): this {
     this.instrumentation.load(name, fn)
     return this
   }
