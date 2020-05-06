@@ -31,6 +31,13 @@ export class Configuration {
   }
 
   /**
+   * Returns `true` if the client is in debug mode
+   */
+  public get debug(): boolean {
+    return this._data.debug || false
+  }
+
+  /**
    * Returns `true` if the current configuration is valid.
    *
    * @todo
