@@ -4,6 +4,7 @@
  * Copyright 2019, OpenTelemetry Authors
  */
 
+import { parse } from "url"
 import { IncomingMessage, ServerResponse } from "http"
 
 import { Tracer } from "../../../interfaces/tracer"
@@ -17,28 +18,30 @@ function incomingRequest(
       return original.apply(this, [event, ...args])
     }
 
-    const [request, response] = args as [IncomingMessage, ServerResponse]
-    const { method = "GET" } = request
+    const [req, res] = args as [IncomingMessage, ServerResponse]
+    const { method = "GET", url = "/" } = req
+    const { pathname, query = {} } = parse(url, true)
 
     const rootSpan = tracer
       .createSpan()
-      .setName(`${method} [unknown route]`)
+      .setName(`${method} ${pathname === "/" ? pathname : "[unknown route]"}`)
       .set("method", method)
+      .setSampleData("params", query as {})
 
     return tracer.withSpan(rootSpan, span => {
       // calling this binds the event handlers to our current
       // async context
-      tracer.wrapEmitter(request)
-      tracer.wrapEmitter(response)
+      tracer.wrapEmitter(req)
+      tracer.wrapEmitter(res)
 
-      const originalEnd = response.end
+      const originalEnd = res.end
 
       // wraps the "end" event to close the span
-      response.end = function (this: ServerResponse, ...args: unknown[]) {
-        response.end = originalEnd
+      res.end = function (this: ServerResponse, ...args: unknown[]) {
+        res.end = originalEnd
 
-        const result = response.end.apply(this, [...args] as any)
-        span.close()
+        const result = res.end.apply(this, [...args] as any)
+        span.set("status_code", res.statusCode).close()
 
         return result
       }
