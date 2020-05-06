@@ -1,0 +1,27 @@
+{
+  "name": "@appsignal/next-js",
+  "version": "0.3.3",
+  "main": "dist/index",
+  "types": "dist/index",
+  "license": "MIT",
+  "dependencies": {
+    "@appsignal/nodejs": "^0.3.3",
+    "tslib": "^1.11.1"
+  },
+  "peerDependencies": {
+    "next": ">= 9.3.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:ext": "node-gyp rebuild",
+    "build:watch": "tsc -p tsconfig.json -w --preserveWatchOutput",
+    "clean": "rimraf dist coverage",
+    "link:npm": "npm link",
+    "link:yarn": "yarn link",
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --watch"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
