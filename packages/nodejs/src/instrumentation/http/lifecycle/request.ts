@@ -1,6 +1,6 @@
 /**
  * Uses portions of `opentelemetry-js`
- * https://github.com/open-telemetry/opentelemetry-js/blob/master/packages/opentelemetry-scope-async-hooks/src/AsyncHooksScopeManager.ts
+ * https://github.com/open-telemetry/opentelemetry-js/blob/master/packages/opentelemetry-plugin-http/src/http.ts
  * Copyright 2019, OpenTelemetry Authors
  */
 
@@ -8,6 +8,16 @@ import { parse } from "url"
 import { IncomingMessage, ServerResponse } from "http"
 
 import { Tracer } from "../../../interfaces/tracer"
+
+// explicitly ignore some urls that we can't guarantee groupings on, or
+// routes that cause known issues.
+// submit a pull request if you have any potential candidates for this array!
+const DEFAULT_IGNORED_URLS = [
+  // common static asset paths (with any query string)
+  /\.(css|js|jpg|jpeg|gif|png|svg|webp|json|ico|webmanifest)((\?|\&)([^=]+)\=([^&]+))*$/i,
+  // next.js hot reloading
+  /(\/_next\/webpack-hmr)/i
+]
 
 function incomingRequest(
   original: (event: string, ...args: unknown[]) => boolean,
@@ -22,10 +32,8 @@ function incomingRequest(
     const { method = "GET", url = "/" } = req
     const { pathname, query = {} } = parse(url, true)
 
-    if (
-      url &&
-      /\.(css|js|jpg|jpeg|gif|png|svg|webp|json|ico|webmanifest)$/i.test(url)
-    ) {
+    // don't start a span for ignored urls
+    if (url && DEFAULT_IGNORED_URLS.some(el => el.test(url))) {
       return original.apply(this, [event, ...args])
     }
 
