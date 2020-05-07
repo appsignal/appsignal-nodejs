@@ -39,6 +39,19 @@ function incomingRequest(
 
     const rootSpan = tracer
       .createSpan()
+      /**
+       * For our processor to work, root `Span`s must have a groupable, non-dynamic
+       * name to be easily grouped into performance samples.
+       *
+       * For example, `GET /` is not dynamic, so we can safely set that as the `Span`
+       * name here if that is indeed the current pathname. However, setting a name using a
+       * dynamic path like `GET /user/13123` would cause a new sample to appear for every
+       * user id, which leads to undesirable behavior.
+       *
+       * Therefore, it is the responsibility of an integration to update the span name with a
+       * groupable value. For example, the Express integration will update the span name to the
+       * resolved `req.route.path` value (e.g. `GET /user/:userId`).
+       */
       .setName(`${method} ${pathname === "/" ? pathname : "[unknown route]"}`)
       .set("method", method)
       .setSampleData("params", query as {})
