@@ -16,7 +16,9 @@ const DEFAULT_IGNORED_URLS = [
   // common static asset paths (with any query string)
   /\.(css|js|jpg|jpeg|gif|png|svg|webp|json|ico|webmanifest)((\?|\&)([^=]+)\=([^&]+))*$/i,
   // next.js hot reloading
-  /(\/_next\/webpack-hmr)/i
+  /(\/_next\/webpack-hmr)/i,
+  // gatsby hot reloading
+  /(\/__webpack_hmr)/i
 ]
 
 function incomingRequest(
