@@ -42,7 +42,11 @@ export class BaseSpan implements Span {
    */
   public set(key: string, value: string | number | boolean): this {
     if (typeof value === "string") {
-      span.setSpanAttributeString(this._ref, key, value)
+      if (/^appsignal:body/.test(key)) {
+        // for now, we assume the `body` is SQL data, to maintain
+        // compatibility with legacy transactions
+        span.setSpanAttributeSqlString(this._ref, key, value)
+      }
     }
 
     if (typeof value === "number") {
