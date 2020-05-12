@@ -42,11 +42,7 @@ export class BaseSpan implements Span {
    */
   public set(key: string, value: string | number | boolean): this {
     if (typeof value === "string") {
-      if (/^appsignal:body/.test(key)) {
-        // for now, we assume the `body` is SQL data, to maintain
-        // compatibility with legacy transactions
-        span.setSpanAttributeSqlString(this._ref, key, value)
-      }
+      span.setSpanAttributeString(this._ref, key, value)
     }
 
     if (typeof value === "number") {
@@ -59,6 +55,26 @@ export class BaseSpan implements Span {
 
     if (typeof value === "boolean") {
       span.setSpanAttributeBool(this._ref, key, value)
+    }
+
+    return this
+  }
+
+  /**
+   * Adds sanitized SQL data as a string to a Span.
+   *
+   * If called with a single argument, the `value` will be applied to the
+   * span as the body, which will show the sanitized query in your dashboard.
+   */
+  public setSQL(value: string): this
+
+  public setSQL(key: string, value: string): this
+
+  public setSQL(keyOrValue: string, value?: string): this {
+    if (!value) {
+      span.setSpanAttributeSqlString(this._ref, "appsignal:body", keyOrValue)
+    } else {
+      span.setSpanAttributeSqlString(this._ref, keyOrValue, value)
     }
 
     return this
