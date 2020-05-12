@@ -1,4 +1,4 @@
-# `@appsignal/next-js`
+# `@appsignal/nextjs`
 
 The AppSignal integration for [Next.js](https://nextjs.org/) 9.3.0+ and Node.js. It is recommended to be used with [`@appsignal/javascript`](https://github.com/appsignal/appsignal-javascript/tree/develop/packages/javascript) and [`@appsignal/react`](https://github.com/appsignal/appsignal-javascript/tree/develop/packages/react) on the client side.
 
@@ -6,18 +6,18 @@ At this time, it's only possible to use this integration with a [custom server s
 
 ## Installation
 
-First, [sign up for an AppSignal account][appsignal-sign-up] and add both the `@appsignal/nodejs` and `@appsignal/next-js` packages to your `package.json`. Then, run `yarn install`/`npm install`.
+First, [sign up for an AppSignal account][appsignal-sign-up] and add both the `@appsignal/nodejs` and `@appsignal/nextjs` packages to your `package.json`. Then, run `yarn install`/`npm install`.
 
 You can also add these packages to your `package.json` on the command line:
 
 ```bash
-yarn add @appsignal/nodejs @appsignal/next-js
-npm install --save @appsignal/nodejs @appsignal/next-js
+yarn add @appsignal/nodejs @appsignal/nextjs
+npm install --save @appsignal/nodejs @appsignal/nextjs
 ```
 
 You can then import and use the package in your app. 
 
-The `@appsignal/next-js` package exports the `getRequestHandler()` function, which is designed to be used in the place of the `app.getRequestHandler()` method provided by the `next` module. 
+The `@appsignal/nextjs` package exports the `getRequestHandler()` function, which is designed to be used in the place of the `app.getRequestHandler()` method provided by the `next` module. 
 
 Create a `server.js` in your project root and add the following:
 
@@ -32,7 +32,7 @@ const appsignal = new Appsignal({
 
 const { parse } = require("url")
 const next = require("next")
-const { getRequestHandler } = require("@appsignal/next-js")
+const { getRequestHandler } = require("@appsignal/nextjs")
 
 const PORT = parseInt(process.env.PORT, 10) || 3000;
 
@@ -78,7 +78,7 @@ const { expressErrorHandler, expressMiddleware } = require("@appsignal/express")
 
 const next = require("next")
 const express = require("express")
-const { getRequestHandler } = require("@appsignal/next-js")
+const { getRequestHandler } = require("@appsignal/nextjs")
 
 const PORT = parseInt(process.env.PORT, 10) || 3000;
 
