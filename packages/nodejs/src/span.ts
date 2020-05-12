@@ -61,6 +61,26 @@ export class BaseSpan implements Span {
   }
 
   /**
+   * Adds sanitized SQL data as a string to a Span.
+   *
+   * If called with a single argument, the `value` will be applied to the
+   * span as the body, which will show the sanitized query in your dashboard.
+   */
+  public setSQL(value: string): this
+
+  public setSQL(key: string, value: string): this
+
+  public setSQL(keyOrValue: string, value?: string): this {
+    if (!value) {
+      span.setSpanAttributeSqlString(this._ref, "appsignal:body", keyOrValue)
+    } else {
+      span.setSpanAttributeSqlString(this._ref, keyOrValue, value)
+    }
+
+    return this
+  }
+
+  /**
    * Adds a given `Error` object to the current `Span`.
    */
   public addError(error: Error): this {
