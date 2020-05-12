@@ -80,5 +80,8 @@ build/
 /ext/libappsignal.a
 /ext/libappsignal.dylib
 
+# Agent archives
+packages/nodejs-ext/ext/*.tar.gz
+
 # Tool versions
 .tool-versions
