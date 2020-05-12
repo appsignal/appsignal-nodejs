@@ -18,16 +18,15 @@ export const instrument = (
   install(): PostgresModule {
     shimmer.wrap(mod.Client.prototype, "query", original => {
       return function wrapPgQuery(this: pg.Client, ...args: any[]) {
-        const root = tracer.currentSpan()
+        const rootSpan = tracer.currentSpan()
 
-        if (!root) {
+        if (!rootSpan) {
           return original.apply(this, args as any)
         }
 
-        const span = root
-          .child()
-          .setName("sql.postgres")
-          .set("title", "Postgres Query")
+        const span = rootSpan.child()
+
+        span.setName("sql.postgres").set("title", "Query")
 
         let returned: any
 
