@@ -41,6 +41,16 @@ export interface Span {
   ): this
 
   /**
+   * Adds sanitized SQL data as a string to a Span.
+   *
+   * If called with a single argument, the `value` will be applied to the
+   * span as the body, which will show the sanitized query in your dashboard.
+   */
+  setSQL(value: string): this
+
+  setSQL(key: string, value: string): this
+
+  /**
    * Completes the current `Span`.
    *
    * If an `endTime` is passed as an argument, the `Span` is closed with the

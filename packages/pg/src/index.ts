@@ -36,10 +36,10 @@ export const instrument = (
           // extract query
           if (typeof queryObj === "object") {
             if (queryObj.text) {
-              span.set("body", queryObj.text)
+              span.set("appsignal:body", queryObj.text)
             }
           } else if (typeof queryObj === "string") {
-            span.set("body", queryObj)
+            span.set("appsignal:body", queryObj)
           }
 
           const callback = args[args.length - 1]
