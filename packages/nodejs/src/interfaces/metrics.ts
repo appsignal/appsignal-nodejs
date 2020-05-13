@@ -1,3 +1,5 @@
+import { Probes } from "../probes"
+
 export interface Metrics {
   /**
    * A gauge is a metric value at a specific time. If you set more
@@ -53,4 +55,11 @@ export interface Metrics {
     value: number,
     tags?: { [key: string]: string | number | boolean }
   ): this
+
+  /**
+   * Minutely probes allow the AppSignal module to collect custom metrics
+   * for integrations and app-specific metrics by calling a user-defined function
+   * every minute.
+   */
+  probes(): Probes
 }
