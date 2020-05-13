@@ -2,6 +2,7 @@ import { metrics } from "./extension"
 import { Metrics } from "./interfaces/metrics"
 
 import { DataArray, DataMap } from "./internal"
+import { Probes } from "./probes"
 
 /**
  * The metrics object.
@@ -9,6 +10,8 @@ import { DataArray, DataMap } from "./internal"
  * @class
  */
 export class BaseMetrics implements Metrics {
+  private _probes = new Probes()
+
   /**
    * A gauge is a metric value at a specific time. If you set more
    * than one gauge with the same key, the latest value for that
@@ -98,5 +101,14 @@ export class BaseMetrics implements Metrics {
     )
 
     return this
+  }
+
+  /**
+   * Minutely probes allow the AppSignal module to collect custom metrics
+   * for integrations and app-specific metrics by calling a user-defined function
+   * every minute.
+   */
+  public probes(): Probes {
+    return this._probes
   }
 }
