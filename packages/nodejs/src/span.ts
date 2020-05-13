@@ -61,27 +61,25 @@ export class BaseSpan implements Span {
   }
 
   /**
-   * Adds a given `Error` object to the current `Span`.
-   */
-  public addError(error: Error): this {
-    if (!error) return this
-
-    const stackdata = new DataArray(
-      error.stack ? error.stack.split("\n") : ["No stacktrace available."]
-    )
-
-    span.addSpanError(this._ref, error.name, error.message, stackdata.ref)
-
-    return this
-  }
-
-  /**
    * Sets the name for a given Span. The Span name is used in the UI to group
    * like requests together.
    */
   public setName(name: string): this {
     if (!name) return this
     span.setSpanName(this._ref, name)
+    return this
+  }
+
+  /**
+   * Sets the category for a given Span. The category groups Spans together
+   * in the "Slow Events" feature, and in the "Sample breakdown".
+   */
+  public setCategory(category: string): this {
+    if (typeof category !== "string") {
+      return this
+    }
+
+    span.setSpanAttributeString(this._ref, "appsignal:category", category)
     return this
   }
 
@@ -107,6 +105,21 @@ export class BaseSpan implements Span {
         )}'`
       )
     }
+
+    return this
+  }
+
+  /**
+   * Adds a given `Error` object to the current `Span`.
+   */
+  public addError(error: Error): this {
+    if (!error) return this
+
+    const stackdata = new DataArray(
+      error.stack ? error.stack.split("\n") : ["No stacktrace available."]
+    )
+
+    span.addSpanError(this._ref, error.name, error.message, stackdata.ref)
 
     return this
   }
