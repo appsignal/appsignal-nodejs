@@ -24,7 +24,7 @@ export class BaseMetrics implements Metrics {
     value: number,
     tags?: { [key: string]: string | number | boolean }
   ) {
-    if (!key || !value) return this
+    if (!key || typeof value !== "number") return this
 
     metrics.setGauge(
       key,
@@ -55,7 +55,7 @@ export class BaseMetrics implements Metrics {
     value: number,
     tags?: { [key: string]: string | number | boolean }
   ) {
-    if (!key || !value) return this
+    if (!key || typeof value !== "number") return this
 
     metrics.addDistributionValue(
       key,
@@ -87,7 +87,7 @@ export class BaseMetrics implements Metrics {
     value: number,
     tags?: { [key: string]: string | number | boolean }
   ) {
-    if (!key || !value) return this
+    if (!key || typeof value !== "number") return this
 
     metrics.incrementCounter(
       key,
