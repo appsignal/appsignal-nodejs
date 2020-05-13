@@ -1,6 +1,9 @@
 import { Metrics } from "../interfaces/metrics"
+import { Probes } from "../probes"
 
 export class NoopMetrics implements Metrics {
+  private _probes = new Probes()
+
   public setGauge(
     key: string,
     value: number,
@@ -23,5 +26,9 @@ export class NoopMetrics implements Metrics {
     tags?: { [key: string]: string | number | boolean }
   ): this {
     return this
+  }
+
+  public probes(): Probes {
+    return this._probes
   }
 }
