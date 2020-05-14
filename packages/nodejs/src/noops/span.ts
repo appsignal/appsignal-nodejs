@@ -27,6 +27,10 @@ export class NoopSpan implements Span {
     return this
   }
 
+  public setSQL(keyOrValue: string, value?: string): this {
+    return this
+  }
+
   public setSampleData(
     key: string,
     data: Array<string | number | boolean> | HashMap<string | number | boolean>
