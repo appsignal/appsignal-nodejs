@@ -18,6 +18,12 @@ export interface Span {
   setName(name: string): this
 
   /**
+   * Sets the category for a given Span. The category groups Spans together
+   * in the "Slow Events" feature, and in the "Sample breakdown".
+   */
+  setCategory(name: string): this
+
+  /**
    * Sets arbitrary data on the current `Span`.
    */
   set(key: string, value: string | number | boolean): this
