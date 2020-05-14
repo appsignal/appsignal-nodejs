@@ -1,5 +1,7 @@
 # `@appsignal/pg`
 
+![npm (scoped)](https://img.shields.io/npm/v/@appsignal/pg) ![npm peer dependency version (scoped)](https://img.shields.io/npm/dependency-version/@appsignal/pg/peer/pg)
+
 The AppSignal for Node.js integration for node-postgres (`pg`) v8.0.0+.
 
 ## Installation
@@ -15,9 +17,13 @@ npm install --save @appsignal/nodejs @appsignal/pg
 
 You can then import and use the package in your app. 
 
-⚠️ *Important:* Ensure you require _and_ initialize the `Appsignal` module before you call `require("pg")`.
+## Usage
+
+⚠️ **Important:** Please ensure that you require _and_ initialize the `Appsignal` module before you call `require("pg")` (and the rest of your code).
 
 ```js
+// ENSURE APPSIGNAL IS THE FIRST THING TO BE REQUIRED/IMPORTED
+// INTO YOUR APP!
 const { Appsignal } = require("@appsignal/nodejs")
 const pgPlugin = require("@appsignal/pg")
 
@@ -30,7 +36,13 @@ const appsignal = new Appsignal({
 const { Client } = require("pg") // or, this could be a library that depends on `pg`
 ```
 
-The integration will then track any queries made to Postgres, and send metrics and statistics to AppSignal. This also works with any library that depends on `pg` as its database adapter, such as [`knex`](http://knexjs.org/).
+The integration will send the following instrumentation data to AppSignal:
+
+- Query duration
+- (Sanitized) SQL query body
+- Errors
+
+This also works with any library that depends on `pg` as its database adapter, such as [`knex`](https://github.com/knex/knex) or [TypeORM](https://github.com/typeorm/typeorm).
 
 ## Contributing
 
