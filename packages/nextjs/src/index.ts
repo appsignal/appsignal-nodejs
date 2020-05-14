@@ -36,6 +36,9 @@ export function getRequestHandler<T extends NextServer>(
       const routes = app.router.dynamicRoutes || []
       const matched = routes.filter(el => el.match(pathname))[0]
 
+      // identifies the span in the stacked graphs
+      span.setCategory("process_request.nextjs")
+
       // passing { debug: true } to the `Appsignal` constructor will log
       // data about the current route to the console. don't rely on this
       // working in future!

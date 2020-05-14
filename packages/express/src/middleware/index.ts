@@ -27,6 +27,9 @@ export function expressMiddleware(appsignal: Appsignal): RequestHandler {
       tracer.wrapEmitter(req)
       tracer.wrapEmitter(res)
 
+      // identifies the span in the stacked graphs
+      span.setCategory("process_request.express")
+
       res.end = function (this: Response) {
         res.end = originalEnd
 

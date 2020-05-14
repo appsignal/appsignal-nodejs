@@ -26,7 +26,7 @@ export const instrument = (
 
         const span = rootSpan.child()
 
-        span.setName("sql.postgres").set("title", "Query")
+        span.setCategory("sql.postgres").setName("Query")
 
         let returned: any
 
@@ -36,10 +36,10 @@ export const instrument = (
           // extract query
           if (typeof queryObj === "object") {
             if (queryObj.text) {
-              span.set("appsignal:body", queryObj.text)
+              span.setSQL(queryObj.text)
             }
           } else if (typeof queryObj === "string") {
-            span.set("appsignal:body", queryObj)
+            span.setSQL(queryObj)
           }
 
           const callback = args[args.length - 1]

@@ -55,6 +55,7 @@ function incomingRequest(
        * resolved `req.route.path` value (e.g. `GET /user/:userId`).
        */
       .setName(`${method} ${pathname === "/" ? pathname : "[unknown route]"}`)
+      .setCategory("process_request.http")
       .set("method", method)
       .setSampleData("params", query as {})
 
