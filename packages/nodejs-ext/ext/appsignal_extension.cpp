@@ -378,6 +378,24 @@ Napi::Value SetSpanAttributeString(const Napi::CallbackInfo &info) {
   return env.Null();
 }
 
+Napi::Value SetSpanAttributeSqlString(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  Napi::External<appsignal_span_t> span =
+      info[0].As<Napi::External<appsignal_span_t>>();
+
+  Napi::String key = info[1].As<Napi::String>();
+  const std::string key_utf8 = key.Utf8Value();
+  Napi::String value = info[2].As<Napi::String>();
+  const std::string value_utf8 = value.Utf8Value();
+
+  appsignal_set_span_attribute_sql_string(span.Data(),
+                                          MakeAppsignalString(key_utf8),
+                                          MakeAppsignalString(value_utf8));
+
+  return env.Null();
+}
+
 Napi::Value SetSpanAttributeInt(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
 
@@ -569,6 +587,8 @@ Napi::Object CreateSpanObject(Napi::Env env, Napi::Object exports) {
            Napi::Function::New(env, SetSpanSampleData));
   span.Set(Napi::String::New(env, "setSpanAttributeString"),
            Napi::Function::New(env, SetSpanAttributeString));
+  span.Set(Napi::String::New(env, "setSpanAttributeSqlString"),
+           Napi::Function::New(env, SetSpanAttributeSqlString));
   span.Set(Napi::String::New(env, "setSpanAttributeInt"),
            Napi::Function::New(env, SetSpanAttributeInt));
   span.Set(Napi::String::New(env, "setSpanAttributeBool"),
