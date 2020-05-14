@@ -18,7 +18,9 @@ const DEFAULT_IGNORED_URLS = [
   // next.js hot reloading
   /(\/_next\/webpack-hmr)/i,
   // gatsby hot reloading
-  /(\/__webpack_hmr)/i
+  /(\/__webpack_hmr)/i,
+  // next.js integration web vitals endpoint
+  /(\/__appsignal-web-vitals)$/i
 ]
 
 function incomingRequest(
