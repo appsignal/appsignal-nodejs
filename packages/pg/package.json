@@ -7,7 +7,7 @@
   "dependencies": {
     "@appsignal/nodejs": "^0.4.1",
     "shimmer": "^1.2.1",
-    "tslib": "^1.12.0"
+    "tslib": "^2.0.0"
   },
   "peerDependencies": {
     "pg": ">= 8.0.0"
