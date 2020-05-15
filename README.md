@@ -83,7 +83,6 @@ Also, we would be very happy to send you Stroopwafles. Have look at everyone we 
 [contact]: mailto:support@appsignal.com
 [coc]: https://docs.appsignal.com/appsignal/code-of-conduct.html
 [waffles-page]: https://appsignal.com/waffles
-[docs]: https://docs.appsignal.com/front-end/
+[docs]: https://docs.appsignal.com/nodejs/
 [contributing-guide]: http://docs.appsignal.com/appsignal/contributing.html
-
 [semver]: http://semver.org/

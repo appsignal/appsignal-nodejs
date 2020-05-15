@@ -1,10 +1,8 @@
-# AppSignal for Node.js
+# `@appsignal/nodejs`
 
-- [AppSignal.com website][appsignal]
-- [Documentation][docs]
-- [Support][contact]
+![npm (scoped)](https://img.shields.io/npm/v/@appsignal/nodejs) ![node-current (scoped)](https://img.shields.io/node/v/@appsignal/nodejs)
 
-[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+The core AppSignal for Node.js library.
 
 ## Installation
 
@@ -29,42 +27,9 @@ const appsignal = new Appsignal({
 })
 ```
 
-## Development
+## Usage
 
-### Installation
-
-This repository is a Lerna-managed monorepo, containing packages (located in the `/packages` directory) that map to separate `npm` modules.
-
-To install the dependencies:
-
-```bash
-yarn install
-lerna bootstrap
-```
-
-You can then run the following to start the compiler in _watch_ mode. 
-
-```bash
-yarn build:watch
-```
-
-You can also build the library without watching the directory:
-
-```
-yarn build
-```
-
-### Testing
-
-The tests for this library use [Jest](https://jestjs.io) as the test runner. Once you've installed the dependencies, you can run the following command in the root of this repository to run the tests for all packages, or in the directory of a package to run only the tests pertaining to that package:
-
-```bash
-yarn test
-```
-
-### Versioning
-
-This repo uses [Semantic Versioning][semver] (often referred to as _semver_). Each package in the repository is versioned independently from one another.
+For more details on how to use this library and the AppSignal service, see [our documentation][docs].
 
 ## Contributing
 
@@ -83,7 +48,6 @@ Also, we would be very happy to send you Stroopwafles. Have look at everyone we 
 [contact]: mailto:support@appsignal.com
 [coc]: https://docs.appsignal.com/appsignal/code-of-conduct.html
 [waffles-page]: https://appsignal.com/waffles
-[docs]: https://docs.appsignal.com/front-end/
+[docs]: https://docs.appsignal.com/nodejs/
 [contributing-guide]: http://docs.appsignal.com/appsignal/contributing.html
-
 [semver]: http://semver.org/
