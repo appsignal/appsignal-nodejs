@@ -35,7 +35,7 @@ export class Client {
   /**
    * Creates a new instance of the `Appsignal` object
    */
-  constructor(options: AppsignalOptions = {}) {
+  constructor(options: Partial<AppsignalOptions> = {}) {
     // Agent is not started by default
     const { active = false } = options
 
