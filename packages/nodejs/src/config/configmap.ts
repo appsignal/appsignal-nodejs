@@ -2,7 +2,7 @@ export const ENV_TO_KEY_MAPPING = {
   APPSIGNAL_ACTIVE: "active",
   APPSIGNAL_PUSH_API_KEY: "apiKey",
   APPSIGNAL_APP_NAME: "name",
-  APPSIGNAL_APP_ENV: "env",
+  APPSIGNAL_APP_ENV: "environment",
   APPSIGNAL_CA_FILE_PATH: "caFilePath",
   APPSIGNAL_PUSH_API_ENDPOINT: "endpoint",
   APPSIGNAL_HOSTNAME: "hostname",
@@ -30,8 +30,9 @@ export const ENV_TO_KEY_MAPPING = {
 
 export const PRIVATE_ENV_MAPPING = {
   _APPSIGNAL_ACTIVE: "active",
+  _APPSIGNAL_ENVIRONMENT: "environment",
   _APPSIGNAL_DEBUG_LOGGING: "debug",
-  _APPSIGNAL_TRANSACTION_DEBUG_MODE:  "debug",
+  _APPSIGNAL_TRANSACTION_DEBUG_MODE: "debug",
   _APPSIGNAL_LOG: "log",
   _APPSIGNAL_LOG_FILE_PATH: "logPath",
   _APPSIGNAL_PUSH_API_ENDPOINT: "endpoint",
