@@ -2,10 +2,12 @@ import { EventEmitter } from "events"
 
 import { ScopeManager } from "./scope"
 import { RootSpan, ChildSpan } from "./span"
+import { NoopSpan } from "./noops"
 
 import { Func } from "./types/utils"
-import { Span } from "./interfaces/span"
 import { Tracer } from "./interfaces/tracer"
+import { Span, SpanOptions } from "./interfaces/span"
+import { SpanContext } from "./interfaces/context"
 
 /**
  * The tracer object.
@@ -23,12 +25,25 @@ export class BaseTracer implements Tracer {
    * Creates a new `Span` instance. If a `Span` is passed as the optional second
    * argument, then the returned `Span` will be a `ChildSpan`.
    */
-  public createSpan(namespace?: string, span?: Span): Span {
-    if (!span) {
-      return new RootSpan(namespace)
+  public createSpan(options?: Partial<SpanOptions>, span?: Span): Span
+
+  /**
+   * Creates a new `Span` instance. If a `SpanContext` is passed as the optional second
+   * argument, then the returned `Span` will be a `ChildSpan`.
+   */
+  public createSpan(options?: Partial<SpanOptions>, context?: SpanContext): Span
+
+  /**
+   * Creates a new `Span` instance.
+   */
+  public createSpan(
+    options?: Partial<SpanOptions>,
+    spanOrContext?: Span | SpanContext
+  ): Span {
+    if (!spanOrContext) {
+      return new RootSpan(options)
     } else {
-      const { traceId, spanId } = span
-      return new ChildSpan(traceId, spanId)
+      return new ChildSpan(spanOrContext)
     }
   }
 
@@ -37,8 +52,8 @@ export class BaseTracer implements Tracer {
    *
    * If there is no current Span available, `undefined` is returned.
    */
-  public currentSpan(): Span | undefined {
-    return this._scopeManager.active()
+  public currentSpan(): Span {
+    return this._scopeManager.active() || new NoopSpan()
   }
 
   /**

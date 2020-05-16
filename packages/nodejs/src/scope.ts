@@ -104,7 +104,7 @@ export class ScopeManager {
    */
   public active(): Span | undefined {
     const uid = asyncHooks.executionAsyncId()
-    return this._scopes.get(uid) || undefined
+    return this._scopes.get(uid)
   }
 
   /**
@@ -149,7 +149,7 @@ export class ScopeManager {
 
     // wrap `fn` so that any AsyncResource objects that are created in `fn` will
     // share context with that of the `AsyncResource` with the given ID.
-    const contextWrapper: ContextWrapped<Func<T>> = function(
+    const contextWrapper: ContextWrapped<Func<T>> = function (
       this: {},
       ...args: unknown[]
     ) {
@@ -177,7 +177,7 @@ export class ScopeManager {
     EVENT_EMITTER_METHODS.forEach(method => {
       if (ee[method]) {
         shimmer.wrap(ee, method, (oldFn: Func<any>) => {
-          return function(this: {}, event: string, cb: Func<void>) {
+          return function (this: {}, event: string, cb: Func<void>) {
             return oldFn.call(this, event, that.bindContext(cb))
           }
         })
