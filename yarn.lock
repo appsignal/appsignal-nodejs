@@ -45,12 +45,12 @@
   dependencies:
     cross-fetch "3.0.4"
 
-"@appsignal/core@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.0.6.tgz#51a113ad088d9a44a04e4d4b138325ff35780b38"
-  integrity sha512-7NHExnnrIOTbv1zoFNIYjMZ1k32G04xJsFsOHxX3OYR+dfbB3f9Y2zBf1Dir5tMAZzzcJRkKIA7lgn4BPy0UlA==
+"@appsignal/core@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.0.7.tgz#d99ab6e00e18738c205e9a2e1de22430ca1f0c36"
+  integrity sha512-cRLT8n5R+kYGxYodnQYI84KVI/hHIYvCM4Wo6o8MhzOMOntKYkfMkhgKnkGZLxCfl5mmMP6ShwJGhFYeocRe1Q==
   dependencies:
-    tslib "^1.11.1"
+    tslib "^2.0.0"
 
 "@appsignal/types@^1.0.0":
   version "1.0.0"
@@ -10732,15 +10732,15 @@ ts-pnp@^1.1.6:
   resolved "https://registry.yarnpkg.com/ts-pnp/-/ts-pnp-1.2.0.tgz#a500ad084b0798f1c3071af391e65912c86bca92"
   integrity sha512-csd+vJOb/gkzvcCHgTGSChYpy5f1/XKNsmvBGO4JXS+z1v2HobugDz4s1IeFXM3wZB44uczs+eazB5Q/ccdhQw==
 
-tslib@^1.11.1, tslib@^1.9.0:
-  version "1.11.1"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.11.1.tgz#eb15d128827fbee2841549e171f45ed338ac7e35"
-  integrity sha512-aZW88SY8kQbU7gpV19lN24LtXh/yD4ZZg6qieAJDDg+YBsJcSmLGK9QpnUjAKVG/xefmvJGd1WUmfpT/g6AJGA==
-
 tslib@^1.12.0:
   version "1.12.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.12.0.tgz#d1fc9cacd06a1456c62f2902b361573e83d66473"
   integrity sha512-5rxCQkP0kytf4H1T4xz1imjxaUUPMvc5aWp0rJ/VMIN7ClRiH1FwFvBt8wOeMasp/epeUnmSW6CixSIePtiLqA==
+
+tslib@^1.9.0:
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.11.1.tgz#eb15d128827fbee2841549e171f45ed338ac7e35"
+  integrity sha512-aZW88SY8kQbU7gpV19lN24LtXh/yD4ZZg6qieAJDDg+YBsJcSmLGK9QpnUjAKVG/xefmvJGd1WUmfpT/g6AJGA==
 
 tslib@^2.0.0:
   version "2.0.0"
