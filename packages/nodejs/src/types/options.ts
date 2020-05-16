@@ -1,9 +1,6 @@
 export type AppsignalOptions = {
-  name?: string
-  apiKey?: string
-} & Partial<Optional>
-
-type Optional = {
+  name: string
+  apiKey: string
   active: boolean
   debug: boolean
   logPath: string
@@ -28,4 +25,5 @@ type Optional = {
   filesWorldAccessible: boolean
   requestHeaders: string[]
   revision: string
+  environment: string
 }
