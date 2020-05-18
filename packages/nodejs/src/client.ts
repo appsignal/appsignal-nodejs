@@ -35,15 +35,13 @@ export class Client {
   /**
    * Creates a new instance of the `Appsignal` object
    */
-  constructor(options: AppsignalOptions = {}) {
-    // Agent is not started by default
-    const { active = false } = options
-
+  constructor({ active = false, ...opts }: AppsignalOptions) {
     this._tracer = new BaseTracer()
     this._metrics = new BaseMetrics()
 
-    this.config = new Configuration(options)
+    // Agent is not started by default
     this.agent = new Agent({ active })
+    this.config = new Configuration(arguments[0])
     this.instrumentation = new Instrumentation(this.tracer(), this.metrics())
 
     // load plugins

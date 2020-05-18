@@ -1,16 +1,21 @@
 import { EventEmitter } from "events"
 
 import { NoopSpan } from "./span"
-import { Span } from "../interfaces/span"
+
+import { Span, SpanOptions } from "../interfaces/span"
+import { SpanContext } from "../interfaces/context"
 import { Tracer } from "../interfaces/tracer"
 import { Func } from "../types/utils"
 
 export class NoopTracer implements Tracer {
-  public createSpan(namespace?: string, span?: Span): Span {
+  public createSpan(
+    options?: Partial<SpanOptions>,
+    spanOrContext?: Span | SpanContext
+  ): Span {
     return new NoopSpan()
   }
 
-  public currentSpan(): Span | undefined {
+  public currentSpan(): Span {
     return new NoopSpan()
   }
 

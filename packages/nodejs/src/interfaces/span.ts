@@ -1,5 +1,10 @@
 import { HashMap } from "@appsignal/types"
 
+export interface SpanOptions {
+  namespace: string
+  startTime: number
+}
+
 export interface Span {
   /**
    * The current ID of the trace.
@@ -53,8 +58,6 @@ export interface Span {
    * span as the body, which will show the sanitized query in your dashboard.
    */
   setSQL(value: string): this
-
-  setSQL(key: string, value: string): this
 
   /**
    * Completes the current `Span`.
