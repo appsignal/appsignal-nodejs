@@ -7,7 +7,7 @@ function handleWebVital(
   meter: Metrics
 ) {
   meter.addDistributionValue(
-    `nextjs_webvital_${metric.name.toLowerCase()}`,
+    `webvital_${metric.name.toLowerCase()}`,
     metric.value
   )
 }
