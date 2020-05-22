@@ -13,9 +13,9 @@ import { ENV_TO_KEY_MAPPING, PRIVATE_ENV_MAPPING } from "./config/configmap"
  * @class
  */
 export class Configuration {
-  private _data: AppsignalOptions
+  private _data: Partial<AppsignalOptions>
 
-  constructor(options: AppsignalOptions) {
+  constructor(options: Partial<AppsignalOptions>) {
     writePrivateConstants()
 
     this._data = {
@@ -23,6 +23,7 @@ export class Configuration {
       log: "file",
       logPath: "/tmp/appsignal.log",
       endpoint: "https://push.appsignal.com",
+      environment: process.env.NODE_ENV || "development",
       ...this._loadFromEnvironment(),
       ...options
     }
@@ -104,7 +105,6 @@ function writePrivateConstants() {
   const priv = {
     // @TODO: is this path always correct?
     _APPSIGNAL_AGENT_PATH: path.join(__dirname, "/../../nodejs-ext/ext"),
-    _APPSIGNAL_ENVIRONMENT: process.env.NODE_ENV || "development",
     _APPSIGNAL_PROCESS_NAME: process.title,
     _APPSIGNAL_LANGUAGE_INTEGRATION_VERSION: `nodejs-${VERSION}`,
     _APPSIGNAL_APP_PATH: process.cwd()
