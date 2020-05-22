@@ -2,7 +2,8 @@ import { HashMap } from "@appsignal/types"
 
 import { span } from "./extension"
 import { DataArray, DataMap } from "./internal"
-import { Span } from "./interfaces/span"
+import { SpanContext } from "./interfaces/context"
+import { Span, SpanOptions } from "./interfaces/span"
 
 /**
  * The `Span` object represents a length of time in the flow of execution
@@ -34,7 +35,8 @@ export class BaseSpan implements Span {
    * Returns a new `Span` object that is a child of the current `Span`.
    */
   public child(): ChildSpan {
-    return new ChildSpan(this.traceId, this.spanId)
+    const { traceId, spanId } = this
+    return new ChildSpan({ traceId, spanId })
   }
 
   /**
@@ -66,24 +68,15 @@ export class BaseSpan implements Span {
    * If called with a single argument, the `value` will be applied to the
    * span as the body, which will show the sanitized query in your dashboard.
    */
-  public setSQL(value: string): this
-
-  public setSQL(key: string, value: string): this
-
-  public setSQL(keyOrValue: string, value?: string): this {
-    if (!keyOrValue) {
+  public setSQL(value: string): this {
+    if (!value) {
       return this
     }
 
-    if (!value) {
-      span.setSpanAttributeSqlString(this._ref, "appsignal:body", keyOrValue)
-    } else {
-      span.setSpanAttributeSqlString(this._ref, keyOrValue, value)
-    }
-
+    span.setSpanAttributeSqlString(this._ref, "appsignal:body", value)
     return this
   }
-  
+
   /**
    * Sets the name for a given Span. The Span name is used in the UI to group
    * like requests together.
@@ -176,9 +169,13 @@ export class BaseSpan implements Span {
  * be a parent to many `ChildSpan`s.
  */
 export class ChildSpan extends BaseSpan {
-  constructor(traceId: string, parentSpanId: string) {
+  constructor(span: Span)
+
+  constructor(context: SpanContext)
+
+  constructor({ traceId, spanId }: Span | SpanContext) {
     super()
-    this._ref = span.createChildSpan(traceId, parentSpanId)
+    this._ref = span.createChildSpan(traceId, spanId)
   }
 }
 
@@ -187,8 +184,9 @@ export class ChildSpan extends BaseSpan {
  * created from.
  */
 export class RootSpan extends BaseSpan {
-  constructor(namespace: string = "web") {
+  constructor(options: Partial<SpanOptions> = {}) {
     super()
+    const { namespace = "web" } = options
     this._ref = span.createRootSpan(namespace)
   }
 }

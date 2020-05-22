@@ -46,12 +46,12 @@ describe("RootSpan", () => {
   })
 
   it("belongs to a given namespace", () => {
-    const ns = "test_namespace"
+    const namespace = "test_namespace"
 
-    span = new RootSpan(ns)
+    span = new RootSpan({ namespace })
     internal = JSON.parse(span.toJSON())
 
-    expect(internal.namespace).toEqual(ns)
+    expect(internal.namespace).toEqual(namespace)
   })
 
   it("sets the name", () => {
@@ -69,7 +69,7 @@ describe("ChildSpan", () => {
   let internal: SpanData
 
   beforeEach(() => {
-    span = new ChildSpan("test_trace_id", "parent_span_id")
+    span = new ChildSpan({ traceId: "test_trace_id", spanId: "parent_span_id" })
     internal = JSON.parse(span.toJSON())
   })
 
@@ -106,7 +106,11 @@ describe("ChildSpan", () => {
   it("sets the name", () => {
     const name = "test_span"
 
-    span = new ChildSpan("test_trace_id", "parent_span_id").setName(name)
+    span = new ChildSpan({
+      traceId: "test_trace_id",
+      spanId: "parent_span_id"
+    }).setName(name)
+
     internal = JSON.parse(span.toJSON())
 
     expect(internal.name).toEqual(name)
