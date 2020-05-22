@@ -40,7 +40,7 @@ describe("ScopeManager", () => {
     })
 
     it("should run the callback (object as target)", done => {
-      const test = new RootSpan("test")
+      const test = new RootSpan({ namespace: "test" })
 
       scopeManager.withContext(test, () => {
         expect(scopeManager.active()).toStrictEqual(test)
@@ -72,8 +72,8 @@ describe("ScopeManager", () => {
     })
 
     it("should finally restore an old scope", done => {
-      const scope1 = new RootSpan("scope1")
-      const scope2 = new RootSpan("scope2")
+      const scope1 = new RootSpan({ namespace: "scope1" })
+      const scope2 = new RootSpan({ namespace: "scope2" })
 
       scopeManager.withContext(scope1, () => {
         expect(scopeManager.active()).toStrictEqual(scope1)
@@ -91,7 +91,7 @@ describe("ScopeManager", () => {
 
   describe(".bindContext()", () => {
     it("Propagates context to bound functions", () => {
-      const test = new RootSpan("test")
+      const test = new RootSpan({ namespace: "test" })
 
       let fn = () => {
         const span = scopeManager.active()
