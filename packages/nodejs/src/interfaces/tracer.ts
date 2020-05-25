@@ -1,20 +1,28 @@
 import { EventEmitter } from "events"
 
-import { Span } from "./span"
+import { Span, SpanOptions } from "./span"
+import { SpanContext } from "./context"
 import { Func } from "../types/utils"
 
 export interface Tracer {
   /**
-   * Creates a new `Span` instance.
+   * Creates a new `Span` instance. If a `Span` is passed as the optional second
+   * argument, then the returned `Span` will be a `ChildSpan`.
    */
-  createSpan(namespace?: string, span?: Span): Span
+  createSpan(options?: Partial<SpanOptions>, span?: Span): Span
+
+  /**
+   * Creates a new `Span` instance. If a `SpanContext` is passed as the optional second
+   * argument, then the returned `Span` will be a `ChildSpan`.
+   */
+  createSpan(options?: Partial<SpanOptions>, context?: SpanContext): Span
 
   /**
    * Returns the current Span.
    *
    * If there is no current Span available, `undefined` is returned.
    */
-  currentSpan(): Span | undefined
+  currentSpan(): Span
 
   /**
    * Executes a given function asynchronously within the context of a given
