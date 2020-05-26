@@ -42,8 +42,9 @@ export class Client {
     this._tracer = new BaseTracer()
     this._metrics = new BaseMetrics()
 
-    this.agent = new Agent({ active })
     this.config = new Configuration(options)
+    this.agent = new Agent({ active })
+
     this.instrumentation = new Instrumentation(this.tracer(), this.metrics())
 
     // load plugins
