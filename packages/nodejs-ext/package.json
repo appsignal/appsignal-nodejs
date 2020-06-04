@@ -6,7 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "node-addon-api": "^3.0.0",
-    "node-gyp": "^6.1.0"
+    "node-gyp": "^7.0.0"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
