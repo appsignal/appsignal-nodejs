@@ -8,6 +8,7 @@ import { NoopTracer, NoopMetrics } from "./noops"
 
 import { Instrumentation } from "./instrument"
 import * as httpPlugin from "./instrumentation/http"
+import * as httpsPlugin from "./instrumentation/https"
 
 import { AppsignalOptions } from "./types/options"
 import { Plugin } from "./interfaces/plugin"
@@ -49,6 +50,7 @@ export class Client {
 
     // load plugins
     this.instrument(httpPlugin)
+    this.instrument(httpsPlugin)
   }
 
   /**
