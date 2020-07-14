@@ -5,7 +5,7 @@
   "types": "dist/index",
   "license": "MIT",
   "dependencies": {
-    "node-addon-api": "^3.0.0",
+    "node-addon-api": "^3.0.1",
     "node-gyp": "^7.0.0"
   },
   "scripts": {
