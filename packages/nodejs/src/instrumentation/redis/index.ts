@@ -13,7 +13,10 @@ type RedisModule = typeof redis
 type RedisCallback = <T>(err: Error | null, reply: T) => void
 
 function wrapCallback(tracer: Tracer, span: Span, done: RedisCallback) {
+  // @TODO: add results to span here?
   const fn = function <T>(err: Error | null, res: T) {
+    if (err) span.addError(err)
+
     span.close()
 
     if (done) {
@@ -38,9 +41,15 @@ function createRedisSendCommandWrapper(tracer: Tracer) {
         return original.apply(this, [cmd, args, cb])
       }
 
-      const span = rootSpan.child().setCategory("command.redis")
+      const span = rootSpan
+        .child()
+        // yikes, had to override the typechecker here :/
+        .setName(`Redis query to ${(this as any).address ?? "[unknown]"}`)
+        .setCategory("query.redis")
 
-      typeof cmd === "string" ? span.setName(cmd) : span.setName(cmd.command)
+      typeof cmd === "string"
+        ? span.set("appsignal:body", cmd)
+        : span.set("appsignal:body", cmd.command)
 
       if (arguments.length === 1 && typeof cmd === "object") {
         cmd.callback = wrapCallback(tracer, span, cmd.callback)
