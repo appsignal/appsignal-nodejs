@@ -8,6 +8,7 @@ import { NoopTracer, NoopMetrics } from "./noops"
 
 import { Instrumentation } from "./instrument"
 import { httpPlugin, httpsPlugin } from "./instrumentation/http"
+import * as redisPlugin from "./instrumentation/redis"
 
 import { AppsignalOptions } from "./types/options"
 import { Plugin } from "./interfaces/plugin"
@@ -48,8 +49,8 @@ export class Client {
     this.instrumentation = new Instrumentation(this.tracer(), this.metrics())
 
     // load plugins
-    this.instrument(httpPlugin)
-    this.instrument(httpsPlugin)
+    const plugins: any[] = [httpPlugin, httpsPlugin, redisPlugin]
+    plugins.forEach(p => this.instrument(p))
   }
 
   /**
