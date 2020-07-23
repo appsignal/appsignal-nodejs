@@ -1,0 +1,29 @@
+{
+  "name": "@appsignal/apollo-server",
+  "version": "0.5.1",
+  "main": "dist/index",
+  "types": "dist/index",
+  "license": "MIT",
+  "dependencies": {
+    "@appsignal/nodejs": "^0.5.1",
+    "apollo-server-plugin-base": "^0.9.1",
+    "tslib": "^2.0.0"
+  },
+  "peerDependencies": {
+    "apollo-server": "^2.16.0",
+    "graphql": "^15.3.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:ext": "node-gyp rebuild",
+    "build:watch": "tsc -p tsconfig.json -w --preserveWatchOutput",
+    "clean": "rimraf dist coverage",
+    "link:npm": "npm link",
+    "link:yarn": "yarn link",
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --watch"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
