@@ -1,30 +1,36 @@
-# `@appsignal/express`
+# `@appsignal/apollo-server`
 
-![npm (scoped)](https://img.shields.io/npm/v/@appsignal/express) ![npm peer dependency version (scoped)](https://img.shields.io/npm/dependency-version/@appsignal/express/peer/express)
+![npm (scoped)](https://img.shields.io/npm/v/@appsignal/apollo-server) ![npm peer dependency version (scoped)](https://img.shields.io/npm/dependency-version/@appsignal/apollo-server/peer/apollo-server)
 
-The AppSignal for Node.js integration for Express.js (`express`) v4.0.0+.
+The AppSignal for Node.js integration for Apollo GraphQL (`apollo-server`) v2.0.0+.
 
 ## Installation
 
-First, [sign up for an AppSignal account][appsignal-sign-up] and add both the `@appsignal/nodejs` and `@appsignal/express` packages to your `package.json`. Then, run `yarn install`/`npm install`.
+First, [sign up for an AppSignal account][appsignal-sign-up] and add both the `@appsignal/nodejs` and `@appsignal/apollo-server` packages to your `package.json`. Then, run `yarn install`/`npm install`.
 
 You can also add these packages to your `package.json` on the command line:
 
 ```bash
-yarn add @appsignal/nodejs @appsignal/express
-npm install --save @appsignal/nodejs @appsignal/express
+yarn add @appsignal/nodejs @appsignal/apollo-server
+npm install --save @appsignal/nodejs @appsignal/apollo-server
 ```
 
 You can then import and use the package in your app. 
 
 ## Usage
 
-### Middleware
-
-The module includes middleware for automatically instrumenting the routes of your application.
+The module includes an Apollo Server plugin for automatically instrumenting the resolvers of your application.
 
 ```js
+// ENSURE APPSIGNAL IS THE FIRST THING TO BE REQUIRED/IMPORTED
+// INTO YOUR APP!
 const { Appsignal } = require("@appsignal/nodejs")
+const { createApolloPlugin } = require("@appsignal/apollo-server")
+
+// You can also use one of the apollo-server integrations here,
+// e.g. `apollo-server-<integration>`. Note that you will also need to require
+// the AppSignal integration seperately.
+const { ApolloServer } = require("apollo-server")
 
 const appsignal = new Appsignal({
   active: true,
@@ -32,38 +38,33 @@ const appsignal = new Appsignal({
   apiKey: "<YOUR API KEY>"
 })
 
-const express = require("express")
-const { expressMiddleware } = require("@appsignal/express")
+// The GraphQL schema
+const typeDefs = gql`
+  type Query {
+    "A simple type for getting started!"
+    hello: String
+  }
+`
 
-const app = express()
+// A map of functions which return data for the schema.
+const resolvers = {
+  Query: {
+    hello: () => 'world',
+  },
+}
 
-// ADD THIS AFTER ANY OTHER EXPRESS MIDDLEWARE, BUT BEFORE ANY ROUTES!
-app.use(expressMiddleware(appsignal))
-```
-
-### Error Handler
-
-The module also contains a middleware for catching any errors passed to `next()`.
-
-```js
-const { Appsignal } = require("@appsignal/nodejs")
-
-const appsignal = new Appsignal({
-  active: true,
-  name: "<YOUR APPLICATION NAME>"
-  apiKey: "<YOUR API KEY>"
+const server = new ApolloServer({
+  typeDefs: importSchema('./schema.graphql'),
+  resolvers,
+  plugins: [createApolloPlugin(appsignal)]
 })
 
-const express = require("express")
-const { expressErrorHandler } = require("@appsignal/express")
-
-const app = express()
-
-// ADD THIS AFTER ANY OTHER EXPRESS MIDDLEWARE, AND AFTER ANY ROUTES!
-app.use(expressErrorHandler(appsignal))
+server.listen().then(({ url }) => {
+  console.log(`🚀 Server ready at ${url}`);
+})
 ```
 
-An example Express app, containing usage of all of our middleware and custom instrumentation can be found [here](https://github.com/appsignal/appsignal-examples/tree/express).
+An example `apollo-server` app, containing usage of all of our middleware and custom instrumentation can be found [here](https://github.com/appsignal/appsignal-examples/tree/apollo-server).
 
 ## Contributing
 
