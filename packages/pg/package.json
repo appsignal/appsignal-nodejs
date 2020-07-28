@@ -1,11 +1,11 @@
 {
   "name": "@appsignal/pg",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "main": "dist/index",
   "types": "dist/index",
   "license": "MIT",
   "dependencies": {
-    "@appsignal/nodejs": "^0.5.1",
+    "@appsignal/nodejs": "^0.6.0",
     "shimmer": "^1.2.1",
     "tslib": "^1.12.0"
   },
