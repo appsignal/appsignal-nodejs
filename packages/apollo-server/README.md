@@ -54,7 +54,7 @@ const resolvers = {
 }
 
 const server = new ApolloServer({
-  typeDefs: importSchema('./schema.graphql'),
+  typeDefs,
   resolvers,
   plugins: [createApolloPlugin(appsignal)]
 })
@@ -64,7 +64,7 @@ server.listen().then(({ url }) => {
 })
 ```
 
-An example `apollo-server` app, containing usage of all of our middleware and custom instrumentation can be found [here](https://github.com/appsignal/appsignal-examples/tree/apollo-server).
+**NOTE:** You must define an [operation name](https://www.apollographql.com/blog/the-anatomy-of-a-graphql-query-6dffa9e9e747/) for your query to get an action name in the Performance view of AppSignal.com. For example, `query FetchData {}` would get the action name `FetchData` on AppSignal.com. If no operation name is set, the query will be grouped under the action name `[unknown graphql query]`.
 
 ## Contributing
 
