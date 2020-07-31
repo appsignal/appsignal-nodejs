@@ -66,10 +66,10 @@
     "@types/node" "^10.1.0"
     long "^4.0.0"
 
-"@appsignal/core@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.0.7.tgz#d99ab6e00e18738c205e9a2e1de22430ca1f0c36"
-  integrity sha512-cRLT8n5R+kYGxYodnQYI84KVI/hHIYvCM4Wo6o8MhzOMOntKYkfMkhgKnkGZLxCfl5mmMP6ShwJGhFYeocRe1Q==
+"@appsignal/core@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.0.8.tgz#3541804e4f7ea0e241d6028ef3063f48c1ba865c"
+  integrity sha512-H5efxxn7HFvXmp4IQjo89kBaH9vU9Vmo+WCSM4NlSNCxqFs+RCzVxw/F0Z0Qx4s98sjGe6VFPE7TXJtp4PLR4w==
   dependencies:
     tslib "^2.0.0"
 
