@@ -7,7 +7,7 @@
   "dependencies": {
     "@appsignal/nodejs": "^0.6.1",
     "apollo-server-plugin-base": "^0.9.1",
-    "tslib": "^2.0.0"
+    "tslib": "^2.0.1"
   },
   "peerDependencies": {
     "apollo-server": "^2.16.0",
