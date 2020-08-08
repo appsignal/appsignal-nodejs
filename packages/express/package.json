@@ -6,7 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "@appsignal/nodejs": "^0.6.1",
-    "tslib": "^2.0.0"
+    "tslib": "^2.0.1"
   },
   "peerDependencies": {
     "express": ">= 4.0.0"
