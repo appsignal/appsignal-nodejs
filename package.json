@@ -28,7 +28,7 @@
     "prettier": "^2.0.5",
     "redis": "^3.0.2",
     "rimraf": "^3.0.2",
-    "ts-jest": "^26.1.4",
+    "ts-jest": "^26.2.0",
     "typescript": "^3.9.7"
   },
   "scripts": {
