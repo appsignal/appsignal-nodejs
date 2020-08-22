@@ -13,7 +13,7 @@
     "@types/jest": "^26.0.10",
     "@types/node": "^14.6.0",
     "@types/pg": "^7.14.4",
-    "@types/redis": "^2.8.25",
+    "@types/redis": "^2.8.26",
     "@types/semver": "^7.3.3",
     "@types/shimmer": "^1.0.1",
     "express": "^4.17.1",
