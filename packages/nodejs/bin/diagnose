@@ -1,0 +1,50 @@
+#!/usr/bin/env node
+
+const https = require("https")
+const { DiagnoseTool } = require("../dist/diagnose")
+
+// enable diagnose mode
+process.env["_APPSIGNAL_DIAGNOSE"] = "true"
+
+const tool = new DiagnoseTool()
+
+console.log(`
+🔧 AppSignal Diagnose Tool
+
+Use this information to debug your configuration.
+More information is available on the documentation site.
+https://docs.appsignal.com/
+
+Send this output to support@appsignal.com if you need help.
+`)
+
+const data = tool.generate()
+
+const opts = {
+  port: 443,
+  method: "POST",
+  host: "appsignal.com",
+  path: "/diag",
+  headers: {
+    "Content-Type": "application/json",
+    "Content-Length": data.length
+  }
+}
+
+const req = https.request(opts, res => {
+  res.setEncoding("utf8")
+  res.on("data", chunk => {
+    process.stdout.write(chunk)
+  })
+  res.on("end", () => {
+    console.log("No more data in response.")
+  })
+})
+
+req.on("error", e => {
+  console.error(`problem with request: ${e.message}`)
+})
+
+// Write data to request body
+req.write(data)
+req.end()

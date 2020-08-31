@@ -60,6 +60,8 @@ function verify(filepath, checksum) {
   })
 }
 
+function dumpReport() {}
+
 function getMetadataForTarget(report) {
   const { architecture, target, muslOverride } = report.build
 
