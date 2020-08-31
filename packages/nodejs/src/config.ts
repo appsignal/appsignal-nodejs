@@ -13,12 +13,12 @@ import { ENV_TO_KEY_MAPPING, PRIVATE_ENV_MAPPING } from "./config/configmap"
  * @class
  */
 export class Configuration {
-  private _data: Partial<AppsignalOptions>
+  public data: Partial<AppsignalOptions>
 
   constructor(options: Partial<AppsignalOptions>) {
     writePrivateConstants()
 
-    this._data = {
+    this.data = {
       debug: false,
       log: "file",
       logPath: "/tmp/appsignal.log",
@@ -28,14 +28,14 @@ export class Configuration {
       ...options
     }
 
-    this._write(this._data)
+    this._write(this.data)
   }
 
   /**
    * Returns `true` if the client is in debug mode
    */
   public get debug(): boolean {
-    return this._data.debug || false
+    return this.data.debug || false
   }
 
   /**
