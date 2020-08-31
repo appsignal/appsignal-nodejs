@@ -26,4 +26,5 @@ export type AppsignalOptions = {
   requestHeaders: string[]
   revision: string
   environment: string
+  [key: string]: string | string[] | boolean
 }

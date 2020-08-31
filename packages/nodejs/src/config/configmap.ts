@@ -1,4 +1,4 @@
-export const ENV_TO_KEY_MAPPING = {
+export const ENV_TO_KEY_MAPPING: { [key: string]: string } = {
   APPSIGNAL_ACTIVE: "active",
   APPSIGNAL_PUSH_API_KEY: "apiKey",
   APPSIGNAL_APP_NAME: "name",
@@ -28,7 +28,7 @@ export const ENV_TO_KEY_MAPPING = {
   APP_REVISION: "revision"
 }
 
-export const PRIVATE_ENV_MAPPING = {
+export const PRIVATE_ENV_MAPPING: { [key: string]: string } = {
   _APPSIGNAL_ACTIVE: "active",
   _APPSIGNAL_ENVIRONMENT: "environment",
   _APPSIGNAL_DEBUG_LOGGING: "debug",
@@ -51,4 +51,27 @@ export const PRIVATE_ENV_MAPPING = {
   _APPSIGNAL_DNS_SERVERS: "dnsServers",
   _APPSIGNAL_FILES_WORLD_ACCESSIBLE: "filesWorldAccessible",
   _APP_REVISION: "revision"
+}
+
+export const JS_TO_RUBY_MAPPING: { [key: string]: string } = {
+  active: "active",
+  environment: "env",
+  debug: "debug",
+  log: "log",
+  logPath: "log_path",
+  endpoint: "endpoint",
+  apiKey: "push_api_key",
+  name: "name",
+  ignoreActions: "ignore_actions",
+  ignoreErrors: "ignore_errors",
+  ignoreNamespaces: "ignore_namespaces",
+  runningInContainer: "running_in_container",
+  workingDirPath: "working_dir_path",
+  workingDirectoryPath: "working_directory_path",
+  enableHostMetrics: "enable_host_metrics",
+  hostname: "hostname",
+  caFilePath: "ca_file_path",
+  dnsServers: "dns_servers",
+  filesWorldAccessible: "files_world_accessible",
+  revision: "revision"
 }
