@@ -1,0 +1,52 @@
+#!/usr/bin/env node
+
+const https = require("https")
+const { DiagnoseTool } = require("../dist/diagnose")
+
+// enable diagnose mode
+process.env["_APPSIGNAL_DIAGNOSE"] = "true"
+
+const tool = new DiagnoseTool()
+
+console.log(`
+🔧 AppSignal Diagnose Tool
+
+Use this information to debug your configuration.
+More information is available on the documentation site.
+https://docs.appsignal.com/
+
+Send this output to support@appsignal.com if you need help.
+`)
+
+if (!process.env["APPSIGNAL_PUSH_API_KEY"]) {
+  throw new Error(`No Push API key found. Set the APPSIGNAL_PUSH_API_KEY environment variable to your Push API key and try again.`)
+}
+
+const data = tool.generate()
+const json = JSON.stringify(data)
+
+const opts = {
+  port: 443,
+  method: "POST",
+  host: "appsignal.com",
+  path: "/diag",
+  headers: {
+    "Content-Type": "application/json",
+    "Content-Length": json.length
+  }
+}
+
+const req = https.request(opts, res => {
+  res.setEncoding("utf8")
+})
+
+req.on("error", e => {
+  console.error(`Problem with diagnose request: ${e.message}`)
+})
+
+// Write data to request body
+req.write(json)
+req.end()
+
+console.log(data, "\n")
+console.log("✅ Done!")

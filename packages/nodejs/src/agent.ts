@@ -47,4 +47,8 @@ export class Agent {
 
     return this.isLoaded
   }
+
+  public diagnose(): string {
+    return JSON.parse(extension.diagnoseRaw())
+  }
 }

@@ -14,7 +14,11 @@ const {
   hasSupportedOs
 } = require("./extension/helpers")
 
-const { createReport } = require("./report")
+const {
+  createReport,
+  createBuildReport,
+  createDownloadReport
+} = require("./report")
 
 const EXT_PATH = path.join(__dirname, "/../ext/")
 
@@ -60,9 +64,23 @@ function verify(filepath, checksum) {
   })
 }
 
-function getMetadataForTarget(report) {
-  const { architecture, target, muslOverride } = report.build
+function dumpReport(report) {
+  return new Promise(resolve => {
+    fs.writeFile(
+      "/tmp/appsignal-install-report.json",
+      JSON.stringify(report, null, 2),
+      () => {
+        return resolve()
+      }
+    )
+  })
+}
 
+function getMetadataForTarget({
+  architecture,
+  target,
+  musl_override: muslOverride
+}) {
   const triple = [
     architecture === "x64" ? "x86_64" : "i686",
     `-${target}`,
@@ -74,15 +92,13 @@ function getMetadataForTarget(report) {
 
 // Script logic begins here
 ;(function () {
-  const report = createReport()
-
   if (hasLocalBuild()) {
     // check for a local build (dev only)
     console.warn(`Using local build for agent. Skipping download.`)
     return process.exit(0)
   }
 
-  if (!hasSupportedArchitecture(report)) {
+  if (!hasSupportedArchitecture(process.arch)) {
     console.error(
       `AppSignal currently does not support your system architecture 
         (${process.platform} ${process.arch}). Please let us know at 
@@ -92,7 +108,7 @@ function getMetadataForTarget(report) {
     return process.exit(1)
   }
 
-  if (!hasSupportedOs(report)) {
+  if (!hasSupportedOs(process.platform)) {
     console.error(
       `AppSignal currently does not support your operating system (${process.platform}). 
       Please let us know at support@appsignal.com, we aim to support everything 
@@ -102,23 +118,44 @@ function getMetadataForTarget(report) {
     return process.exit(1)
   }
 
+  const report = createReport()
+  report.build = createBuildReport({})
+
   // try and get one from the CDN
-  const metadata = getMetadataForTarget(report)
+  const metadata = getMetadataForTarget(report.build)
   const filename = metadata.downloadUrl.split("/")[4]
   const outputPath = path.join(EXT_PATH, filename)
 
   return download(metadata.downloadUrl, outputPath)
-    .then(filepath => {
-      return verify(filepath, metadata.checksum).then(() => extract(filepath))
-    })
+    .then(filepath =>
+      verify(filepath, metadata.checksum).then(() => extract(filepath))
+    )
     .then(() => {
       // once extracted, we can then hand off to node-gyp for building
       // @TODO: add cleanup step
       console.log("The agent has installed successfully!")
-      process.exit(0)
+
+      report.download = createDownloadReport({
+        verified: true,
+        downloadUrl: metadata.downloadUrl
+      })
+
+      report.result.status = "complete"
+
+      return dumpReport(report).then(() => {
+        process.exit(0)
+      })
     })
     .catch(error => {
       console.error(error)
-      process.exit(1)
+
+      report.download = createDownloadReport({
+        verified: false,
+        downloadUrl: metadata.downloadUrl
+      })
+
+      return dumpReport(report).then(() => {
+        process.exit(1)
+      })
     })
 })()
