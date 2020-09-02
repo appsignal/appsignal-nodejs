@@ -41,9 +41,6 @@
     "test": "lerna run --stream --concurrency 1 --sort test",
     "prepublishOnly": "npm run clean && npm run build && lerna link"
   },
-  "workspaces": [
-    "packages/*"
-  ],
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
