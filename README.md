@@ -38,20 +38,20 @@ This repository is a Lerna-managed monorepo, containing packages (located in the
 To install the dependencies:
 
 ```bash
-yarn install
+npm install
 lerna bootstrap
 ```
 
 You can then run the following to start the compiler in _watch_ mode. 
 
 ```bash
-yarn build:watch
+npm run build:watch
 ```
 
 You can also build the library without watching the directory:
 
 ```
-yarn build
+npm run  build
 ```
 
 ### Testing
@@ -59,7 +59,7 @@ yarn build
 The tests for this library use [Jest](https://jestjs.io) as the test runner. Once you've installed the dependencies, you can run the following command in the root of this repository to run the tests for all packages, or in the directory of a package to run only the tests pertaining to that package:
 
 ```bash
-yarn test
+npm run test
 ```
 
 ### Versioning
