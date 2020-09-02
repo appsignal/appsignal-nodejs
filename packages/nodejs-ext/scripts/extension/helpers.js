@@ -22,11 +22,9 @@ function hasLocalBuild() {
  *
  * @return  {boolean}
  */
-function hasSupportedArchitecture(report) {
+function hasSupportedArchitecture(arch) {
   // 'x32' and 'x64' supported
-  return (
-    report.build.architecture === "x32" || report.build.architecture === "x64"
-  )
+  return arch === "x32" || arch === "x64"
 }
 
 /**
@@ -36,12 +34,8 @@ function hasSupportedArchitecture(report) {
  *
  * @return  {boolean}
  */
-function hasSupportedOs(report) {
-  return (
-    report.build.target === "darwin" ||
-    report.build.target === "freebsd" ||
-    report.build.target === "linux"
-  )
+function hasSupportedOs(os) {
+  return os === "darwin" || os === "freebsd" || os === "linux"
 }
 
 /**
