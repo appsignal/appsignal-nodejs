@@ -17,14 +17,14 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "build:watch": "yarn versionfile && tsc -p tsconfig.json -w --preserveWatchOutput",
+    "build:watch": "npm run versionfile && tsc -p tsconfig.json -w --preserveWatchOutput",
     "clean": "rimraf dist coverage",
     "link:npm": "npm link",
     "link:yarn": "yarn link",
     "test": "jest",
     "test:watch": "jest --watch",
     "versionfile": "node scripts/create-versionfile.js",
-    "version": "yarn versionfile"
+    "version": "npm run versionfile"
   },
   "engines": {
     "node": ">= 10"
