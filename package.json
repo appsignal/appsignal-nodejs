@@ -5,7 +5,7 @@
   "main": "dist/index",
   "license": "MIT",
   "engines": {
-    "node": ">=10.22.0"
+    "node": ">= 10"
   },
   "devDependencies": {
     "@appsignal/types": "^1.0.0",
@@ -39,7 +39,7 @@
     "link:npm": "lerna run --stream --concurrency 1 link:npm",
     "link:yarn": "lerna run --stream --concurrency 1 link:yarn",
     "test": "lerna run --stream --concurrency 1 --sort test",
-    "prepublishOnly": "yarn clean && yarn build && lerna link"
+    "prepublishOnly": "npm run clean && npm run build && lerna link"
   },
   "workspaces": [
     "packages/*"
