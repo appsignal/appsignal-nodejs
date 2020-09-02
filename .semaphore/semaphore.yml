@@ -23,9 +23,9 @@ blocks:
     task:
       prologue:
         commands:
-          - yarn install --frozen-lockfile
-          - yarn lerna bootstrap
-          - yarn lerna link
+          - npm ci
+          - npx lerna bootstrap
+          - npx lerna link
           - cache store
       jobs:
         - name: Build
@@ -33,8 +33,8 @@ blocks:
             - env_var: NODE_VERSION
               values: ["10", "11", "12", "13"]
           commands:
-            - yarn build
-            - yarn build:ext
+            - npm run build
+            - npm run build:ext
             - cache store packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION packages
   - name: "Unit tests"
     dependencies: ["Install and Build"]
@@ -49,4 +49,4 @@ blocks:
               values: ["10", "11", "12", "13"]
           commands:
             - cache restore packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION
-            - yarn test
+            - npm run test
