@@ -15,7 +15,7 @@ Use this information to debug your configuration.
 More information is available on the documentation site.
 https://docs.appsignal.com/
 
-Send this output to support@appsignal.com if you need help.
+This diagnose output was sent to AppSignal, contact us at support@appsignal.com if you need help.
 `)
 
 if (!process.env["APPSIGNAL_PUSH_API_KEY"]) {
