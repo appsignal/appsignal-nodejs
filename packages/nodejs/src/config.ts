@@ -22,6 +22,7 @@ export class Configuration {
       debug: false,
       log: "file",
       logPath: "/tmp/appsignal.log",
+      caFilePath: path.join(__dirname, "../cert/cacert.pem"),
       endpoint: "https://push.appsignal.com",
       environment: process.env.NODE_ENV || "development",
       ...this._loadFromEnvironment(),
