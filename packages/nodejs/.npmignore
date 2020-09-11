@@ -2,6 +2,7 @@
 !/dist/**/*
 !/scripts/**/*
 !/ext/appsignal_extension.cpp
+!/cert/**/*
 !binding.gyp
 !vendor.d.ts
 *.tsbuildinfo
