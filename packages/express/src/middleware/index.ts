@@ -35,6 +35,7 @@ export function expressMiddleware(appsignal: Appsignal): RequestHandler {
         res.end = originalEnd
 
         const { method = "GET", params = {}, url } = req
+        const { query } = parse(url)
 
         // if there is no error passed to `next()`, the span name will
         // be updated to match the current path
@@ -45,7 +46,7 @@ export function expressMiddleware(appsignal: Appsignal): RequestHandler {
         // set route params (if parsed by express correctly)
         span.setSampleData("params", {
           ...params,
-          query: parse(url).query || ""
+          query: query || ""
         })
 
         return res.end.apply(this, arguments as any)
