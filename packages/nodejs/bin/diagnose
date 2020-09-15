@@ -19,7 +19,9 @@ This diagnose output was sent to AppSignal, contact us at support@appsignal.com 
 `)
 
 if (!process.env["APPSIGNAL_PUSH_API_KEY"]) {
-  throw new Error(`No Push API key found. Set the APPSIGNAL_PUSH_API_KEY environment variable to your Push API key and try again.`)
+  throw new Error(
+    `No Push API key found. Set the APPSIGNAL_PUSH_API_KEY environment variable to your Push API key and try again.`
+  )
 }
 
 const data = tool.generate()
@@ -38,6 +40,12 @@ const opts = {
 
 const req = https.request(opts, res => {
   res.setEncoding("utf8")
+
+  // print token to the console
+  res.on("data", chunk => {
+    const { token } = JSON.parse(chunk.toString())
+    console.log("Your diagnose token is:", token)
+  })
 })
 
 req.on("error", e => {
