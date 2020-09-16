@@ -34,7 +34,7 @@ function incomingRequest(
 
     const [req, res] = args as [IncomingMessage, ServerResponse]
     const { method = "GET", url = "/" } = req
-    const { pathname, query = {} } = parse(url, true)
+    const { pathname, query } = parse(url)
 
     // don't start a span for ignored urls
     if (url && DEFAULT_IGNORED_URLS.some(el => el.test(url))) {
@@ -59,7 +59,7 @@ function incomingRequest(
       .setName(`${method} ${pathname === "/" ? pathname : "[unknown route]"}`)
       .setCategory("process_request.http")
       .set("method", method)
-      .setSampleData("params", query as {})
+      .setSampleData("params", query ? { query } : {})
 
     return tracer.withSpan(rootSpan, span => {
       // calling this binds the event handlers to our current
