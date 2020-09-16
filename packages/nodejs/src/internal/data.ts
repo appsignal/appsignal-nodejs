@@ -2,11 +2,14 @@ import { HashMap } from "@appsignal/types"
 import { datamap, dataarray } from "../extension"
 
 export class Data {
-  public static generate(data: Array<any> | HashMap<any>) {
+  public static generate(
+    data: Array<any> | HashMap<any>,
+    filtered: boolean = false
+  ) {
     if (data.constructor.name === "Object") {
-      return this.mapObject(data)
+      return this.mapObject(data, filtered)
     } else if (Array.isArray(data)) {
-      return this.mapArray(data)
+      return this.mapArray(data, filtered)
     } else {
       throw new Error(
         `Body of type ${data.constructor.name} should be a Object or Array`
@@ -14,8 +17,8 @@ export class Data {
     }
   }
 
-  private static mapObject(obj: HashMap<any>) {
-    let map = datamap.create()
+  private static mapObject(obj: HashMap<any>, filtered: boolean) {
+    let map = filtered ? datamap.createFiltered() : datamap.create()
 
     Object.entries(obj).forEach(([key, value]) => {
       switch (typeof value) {
@@ -41,12 +44,12 @@ export class Data {
 
           // check array
           if (Array.isArray(value)) {
-            datamap.setData(this.mapArray(value), map)
+            datamap.setData(this.mapArray(value, filtered), map)
           }
 
           // check for plain object
           if (value?.constructor.name === "Object") {
-            datamap.setData(this.mapObject(value), map)
+            datamap.setData(this.mapObject(value, filtered), map)
           }
 
           break
@@ -60,7 +63,7 @@ export class Data {
     return map
   }
 
-  private static mapArray(arr: Array<any>) {
+  private static mapArray(arr: Array<any>, filtered: boolean) {
     let array = dataarray.create()
 
     arr.forEach(value => {
@@ -87,12 +90,12 @@ export class Data {
 
           // check array
           if (Array.isArray(value)) {
-            dataarray.setData(this.mapArray(value), array)
+            dataarray.setData(this.mapArray(value, filtered), array)
           }
 
           // check for plain object
           if (value?.constructor.name === "Object") {
-            dataarray.setData(this.mapObject(value), array)
+            dataarray.setData(this.mapObject(value, filtered), array)
           }
 
           break

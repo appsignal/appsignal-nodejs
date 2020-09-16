@@ -114,7 +114,7 @@ export class BaseSpan implements Span {
     if (!key || !data) return this
 
     try {
-      span.setSpanSampleData(this._ref, key, Data.generate(data))
+      span.setSpanSampleData(this._ref, key, Data.generate(data, true))
     } catch (e) {
       console.error(
         `Error generating data (${e.name}: ${e.message}) for '${JSON.stringify(
