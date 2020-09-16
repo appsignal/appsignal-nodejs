@@ -1,7 +1,7 @@
 import { HashMap } from "@appsignal/types"
 
 import { span } from "./extension"
-import { DataArray, DataMap } from "./internal"
+import { Data } from "./internal/data"
 import { SpanContext } from "./interfaces/context"
 import { Span, SpanOptions } from "./interfaces/span"
 
@@ -105,16 +105,16 @@ export class BaseSpan implements Span {
    */
   public setSampleData(
     key: string,
-    data: Array<string | number | boolean> | HashMap<string | number | boolean>
+    data:
+      | Array<string | number | boolean | Array<any> | HashMap<any> | undefined>
+      | HashMap<
+          string | number | boolean | Array<any> | HashMap<any> | undefined
+        >
   ): this {
     if (!key || !data) return this
 
     try {
-      span.setSpanSampleData(
-        this._ref,
-        key,
-        Array.isArray(data) ? new DataArray(data).ref : new DataMap(data).ref
-      )
+      span.setSpanSampleData(this._ref, key, Data.generate(data, true))
     } catch (e) {
       console.error(
         `Error generating data (${e.name}: ${e.message}) for '${JSON.stringify(
@@ -132,11 +132,11 @@ export class BaseSpan implements Span {
   public addError(error: Error): this {
     if (!error) return this
 
-    const stackdata = new DataArray(
+    const stackdata = Data.generate(
       error.stack ? error.stack.split("\n") : ["No stacktrace available."]
     )
 
-    span.addSpanError(this._ref, error.name, error.message, stackdata.ref)
+    span.addSpanError(this._ref, error.name, error.message, stackdata)
 
     return this
   }
@@ -145,6 +145,7 @@ export class BaseSpan implements Span {
    * Completes the current `Span`.
    *
    * If an `endTime` is passed as an argument, the `Span` is closed with the
+   * timestamp that you provide.
    */
   public close(endTime?: number): this {
     if (endTime) {

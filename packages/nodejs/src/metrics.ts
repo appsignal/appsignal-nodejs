@@ -1,7 +1,7 @@
 import { metrics } from "./extension"
+import { Data } from "./internal/data"
 import { Metrics } from "./interfaces/metrics"
 
-import { DataArray, DataMap } from "./internal"
 import { Probes } from "./probes"
 
 /**
@@ -29,13 +29,7 @@ export class BaseMetrics implements Metrics {
   ) {
     if (!key || typeof value !== "number") return this
 
-    metrics.setGauge(
-      key,
-      value,
-      tags && Array.isArray(tags)
-        ? new DataArray(tags)?.ref
-        : new DataMap(tags)?.ref
-    )
+    metrics.setGauge(key, value, Data.generate(tags || {}))
 
     return this
   }
@@ -60,13 +54,7 @@ export class BaseMetrics implements Metrics {
   ) {
     if (!key || typeof value !== "number") return this
 
-    metrics.addDistributionValue(
-      key,
-      value,
-      tags && Array.isArray(tags)
-        ? new DataArray(tags)?.ref
-        : new DataMap(tags)?.ref
-    )
+    metrics.addDistributionValue(key, value, Data.generate(tags || {}))
 
     return this
   }
@@ -92,13 +80,7 @@ export class BaseMetrics implements Metrics {
   ) {
     if (!key || typeof value !== "number") return this
 
-    metrics.incrementCounter(
-      key,
-      value,
-      tags && Array.isArray(tags)
-        ? new DataArray(tags)?.ref
-        : new DataMap(tags)?.ref
-    )
+    metrics.incrementCounter(key, value, Data.generate(tags || {}))
 
     return this
   }
