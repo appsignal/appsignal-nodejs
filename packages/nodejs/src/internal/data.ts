@@ -50,6 +50,10 @@ export class Data {
           }
 
           break
+        default:
+          // attempt to co-erce whatever the data is to a string
+          datamap.setString(String(value), map)
+          break
       }
     })
 
@@ -91,6 +95,10 @@ export class Data {
             dataarray.setData(this.mapObject(value), array)
           }
 
+          break
+        default:
+          // attempt to co-erce whatever the data is to a string
+          dataarray.setString(String(value), array)
           break
       }
     })
