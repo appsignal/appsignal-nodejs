@@ -48,7 +48,11 @@ export interface Span {
    */
   setSampleData(
     key: string,
-    data: Array<string | number | boolean> | HashMap<string | number | boolean>
+    data:
+      | Array<string | number | boolean | Array<any> | HashMap<any> | undefined>
+      | HashMap<
+          string | number | boolean | Array<any> | HashMap<any> | undefined
+        >
   ): this
 
   /**

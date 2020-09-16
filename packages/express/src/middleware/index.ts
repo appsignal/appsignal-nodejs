@@ -1,4 +1,3 @@
-import { parse } from "url"
 import { Appsignal } from "@appsignal/nodejs"
 
 import {
@@ -34,8 +33,7 @@ export function expressMiddleware(appsignal: Appsignal): RequestHandler {
       res.end = function (this: Response) {
         res.end = originalEnd
 
-        const { method = "GET", params = {}, url } = req
-        const { query } = parse(url)
+        const { method = "GET", params = {}, query = {} } = req
 
         // if there is no error passed to `next()`, the span name will
         // be updated to match the current path
@@ -44,10 +42,7 @@ export function expressMiddleware(appsignal: Appsignal): RequestHandler {
         }
 
         // set route params (if parsed by express correctly)
-        span.setSampleData("params", {
-          ...params,
-          query: query || ""
-        })
+        span.setSampleData("params", { ...params, ...query })
 
         return res.end.apply(this, arguments as any)
       }

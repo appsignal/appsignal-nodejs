@@ -106,8 +106,10 @@ export class BaseSpan implements Span {
   public setSampleData(
     key: string,
     data:
-      | Array<string | number | boolean | Array<any> | HashMap<any>>
-      | HashMap<string | number | boolean | Array<any> | HashMap<any>>
+      | Array<string | number | boolean | Array<any> | HashMap<any> | undefined>
+      | HashMap<
+          string | number | boolean | Array<any> | HashMap<any> | undefined
+        >
   ): this {
     if (!key || !data) return this
 
