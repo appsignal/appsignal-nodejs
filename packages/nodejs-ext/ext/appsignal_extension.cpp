@@ -135,6 +135,16 @@ Napi::Value CreateDataMap(const Napi::CallbackInfo &info) {
       [](Napi::Env env, appsignal_data_t *ptr) { appsignal_free_data(ptr); });
 }
 
+Napi::Value CreateFilteredDataMap(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  appsignal_data_t *data_ptr = appsignal_data_filtered_map_new();
+
+  return Napi::External<appsignal_data_t>::New(
+      env, data_ptr,
+      [](Napi::Env env, appsignal_data_t *ptr) { appsignal_free_data(ptr); });
+}
+
 Napi::Value SetStringToDataMap(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
 
@@ -525,6 +535,8 @@ Napi::Object CreateDataMapObject(Napi::Env env, Napi::Object exports) {
 
   datamap.Set(Napi::String::New(env, "create"),
               Napi::Function::New(env, CreateDataMap));
+  datamap.Set(Napi::String::New(env, "createFiltered"),
+              Napi::Function::New(env, CreateFilteredDataMap));
   datamap.Set(Napi::String::New(env, "setString"),
               Napi::Function::New(env, SetStringToDataMap));
   datamap.Set(Napi::String::New(env, "setInteger"),

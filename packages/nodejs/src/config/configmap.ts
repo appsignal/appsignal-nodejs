@@ -9,6 +9,7 @@ export const ENV_TO_KEY_MAPPING: { [key: string]: string } = {
   APPSIGNAL_SEND_PARAMS: "sendParams",
   APPSIGNAL_FILTER_PARAMETERS: "filterParameters",
   APPSIGNAL_FILTER_SESSION_DATA: "filterSessionData",
+  APPSIGNAL_FILTER_DATA_KEYS: "filterDataKeys",
   APPSIGNAL_DEBUG: "debug",
   APPSIGNAL_DNS_SERVERS: "dnsServers",
   APPSIGNAL_LOG: "log",
@@ -50,6 +51,7 @@ export const PRIVATE_ENV_MAPPING: { [key: string]: string } = {
   _APPSIGNAL_CA_FILE_PATH: "caFilePath",
   _APPSIGNAL_DNS_SERVERS: "dnsServers",
   _APPSIGNAL_FILES_WORLD_ACCESSIBLE: "filesWorldAccessible",
+  _APPSIGNAL_FILTER_DATA_KEYS: "filterDataKeys",
   _APP_REVISION: "revision"
 }
 
@@ -73,5 +75,6 @@ export const JS_TO_RUBY_MAPPING: { [key: string]: string } = {
   caFilePath: "ca_file_path",
   dnsServers: "dns_servers",
   filesWorldAccessible: "files_world_accessible",
-  revision: "revision"
+  revision: "revision",
+  filterDataKeys: "filter_data_keys"
 }
