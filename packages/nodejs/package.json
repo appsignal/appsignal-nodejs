@@ -1,6 +1,6 @@
 {
   "name": "@appsignal/nodejs",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "main": "dist/index",
   "types": "dist/index",
   "license": "MIT",
@@ -16,7 +16,7 @@
     "tslib": "^2.0.1"
   },
   "optionalDependencies": {
-    "@appsignal/nodejs-ext": "^0.7.0"
+    "@appsignal/nodejs-ext": "^0.8.0"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
