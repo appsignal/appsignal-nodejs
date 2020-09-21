@@ -69,39 +69,39 @@ export class Data {
     arr.forEach(value => {
       switch (typeof value) {
         case "string":
-          dataarray.setString(value, array)
+          dataarray.appendString(value, array)
           break
         case "number":
           if (Number.isInteger(value)) {
-            dataarray.setInteger(value, array)
+            dataarray.appendInteger(value, array)
           } else {
-            dataarray.setFloat(value, array)
+            dataarray.appendFloat(value, array)
           }
 
           break
         case "boolean":
-          dataarray.setBoolean(value, array)
+          dataarray.appendBoolean(value, array)
           break
         case "object":
           // check null
           if (!value) {
-            dataarray.setNull(array)
+            dataarray.appendNull(array)
           }
 
           // check array
           if (Array.isArray(value)) {
-            dataarray.setData(this.mapArray(value, filtered), array)
+            dataarray.appendData(this.mapArray(value, filtered), array)
           }
 
           // check for plain object
           if (value?.constructor.name === "Object") {
-            dataarray.setData(this.mapObject(value, filtered), array)
+            dataarray.appendData(this.mapObject(value, filtered), array)
           }
 
           break
         default:
           // attempt to co-erce whatever the data is to a string
-          dataarray.setString(String(value), array)
+          dataarray.appendString(String(value), array)
           break
       }
     })
