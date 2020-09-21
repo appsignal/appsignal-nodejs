@@ -45,6 +45,7 @@ const req = https.request(opts, res => {
   res.on("data", chunk => {
     const { token } = JSON.parse(chunk.toString())
     console.log("Your diagnose token is:", token)
+    console.log(`👀 View this report: https://appsignal.com/diagnose/${token}`)
   })
 })
 
@@ -57,4 +58,4 @@ req.write(json)
 req.end()
 
 console.log(data, "\n")
-console.log("✅ Done!")
+console.log("✅ Done!", "\n")
