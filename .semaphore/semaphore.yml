@@ -34,7 +34,7 @@ blocks:
         - name: Build
           matrix:
             - env_var: NODE_VERSION
-              values: ["10", "11", "12", "13"]
+              values: ["10", "11", "12", "13", "14"]
           commands:
             - npm run build
             - npm run build:ext
@@ -49,7 +49,7 @@ blocks:
         - name: Jest
           matrix:
             - env_var: NODE_VERSION
-              values: ["10", "11", "12", "13"]
+              values: ["10", "11", "12", "13", "14"]
           commands:
             - cache restore packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION
             - npm run test
