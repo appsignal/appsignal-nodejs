@@ -1,0 +1,28 @@
+{
+  "name": "@appsignal/nodejs-ext-rs",
+  "version": "0.1.0",
+  "description": "A *HIGHLY EXPERIMENTAL* Rust port of the `@appsignal/nodejs-ext` module",
+  "main": "lib/index.js",
+  "author": "Adam Yeats <adam@appsignal.com>",
+  "license": "MIT",
+  "dependencies": {
+    "neon-cli": "^0.4.2"
+  },
+  "scripts": {
+    "install": "neon build"
+  },
+  "os": [
+    "linux",
+    "darwin",
+    "freebsd"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "engines": {
+    "node": ">= 10"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
