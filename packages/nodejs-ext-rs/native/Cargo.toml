@@ -1,0 +1,21 @@
+[package]
+name = "nodejs-ext-rs"
+version = "0.1.0"
+authors = ["Adam Yeats <adam@appsignal.com>"]
+license = "MIT"
+build = "build.rs"
+exclude = ["artifacts.json", "index.node"]
+
+[lib]
+name = "nodejs_ext_rs"
+crate-type = ["cdylib"]
+
+[build-dependencies]
+neon-build = "0.4.2"
+
+[dependencies.neon]
+version = "0.4.2"
+default-features = false
+features = ["napi-runtime"]
+
+[workspace]
