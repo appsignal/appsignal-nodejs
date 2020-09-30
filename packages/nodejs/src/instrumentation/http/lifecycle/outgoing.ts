@@ -1,0 +1,146 @@
+/**
+ * Uses portions of `opentelemetry-js`
+ * https://github.com/open-telemetry/opentelemetry-js/blob/master/packages/opentelemetry-plugin-http/src/http.ts
+ * Copyright 2019, OpenTelemetry Authors
+ */
+
+import url from "url"
+import { IncomingMessage, ClientRequest, RequestOptions } from "http"
+
+import { NoopSpan } from "../../../noops"
+import { Span } from "../../../interfaces/span"
+import { Tracer } from "../../../interfaces/tracer"
+
+function optionsToOriginString(
+  options: url.URL | RequestOptions | string
+): string {
+  let protocol: string = "http:"
+  let hostname: string = "localhost"
+
+  if (options instanceof url.URL) {
+    return options.origin ?? `${protocol}//${hostname}`
+  } else if (typeof options === "string") {
+    const parsed = url.parse(options)
+    protocol = parsed.protocol ?? protocol
+    hostname = parsed.hostname ?? hostname
+  } else {
+    // is a `RequestOptions` object
+    protocol = options.protocol ?? protocol
+    hostname = options.hostname ?? hostname
+  }
+
+  return `${protocol}//${hostname}`
+}
+
+function optionsToMethodName(
+  options: url.URL | RequestOptions | string
+): string {
+  if (
+    // is a RequestOptions
+    typeof options !== "string" &&
+    !(options instanceof url.URL) &&
+    options.method
+  ) {
+    return options.method ? options.method.toUpperCase() : "GET"
+  } else {
+    return "GET"
+  }
+}
+
+function outgoingRequestFunction(
+  original: (...args: any[]) => ClientRequest,
+  tracer: Tracer
+): (...args: any[]) => ClientRequest {
+  return function outgoingRequest(
+    this: {},
+    urlOrOptions: string | url.URL | RequestOptions,
+    ...args: unknown[]
+  ): ClientRequest {
+    let span: Span
+    let origin: string
+    let method: string
+
+    if (args[0] && typeof args[0] !== "function") {
+      // an options object may have been passed
+      const otherOptions = args[0] as RequestOptions
+      method = optionsToMethodName(otherOptions)
+      origin = optionsToOriginString(otherOptions)
+    } else {
+      method = optionsToMethodName(urlOrOptions)
+      origin = optionsToOriginString(urlOrOptions)
+    }
+
+    if (tracer.currentSpan() instanceof NoopSpan) {
+      // create a new `RootSpan` if there isn't one already in progress
+      span = tracer.createSpan()
+    } else {
+      span = tracer.currentSpan().child()
+    }
+
+    span
+      .setName(`HTTP ${method} ${origin}`)
+      .setCategory("request.http")
+      .set("method", method)
+
+    return tracer.withSpan(span, () => {
+      let req: ClientRequest
+
+      try {
+        req = original.apply(this, [urlOrOptions, ...args])
+      } catch (err) {
+        span.addError(err).close()
+        throw err
+      }
+
+      tracer.wrapEmitter(req)
+
+      req.on("response", res => {
+        tracer.wrapEmitter(res)
+
+        res.on("end", () => {
+          span.close()
+        })
+      })
+
+      req.on("close", () => {
+        span.close()
+      })
+
+      req.on("error", (error: Error) => {
+        span.addError(error).close()
+      })
+
+      return req
+    })
+  }
+}
+
+export type HttpCallback = (res: IncomingMessage) => void;
+export type HttpCallbackOptional = HttpCallback | undefined;
+export type RequestSignature = [RequestOptions, HttpCallbackOptional] &
+  HttpCallback;
+export type HttpRequestArgs = Array<HttpCallbackOptional | RequestSignature>;
+
+export function getPatchOutgoingGetFunction(
+  clientRequest: (
+    options: RequestOptions | string | url.URL,
+    ...args: HttpRequestArgs
+  ) => ClientRequest
+) {
+  return (original: (...args: any[]) => ClientRequest): (...args: any[]) => ClientRequest => {
+    // it's important to note that the `clientRequest` function called below
+    // is the patched version of `http.request` that we patched earlier
+    return function outgoingGetRequest<
+      T extends RequestOptions | string | url.URL
+    >(options: T, ...args: HttpRequestArgs): ClientRequest {
+      const req = clientRequest(options, ...args);
+      req.end();
+      return req;
+    };
+  };
+
+export function getPatchOutgoingRequestFunction(tracer: Tracer) {
+  return (original: (...args: any[]) => ClientRequest) => {
+    return outgoingRequestFunction(original, tracer)
+  }
+}

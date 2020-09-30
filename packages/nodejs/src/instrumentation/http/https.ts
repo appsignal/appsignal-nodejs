@@ -1,7 +1,7 @@
 import shimmer from "shimmer"
 import https from "https"
 
-import { getPatchIncomingRequestFunction } from "./lifecycle/request"
+import { getPatchIncomingRequestFunction } from "./lifecycle/incoming"
 import { Tracer } from "../../interfaces/tracer"
 import { Plugin } from "../../interfaces/plugin"
 
