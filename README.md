@@ -8,26 +8,38 @@
 
 ## Installation
 
-First, sign up for an AppSignal account and add the `@appsignal/nodejs` package to your `package.json`. Then, run `yarn install`/`npm install`.
+First, [sign up][appsignal-sign-up] for an AppSignal account and run our automated install tool, which will install `@appsignal/nodejs` and any relevant integrations to your project:
 
-You can also add these packages to your `package.json` on the command line:
+```bash
+npx @appsignal/cli install
+```
+
+You can also skip the automated tool and add `@appsignal/nodejs` to your `package.json` on the command line with `npm`/`yarn`:
 
 ```bash
 yarn add @appsignal/nodejs
 npm install --save @appsignal/nodejs
 ```
 
+Alternatively, you can manually add the `@appsignal/nodejs` package to your `package.json`. Then, run `yarn install`/`npm install`.
+
+> Installing the AppSignal for Node.js integration builds a native extension. In order to compile it, macOS users will need to install the [Xcode Developer Tools](https://osxdaily.com/2014/02/12/install-command-line-tools-mac-os-x/). Linux users will need the dependencies outlined here. Windows is not supported.
+
 You can then import and use the package in your bundle:
 
 ```js
-const { Appsignal } = require("@appsignal/nodejs")
+const { Appsignal } = require("@appsignal/nodejs");
 
 const appsignal = new Appsignal({
   active: true,
   name: "<YOUR APPLICATION NAME>"
   apiKey: "<YOUR API KEY>"
-})
+});
+
+// ...all the rest of your code goes here!
 ```
+
+> In order to auto-instrument modules, the Appsignal module must be both **required** and **initialized** before any other package.
 
 ## Development
 
@@ -72,7 +84,7 @@ Thinking of contributing to this repo? Awesome! 🚀
 
 Please follow our [Contributing guide][contributing-guide] in our documentation and follow our [Code of Conduct][coc].
 
-Also, we would be very happy to send you Stroopwafles. Have look at everyone we send a package to so far on our [Stroopwafles page][waffles-page].
+Also, we would be very happy to send you Stroopwafels. Have look at everyone we send a package to so far on our [Stroopwafels page][waffles-page].
 
 ## Support
 
