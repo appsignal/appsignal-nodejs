@@ -4,7 +4,7 @@ import { EventEmitter } from "events"
  * The Minutely probes object.
  */
 export class Probes extends EventEmitter {
-  private _timers = new Map<string, NodeJS.Timeout>()
+  #timers = new Map<string, NodeJS.Timeout>()
 
   constructor() {
     super()
@@ -14,7 +14,7 @@ export class Probes extends EventEmitter {
    * Number of probes that are registered.
    */
   get count(): number {
-    return this._timers.size
+    return this.#timers.size
   }
 
   /**
@@ -22,7 +22,7 @@ export class Probes extends EventEmitter {
    * will overwrite the current probe.
    */
   public register(name: string, fn: () => void): this {
-    this._timers.set(
+    this.#timers.set(
       name,
       setInterval(() => this.emit(name), 60 * 1000)
     )
@@ -34,8 +34,8 @@ export class Probes extends EventEmitter {
    * Unregisters all probes and clears the timers.
    */
   public clear(): this {
-    this._timers.forEach(t => clearInterval(t))
-    this._timers = new Map()
+    this.#timers.forEach(t => clearInterval(t))
+    this.#timers = new Map()
     return this
   }
 }
