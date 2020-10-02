@@ -6,7 +6,7 @@ import { extension } from "./extension"
  * @class
  */
 export class Agent {
-  public isLoaded = false
+  isLoaded = false
 
   constructor(options?: { active: boolean }) {
     if (options?.active) this.start()

@@ -13,16 +13,16 @@ type InstrumentedModule<T> = { name: string; plugin: Plugin<T>; hook: Hook }
  * @class
  */
 export class Instrumentation {
-  public active: InstrumentedModule<any>[]
+  active: InstrumentedModule<any>[]
 
-  private _tracer: Tracer
-  private _meter: Metrics
+  #tracer: Tracer
+  #meter: Metrics
 
   constructor(tracer: Tracer, meter: Metrics) {
     this.active = []
 
-    this._tracer = tracer
-    this._meter = meter
+    this.#tracer = tracer
+    this.#meter = meter
   }
 
   /**
@@ -43,7 +43,7 @@ export class Instrumentation {
         : process.versions.node
 
       // init the plugin
-      plugin = fn(mod, this._tracer, this._meter)
+      plugin = fn(mod, this.#tracer, this.#meter)
 
       // install if version range matches
       if (semver.satisfies(version, plugin.version)) {

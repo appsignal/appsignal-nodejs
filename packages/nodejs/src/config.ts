@@ -13,7 +13,7 @@ import { ENV_TO_KEY_MAPPING, PRIVATE_ENV_MAPPING } from "./config/configmap"
  * @class
  */
 export class Configuration {
-  public data: Partial<AppsignalOptions>
+  data: Partial<AppsignalOptions>
 
   constructor(options: Partial<AppsignalOptions>) {
     writePrivateConstants()

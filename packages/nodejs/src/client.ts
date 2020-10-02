@@ -25,14 +25,14 @@ import { Metrics } from "./interfaces/metrics"
  * @class
  */
 export class Client {
-  public VERSION = VERSION
+  VERSION = VERSION
 
-  public config: Configuration
-  public agent: Agent
-  public instrumentation: Instrumentation
+  config: Configuration
+  agent: Agent
+  instrumentation: Instrumentation
 
-  private _tracer: Tracer
-  private _metrics: Metrics
+  #tracer: Tracer
+  #metrics: Metrics
 
   /**
    * Creates a new instance of the `Appsignal` object
@@ -41,8 +41,8 @@ export class Client {
     // Agent is not started by default
     const { active = false } = options
 
-    this._tracer = new BaseTracer()
-    this._metrics = new BaseMetrics()
+    this.#tracer = new BaseTracer()
+    this.#metrics = new BaseMetrics()
 
     this.config = new Configuration(options)
     this.agent = new Agent({ active })
@@ -106,7 +106,7 @@ export class Client {
       return new NoopTracer()
     }
 
-    return this._tracer
+    return this.#tracer
   }
 
   /**
@@ -127,7 +127,7 @@ export class Client {
       return new NoopMetrics()
     }
 
-    return this._metrics
+    return this.#metrics
   }
 
   /**

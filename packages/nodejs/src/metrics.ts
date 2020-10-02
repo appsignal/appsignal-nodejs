@@ -10,7 +10,7 @@ import { Probes } from "./probes"
  * @class
  */
 export class BaseMetrics implements Metrics {
-  private _probes = new Probes()
+  #probes = new Probes()
 
   /**
    * A gauge is a metric value at a specific time. If you set more
@@ -91,6 +91,6 @@ export class BaseMetrics implements Metrics {
    * every minute.
    */
   public probes(): Probes {
-    return this._probes
+    return this.#probes
   }
 }
