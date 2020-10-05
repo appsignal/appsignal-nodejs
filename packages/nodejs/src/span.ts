@@ -145,16 +145,21 @@ export class BaseSpan implements Span {
    * Completes the current `Span`.
    *
    * If an `endTime` is passed as an argument, the `Span` is closed with the
-   * timestamp that you provide.
+   * timestamp that you provide. `endTime` should be a numeric
+   * timestamp in milliseconds since the UNIX epoch.
    */
   public close(endTime?: number): this {
-    if (endTime) {
+    if (endTime && typeof endTime === "number") {
+      const sec = Math.round(endTime / 1000) // seconds
+      const nsec = Math.round(endTime * 1e6) // nanoseconds
+
+      span.closeSpanWithTimestamp(this._ref, sec, nsec)
+
+      return this
+    } else {
+      span.closeSpan(this._ref)
       return this
     }
-
-    span.closeSpan(this._ref)
-
-    return this
   }
 
   /**
