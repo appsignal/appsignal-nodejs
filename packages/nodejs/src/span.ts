@@ -1,4 +1,4 @@
-import { HashMap } from "@appsignal/types"
+import { HashMap, HashMapValue } from "@appsignal/types"
 
 import { span } from "./extension"
 import { Data } from "./internal/data"
@@ -106,9 +106,11 @@ export class BaseSpan implements Span {
   public setSampleData(
     key: string,
     data:
-      | Array<string | number | boolean | Array<any> | HashMap<any> | undefined>
+      | Array<
+          HashMapValue | Array<HashMapValue> | HashMap<HashMapValue> | undefined
+        >
       | HashMap<
-          string | number | boolean | Array<any> | HashMap<any> | undefined
+          HashMapValue | Array<HashMapValue> | HashMap<HashMapValue> | undefined
         >
   ): this {
     if (!key || !data) return this
