@@ -4,7 +4,7 @@
 - [Documentation][docs]
 - [Support][contact]
 
-[![Build Status](https://travis-ci.org/appsignal/appsignal-nodejs.svg?branch=main)](https://travis-ci.org/appsignal/appsignal-nodejs) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+[![Build Status](https://appsignal.semaphoreci.com/badges/appsignal-nodejs/branches/main.svg?style=shields&key=7dd9fe64-f1d5-437b-a5b7-8ac337a26c5b)](https://travis-ci.org/appsignal/appsignal-nodejs) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 ## Installation
 
@@ -23,7 +23,7 @@ npm install --save @appsignal/nodejs
 
 Alternatively, you can manually add the `@appsignal/nodejs` package to your `package.json`. Then, run `yarn install`/`npm install`.
 
-> Installing the AppSignal for Node.js integration builds a native extension. In order to compile it, macOS users will need to install the [Xcode Developer Tools](https://osxdaily.com/2014/02/12/install-command-line-tools-mac-os-x/). Linux users will need the dependencies outlined here. Windows is not supported.
+> Installing the AppSignal for Node.js integration builds a native extension. To compile it, macOS users will need to install the [Xcode Developer Tools](https://osxdaily.com/2014/02/12/install-command-line-tools-mac-os-x/). Linux users will need the dependencies outlined here. Windows is not supported.
 
 You can then import and use the package in your bundle:
 
@@ -39,7 +39,7 @@ const appsignal = new Appsignal({
 // ...all the rest of your code goes here!
 ```
 
-> In order to auto-instrument modules, the Appsignal module must be both **required** and **initialized** before any other package.
+> To auto-instrument modules, the Appsignal module must be both **required** and **initialized** before any other package.
 
 ## Development
 
