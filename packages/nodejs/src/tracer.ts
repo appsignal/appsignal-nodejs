@@ -15,10 +15,10 @@ import { SpanContext } from "./interfaces/context"
  * @class
  */
 export class BaseTracer implements Tracer {
-  private _scopeManager: ScopeManager
+  #scopeManager: ScopeManager
 
   constructor() {
-    this._scopeManager = new ScopeManager().enable()
+    this.#scopeManager = new ScopeManager().enable()
   }
 
   /**
@@ -53,7 +53,7 @@ export class BaseTracer implements Tracer {
    * If there is no current Span available, `undefined` is returned.
    */
   public currentSpan(): Span {
-    return this._scopeManager.active() || new NoopSpan()
+    return this.#scopeManager.active() || new NoopSpan()
   }
 
   /**
@@ -66,20 +66,20 @@ export class BaseTracer implements Tracer {
    * operations.
    */
   public withSpan<T>(span: Span, fn: (s: Span) => T): T {
-    return this._scopeManager.withContext(span, fn)
+    return this.#scopeManager.withContext(span, fn)
   }
 
   /**
    * Wraps a given function in the current `Span`s scope.
    */
   public wrap<T>(fn: Func<T>): Func<T> {
-    return this._scopeManager.bindContext(fn)
+    return this.#scopeManager.bindContext(fn)
   }
 
   /**
    * Wraps an `EventEmitter` in the current `Span`s scope.
    */
   public wrapEmitter(emitter: EventEmitter): void {
-    return this._scopeManager.emitWithContext(emitter)
+    return this.#scopeManager.emitWithContext(emitter)
   }
 }
