@@ -34,11 +34,11 @@ type ContextWrapped<T> = T & { [WRAPPED]?: boolean }
  * @class
  */
 export class ScopeManager {
-  private _scopes: Map<number, Span | undefined>
-  private _asyncHook: asyncHooks.AsyncHook
+  #scopes: Map<number, Span | undefined>
+  #asyncHook: asyncHooks.AsyncHook
 
   constructor() {
-    this._scopes = new Map()
+    this.#scopes = new Map()
 
     const init = (id: number, type: string, triggerId: number) => {
       /**
@@ -48,8 +48,8 @@ export class ScopeManager {
       if (type === "PROMISE") {
         const currentId = asyncHooks.executionAsyncId()
 
-        if (this._scopes.get(currentId)) {
-          this._scopes.set(id, this._scopes.get(currentId))
+        if (this.#scopes.get(currentId)) {
+          this.#scopes.set(id, this.#scopes.get(currentId))
         }
       } else {
         /**
@@ -60,8 +60,8 @@ export class ScopeManager {
          *
          * However, as the `triggerId` can be defined in userland, we choose to respect th
          */
-        if (this._scopes.get(triggerId)) {
-          this._scopes.set(id, this._scopes.get(triggerId))
+        if (this.#scopes.get(triggerId)) {
+          this.#scopes.set(id, this.#scopes.get(triggerId))
         }
       }
     }
@@ -71,10 +71,10 @@ export class ScopeManager {
      * callback is called when a promise is resolved.
      */
     const destroy = (id: number) => {
-      this._scopes.delete(id)
+      this.#scopes.delete(id)
     }
 
-    this._asyncHook = asyncHooks.createHook({
+    this.#asyncHook = asyncHooks.createHook({
       init: init,
       destroy: destroy,
       promiseResolve: destroy
@@ -85,7 +85,7 @@ export class ScopeManager {
    * Enables the async hook.
    */
   public enable(): this {
-    this._asyncHook.enable()
+    this.#asyncHook.enable()
     return this
   }
 
@@ -94,8 +94,8 @@ export class ScopeManager {
    * only need to be called by the test suite.
    */
   public disable(): this {
-    this._asyncHook.disable()
-    this._scopes = new Map()
+    this.#asyncHook.disable()
+    this.#scopes = new Map()
     return this
   }
 
@@ -104,7 +104,7 @@ export class ScopeManager {
    */
   public active(): Span | undefined {
     const uid = asyncHooks.executionAsyncId()
-    return this._scopes.get(uid)
+    return this.#scopes.get(uid)
   }
 
   /**
@@ -112,9 +112,9 @@ export class ScopeManager {
    */
   public withContext<T>(span: Span, fn: (s: Span) => T): T {
     const uid = asyncHooks.executionAsyncId()
-    const oldScope = this._scopes.get(uid)
+    const oldScope = this.#scopes.get(uid)
 
-    this._scopes.set(uid, span)
+    this.#scopes.set(uid, span)
 
     try {
       return fn(span)
@@ -124,9 +124,9 @@ export class ScopeManager {
     } finally {
       // revert to the previous span
       if (oldScope === undefined) {
-        this._scopes.delete(uid)
+        this.#scopes.delete(uid)
       } else {
-        this._scopes.set(uid, oldScope)
+        this.#scopes.set(uid, oldScope)
       }
     }
   }
@@ -138,7 +138,7 @@ export class ScopeManager {
     }
 
     // capture the context of the current `AsyncResource`
-    const boundContext = this._scopes.get(asyncHooks.executionAsyncId())
+    const boundContext = this.#scopes.get(asyncHooks.executionAsyncId())
 
     // return if there is no current context to bind
     if (!boundContext) {
