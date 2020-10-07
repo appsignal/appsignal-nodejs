@@ -27,8 +27,8 @@ import { Metrics } from "./interfaces/metrics"
 export class Client {
   public VERSION = VERSION
 
-  public config: Configuration
   public agent: Agent
+  public config: Configuration
   public instrumentation: Instrumentation
 
   private _tracer: Tracer
@@ -39,7 +39,7 @@ export class Client {
    */
   constructor(options: Partial<AppsignalOptions> = {}) {
     // Agent is not started by default
-    const { active = false } = options
+    const { active = false, ignoreInstrumentation } = options
 
     this._tracer = new BaseTracer()
     this._metrics = new BaseMetrics()
@@ -49,9 +49,21 @@ export class Client {
 
     this.instrumentation = new Instrumentation(this.tracer(), this.metrics())
 
+    let plugins: any[] = [httpPlugin, httpsPlugin, redisPlugin, pgPlugin]
+
+    // cull ignored plugins
+    if (ignoreInstrumentation && Array.isArray(ignoreInstrumentation)) {
+      plugins = plugins.filter(p => ignoreInstrumentation.includes(p))
+    }
+
     // load plugins
-    const plugins: any[] = [httpPlugin, httpsPlugin, redisPlugin, pgPlugin]
-    plugins.forEach(p => this.instrument(p))
+    plugins.forEach(p => {
+      try {
+        this.instrument(p)
+      } catch (e) {
+        console.warn(`Failed to instrument "${p.PLUGIN_NAME}": ${e.message}`)
+      }
+    })
   }
 
   /**

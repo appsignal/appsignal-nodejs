@@ -6,14 +6,14 @@ import { Plugin } from "./interfaces/plugin"
 import { Tracer } from "./interfaces/tracer"
 import { Metrics } from "./interfaces/metrics"
 
-type InstrumentedModule<T> = { name: string; plugin: Plugin<T>; hook: Hook }
+type InstrumentedModule = { name: string; hook: Hook }
 
 /**
  * The Instrumentation class.
  * @class
  */
 export class Instrumentation {
-  public active: InstrumentedModule<any>[]
+  public active: InstrumentedModule[]
 
   private _tracer: Tracer
   private _meter: Metrics
@@ -32,9 +32,7 @@ export class Instrumentation {
   public load<T>(
     name: string,
     fn: (module: T, tracer: Tracer, meter: Metrics) => Plugin<T>
-  ): InstrumentedModule<T>[] {
-    let plugin: Plugin<T> | undefined
-
+  ): void {
     const hook = Hook([name], (mod: T, _, basedir: string) => {
       // we use the current node version as the given version
       // if the module is internal (i.e. no `package.json`)
@@ -43,7 +41,7 @@ export class Instrumentation {
         : process.versions.node
 
       // init the plugin
-      plugin = fn(mod, this._tracer, this._meter)
+      const plugin = fn(mod, this._tracer, this._meter)
 
       // install if version range matches
       if (semver.satisfies(version, plugin.version)) {
@@ -53,18 +51,13 @@ export class Instrumentation {
           `Unable to instrument module ${name}, module version needs to satisfy version range ${plugin.version}`
         )
 
-        // abandon the plugin
-        plugin = undefined
-
         return mod
       }
     })
 
-    if (plugin !== undefined) {
-      this.active.push({ name, plugin, hook })
-    }
+    this.active.push({ name, hook })
 
-    return this.active
+    return
   }
 
   /**
@@ -72,36 +65,31 @@ export class Instrumentation {
    * subsequent calls to `require` for this instrumentation after calling
    * this method will not include instrumentation.
    */
-  public unload(name: string): InstrumentedModule<any>[] {
+  public unload(name: string): void {
     this.active = this.active.filter(active => {
       if (active.name !== name) {
         return true
       } else {
-        const { plugin, hook } = active
-
-        plugin.uninstall()
+        const { hook } = active
         hook.unhook()
-
         return false
       }
     })
 
-    return this.active
+    return
   }
 
   /**
    * Removes all custom instrumentation. Any subsequent calls to `require`
    * after calling this method will not include instrumentation.
    */
-  public unloadAll(): InstrumentedModule<any>[] {
+  public unloadAll(): void {
     this.active.forEach(active => {
-      const { plugin, hook } = active
-
-      plugin.uninstall()
+      const { hook } = active
       hook.unhook()
     })
 
     this.active = []
-    return this.active
+    return
   }
 }
