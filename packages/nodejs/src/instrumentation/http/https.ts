@@ -1,7 +1,12 @@
 import shimmer from "shimmer"
 import https from "https"
 
-import { getPatchIncomingRequestFunction } from "./lifecycle/request"
+import { getPatchIncomingRequestFunction } from "./lifecycle/incoming"
+import {
+  getPatchOutgoingGetFunction,
+  getPatchOutgoingRequestFunction
+} from "./lifecycle/outgoing"
+
 import { Tracer } from "../../interfaces/tracer"
 import { Plugin } from "../../interfaces/plugin"
 
@@ -25,6 +30,10 @@ export const instrument = (
       )
     }
 
+    // wrap outgoing requests
+    shimmer.wrap(mod, "request", getPatchOutgoingRequestFunction(tracer))
+    shimmer.wrap(mod, "get", getPatchOutgoingGetFunction(mod.request))
+
     return mod
   },
   uninstall(): void {
@@ -32,5 +41,9 @@ export const instrument = (
     if (mod?.Server?.prototype) {
       shimmer.unwrap(mod.Server.prototype, "emit")
     }
+
+    // unwrap outgoing requests
+    shimmer.unwrap(mod, "request")
+    shimmer.unwrap(mod, "get")
   }
 })
