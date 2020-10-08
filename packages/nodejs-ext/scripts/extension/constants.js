@@ -1,37 +1,37 @@
-const AGENT_VERSION = "2f2cb43"
+const AGENT_VERSION = "5b16a75"
 
 const TRIPLES = {
   "x86_64-darwin": {
-    checksum: "e8267dd5d565588ab43965b5c20c7ef97bb3611235244f05af0863f3c52559df",
-    downloadUrl: "https://appsignal-agent-releases.global.ssl.fastly.net/2f2cb43/appsignal-x86_64-darwin-all-static.tar.gz"
+    checksum: "643cb9d7d8ecc6a994fb8c3455784abe4289f2385fd02a596b94c52fbb2f3f94",
+    downloadUrl: "https://appsignal-agent-releases.global.ssl.fastly.net/5b16a75/appsignal-x86_64-darwin-all-static.tar.gz"
   },
   "universal-darwin": {
-    checksum: "e8267dd5d565588ab43965b5c20c7ef97bb3611235244f05af0863f3c52559df",
-    downloadUrl: "https://appsignal-agent-releases.global.ssl.fastly.net/2f2cb43/appsignal-x86_64-darwin-all-static.tar.gz"
+    checksum: "643cb9d7d8ecc6a994fb8c3455784abe4289f2385fd02a596b94c52fbb2f3f94",
+    downloadUrl: "https://appsignal-agent-releases.global.ssl.fastly.net/5b16a75/appsignal-x86_64-darwin-all-static.tar.gz"
   },
   "i686-linux": {
-    checksum: "2af725a6d654277a4f6335658942e8b17099038fb27062d8b79d38a134b2dbba",
-    downloadUrl: "https://appsignal-agent-releases.global.ssl.fastly.net/2f2cb43/appsignal-i686-linux-all-static.tar.gz"
+    checksum: "f81ca1d2c43862708ed48de6c492fb8a7ae979024663973b6b47d75abb12ef9c",
+    downloadUrl: "https://appsignal-agent-releases.global.ssl.fastly.net/5b16a75/appsignal-i686-linux-all-static.tar.gz"
   },
   "x86-linux": {
-    checksum: "2af725a6d654277a4f6335658942e8b17099038fb27062d8b79d38a134b2dbba",
-    downloadUrl: "https://appsignal-agent-releases.global.ssl.fastly.net/2f2cb43/appsignal-i686-linux-all-static.tar.gz"
+    checksum: "f81ca1d2c43862708ed48de6c492fb8a7ae979024663973b6b47d75abb12ef9c",
+    downloadUrl: "https://appsignal-agent-releases.global.ssl.fastly.net/5b16a75/appsignal-i686-linux-all-static.tar.gz"
   },
   "x86_64-linux": {
-    checksum: "acab21121ea1c794f7077af386469e1c83f43b1287f943fed86ac5e441087c78",
-    downloadUrl: "https://appsignal-agent-releases.global.ssl.fastly.net/2f2cb43/appsignal-x86_64-linux-all-static.tar.gz"
+    checksum: "b9d43a7c57338c9e6e1aa85a947685ade910c570bd9035b477bc2b28efecf778",
+    downloadUrl: "https://appsignal-agent-releases.global.ssl.fastly.net/5b16a75/appsignal-x86_64-linux-all-static.tar.gz"
   },
   "x86_64-linux-musl": {
-    checksum: "b8ba1be3a454e4cbf6c995319637e6336015e73122b3c6e73c4daf20771eb16a",
-    downloadUrl: "https://appsignal-agent-releases.global.ssl.fastly.net/2f2cb43/appsignal-x86_64-linux-musl-all-static.tar.gz"
+    checksum: "c1964b137b891c184dfdb5b9cf867a3a849452c4012458973fe9522b5b4432b6",
+    downloadUrl: "https://appsignal-agent-releases.global.ssl.fastly.net/5b16a75/appsignal-x86_64-linux-musl-all-static.tar.gz"
   },
   "x86_64-freebsd": {
-    checksum: "4326b06c52fe24258d0a57d1ebf42c9d711a9167df30273cd9067339d540f2f4",
-    downloadUrl: "https://appsignal-agent-releases.global.ssl.fastly.net/2f2cb43/appsignal-x86_64-freebsd-all-static.tar.gz"
+    checksum: "5bfd91805896dc7414a69ba0fc69c6121ba9aef60e8199370221595bee975a78",
+    downloadUrl: "https://appsignal-agent-releases.global.ssl.fastly.net/5b16a75/appsignal-x86_64-freebsd-all-static.tar.gz"
   },
   "amd64-freebsd": {
-    checksum: "4326b06c52fe24258d0a57d1ebf42c9d711a9167df30273cd9067339d540f2f4",
-    downloadUrl: "https://appsignal-agent-releases.global.ssl.fastly.net/2f2cb43/appsignal-x86_64-freebsd-all-static.tar.gz"
+    checksum: "5bfd91805896dc7414a69ba0fc69c6121ba9aef60e8199370221595bee975a78",
+    downloadUrl: "https://appsignal-agent-releases.global.ssl.fastly.net/5b16a75/appsignal-x86_64-freebsd-all-static.tar.gz"
   },
 }
 
