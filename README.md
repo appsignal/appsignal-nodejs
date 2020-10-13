@@ -51,7 +51,7 @@ To install the dependencies:
 
 ```bash
 npm install
-lerna bootstrap
+npx lerna bootstrap && npx lerna link
 ```
 
 You can then run the following to start the compiler in _watch_ mode. 
@@ -65,6 +65,8 @@ You can also build the library without watching the directory:
 ```
 npm run build
 ```
+
+Version management configuration is provided for [`volta`](https://volta.sh/) and [`asdf`](https://github.com/asdf-vm/asdf-nodejs).
 
 ### Testing
 
