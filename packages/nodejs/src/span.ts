@@ -1,9 +1,13 @@
-import { HashMap, HashMapValue } from "@appsignal/types"
+import {
+  NodeSpan,
+  NodeSpanOptions,
+  SpanContext,
+  HashMap,
+  HashMapValue
+} from "@appsignal/types"
 
 import { span } from "./extension"
 import { Data } from "./internal/data"
-import { SpanContext } from "./interfaces/context"
-import { Span, SpanOptions } from "./interfaces/span"
 
 /**
  * The `Span` object represents a length of time in the flow of execution
@@ -14,7 +18,7 @@ import { Span, SpanOptions } from "./interfaces/span"
  *
  * @class
  */
-export class BaseSpan implements Span {
+export class BaseSpan implements NodeSpan {
   protected _ref: any
 
   /**
@@ -177,11 +181,11 @@ export class BaseSpan implements Span {
  * be a parent to many `ChildSpan`s.
  */
 export class ChildSpan extends BaseSpan {
-  constructor(span: Span)
+  constructor(span: NodeSpan)
 
   constructor(context: SpanContext)
 
-  constructor({ traceId, spanId }: Span | SpanContext) {
+  constructor({ traceId, spanId }: NodeSpan | SpanContext) {
     super()
     this._ref = span.createChildSpan(traceId, spanId)
   }
@@ -192,7 +196,7 @@ export class ChildSpan extends BaseSpan {
  * created from.
  */
 export class RootSpan extends BaseSpan {
-  constructor(options: Partial<SpanOptions> = {}) {
+  constructor(options: Partial<NodeSpanOptions> = {}) {
     super()
     const { namespace = "web" } = options
     this._ref = span.createRootSpan(namespace)

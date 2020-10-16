@@ -4,10 +4,9 @@
  * Copyright 2019, OpenTelemetry Authors
  */
 
+import { Tracer } from "@appsignal/types"
 import { parse } from "url"
 import { IncomingMessage, ServerResponse } from "http"
-
-import { Tracer } from "../../../interfaces/tracer"
 
 // explicitly ignore some urls that we can't guarantee groupings on, or
 // routes that cause known issues.

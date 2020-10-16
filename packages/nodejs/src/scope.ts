@@ -8,12 +8,10 @@
  * Copyright 2018, Google LLC
  */
 
+import { NodeSpan, Func } from "@appsignal/types"
 import * as asyncHooks from "async_hooks"
 import { EventEmitter } from "events"
 import shimmer from "shimmer"
-
-import { Func } from "./types/utils"
-import { Span } from "./interfaces/span"
 
 // A list of well-known EventEmitter methods that add event listeners.
 const EVENT_EMITTER_METHODS: Array<keyof EventEmitter> = [
@@ -34,7 +32,7 @@ type ContextWrapped<T> = T & { [WRAPPED]?: boolean }
  * @class
  */
 export class ScopeManager {
-  #scopes: Map<number, Span | undefined>
+  #scopes: Map<number, NodeSpan | undefined>
   #asyncHook: asyncHooks.AsyncHook
 
   constructor() {
@@ -90,7 +88,7 @@ export class ScopeManager {
   }
 
   /**
-   * Disables the async hook and clears the current `Spans`. Will generally
+   * Disables the async hook and clears the current `Span`s. Will generally
    * only need to be called by the test suite.
    */
   public disable(): this {
@@ -102,7 +100,7 @@ export class ScopeManager {
   /**
    * Returns the current active `Span`.
    */
-  public active(): Span | undefined {
+  public active(): NodeSpan | undefined {
     const uid = asyncHooks.executionAsyncId()
     return this.#scopes.get(uid)
   }
@@ -110,7 +108,7 @@ export class ScopeManager {
   /**
    * Executes a given function within the context of a given `Span`.
    */
-  public withContext<T>(span: Span, fn: (s: Span) => T): T {
+  public withContext<T>(span: NodeSpan, fn: (s: NodeSpan) => T): T {
     const uid = asyncHooks.executionAsyncId()
     const oldScope = this.#scopes.get(uid)
 

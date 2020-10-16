@@ -1,7 +1,7 @@
 import path from "path"
 
 import { VERSION } from "./version"
-import { AppsignalOptions } from "./types/options"
+import { AppsignalOptions } from "./interfaces/options"
 import { ENV_TO_KEY_MAPPING, PRIVATE_ENV_MAPPING } from "./config/configmap"
 
 /**
