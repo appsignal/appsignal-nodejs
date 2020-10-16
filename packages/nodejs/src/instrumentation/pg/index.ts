@@ -1,9 +1,7 @@
+import { Tracer, Plugin } from "@appsignal/types"
 import shimmer from "shimmer"
 import pg from "pg"
 import { EventEmitter } from "events"
-import { Tracer } from "../../interfaces/tracer"
-import { Span } from "../../interfaces/span"
-import { Plugin } from "../../interfaces/plugin"
 
 import { patchCallback, patchPromise, patchSubmittable } from "./patches"
 

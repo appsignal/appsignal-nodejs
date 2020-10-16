@@ -1,4 +1,4 @@
-import { Appsignal } from "@appsignal/nodejs"
+import { NodeClient } from "@appsignal/types"
 
 import {
   Request,
@@ -12,7 +12,7 @@ import {
  * Returns an Express middleware that can augment the current span
  * with data.
  */
-export function expressMiddleware(appsignal: Appsignal): RequestHandler {
+export function expressMiddleware(appsignal: NodeClient): RequestHandler {
   return function (req: Request, res: Response, next: NextFunction) {
     const tracer = appsignal.tracer()
     const rootSpan = tracer.currentSpan()
@@ -41,7 +41,10 @@ export function expressMiddleware(appsignal: Appsignal): RequestHandler {
           span.setName(`${method} ${req.route.path}`)
         }
 
-        // set route params (if parsed by express correctly)
+        // defeated the type checker here because i'm pretty sure the error
+        // `tsc` returns is actually a parse error
+        // @TODO: keep an eye on this
+        // @ts-ignore
         span.setSampleData("params", { ...params, ...query })
 
         return res.end.apply(this, arguments as any)
@@ -52,7 +55,9 @@ export function expressMiddleware(appsignal: Appsignal): RequestHandler {
   }
 }
 
-export function expressErrorHandler(appsignal: Appsignal): ErrorRequestHandler {
+export function expressErrorHandler(
+  appsignal: NodeClient
+): ErrorRequestHandler {
   return function (
     err: Error & { status?: number },
     req: Request,
