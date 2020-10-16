@@ -1,13 +1,15 @@
+import {
+  Tracer,
+  NodeSpan,
+  NodeSpanOptions,
+  SpanContext,
+  Func
+} from "@appsignal/types"
 import { EventEmitter } from "events"
 
 import { ScopeManager } from "./scope"
 import { RootSpan, ChildSpan } from "./span"
 import { NoopSpan } from "./noops"
-
-import { Func } from "./types/utils"
-import { Tracer } from "./interfaces/tracer"
-import { Span, SpanOptions } from "./interfaces/span"
-import { SpanContext } from "./interfaces/context"
 
 /**
  * The tracer object.
@@ -25,21 +27,27 @@ export class BaseTracer implements Tracer {
    * Creates a new `Span` instance. If a `Span` is passed as the optional second
    * argument, then the returned `Span` will be a `ChildSpan`.
    */
-  public createSpan(options?: Partial<SpanOptions>, span?: Span): Span
+  public createSpan(
+    options?: Partial<NodeSpanOptions>,
+    span?: NodeSpan
+  ): NodeSpan
 
   /**
    * Creates a new `Span` instance. If a `SpanContext` is passed as the optional second
    * argument, then the returned `Span` will be a `ChildSpan`.
    */
-  public createSpan(options?: Partial<SpanOptions>, context?: SpanContext): Span
+  public createSpan(
+    options?: Partial<NodeSpanOptions>,
+    context?: SpanContext
+  ): NodeSpan
 
   /**
    * Creates a new `Span` instance.
    */
   public createSpan(
-    options?: Partial<SpanOptions>,
-    spanOrContext?: Span | SpanContext
-  ): Span {
+    options?: Partial<NodeSpanOptions>,
+    spanOrContext?: NodeSpan | SpanContext
+  ): NodeSpan {
     if (!spanOrContext) {
       return new RootSpan(options)
     } else {
@@ -52,7 +60,7 @@ export class BaseTracer implements Tracer {
    *
    * If there is no current Span available, `undefined` is returned.
    */
-  public currentSpan(): Span {
+  public currentSpan(): NodeSpan {
     return this.#scopeManager.active() || new NoopSpan()
   }
 
@@ -65,7 +73,7 @@ export class BaseTracer implements Tracer {
    * allows you to create children of the `Span` for instrumenting nested
    * operations.
    */
-  public withSpan<T>(span: Span, fn: (s: Span) => T): T {
+  public withSpan<T>(span: NodeSpan, fn: (s: NodeSpan) => T): T {
     return this.#scopeManager.withContext(span, fn)
   }
 
