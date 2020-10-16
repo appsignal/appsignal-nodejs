@@ -12,8 +12,7 @@ import * as asyncHooks from "async_hooks"
 import { EventEmitter } from "events"
 import shimmer from "shimmer"
 
-import { Func } from "./types/utils"
-import { Span } from "./interfaces/span"
+import { Span, Func } from "@appsignal/types"
 
 // A list of well-known EventEmitter methods that add event listeners.
 const EVENT_EMITTER_METHODS: Array<keyof EventEmitter> = [

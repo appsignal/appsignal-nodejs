@@ -1,7 +1,6 @@
+import { Tracer, Span } from "@appsignal/types"
 import shimmer from "shimmer"
 import { Submittable } from "pg"
-import { Tracer } from "../../../interfaces/tracer"
-import { Span } from "../../../interfaces/span"
 
 interface Handlers {
   handleError?: (msg: any) => any

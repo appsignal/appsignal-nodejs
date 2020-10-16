@@ -4,10 +4,7 @@ import { ScopeManager } from "./scope"
 import { RootSpan, ChildSpan } from "./span"
 import { NoopSpan } from "./noops"
 
-import { Func } from "./types/utils"
-import { Tracer } from "./interfaces/tracer"
-import { Span, SpanOptions } from "./interfaces/span"
-import { SpanContext } from "./interfaces/context"
+import { Tracer, Span, SpanOptions, SpanContext, Func } from "@appsignal/types"
 
 /**
  * The tracer object.

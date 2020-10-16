@@ -1,9 +1,6 @@
+import { Span, Tracer, Plugin } from "@appsignal/types"
 import shimmer from "shimmer"
 import redis from "redis"
-
-import { Span } from "../../interfaces/span"
-import { Tracer } from "../../interfaces/tracer"
-import { Plugin } from "../../interfaces/plugin"
 
 export const PLUGIN_NAME = "redis"
 

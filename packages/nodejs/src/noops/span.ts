@@ -1,6 +1,4 @@
-import { HashMap } from "@appsignal/types"
-
-import { Span } from "../interfaces/span"
+import { HashMap, Span } from "@appsignal/types"
 
 export class NoopSpan implements Span {
   public get traceId(): string {

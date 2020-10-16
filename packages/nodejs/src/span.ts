@@ -1,9 +1,13 @@
-import { HashMap, HashMapValue } from "@appsignal/types"
+import {
+  Span,
+  SpanOptions,
+  SpanContext,
+  HashMap,
+  HashMapValue
+} from "@appsignal/types"
 
 import { span } from "./extension"
 import { Data } from "./internal/data"
-import { SpanContext } from "./interfaces/context"
-import { Span, SpanOptions } from "./interfaces/span"
 
 /**
  * The `Span` object represents a length of time in the flow of execution

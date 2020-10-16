@@ -5,7 +5,7 @@
   "types": "dist/index",
   "license": "MIT",
   "dependencies": {
-    "@appsignal/nodejs": "^1.0.1",
+    "@appsignal/types": "^1.0.0",
     "apollo-server-plugin-base": "^0.10.1",
     "tslib": "^2.0.1"
   },

@@ -1,8 +1,8 @@
+import { Metrics, Probes } from "@appsignal/types"
+
+import { BaseProbes } from "./probes"
 import { metrics } from "./extension"
 import { Data } from "./internal/data"
-import { Metrics } from "./interfaces/metrics"
-
-import { Probes } from "./probes"
 
 /**
  * The metrics object.
@@ -10,7 +10,7 @@ import { Probes } from "./probes"
  * @class
  */
 export class BaseMetrics implements Metrics {
-  #probes = new Probes()
+  #probes = new BaseProbes()
 
   /**
    * A gauge is a metric value at a specific time. If you set more
