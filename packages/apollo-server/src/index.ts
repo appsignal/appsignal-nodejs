@@ -1,7 +1,7 @@
-import { Appsignal } from "@appsignal/nodejs"
+import { NodeClient } from "@appsignal/types"
 import { ApolloServerPlugin } from "apollo-server-plugin-base"
 
-export const createApolloPlugin = (appsignal: Appsignal, _options = {}) => {
+export const createApolloPlugin = (appsignal: NodeClient, _options = {}) => {
   const tracer = appsignal.tracer()
 
   return (): ApolloServerPlugin => ({
