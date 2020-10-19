@@ -13,7 +13,7 @@
     "require-in-the-middle": "^5.0.3",
     "semver": "^7.3.2",
     "shimmer": "^1.2.1",
-    "tslib": "^2.0.1"
+    "tslib": "^2.0.3"
   },
   "optionalDependencies": {
     "@appsignal/nodejs-ext": "^1.0.1"
