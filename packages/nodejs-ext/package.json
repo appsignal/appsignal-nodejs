@@ -6,7 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "node-addon-api": "^3.0.2",
-    "node-gyp": "^7.1.0"
+    "node-gyp": "^7.1.2"
   },
   "scripts": {
     "install": "node scripts/extension.js && node-gyp rebuild",
