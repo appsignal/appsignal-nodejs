@@ -6,7 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "@appsignal/nodejs": "^1.0.1",
-    "apollo-server-plugin-base": "^0.10.1",
+    "apollo-server-plugin-base": "^0.10.2",
     "tslib": "^2.0.3"
   },
   "scripts": {
