@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
 const https = require("https")
+const path = require("path")
 const util = require("util")
+const fs = require("fs")
 const { DiagnoseTool } = require("../dist/diagnose")
 
 // enable diagnose mode
@@ -36,7 +38,8 @@ const opts = {
   headers: {
     "Content-Type": "application/json",
     "Content-Length": json.length
-  }
+  },
+  cert: fs.readFileSync(path.resolve(__dirname, "../cert/cacert.pem"), "utf-8")
 }
 
 const req = https.request(opts, res => {
@@ -58,6 +61,5 @@ req.on("error", e => {
 req.write(json)
 req.end()
 
-console.log(util.inspect(data, { depth: null, colors: true }))
-
-console.log("✅ Done!", "\n")
+console.log(util.inspect(data, { depth: null, colors: true }), "\n")
+console.log("✅ Done!")
