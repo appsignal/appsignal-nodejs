@@ -71,8 +71,7 @@ export class DiagnoseTool {
       // @TODO: this is pretty much just a guess right now
       // it assumes docker. no jails, lxc etc.
       // we'll need to adjust this a little later
-      running_in_container:
-        this.hasDockerEnv() || this.hasDockerCGroup() || heroku
+      running_in_container: hasDockerEnv() || hasDockerCGroup() || heroku
     }
   }
 
@@ -106,7 +105,7 @@ export class DiagnoseTool {
       },
       "appsignal.log": {
         path: logPath,
-        content: fs.readFileSync(logPath, "utf8").split("\n")
+        content: safeReadFromPath(logPath).split("\n")
       }
     }
 
@@ -125,8 +124,8 @@ export class DiagnoseTool {
             gid,
             uid
           },
-          type: this.getPathType(stats),
-          writable: this.isWriteableFile(path)
+          type: getPathType(stats),
+          writable: isWriteableFile(path)
         }
       } catch (_) {
         paths[key] = {
@@ -139,6 +138,10 @@ export class DiagnoseTool {
     return paths
   }
 
+  /**
+   * Reads all configuration and re-maps it to keys with
+   * snake_case names as they appear in our API.
+   */
   private getConfigData() {
     const config: { [key: string]: any } = {}
 
@@ -149,42 +152,56 @@ export class DiagnoseTool {
 
     return config
   }
+}
 
-  private isWriteableFile(path: string) {
-    try {
-      fs.accessSync(path, fs.constants.R_OK)
-      return true
-    } catch (e) {
-      return false
-    }
+function isWriteableFile(path: string) {
+  try {
+    fs.accessSync(path, fs.constants.R_OK)
+    return true
+  } catch (e) {
+    return false
   }
+}
 
-  private getPathType(stats: fs.Stats) {
-    if (stats.isDirectory()) {
-      return "directory"
-    } else if (stats.isFile()) {
-      return "file"
-    } else {
-      return "unknown"
-    }
+function getPathType(stats: fs.Stats) {
+  if (stats.isDirectory()) {
+    return "directory"
+  } else if (stats.isFile()) {
+    return "file"
+  } else {
+    return "unknown"
   }
+}
 
-  // the following lines are borrowed from https://github.com/sindresorhus/is-docker/blob/master/index.js
-  // thanks sindre! <3
-  private hasDockerEnv() {
-    try {
-      fs.statSync("/.dockerenv")
-      return true
-    } catch (_) {
-      return false
-    }
+/**
+ * Attempts to read a UTF-8 from `path`, and either returns the result
+ * as a string, or an empty string on error
+ */
+function safeReadFromPath(path: string) {
+  try {
+    return fs.readFileSync(path, "utf8")
+  } catch (e) {
+    return ""
   }
+}
 
-  private hasDockerCGroup() {
-    try {
-      return fs.readFileSync("/proc/self/cgroup", "utf8").includes("docker")
-    } catch (_) {
-      return false
-    }
+/**
+ * the following lines are borrowed from https://github.com/sindresorhus/is-docker/
+ * thanks sindre! <3
+ */
+function hasDockerEnv() {
+  try {
+    fs.statSync("/.dockerenv")
+    return true
+  } catch (_) {
+    return false
+  }
+}
+
+function hasDockerCGroup() {
+  try {
+    return fs.readFileSync("/proc/self/cgroup", "utf8").includes("docker")
+  } catch (_) {
+    return false
   }
 }
