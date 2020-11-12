@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const https = require("https")
+const util = require("util")
 const { DiagnoseTool } = require("../dist/diagnose")
 
 // enable diagnose mode
@@ -57,5 +58,6 @@ req.on("error", e => {
 req.write(json)
 req.end()
 
-console.log(data, "\n")
+console.log(util.inspect(data, { depth: null, colors: true }))
+
 console.log("✅ Done!", "\n")
