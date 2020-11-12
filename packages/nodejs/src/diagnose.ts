@@ -5,6 +5,19 @@ import { Configuration } from "./config"
 import { AGENT_VERSION, VERSION } from "./version"
 import { JS_TO_RUBY_MAPPING } from "./config/configmap"
 
+interface FileMetadata {
+  content?: string[]
+  exists: boolean
+  mode?: number
+  ownership?: {
+    gid: number
+    uid: number
+  }
+  path?: string
+  type?: string
+  writable?: boolean
+}
+
 export class DiagnoseTool {
   #config: Configuration
   #agent: Agent
@@ -47,13 +60,18 @@ export class DiagnoseTool {
   }
 
   private getHostData() {
+    const heroku = !!process.env["DYNO"]
+
     return {
       architecture: process.arch,
       os: process.platform,
       language_version: process.versions.node,
-      heroku: !!process.env["DYNO"],
+      heroku,
       root: process.getuid() === 0,
-      running_in_container: false
+      // @TODO: this is pretty much just a guess right now
+      // it assumes docker. no jails, lxc etc.
+      // we'll need to adjust this a little later
+      running_in_container: hasDockerEnv() || hasDockerCGroup() || heroku
     }
   }
 
@@ -71,9 +89,55 @@ export class DiagnoseTool {
   }
 
   private getPathsData() {
-    return {}
+    const paths: { [key: string]: FileMetadata } = {}
+
+    // we want to fall over if this value isn't present
+    // (it should be)
+    const logPath = this.#config.data.logPath!
+
+    // add any paths we want to check to this object!
+    const files = {
+      working_dir: {
+        path: process.cwd()
+      },
+      log_dir_path: {
+        path: logPath.replace("/appsignal.log", "")
+      },
+      "appsignal.log": {
+        path: logPath,
+        content: safeReadFromPath(logPath).split("\n")
+      }
+    }
+
+    Object.entries(files).forEach(([key, data]) => {
+      try {
+        const { path } = data
+        const stats = fs.statSync(path)
+        const { mode, gid, uid } = stats
+
+        paths[key] = {
+          ...data,
+          exists: true,
+          mode,
+          ownership: {
+            gid,
+            uid
+          },
+          type: getPathType(stats),
+          writable: isWriteableFile(path)
+        }
+      } catch (e) {
+        paths[key].exists = false
+      }
+    })
+
+    return paths
   }
 
+  /**
+   * Reads all configuration and re-maps it to keys with
+   * snake_case names as they appear in our API.
+   */
   private getConfigData() {
     const config: { [key: string]: any } = {}
 
@@ -83,5 +147,57 @@ export class DiagnoseTool {
     })
 
     return config
+  }
+}
+
+function isWriteableFile(path: string) {
+  try {
+    fs.accessSync(path, fs.constants.R_OK)
+    return true
+  } catch (e) {
+    return false
+  }
+}
+
+function getPathType(stats: fs.Stats) {
+  if (stats.isDirectory()) {
+    return "directory"
+  } else if (stats.isFile()) {
+    return "file"
+  } else {
+    return "unknown"
+  }
+}
+
+/**
+ * Attempts to read a UTF-8 from `path`, and either returns the result
+ * as a string, or an empty string on error
+ */
+function safeReadFromPath(path: string) {
+  try {
+    return fs.readFileSync(path, "utf8")
+  } catch (e) {
+    return ""
+  }
+}
+
+/**
+ * the following lines are borrowed from https://github.com/sindresorhus/is-docker/
+ * thanks sindre! <3
+ */
+function hasDockerEnv() {
+  try {
+    fs.statSync("/.dockerenv")
+    return true
+  } catch (_) {
+    return false
+  }
+}
+
+function hasDockerCGroup() {
+  try {
+    return fs.readFileSync("/proc/self/cgroup", "utf8").includes("docker")
+  } catch (_) {
+    return false
   }
 }
