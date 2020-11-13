@@ -154,7 +154,7 @@ export class DiagnoseTool {
   }
 }
 
-function isWriteableFile(path: string) {
+function isWriteableFile(path: string): boolean {
   try {
     fs.accessSync(path, fs.constants.R_OK)
     return true
@@ -177,10 +177,10 @@ function getPathType(stats: fs.Stats) {
  * Attempts to read a UTF-8 from `path`, and either returns the result
  * as a string, or an empty string on error
  */
-function safeReadFromPath(path: string) {
+function safeReadFromPath(path: string): string {
   try {
     return fs.readFileSync(path, "utf8")
-  } catch (e) {
+  } catch (_) {
     return ""
   }
 }
@@ -189,7 +189,7 @@ function safeReadFromPath(path: string) {
  * the following lines are borrowed from https://github.com/sindresorhus/is-docker/
  * thanks sindre! <3
  */
-function hasDockerEnv() {
+function hasDockerEnv(): boolean {
   try {
     fs.statSync("/.dockerenv")
     return true
@@ -198,7 +198,7 @@ function hasDockerEnv() {
   }
 }
 
-function hasDockerCGroup() {
+function hasDockerCGroup(): boolean {
   try {
     return fs.readFileSync("/proc/self/cgroup", "utf8").includes("docker")
   } catch (_) {
