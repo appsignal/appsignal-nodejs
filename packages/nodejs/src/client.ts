@@ -6,6 +6,7 @@ import { BaseTracer } from "./tracer"
 import { BaseMetrics } from "./metrics"
 import { NoopTracer, NoopMetrics } from "./noops"
 
+import { demo } from "./demo"
 import { Instrumentation } from "./instrument"
 import { httpPlugin, httpsPlugin } from "./instrumentation/http"
 import * as pgPlugin from "./instrumentation/pg"
@@ -156,5 +157,12 @@ export class Client {
   }): this {
     this.instrumentation.load(name, fn)
     return this
+  }
+
+  /**
+   * Sends a demonstration/test sample for a exception and a performance issue.
+   */
+  public demo() {
+    return demo(this.tracer())
   }
 }
