@@ -1,3 +1,4 @@
+import { Tracer, Plugin } from "@appsignal/types"
 import shimmer from "shimmer"
 import https from "https"
 
@@ -6,9 +7,6 @@ import {
   getPatchOutgoingGetFunction,
   getPatchOutgoingRequestFunction
 } from "./lifecycle/outgoing"
-
-import { Tracer } from "../../interfaces/tracer"
-import { Plugin } from "../../interfaces/plugin"
 
 // quick alias to expose a type for the entire module
 type HttpsModule = typeof https

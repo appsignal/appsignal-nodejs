@@ -4,12 +4,11 @@
  * Copyright 2019, OpenTelemetry Authors
  */
 
+import { Tracer, NodeSpan } from "@appsignal/types"
 import url from "url"
 import { IncomingMessage, ClientRequest, RequestOptions } from "http"
 
 import { NoopSpan } from "../../../noops"
-import { Span } from "../../../interfaces/span"
-import { Tracer } from "../../../interfaces/tracer"
 
 type HttpRequestArgs = Array<
   (
@@ -66,7 +65,7 @@ function outgoingRequestFunction(
     urlOrOptions: string | url.URL | RequestOptions,
     ...args: unknown[]
   ): ClientRequest {
-    let span: Span
+    let span: NodeSpan
     let origin: string
     let method: string
 

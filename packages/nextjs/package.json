@@ -5,7 +5,7 @@
   "types": "dist/index",
   "license": "MIT",
   "dependencies": {
-    "@appsignal/nodejs": "^1.0.1",
+    "@appsignal/types": "^2.0.0",
     "tslib": "^2.0.3"
   },
   "peerDependencies": {

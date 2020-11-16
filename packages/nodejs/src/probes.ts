@@ -1,9 +1,10 @@
 import { EventEmitter } from "events"
+import { Probes } from "@appsignal/types"
 
 /**
  * The Minutely probes object.
  */
-export class Probes extends EventEmitter {
+export class BaseProbes extends EventEmitter implements Probes {
   #timers = new Map<string, NodeJS.Timeout>()
 
   constructor() {

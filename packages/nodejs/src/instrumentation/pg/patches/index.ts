@@ -1,14 +1,17 @@
+import { Tracer, NodeSpan } from "@appsignal/types"
 import shimmer from "shimmer"
 import { Submittable } from "pg"
-import { Tracer } from "../../../interfaces/tracer"
-import { Span } from "../../../interfaces/span"
 
 interface Handlers {
   handleError?: (msg: any) => any
   handleReadyForQuery?: () => any
 }
 
-export function patchCallback(tracer: Tracer, span: Span, callback: Function) {
+export function patchCallback(
+  tracer: Tracer,
+  span: NodeSpan,
+  callback: Function
+) {
   return tracer.wrap((err: Error | null, res?) => {
     if (err) span.addError(err)
     span.close()
@@ -18,7 +21,7 @@ export function patchCallback(tracer: Tracer, span: Span, callback: Function) {
 
 export function patchSubmittable(
   tracer: Tracer,
-  span: Span,
+  span: NodeSpan,
   submittable: Submittable & Handlers
 ): Submittable {
   let spanEnded = false
@@ -57,7 +60,7 @@ export function patchSubmittable(
   return submittable
 }
 
-export function patchPromise<T>(span: Span, promise: Promise<T>) {
+export function patchPromise<T>(span: NodeSpan, promise: Promise<T>) {
   return promise.then(
     res => {
       span.close()

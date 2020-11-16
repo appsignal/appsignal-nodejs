@@ -1,3 +1,5 @@
+import { NodeClient, Metrics, Plugin, Tracer } from "@appsignal/types"
+
 import { VERSION } from "./version"
 
 import { Agent } from "./agent"
@@ -11,10 +13,7 @@ import { httpPlugin, httpsPlugin } from "./instrumentation/http"
 import * as pgPlugin from "./instrumentation/pg"
 import * as redisPlugin from "./instrumentation/redis"
 
-import { AppsignalOptions } from "./types/options"
-import { Plugin } from "./interfaces/plugin"
-import { Tracer } from "./interfaces/tracer"
-import { Metrics } from "./interfaces/metrics"
+import { AppsignalOptions } from "./interfaces/options"
 
 /**
  * AppSignal for Node.js's main class.
@@ -24,8 +23,8 @@ import { Metrics } from "./interfaces/metrics"
  *
  * @class
  */
-export class Client {
-  VERSION = VERSION
+export class Client implements NodeClient {
+  readonly VERSION = VERSION
 
   config: Configuration
   agent: Agent
