@@ -1,7 +1,5 @@
-import { EventEmitter } from "events"
-
 import { ScopeManager } from "../scope"
-import { RootSpan, ChildSpan } from "../span"
+import { RootSpan } from "../span"
 
 describe("ScopeManager", () => {
   let scopeManager: ScopeManager

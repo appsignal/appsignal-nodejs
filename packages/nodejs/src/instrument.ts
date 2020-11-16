@@ -1,10 +1,8 @@
+import { Plugin, Tracer, Metrics } from "@appsignal/types"
 import Hook from "require-in-the-middle"
 import semver from "semver"
 
 import { getPackageVerson } from "./utils"
-import { Plugin } from "./interfaces/plugin"
-import { Tracer } from "./interfaces/tracer"
-import { Metrics } from "./interfaces/metrics"
 
 type InstrumentedModule = { name: string; hook: Hook }
 

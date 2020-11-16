@@ -1,4 +1,4 @@
-export type AppsignalOptions = {
+export interface AppsignalOptions {
   name: string
   apiKey: string
   active: boolean

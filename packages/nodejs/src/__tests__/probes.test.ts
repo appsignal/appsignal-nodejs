@@ -1,4 +1,4 @@
-import { Probes } from "../probes"
+import { BaseProbes as Probes } from "../probes"
 
 describe("Probes", () => {
   let probes: Probes

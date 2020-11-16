@@ -1,8 +1,8 @@
-import { Metrics } from "../interfaces/metrics"
-import { Probes } from "../probes"
+import { Metrics, Probes } from "@appsignal/types"
+import { BaseProbes } from "../probes"
 
 export class NoopMetrics implements Metrics {
-  #probes = new Probes()
+  #probes = new BaseProbes()
 
   public setGauge(
     key: string,
