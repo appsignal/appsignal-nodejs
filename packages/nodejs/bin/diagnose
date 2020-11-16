@@ -1,10 +1,19 @@
 #!/usr/bin/env node
 
+"use strict"
+
 const https = require("https")
+const path = require("path")
+const util = require("util")
+const fs = require("fs")
 const { DiagnoseTool } = require("../dist/diagnose")
 
 // enable diagnose mode
 process.env["_APPSIGNAL_DIAGNOSE"] = "true"
+
+// providing --no-report at runtime stops the report from bieng sent
+// it can also be passed by @appsignal/cli
+const shouldSendReport = !process.argv.includes("--no-report")
 
 const tool = new DiagnoseTool({})
 
@@ -15,7 +24,9 @@ Use this information to debug your configuration.
 More information is available on the documentation site.
 https://docs.appsignal.com/
 
-This diagnose output was sent to AppSignal, contact us at support@appsignal.com if you need help.
+This diagnose output ${
+  shouldSendReport ? "was" : "was not"
+} sent to AppSignal, contact us at support@appsignal.com if you need help.
 `)
 
 if (!process.env["APPSIGNAL_PUSH_API_KEY"]) {
@@ -35,27 +46,32 @@ const opts = {
   headers: {
     "Content-Type": "application/json",
     "Content-Length": json.length
-  }
+  },
+  cert: fs.readFileSync(path.resolve(__dirname, "../cert/cacert.pem"), "utf-8")
 }
 
-const req = https.request(opts, res => {
-  res.setEncoding("utf8")
+if (shouldSendReport) {
+  const req = https.request(opts, res => {
+    res.setEncoding("utf8")
 
-  // print token to the console
-  res.on("data", chunk => {
-    const { token } = JSON.parse(chunk.toString())
-    console.log("Your diagnose token is:", token)
-    console.log(`👀 View this report: https://appsignal.com/diagnose/${token}`)
+    // print token to the console
+    res.on("data", chunk => {
+      const { token } = JSON.parse(chunk.toString())
+      console.log("Your diagnose token is:", token)
+      console.log(
+        `👀 View this report: https://appsignal.com/diagnose/${token}`
+      )
+    })
   })
-})
 
-req.on("error", e => {
-  console.error(`Problem with diagnose request: ${e.message}`)
-})
+  req.on("error", e => {
+    console.error(`Problem with diagnose request: ${e.message}`)
+  })
 
-// Write data to request body
-req.write(json)
-req.end()
+  // Write data to request body
+  req.write(json)
+  req.end()
+}
 
-console.log(data, "\n")
-console.log("✅ Done!", "\n")
+console.log(util.inspect(data, { depth: null, colors: true }), "\n")
+console.log("✅ Done!")
