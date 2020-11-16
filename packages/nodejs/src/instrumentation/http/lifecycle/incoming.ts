@@ -13,9 +13,9 @@ import { IncomingMessage, ServerResponse } from "http"
 // submit a pull request if you have any potential candidates for this array!
 const DEFAULT_IGNORED_URLS = [
   // common static asset paths (with any query string)
-  /\.(css|js|jpg|jpeg|gif|png|svg|webp|json|ico|webmanifest)((\?|\&)([^=]+)\=([^&]+))*$/i,
-  // next.js hot reloading
-  /(\/_next\/webpack-hmr)/i,
+  /\.(css|js|jpg|jpeg|gif|png|svg|webp|json|ico|webmanifest|jsx|less|swf|eot|ttf|otf|woff|woff2)((\?|\&)([^=]+)\=([^&]+))*$/i,
+  // next.js related routes
+  /(\/_next)/i,
   // gatsby hot reloading
   /(\/__webpack_hmr)/i,
   // next.js integration web vitals endpoint
