@@ -21,6 +21,13 @@ type HttpRequestArgs = Array<
         ((res: IncomingMessage) => void))
 >
 
+// explicitly ignore some urls or routes that cause known issues.
+// submit a pull request if you have any potential candidates for this array!
+const DEFAULT_IGNORED_URLS = [
+  // next.js telemetry
+  /telemetry\.nextjs\.org/i
+]
+
 function optionsToOriginString(
   options: url.URL | RequestOptions | string
 ): string {
@@ -78,6 +85,11 @@ function outgoingRequestFunction(
     } else {
       method = optionsToMethodName(urlOrOptions)
       origin = optionsToOriginString(urlOrOptions)
+    }
+
+    // don't start a span for ignored urls
+    if (origin && DEFAULT_IGNORED_URLS.some(el => el.test(origin))) {
+      return original.apply(this, [urlOrOptions, ...args])
     }
 
     if (tracer.currentSpan() instanceof NoopSpan) {
