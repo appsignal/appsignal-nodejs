@@ -1,0 +1,27 @@
+{
+  "name": "@appsignal/koa",
+  "version": "0.0.0",
+  "main": "dist/index",
+  "types": "dist/index",
+  "license": "MIT",
+  "dependencies": {
+    "@appsignal/types": "^2.0.1",
+    "tslib": "^2.0.3"
+  },
+  "peerDependencies": {
+    "koa": ">= 2.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:ext": "node-gyp rebuild",
+    "build:watch": "tsc -p tsconfig.json -w --preserveWatchOutput",
+    "clean": "rimraf dist coverage",
+    "link:npm": "npm link",
+    "link:yarn": "yarn link",
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --watch"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
