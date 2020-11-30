@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3
+- Bumped agent to 361340a
+- Add `engine-strict=true` config to prevent installs on old Node (#328)
+- Dependency bumps
+
 ## 1.0.2
 - Bumped agent to dc62118
 - Fixes for Next.js routes not ignored by HTTP integration (#326)
