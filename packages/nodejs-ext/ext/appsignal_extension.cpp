@@ -257,6 +257,27 @@ Napi::Value CreateRootSpan(const Napi::CallbackInfo &info) {
       [](Napi::Env env, appsignal_span_t *ptr) { appsignal_free_span(ptr); });
 }
 
+Napi::Value CreateRootSpanWithTimestamp(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  Napi::String namesp = info[0].As<Napi::String>();
+
+  const std::string &value = namesp.Utf8Value();
+  const char *cstr = value.c_str();
+  appsignal_string_t value_string_t =
+      appsignal_string_t{.len = value.size(), .buf = cstr};
+
+  Napi::Number sec = info[1].As<Napi::Number>();
+  Napi::Number nsec = info[2].As<Napi::Number>();
+
+  appsignal_span_t *span_ptr = appsignal_create_root_span_with_timestamp(
+      value_string_t, (long)sec.DoubleValue(), (long)nsec.DoubleValue());
+
+  return Napi::External<appsignal_span_t>::New(
+      env, span_ptr,
+      [](Napi::Env env, appsignal_span_t *ptr) { appsignal_free_span(ptr); });
+}
+
 Napi::Value CreateChildSpan(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
 
@@ -268,6 +289,27 @@ Napi::Value CreateChildSpan(const Napi::CallbackInfo &info) {
   appsignal_span_t *span_ptr =
       appsignal_create_child_span(MakeAppsignalString(trace_id_utf8),
                                   MakeAppsignalString(parent_span_id_utf8));
+
+  return Napi::External<appsignal_span_t>::New(
+      env, span_ptr,
+      [](Napi::Env env, appsignal_span_t *ptr) { appsignal_free_span(ptr); });
+}
+
+Napi::Value CreateChildSpanWithTimestamp(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  Napi::String trace_id = info[0].As<Napi::String>();
+  const std::string trace_id_utf8 = trace_id.Utf8Value();
+  Napi::String parent_span_id = info[1].As<Napi::String>();
+  const std::string parent_span_id_utf8 = parent_span_id.Utf8Value();
+
+  Napi::Number sec = info[2].As<Napi::Number>();
+  Napi::Number nsec = info[3].As<Napi::Number>();
+
+  appsignal_span_t *span_ptr = appsignal_create_child_span_with_timestamp(
+      MakeAppsignalString(trace_id_utf8),
+      MakeAppsignalString(parent_span_id_utf8), (long)sec.DoubleValue(),
+      (long)nsec.DoubleValue());
 
   return Napi::External<appsignal_span_t>::New(
       env, span_ptr,
@@ -598,8 +640,12 @@ Napi::Object CreateSpanObject(Napi::Env env, Napi::Object exports) {
 
   span.Set(Napi::String::New(env, "createRootSpan"),
            Napi::Function::New(env, CreateRootSpan));
+  span.Set(Napi::String::New(env, "createRootSpanWithTimestamp"),
+           Napi::Function::New(env, CreateRootSpanWithTimestamp));
   span.Set(Napi::String::New(env, "createChildSpan"),
            Napi::Function::New(env, CreateChildSpan));
+  span.Set(Napi::String::New(env, "createChildSpanWithTimestamp"),
+           Napi::Function::New(env, CreateChildSpanWithTimestamp));
   span.Set(Napi::String::New(env, "getTraceId"),
            Napi::Function::New(env, GetTraceId));
   span.Set(Napi::String::New(env, "getSpanId"),
