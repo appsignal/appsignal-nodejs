@@ -8,6 +8,7 @@ import {
 
 import { span } from "./extension"
 import { Data } from "./internal/data"
+import { getAgentTimestamps } from "./utils"
 
 /**
  * The `Span` object represents a length of time in the flow of execution
@@ -156,11 +157,8 @@ export class BaseSpan implements NodeSpan {
    */
   public close(endTime?: number): this {
     if (endTime && typeof endTime === "number") {
-      const sec = Math.round(endTime / 1000) // seconds
-      const nsec = Math.round(endTime * 1e6) // nanoseconds
-
+      const { sec, nsec } = getAgentTimestamps(endTime)
       span.closeSpanWithTimestamp(this._ref, sec, nsec)
-
       return this
     } else {
       span.closeSpan(this._ref)
@@ -181,13 +179,22 @@ export class BaseSpan implements NodeSpan {
  * be a parent to many `ChildSpan`s.
  */
 export class ChildSpan extends BaseSpan {
-  constructor(span: NodeSpan)
+  constructor(span: NodeSpan, options?: Partial<NodeSpanOptions>)
 
-  constructor(context: SpanContext)
+  constructor(context: SpanContext, options?: Partial<NodeSpanOptions>)
 
-  constructor({ traceId, spanId }: NodeSpan | SpanContext) {
+  constructor(
+    { traceId, spanId }: NodeSpan | SpanContext,
+    { startTime }: Partial<NodeSpanOptions> = {}
+  ) {
     super()
-    this._ref = span.createChildSpan(traceId, spanId)
+
+    if (startTime) {
+      const { sec, nsec } = getAgentTimestamps(startTime)
+      this._ref = span.createChildSpanWithTimestamp(traceId, spanId, sec, nsec)
+    } else {
+      this._ref = span.createChildSpan(traceId, spanId)
+    }
   }
 }
 
@@ -196,9 +203,14 @@ export class ChildSpan extends BaseSpan {
  * created from.
  */
 export class RootSpan extends BaseSpan {
-  constructor(options: Partial<NodeSpanOptions> = {}) {
+  constructor({ namespace = "web", startTime }: Partial<NodeSpanOptions> = {}) {
     super()
-    const { namespace = "web" } = options
-    this._ref = span.createRootSpan(namespace)
+
+    if (startTime) {
+      const { sec, nsec } = getAgentTimestamps(startTime)
+      this._ref = span.createRootSpanWithTimestamp(namespace, sec, nsec)
+    } else {
+      this._ref = span.createRootSpan(namespace)
+    }
   }
 }
