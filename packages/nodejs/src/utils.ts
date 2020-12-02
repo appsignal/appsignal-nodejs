@@ -14,3 +14,16 @@ export function getPackageVerson(basedir: string): string {
     return "0.0.0"
   }
 }
+
+/**
+ * Given a valid POSIX `timestamp`, return an object containing a
+ * representation if that timestamps in seconds and nanoseconds.
+ *
+ * @function
+ */
+export function getAgentTimestamps(timestamp: number) {
+  return {
+    sec: Math.round(timestamp / 1000), // seconds
+    nsec: Math.round(timestamp * 1e6) // nanoseconds
+  }
+}
