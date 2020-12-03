@@ -170,7 +170,16 @@ export class BaseSpan implements NodeSpan {
    * Returns a JSON string representing the internal Span in the agent.
    */
   public toJSON(): string {
-    return span.spanToJSON(this._ref)
+    const json = span.spanToJSON(this._ref)
+
+    // if this is true, then the span has been garbage collected
+    // @TODO: i feel that this could have better ergonomics on the agent
+    // side. come up with something better here later.
+    if (json.trim() === "") {
+      return JSON.stringify({ closed: true })
+    }
+
+    return json
   }
 }
 
