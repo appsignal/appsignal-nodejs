@@ -1,12 +1,13 @@
 import { ChildSpan, RootSpan } from "../span"
 
 type SpanData = {
-  name: string
-  namespace: string
-  parent_span_id: string
-  span_id: string
-  start_time: number
-  trace_id: string
+  closed: boolean
+  name?: string
+  namespace?: string
+  parent_span_id?: string
+  span_id?: string
+  start_time?: number
+  trace_id?: string
 }
 
 describe("RootSpan", () => {
@@ -20,6 +21,16 @@ describe("RootSpan", () => {
 
   it("creates a RootSpan", () => {
     expect(span).toBeInstanceOf(RootSpan)
+    expect(internal.closed).toBeFalsy()
+  })
+
+  it("creates a RootSpan with a timestamp", () => {
+    const startTime = 1607022684531
+
+    span = new RootSpan({ startTime })
+    internal = JSON.parse(span.toJSON())
+
+    expect(internal.start_time).toEqual(1607022685)
   })
 
   it("exposes a spanId", () => {
@@ -31,6 +42,14 @@ describe("RootSpan", () => {
   })
 
   it("exposes a traceId", () => {
+    const { traceId } = span
+
+    expect(traceId).toBeDefined()
+    expect(internal.trace_id).toBeDefined()
+    expect(traceId).toEqual(internal.trace_id)
+  })
+
+  it("exposes a start time", () => {
     const { traceId } = span
 
     expect(traceId).toBeDefined()
@@ -62,6 +81,13 @@ describe("RootSpan", () => {
 
     expect(internal.name).toEqual(name)
   })
+
+  it("closes a span", () => {
+    span = new RootSpan().close()
+    internal = JSON.parse(span.toJSON())
+
+    expect(internal.closed).toBeTruthy()
+  })
 })
 
 describe("ChildSpan", () => {
@@ -78,6 +104,20 @@ describe("ChildSpan", () => {
 
     expect(internal.trace_id).toEqual("test_trace_id")
     expect(internal.parent_span_id).toEqual("parent_span_id")
+    expect(internal.closed).toBeFalsy()
+  })
+
+  it("creates a RootSpan with a timestamp", () => {
+    const startTime = 1607022684531
+
+    span = new ChildSpan(
+      { traceId: "test_trace_id", spanId: "parent_span_id" },
+      { startTime }
+    )
+
+    internal = JSON.parse(span.toJSON())
+
+    expect(internal.start_time).toEqual(1607022685)
   })
 
   it("exposes a spanId", () => {
@@ -89,6 +129,14 @@ describe("ChildSpan", () => {
   })
 
   it("exposes a traceId", () => {
+    const { traceId } = span
+
+    expect(traceId).toBeDefined()
+    expect(internal.trace_id).toBeDefined()
+    expect(traceId).toEqual(internal.trace_id)
+  })
+
+  it("exposes a start time", () => {
     const { traceId } = span
 
     expect(traceId).toBeDefined()
@@ -114,5 +162,16 @@ describe("ChildSpan", () => {
     internal = JSON.parse(span.toJSON())
 
     expect(internal.name).toEqual(name)
+  })
+
+  it("closes a span", () => {
+    span = new ChildSpan({
+      traceId: "test_trace_id",
+      spanId: "parent_span_id"
+    }).close()
+
+    internal = JSON.parse(span.toJSON())
+
+    expect(internal.closed).toBeTruthy()
   })
 })
