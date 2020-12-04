@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4
+- Bumped agent to c55fb2c
+- Dependency bumps
+
 ## 1.0.3
 - Bumped agent to 361340a
 - Add `engine-strict=true` config to prevent installs on old Node (#328)
