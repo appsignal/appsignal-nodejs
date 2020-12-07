@@ -51,7 +51,7 @@ export class BaseTracer implements Tracer {
     if (!spanOrContext) {
       return new RootSpan(options)
     } else {
-      return new ChildSpan(spanOrContext)
+      return new ChildSpan(spanOrContext, options)
     }
   }
 
