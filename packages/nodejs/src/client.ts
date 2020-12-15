@@ -1,19 +1,15 @@
 import { NodeClient, Metrics, Plugin, Tracer } from "@appsignal/types"
 
-import { VERSION } from "./version"
-
 import { Agent } from "./agent"
 import { Configuration } from "./config"
 import { BaseTracer } from "./tracer"
 import { BaseMetrics } from "./metrics"
 import { NoopTracer, NoopMetrics } from "./noops"
-
-import { demo } from "./demo"
 import { Instrumentation } from "./instrument"
-import { httpPlugin, httpsPlugin } from "./instrumentation/http"
-import * as pgPlugin from "./instrumentation/pg"
-import * as redisPlugin from "./instrumentation/redis"
+import { initCorePlugins, initCoreProbes } from "./bootstrap"
+import { demo } from "./demo"
 
+import { VERSION } from "./version"
 import { AppsignalOptions } from "./interfaces/options"
 
 /**
@@ -31,39 +27,26 @@ export class Client implements NodeClient {
   agent: Agent
   instrumentation: Instrumentation
 
-  #tracer: Tracer
-  #metrics: Metrics
+  #tracer: Tracer = new BaseTracer()
+  #metrics: Metrics = new BaseMetrics()
 
   /**
    * Creates a new instance of the `Appsignal` object
    */
   constructor(options: Partial<AppsignalOptions> = {}) {
-    // Agent is not started by default
-    const { active = false, ignoreInstrumentation } = options
-
-    this.#tracer = new BaseTracer()
-    this.#metrics = new BaseMetrics()
+    const {
+      active = false, // Agent is not started by default
+      ignoreInstrumentation,
+      enableMinutelyProbes = true
+    } = options
 
     this.config = new Configuration(options)
     this.agent = new Agent({ active })
 
     this.instrumentation = new Instrumentation(this.tracer(), this.metrics())
 
-    let plugins: any[] = [httpPlugin, httpsPlugin, redisPlugin, pgPlugin]
-
-    // cull ignored plugins
-    if (ignoreInstrumentation && Array.isArray(ignoreInstrumentation)) {
-      plugins = plugins.filter(p => ignoreInstrumentation.includes(p))
-    }
-
-    // load plugins
-    plugins.forEach(p => {
-      try {
-        this.instrument(p)
-      } catch (e) {
-        console.warn(`Failed to instrument "${p.PLUGIN_NAME}": ${e.message}`)
-      }
-    })
+    initCorePlugins(this.instrumentation, { ignoreInstrumentation })
+    initCoreProbes(this.metrics(), { enableMinutelyProbes })
   }
 
   /**
