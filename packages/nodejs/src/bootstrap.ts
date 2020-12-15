@@ -22,7 +22,9 @@ export function initCorePlugins(
 
   // cull ignored plugins
   if (ignoreInstrumentation && Array.isArray(ignoreInstrumentation)) {
-    plugins = plugins.filter(p => ignoreInstrumentation.includes(p))
+    plugins = plugins.filter(
+      p => !ignoreInstrumentation.includes(p.PLUGIN_NAME)
+    )
   }
 
   // load plugins

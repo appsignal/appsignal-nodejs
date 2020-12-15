@@ -20,8 +20,6 @@ describe("Bootstrap", () => {
     it("can ignore a core instumentation plugin", () => {
       initCorePlugins(mock, { ignoreInstrumentation: ["http"] })
 
-      console.log((mock.load as any).mock)
-
       expect(mock.load).toHaveBeenCalledTimes(3)
       expect((mock.load as any).mock.calls.map((m: any) => m[0])).not.toContain(
         "http"
