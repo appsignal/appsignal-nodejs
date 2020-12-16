@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5
+- Allow spans to be created with a startTime (#340)
+- Dependency bumps
+
 ## 1.0.4
 - Bumped agent to c55fb2c
 - Dependency bumps
