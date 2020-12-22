@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0
+- Fix memory leak when creating child spans by passing around span reference instead of id strings (#351)
+- Pass options to child span via `span.child()` helper by adding optional `options` argument
+- Bumped agent to 1332013
+- Dependency bumps
+
 ## 1.0.5
 - Allow spans to be created with a startTime (#340)
 - Dependency bumps
