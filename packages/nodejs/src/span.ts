@@ -20,7 +20,7 @@ import { getAgentTimestamps } from "./utils"
  * @class
  */
 export class BaseSpan implements NodeSpan {
-  protected _ref: any
+  protected _ref: unknown
 
   /**
    * The current ID of the trace.
@@ -37,11 +37,21 @@ export class BaseSpan implements NodeSpan {
   }
 
   /**
+   * The pointer to the span. This is used by the agent to locate the span
+   * when passed by the extension.
+   *
+   * Note that although this property is public, it should not be accessed or
+   * mutated.
+   */
+  public ref(): unknown {
+    return this._ref
+  }
+
+  /**
    * Returns a new `Span` object that is a child of the current `Span`.
    */
   public child(): ChildSpan {
-    const { traceId, spanId } = this
-    return new ChildSpan({ traceId, spanId })
+    return new ChildSpan(this)
   }
 
   /**
@@ -193,16 +203,25 @@ export class ChildSpan extends BaseSpan {
   constructor(context: SpanContext, options?: Partial<NodeSpanOptions>)
 
   constructor(
-    { traceId, spanId }: NodeSpan | SpanContext,
+    spanOrContext: NodeSpan | SpanContext,
     { startTime }: Partial<NodeSpanOptions> = {}
   ) {
     super()
 
-    if (startTime) {
-      const { sec, nsec } = getAgentTimestamps(startTime)
-      this._ref = span.createChildSpanWithTimestamp(traceId, spanId, sec, nsec)
+    if (spanOrContext instanceof BaseSpan) {
+      if (startTime) {
+        const { sec, nsec } = getAgentTimestamps(startTime)
+        this._ref = span.createChildSpanWithTimestamp(
+          spanOrContext.ref(),
+          sec,
+          nsec
+        )
+      } else {
+        this._ref = span.createChildSpan(spanOrContext.ref())
+      }
     } else {
-      this._ref = span.createChildSpan(traceId, spanId)
+      const { traceId, spanId } = spanOrContext
+      this._ref = span.createSpanFromTraceparent(`00-${traceId}-${spanId}-00`)
     }
   }
 }
