@@ -107,7 +107,7 @@ describe("ChildSpan", () => {
     expect(internal.closed).toBeFalsy()
   })
 
-  it("creates a RootSpan with a timestamp", () => {
+  it("creates a ChildSpan with a timestamp", () => {
     const startTime = 1607022684531
 
     span = new ChildSpan(
