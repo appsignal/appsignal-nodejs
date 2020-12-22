@@ -50,8 +50,8 @@ export class BaseSpan implements NodeSpan {
   /**
    * Returns a new `Span` object that is a child of the current `Span`.
    */
-  public child(): ChildSpan {
-    return new ChildSpan(this)
+  public child(options?: Partial<NodeSpanOptions>): ChildSpan {
+    return new ChildSpan(this, options)
   }
 
   /**
