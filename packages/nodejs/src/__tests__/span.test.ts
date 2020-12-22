@@ -95,29 +95,32 @@ describe("ChildSpan", () => {
   let internal: SpanData
 
   beforeEach(() => {
-    span = new ChildSpan({ traceId: "test_trace_id", spanId: "parent_span_id" })
+    span = new ChildSpan({ traceId: "aaaaaaaaaaaaaaaa", spanId: "bbbbbbbb" })
     internal = JSON.parse(span.toJSON())
   })
 
   it("creates a ChildSpan", () => {
     expect(span).toBeInstanceOf(ChildSpan)
 
-    expect(internal.trace_id).toEqual("test_trace_id")
-    expect(internal.parent_span_id).toEqual("parent_span_id")
+    expect(internal.trace_id).toEqual("aaaaaaaaaaaaaaaa")
+    expect(internal.parent_span_id).toEqual("bbbbbbbb")
     expect(internal.closed).toBeFalsy()
   })
 
-  it("creates a RootSpan with a timestamp", () => {
+  it("creates a ChildSpan with a timestamp", () => {
     const startTime = 1607022684531
 
     span = new ChildSpan(
-      { traceId: "test_trace_id", spanId: "parent_span_id" },
+      { traceId: "aaaaaaaaaaaaaaaa", spanId: "bbbbbbbb" },
       { startTime }
     )
 
     internal = JSON.parse(span.toJSON())
 
+    expect(internal.trace_id).toEqual("aaaaaaaaaaaaaaaa")
+    expect(internal.parent_span_id).toEqual("bbbbbbbb")
     expect(internal.start_time).toEqual(1607022685)
+    expect(internal.closed).toBeFalsy()
   })
 
   it("exposes a spanId", () => {
