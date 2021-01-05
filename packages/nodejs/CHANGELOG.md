@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0
+- Add minutely probe for collecting heap stats (#345)
+- Bumped agent to 44e4d97
+- Dependency bumps
+
 ## 1.1.0
 - Fix memory leak when creating child spans by passing around span reference instead of id strings (#351)
 - Pass options to child span via `span.child()` helper by adding optional `options` argument
