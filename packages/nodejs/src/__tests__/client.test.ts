@@ -11,8 +11,11 @@ describe("Client", () => {
 
   let client: Client
 
+  // enableMinutelyProbes is set to false so we don't leak timers
+  const DEFAULT_OPTS = { name, apiKey, enableMinutelyProbes: false }
+
   beforeEach(() => {
-    client = new Client({ name, apiKey })
+    client = new Client({ ...DEFAULT_OPTS })
   })
 
   it("starts the client", () => {
@@ -26,7 +29,7 @@ describe("Client", () => {
   })
 
   it("starts the client when the active option is true", () => {
-    client = new Client({ name, apiKey, active: true })
+    client = new Client({ ...DEFAULT_OPTS, active: true })
     expect(client.isActive).toBeTruthy()
   })
 
@@ -36,7 +39,7 @@ describe("Client", () => {
   })
 
   it("returns a `Tracer` object if the agent is started", () => {
-    client = new Client({ name, apiKey, active: true })
+    client = new Client({ ...DEFAULT_OPTS, active: true })
     const tracer = client.tracer()
     expect(tracer).toBeInstanceOf(Tracer)
   })
@@ -47,7 +50,7 @@ describe("Client", () => {
   })
 
   it("returns a `Metrics` object if the agent is started", () => {
-    client = new Client({ name, apiKey, active: true })
+    client = new Client({ ...DEFAULT_OPTS, active: true })
     const meter = client.metrics()
     expect(meter).toBeInstanceOf(Metrics)
   })
