@@ -7,6 +7,10 @@ describe("Extension", () => {
     ext = new Agent()
   })
 
+  afterEach(() => {
+    ext.stop()
+  })
+
   it("starts the client", () => {
     expect(() => {
       ext.start()
