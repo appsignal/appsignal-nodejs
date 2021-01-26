@@ -21,7 +21,7 @@ export class Configuration {
     this.data = {
       debug: false,
       log: "file",
-      logPath: "/tmp/appsignal.log",
+      logPath: "/tmp",
       caFilePath: path.join(__dirname, "../cert/cacert.pem"),
       endpoint: "https://push.appsignal.com",
       environment: process.env.NODE_ENV || "development",
@@ -78,6 +78,12 @@ export class Configuration {
    * @private
    */
   private _write(config: { [key: string]: any }) {
+    // First write log file path based on log path
+    if (config["logPath"].endsWith("appsignal.log")) {
+      config["logFilePath"] = config["logPath"]
+    } else {
+      config["logFilePath"] = path.join(config["logPath"], "appsignal.log")
+    }
     // write to a "private" environment variable if it exists in the
     // config structure
     Object.entries(PRIVATE_ENV_MAPPING).forEach(([k, v]) => {
