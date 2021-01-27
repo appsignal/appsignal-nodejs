@@ -34,4 +34,31 @@ describe("Configuration", () => {
     config = new Configuration({ name, apiKey })
     expect(process.env["_APPSIGNAL_ACTIVE"]).toBeTruthy()
   })
+
+  it("uses a default log file path", () => {
+    expect(process.env["_APPSIGNAL_LOG_FILE_PATH"]).toEqual("/tmp/appsignal.log")
+  })
+
+  describe("Overriden log path with file specified", () => {
+    beforeEach(() => {
+      process.env["APPSIGNAL_LOG_PATH"] = "/other_path/appsignal.log"
+      config = new Configuration({ name, apiKey })
+    })
+
+    it("uses the overwritten path", () => {
+      // Test backwards compatibility with previous behaviour
+      expect(process.env["_APPSIGNAL_LOG_FILE_PATH"]).toEqual("/other_path/appsignal.log")
+    })
+  })
+
+  describe("Overriden log path", () => {
+    beforeEach(() => {
+      process.env["APPSIGNAL_LOG_PATH"] = "/other_path"
+      config = new Configuration({ name, apiKey })
+    })
+
+    it("uses the overwritten path", () => {
+      expect(process.env["_APPSIGNAL_LOG_FILE_PATH"]).toEqual("/other_path/appsignal.log")
+    })
+  })
 })

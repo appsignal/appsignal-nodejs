@@ -35,7 +35,7 @@ export const PRIVATE_ENV_MAPPING: { [key: string]: string } = {
   _APPSIGNAL_DEBUG_LOGGING: "debug",
   _APPSIGNAL_TRANSACTION_DEBUG_MODE: "debug",
   _APPSIGNAL_LOG: "log",
-  _APPSIGNAL_LOG_FILE_PATH: "logPath",
+  _APPSIGNAL_LOG_FILE_PATH: "logFilePath",
   _APPSIGNAL_PUSH_API_ENDPOINT: "endpoint",
   _APPSIGNAL_PUSH_API_KEY: "apiKey",
   _APPSIGNAL_APP_NAME: "name",
