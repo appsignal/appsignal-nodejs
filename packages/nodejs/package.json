@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@appsignal/core": "~> 1.1",
+    "@appsignal/nodejs-ext": "~> 1.2",
     "@appsignal/types": "~> 2.0",
     "require-in-the-middle": "~> 5.1",
     "semver": "~> 7.3",

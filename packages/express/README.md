@@ -15,7 +15,7 @@ yarn add @appsignal/nodejs @appsignal/express
 npm install --save @appsignal/nodejs @appsignal/express
 ```
 
-You can then import and use the package in your app. 
+You can then import and use the package in your app.
 
 ## Usage
 
