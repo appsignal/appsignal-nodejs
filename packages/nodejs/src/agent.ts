@@ -1,4 +1,4 @@
-import { extension } from "./extension"
+import {extension} from "./extension"
 
 /**
  * The public interface for the extension.
@@ -8,7 +8,7 @@ import { extension } from "./extension"
 export class Agent {
   isLoaded = false
 
-  constructor(options?: { active: boolean }) {
+  constructor(options?: {active: boolean}) {
     if (options?.active) this.start()
   }
 
@@ -48,7 +48,11 @@ export class Agent {
     return this.isLoaded
   }
 
-  public diagnose(): string {
-    return JSON.parse(extension.diagnoseRaw())
+  public diagnose(): object {
+    if (this.isLoaded) {
+      return JSON.parse(extension.diagnoseRaw())
+    } else {
+      return {}
+    }
   }
 }
