@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+- Make log path config consistent with other integrations (#364)
+- Don't break diagnose when agent isn't loaded (#365)
+
 ## 1.2.0
 - Add minutely probe for collecting heap stats (#345)
 - Bumped agent to 44e4d97
