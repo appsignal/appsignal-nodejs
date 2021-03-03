@@ -140,7 +140,7 @@ function getMetadataForTarget({
         downloadUrl: metadata.downloadUrl
       })
 
-      report.result.status = "success"
+      report.result.status = "unknown"
 
       return dumpReport(report).then(() => {
         process.exit(0)
