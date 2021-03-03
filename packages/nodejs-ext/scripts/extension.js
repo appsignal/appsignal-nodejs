@@ -78,13 +78,11 @@ function dumpReport(report) {
 
 function getMetadataForTarget({
   architecture,
-  target,
-  musl_override: muslOverride
+  target
 }) {
   const triple = [
     architecture === "x64" ? "x86_64" : "i686",
-    `-${target}`,
-    muslOverride ? "-musl" : ""
+    `-${target}`
   ]
 
   return TRIPLES[triple.join("")]

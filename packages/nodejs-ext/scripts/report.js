@@ -20,14 +20,29 @@ function createReport() {
   }
 }
 
+function muslOverride() {
+  return process.env["APPSIGNAL_BUILD_FOR_MUSL"] === "true"
+}
+
+function agentTarget() {
+  if (muslOverride()) {
+    return "linux-musl"
+  }
+
+  const target = [process.platform];
+  if (/linux/.test(target[0]) && hasMusl()) {
+    target.push("-musl")
+  }
+  return target.join("")
+}
+
 function createBuildReport({ isLocalBuild = false }) {
   return {
     time: new Date().toISOString(),
     package_path: path.join(__dirname, "/../ext/"),
     architecture: process.arch,
-    target: process.platform,
-    musl_override:
-      process.env["APPSIGNAL_BUILD_FOR_MUSL"] === "true" || hasMusl(),
+    target: agentTarget(),
+    musl_override: muslOverride(),
     library_type: "static",
     dependencies: {},
     flags: {},
