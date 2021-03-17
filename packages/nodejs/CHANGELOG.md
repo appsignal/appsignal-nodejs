@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.2
+- Report the install status as unknown in diagnose PR #373
+- Fix musl target and override reporting. PR #374
+- Bump agent to d08ae6c. PR #378. Fix span API related issues with empty events
+  for error samples and missing incidents.
+
 ## 1.2.1
 - Make log path config consistent with other integrations (#364)
 - Don't break diagnose when agent isn't loaded (#365)
