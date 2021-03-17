@@ -1,6 +1,6 @@
 {
   "name": "@appsignal/koa",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0",
   "main": "dist/index",
   "types": "dist/index",
   "license": "MIT",
