@@ -5,9 +5,12 @@
   "main": "dist/index",
   "license": "MIT",
   "engines": {
-    "node": ">= 10"
+    "node": ">= 10",
+    "npm": ">= 7"
   },
-  "dependencies": {},
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
     "@appsignal/types": "^2.0.2",
     "@koa/router": "^10.0.0",
@@ -25,7 +28,6 @@
     "husky": "^4.3.6",
     "jest": "^26.6.3",
     "koa": "^2.13.0",
-    "lerna": "^3.22.1",
     "lint-staged": "^10.5.3",
     "next": "^10.1.3",
     "npm-run-all": "^4.1.5",
@@ -39,14 +41,13 @@
     "typescript": "^4.1.3"
   },
   "scripts": {
-    "build": "lerna run --stream --concurrency 1 --sort build",
-    "build:watch": "lerna run build:watch --stream --no-sort --concurrency 9999",
-    "build:ext": "lerna run --stream --scope=@appsignal/nodejs-ext build:ext",
-    "clean": "lerna run --stream clean",
-    "link:npm": "lerna run --stream --concurrency 1 link:npm",
-    "link:yarn": "lerna run --stream --concurrency 1 link:yarn",
-    "test": "lerna run --stream --concurrency 1 --sort test",
-    "prepublishOnly": "npm run clean && npm run build && lerna link"
+    "bootstrap": "mono bootstrap",
+    "bootstrap:ci": "mono bootstrap --ci",
+    "build": "mono build",
+    "build:watch": "mono run build:watch",
+    "build:ext": "mono run build:ext",
+    "clean": "mono clean",
+    "test": "mono test"
   },
   "husky": {
     "hooks": {
@@ -57,9 +58,5 @@
     "*.{ts,js}": [
       "prettier --write"
     ]
-  },
-  "volta": {
-    "node": "10.22.1",
-    "npm": "6.14.9"
   }
 }
