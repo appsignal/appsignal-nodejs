@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -eu
+
+# Remove links
+cd packages/nodejs-ext && npm unlink
+cd packages/nodejs && npm unlink
+# Clean lock files
+rm -f packages/*/package-lock.json
+# Clean node modules
+rm -rf packages/*/node_modules
+# Clean compiled typescript
+rm -rf packages/*/dist
+# Clean extension
+rm -rf packages/nodejs-ext/build
+rm -f packages/nodejs-ext/ext/appsignal-agent
+rm -f packages/nodejs-ext/ext/appsignal.version
+rm -f packages/nodejs-ext/ext/appsignal.h
+rm -f packages/nodejs-ext/ext/libappsignal.a
+rm -f packages/nodejs-ext/ext/*.tar.gz

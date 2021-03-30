@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -eu
+
+PATH_PREFIX=$PWD
+
+# Extension package
+cd $PATH_PREFIX/packages/nodejs-ext && \
+	npm install && \
+	npm link
+# Core package
+cd $PATH_PREFIX/packages/nodejs && \
+	npm link @appsignal/nodejs-ext && \
+	npm install && \
+	npm link
+# Integration packages
+cd $PATH_PREFIX/packages/apollo-server && \
+	npm install && \
+	npm link
+cd $PATH_PREFIX/packages/express && \
+	npm install && \
+	npm link
+cd $PATH_PREFIX/packages/koa && \
+	npm install && \
+	npm link
+cd $PATH_PREFIX/packages/nextjs && \
+	npm install && \
+	npm link
