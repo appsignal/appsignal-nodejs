@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -eu
+
+PATH_PREFIX=$PWD
+
+cd $PATH_PREFIX/packages/nodejs && npm run test

@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Run typescript build for all packages, or for specific
+# package if a TRIGGER_PATH env var is set.
+
+set -eu
+
+PATH_PREFIX=$PWD
+
+if [[ -z ${TRIGGER_PATH-} ]]; then
+  echo "Building all packages"
+  cd $PATH_PREFIX/packages/apollo-server && npm run build
+  cd $PATH_PREFIX/packages/express && npm run build
+  cd $PATH_PREFIX/packages/koa && npm run build
+  cd $PATH_PREFIX/packages/nextjs && npm run build
+  cd $PATH_PREFIX/packages/nodejs-ext && npm run build
+  cd $PATH_PREFIX/packages/nodejs && npm run build
+else
+  echo "Building specific package for $TRIGGER_PATH"
+  if [[ $TRIGGER_PATH == *"packages/apollo-server"* ]]; then
+    cd $PATH_PREFIX/packages/apollo-server && npm run build
+  fi
+  if [[ $TRIGGER_PATH == *"packages/express"* ]]; then
+    cd $PATH_PREFIX/packages/express && npm run build
+  fi
+  if [[ $TRIGGER_PATH == *"packages/koa"* ]]; then
+    cd $PATH_PREFIX/koa && npm run build
+  fi
+  if [[ $TRIGGER_PATH == *"packages/nextjs"* ]]; then
+    cd $PATH_PREFIX/packages/nextjs && npm run build
+  fi
+  if [[ $TRIGGER_PATH == *"packages/nodejs-ext"* ]]; then
+    cd $PATH_PREFIX/packages/nodejs-ext && npm run build
+  fi
+  if [[ $TRIGGER_PATH == *"packages/nodejs"* ]]; then
+    cd $PATH_PREFIX/packages/nodejs && npm run build
+  fi
+fi
