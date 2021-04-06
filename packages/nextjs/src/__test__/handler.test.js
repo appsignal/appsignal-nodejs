@@ -1,5 +1,6 @@
 const { spawn } = require("cross-spawn")
 const treeKill = require("tree-kill")
+const http = require("http")
 
 const killApp = async instance => {
   await new Promise((resolve, reject) => {
@@ -63,8 +64,17 @@ const startServer = async () => {
   })
 }
 
+const waitFor = ms => {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 test("does not break the app", async () => {
   app = await startServer()
-  expect(3).toBe(3)
+
+  http.get("http://localhost:5678").on("error", err => {
+    fail("Error: " + err.message)
+  })
+
+  await waitFor(100)
   await killApp(app)
 })
