@@ -3,8 +3,12 @@ require 'net/http'
 RSpec.describe "Next.js" do
   around do |example|
     Dir.chdir File.join(__dir__, 'example')
-    pid = spawn("node server.js")
-    sleep(10)
+    read, write = IO.pipe
+
+    pid = spawn("node server.js", out: write)
+    read.each do |line|
+      break if line =~ /Ready on/
+    end
 
     begin
       example.run
