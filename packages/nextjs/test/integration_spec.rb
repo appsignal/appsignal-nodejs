@@ -7,6 +7,7 @@ RSpec.describe "Next.js" do
 
     pid = spawn("node server.js", out: write)
     read.each do |line|
+      puts line
       break if line =~ /Ready on/
     end
 
