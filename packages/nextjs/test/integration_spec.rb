@@ -2,7 +2,8 @@ require 'net/http'
 
 RSpec.describe "Next.js" do
   around do |example|
-    pid = spawn("cd #{File.join(__dir__, 'example')} && node server.js")
+    Dir.chdir File.join(__dir__, 'example')
+    pid = spawn("node server.js")
     sleep(10)
 
     begin
