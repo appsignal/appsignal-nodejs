@@ -3,6 +3,16 @@ import { NodeClient } from "@appsignal/types"
 import { ServerResponse, IncomingMessage } from "http"
 
 interface NextServer {
+  server: {
+    router: {
+      dynamicRoutes?: {
+        page: string
+        match: (
+          pathname: string | null | undefined
+        ) => false | { [param: string]: any }
+      }[]
+    }
+  }
   router: {
     dynamicRoutes?: {
       page: string
@@ -33,7 +43,8 @@ export function getRequestHandler<T extends NextServer>(
     const { pathname } = url.parse(req.url || "/", true)
 
     if (span) {
-      const routes = app.router.dynamicRoutes || []
+      const routes =
+        app.server.router.dynamicRoutes || app.router.dynamicRoutes || []
       const matched = routes.filter(el => el.match(pathname))[0]
 
       // passing { debug: true } to the `Appsignal` constructor will log
