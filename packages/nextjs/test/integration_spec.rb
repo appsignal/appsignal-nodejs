@@ -13,10 +13,7 @@ RSpec.describe "Next.js" do
     read, write = IO.pipe
     @pid = spawn(command, out: write)
 
-    read.each do |line|
-      puts line
-      break if line =~ /Ready on/
-    end
+    sleep 10
 
     uri = URI('http://localhost:3000/')
     @result = Net::HTTP.get(uri)
