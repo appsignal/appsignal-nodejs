@@ -2,7 +2,7 @@ require 'net/http'
 require 'tempfile'
 
 RSpec.describe "Next.js" do
-  around do |example|
+  before(:all) do
     tmpdir = Dir.mktmpdir
     @log_path = File.join(tmpdir, "appsignal.log")
     command = "APPSIGNAL_LOG_PATH='#{tmpdir}' APPSIGNAL_DEBUG='true' APPSIGNAL_TRANSACTION_DEBUG_MODE='true' node server.js"
@@ -11,7 +11,7 @@ RSpec.describe "Next.js" do
 
     puts command
     read, write = IO.pipe
-    pid = spawn(command, out: write)
+    @pid = spawn(command, out: write)
 
     read.each do |line|
       puts line
@@ -20,12 +20,10 @@ RSpec.describe "Next.js" do
 
     uri = URI('http://localhost:3000/')
     @result = Net::HTTP.get(uri)
+  end
 
-    begin
-      example.run
-    ensure
-      Process.kill 3, pid
-    end
+  after(:all) do
+    Process.kill 3, @pid
   end
 
   it "renders the index page" do
