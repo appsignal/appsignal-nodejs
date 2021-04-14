@@ -28,12 +28,10 @@ RSpec.describe "Next.js" do
     end
   end
 
-  it "renders the index page" do
-    expect(@result).to match(/Welcome to .+Next\.js!/)
-  end
-
-  it "sets the root span's name" do
+  it "renders the index page and sets the span name" do
     log = File.read(@log_path)
+
+    expect(@result).to match(/Welcome to .+Next\.js!/)
     expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy()
     expect(/Set name 'GET \/' for span '#{$1}'/.match(log)).to be_truthy()
   end
