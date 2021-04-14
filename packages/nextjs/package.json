@@ -1,6 +1,6 @@
 {
   "name": "@appsignal/nextjs",
-  "version": "1.0.9",
+  "version": "1.0.10-beta.0",
   "main": "dist/index",
   "types": "dist/index",
   "license": "MIT",
@@ -18,7 +18,7 @@
     "clean": "rimraf dist coverage",
     "link:npm": "npm link",
     "link:yarn": "yarn link",
-    "test": "jest --passWithNoTests",
+    "test": "jest --passWithNoTests && BUNDLE_GEMFILE=test/Gemfile bundle install --quiet && BUNDLE_GEMFILE=test/Gemfile bundle exec rspec test",
     "test:watch": "jest --watch"
   },
   "publishConfig": {
