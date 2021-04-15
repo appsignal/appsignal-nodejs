@@ -1,5 +1,6 @@
 require 'net/http'
 require 'tempfile'
+require 'timeout'
 
 RSpec.describe "Next.js" do
   around do |example|
@@ -13,9 +14,11 @@ RSpec.describe "Next.js" do
     read, write = IO.pipe
     @pid = spawn(command, out: write)
 
-    read.each do |line|
-      puts line
-      break if line =~ /Ready on/
+    Timeout::timeout(10) do
+      read.each do |line|
+        puts line
+        break if line =~ /Ready on/
+      end
     end
 
     uri = URI('http://localhost:3000/')
