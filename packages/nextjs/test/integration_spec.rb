@@ -3,7 +3,7 @@ require 'tempfile'
 require 'timeout'
 
 RSpec.describe "Next.js" do
-  around do |example|
+  before(:all) do
     tmpdir = Dir.mktmpdir
     @log_path = File.join(tmpdir, "appsignal.log")
     command = "APPSIGNAL_LOG_PATH='#{tmpdir}' APPSIGNAL_DEBUG='true' APPSIGNAL_TRANSACTION_DEBUG_MODE='true' node server.js"
@@ -21,14 +21,15 @@ RSpec.describe "Next.js" do
       end
     end
 
-    uri = URI('http://localhost:3000/')
+  end
 
-    begin
-      @result = Net::HTTP.get(uri)
-      example.run
-    ensure
-      Process.kill 3, @pid
-    end
+  after(:all) do
+    Process.kill 3, @pid
+  end
+
+  before do
+    uri = URI('http://localhost:3000/')
+    @result = Net::HTTP.get(uri)
   end
 
   it "renders the index page" do
