@@ -39,7 +39,7 @@ blocks:
             - npm run build
             - npm run build:ext
             - cache store packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION packages
-  - name: "Unit tests"
+  - name: "Tests"
     dependencies: ["Install and Build"]
     task:
       prologue:
@@ -53,3 +53,11 @@ blocks:
           commands:
             - cache restore packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION
             - npm run test
+        - name: Integration
+          matrix:
+            - env_var: NODE_VERSION
+              values: ["10", "11", "12", "13", "14"]
+          commands:
+            - cache restore packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION
+            - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+            - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
