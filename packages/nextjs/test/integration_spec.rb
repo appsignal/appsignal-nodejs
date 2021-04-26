@@ -61,4 +61,21 @@ RSpec.describe "Next.js" do
       expect(/Set name 'GET \/blog' for span '#{$1}'/.match(log)).to be_truthy()
     end
   end
+
+  describe "/post/1" do
+    before do
+      @result = Net::HTTP.get(URI('http://localhost:3000/post/1'))
+    end
+
+    it "renders the post page" do
+      expect(@result).to match(/Post: /)
+    end
+
+    it "sets the root span's name" do
+      log = File.read(@log_path)
+
+      expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy()
+      expect(/Set name 'GET \/post\/\[id\]' for span '#{$1}'/.match(log)).to be_truthy()
+    end
+  end
 end
