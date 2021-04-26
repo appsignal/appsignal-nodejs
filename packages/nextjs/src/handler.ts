@@ -61,11 +61,8 @@ export function getRequestHandler<T extends NextServer>(
       if (matched) {
         // matched to a dynamic route
         span.setName(`${req.method} ${matched.page}`)
-      } else if (!matched && pathname === "/") {
-        // the root
-        span.setName(`${req.method} ${pathname}`)
       } else {
-        span.setName(`${req.method} [unknown route]`)
+        span.setName(`${req.method} ${pathname}`)
       }
     }
 
