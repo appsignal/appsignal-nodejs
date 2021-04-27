@@ -7,6 +7,9 @@
   "engines": {
     "node": ">= 10"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "dependencies": {},
   "devDependencies": {
     "@appsignal/types": "^2.0.2",
