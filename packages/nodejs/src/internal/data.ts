@@ -17,10 +17,14 @@ export class Data {
     }
   }
 
-  private static mapObject(obj: HashMap<any>, filtered: boolean) {
+  public static toJson(data: typeof datamap | typeof dataarray) {
+    return JSON.parse(datamap.toJson(data))
+  }
+
+  private static mapObject(hash_value: HashMap<any>, filtered: boolean): any {
     let map = filtered ? datamap.createFiltered() : datamap.create()
 
-    Object.entries(obj).forEach(([key, value]) => {
+    Object.entries(hash_value).forEach(([key, value]) => {
       switch (typeof value) {
         case "string":
           datamap.setString(key, value, map)
@@ -33,29 +37,27 @@ export class Data {
           }
 
           break
+        case "bigint":
+          datamap.setString(key, `bigint:${value}`, map)
+          break
         case "boolean":
           datamap.setBoolean(key, value, map)
           break
+        case "undefined":
+          datamap.setString(key, "undefined", map)
+          break
         case "object":
-          // check null
           if (!value) {
             datamap.setNull(key, map)
+          } else if (Array.isArray(value)) {
+            datamap.setData(key, this.mapArray(value, filtered), map)
+          } else if (value?.constructor.name === "Object") {
+            datamap.setData(key, this.mapObject(value, filtered), map)
+          } else {
+            // attempt to co-erce whatever the data is to a string
+            datamap.setString(key, String(value), map)
           }
 
-          // check array
-          if (Array.isArray(value)) {
-            datamap.setData(this.mapArray(value, filtered), map)
-          }
-
-          // check for plain object
-          if (value?.constructor.name === "Object") {
-            datamap.setData(this.mapObject(value, filtered), map)
-          }
-
-          break
-        default:
-          // attempt to co-erce whatever the data is to a string
-          datamap.setString(String(value), map)
           break
       }
     })
@@ -63,10 +65,10 @@ export class Data {
     return map
   }
 
-  private static mapArray(arr: Array<any>, filtered: boolean) {
+  private static mapArray(array_value: Array<any>, filtered: boolean) {
     let array = dataarray.create()
 
-    arr.forEach(value => {
+    array_value.forEach(value => {
       switch (typeof value) {
         case "string":
           dataarray.appendString(value, array)
@@ -79,29 +81,28 @@ export class Data {
           }
 
           break
+        case "bigint":
+          dataarray.appendString(`bigint:${value}`, array)
+          break
         case "boolean":
           dataarray.appendBoolean(value, array)
+          break
+        case "undefined":
+          dataarray.appendString("undefined", array)
           break
         case "object":
           // check null
           if (!value) {
             dataarray.appendNull(array)
-          }
-
-          // check array
-          if (Array.isArray(value)) {
+          } else if (Array.isArray(value)) {
             dataarray.appendData(this.mapArray(value, filtered), array)
-          }
-
-          // check for plain object
-          if (value?.constructor.name === "Object") {
+          } else if (value?.constructor.name === "Object") {
             dataarray.appendData(this.mapObject(value, filtered), array)
+          } else {
+            // attempt to co-erce whatever the data is to a string
+            dataarray.appendString(String(value), array)
           }
 
-          break
-        default:
-          // attempt to co-erce whatever the data is to a string
-          dataarray.appendString(String(value), array)
           break
       }
     })
