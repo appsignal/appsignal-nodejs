@@ -23,12 +23,7 @@ blocks:
     task:
       prologue:
         commands:
-          - npm ci
-          # The below line shouldn't be necessarily, but lerna seems to behave
-          # differently on the CI server than to how it behaves locally
-          - cd packages/nodejs-ext && npm ci && cd ../../
-          - npx lerna bootstrap
-          - npx lerna link
+          - make install
           - cache store
       jobs:
         - name: Build
@@ -36,8 +31,7 @@ blocks:
             - env_var: NODE_VERSION
               values: ["10", "11", "12", "13", "14"]
           commands:
-            - npm run build
-            - npm run build:ext
+            - make build
             - cache store packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION packages
   - name: "Tests"
     dependencies: ["Install and Build"]
@@ -52,7 +46,7 @@ blocks:
               values: ["10", "11", "12", "13", "14"]
           commands:
             - cache restore packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION
-            - npm run test
+            - make test
         - name: Integration
           matrix:
             - env_var: NODE_VERSION

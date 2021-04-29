@@ -83,3 +83,5 @@ build/
 # Agent archives
 packages/nodejs-ext/ext/*.tar.gz
 
+# Lock files
+package-lock.json
