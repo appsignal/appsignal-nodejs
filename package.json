@@ -1,0 +1,11 @@
+{
+  "name": "appsignal-nodejs",
+  "workspaces": [
+    "packages/apollo-server",
+    "packages/express",
+    "packages/koa",
+    "packages/nextjs",
+    "packages/nodejs-ext",
+    "packages/nodejs"
+  ]
+}

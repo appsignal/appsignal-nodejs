@@ -1,46 +1,33 @@
 install:
-	# Extension package
-	cd packages/nodejs-ext && \
-		npm install && \
-		npm link
-	# Core package
-	cd packages/nodejs && \
-		npm link @appsignal/nodejs-ext && \
-		npm install && \
-		npm link
-	# Integration packages
-	cd packages/apollo-server && \
-		npm install && \
-		npm link
-	cd packages/express && \
-		npm install && \
-		npm link
-	cd packages/koa && \
-		npm install && \
-		npm link
-	cd packages/nextjs && \
-		npm install && \
-		npm link
+	npm install
+
+link:
+	cd packages/apollo-server && npm link
+	cd packages/express && npm link
+	cd packages/koa && npm link
+	cd packages/nextjs && npm link
+	cd packages/nodejs-ext && npm link
+	cd packages/nodejs && npm link
 
 build:
-	cd packages/apollo-server && npm run build
-	cd packages/express && npm run build
-	cd packages/koa && npm run build
-	cd packages/nextjs && npm run build
-	cd packages/nodejs-ext && npm run build
-	cd packages/nodejs && npm run build
+	npm run build --workspace=packages/apollo-server
+	npm run build --workspace=packages/express
+	npm run build --workspace=packages/koa
+	npm run build --workspace=packages/nextjs
+	npm run build --workspace=packages/nodejs-ext
+	npm run build:ext --workspace=packages/nodejs-ext
+	npm run build --workspace=packages/nodejs
 
 test:
 	# Currently only the core package has tests
-	cd packages/nodejs && npm run test
+	npm run test --workspace=packages/nodejs
 
 clean:
-	# Remove links
-	cd packages/nodejs-ext && npm unlink
-	cd packages/nodejs && npm unlink
-	# Clean lock files
-	rm -f packages/*/package-lock.json
+	# Clean lock file
+	rm -f package-lock.json
 	# Clean node modules
+	rm -rf node_modules
+	rm -rf packages/node_modules
 	rm -rf packages/*/node_modules
 	# Clean compiled typescript
 	rm -rf packages/*/dist

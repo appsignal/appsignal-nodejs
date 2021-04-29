@@ -45,25 +45,16 @@ const appsignal = new Appsignal({
 
 ### Installation
 
-This repository is a Lerna-managed monorepo, containing packages (located in the `/packages` directory) that map to separate `npm` modules.
-
-To install the dependencies:
+This repo is set up as an NPM workspace. NPM version 7 or later is required. To install the dependencies:
 
 ```bash
-npm install
-npx lerna bootstrap && npx lerna link
+make install
 ```
 
-You can then run the following to start the compiler in _watch_ mode. 
+Then do a TypeScript build for all packages:
 
 ```bash
-npm run build:watch
-```
-
-You can also build the library without watching the directory:
-
-```bash
-npm run build
+make build
 ```
 
 Version management configuration is provided for [`volta`](https://volta.sh/) and [`asdf`](https://github.com/asdf-vm/asdf-nodejs).
@@ -73,8 +64,12 @@ Version management configuration is provided for [`volta`](https://volta.sh/) an
 The tests for this library use [Jest](https://jestjs.io) as the test runner. Once you've installed the dependencies, you can run the following command in the root of this repository to run the tests for all packages, or in the directory of a package to run only the tests pertaining to that package:
 
 ```bash
-npm run test
+npm run test:watch --workspace=packages/nodejs
 ```
+
+This command will only recompile TypeScript files in the current
+package, not in other packages. If you make a change in another package
+that you depend on run `make build` again.
 
 ### Versioning
 
