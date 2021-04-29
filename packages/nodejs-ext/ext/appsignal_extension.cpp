@@ -227,18 +227,34 @@ Napi::Value SetNullToDataMap(const Napi::CallbackInfo &info) {
 Napi::Value SetDataToDataMap(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
 
-  Napi::External<appsignal_data_t> data =
-      info[0].As<Napi::External<appsignal_data_t>>();
+  Napi::String key = info[0].As<Napi::String>();
+  const std::string key_utf8 = key.Utf8Value();
 
-  Napi::External<appsignal_data_t> map =
+  Napi::External<appsignal_data_t> data =
       info[1].As<Napi::External<appsignal_data_t>>();
 
-  appsignal_data_array_append_data(map.Data(), data.Data());
+  Napi::External<appsignal_data_t> map =
+      info[2].As<Napi::External<appsignal_data_t>>();
+
+  appsignal_data_map_set_data(map.Data(), MakeAppsignalString(key_utf8), data.Data());
 
   return env.Null();
 }
 
-// EXPERIMENTAL SPAN API
+// Json representation for debugging purposes
+
+Napi::Value GetDataToJson(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  Napi::External<appsignal_data_t> data =
+      info[0].As<Napi::External<appsignal_data_t>>();
+
+  appsignal_string_t str = appsignal_data_to_json(data.Data());
+
+  return Napi::String::New(env, str.buf, str.len);
+}
+
+// SPAN API
 
 Napi::Value CreateRootSpan(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
@@ -580,7 +596,7 @@ Napi::Object CreateDataArrayObject(Napi::Env env, Napi::Object exports) {
   dataarray.Set(Napi::String::New(env, "appendString"),
                 Napi::Function::New(env, AppendStringToDataArray));
   dataarray.Set(Napi::String::New(env, "appendInteger"),
-                Napi::Function::New(env, SetIntToDataMap));
+                Napi::Function::New(env, AppendIntToDataArray));
   dataarray.Set(Napi::String::New(env, "appendFloat"),
                 Napi::Function::New(env, AppendFloatToDataArray));
   dataarray.Set(Napi::String::New(env, "appendBoolean"),
@@ -589,6 +605,8 @@ Napi::Object CreateDataArrayObject(Napi::Env env, Napi::Object exports) {
                 Napi::Function::New(env, AppendNullToDataArray));
   dataarray.Set(Napi::String::New(env, "appendData"),
                 Napi::Function::New(env, AppendDataToDataArray));
+  dataarray.Set(Napi::String::New(env, "toJson"),
+                Napi::Function::New(env, GetDataToJson));
 
   return dataarray;
 }
@@ -603,7 +621,7 @@ Napi::Object CreateDataMapObject(Napi::Env env, Napi::Object exports) {
   datamap.Set(Napi::String::New(env, "setString"),
               Napi::Function::New(env, SetStringToDataMap));
   datamap.Set(Napi::String::New(env, "setInteger"),
-              Napi::Function::New(env, AppendIntToDataArray));
+              Napi::Function::New(env, SetIntToDataMap));
   datamap.Set(Napi::String::New(env, "setFloat"),
               Napi::Function::New(env, SetFloatToDataMap));
   datamap.Set(Napi::String::New(env, "setBoolean"),
@@ -612,6 +630,8 @@ Napi::Object CreateDataMapObject(Napi::Env env, Napi::Object exports) {
               Napi::Function::New(env, SetNullToDataMap));
   datamap.Set(Napi::String::New(env, "setData"),
               Napi::Function::New(env, SetDataToDataMap));
+  datamap.Set(Napi::String::New(env, "toJson"),
+              Napi::Function::New(env, GetDataToJson));
 
   return datamap;
 }
