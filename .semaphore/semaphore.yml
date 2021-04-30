@@ -33,26 +33,26 @@ blocks:
               values: ["10", "11", "12", "13", "14"]
           commands:
             - make build
-            - cache store packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION packages
+            - cache store node_modules-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION node_modules
   - name: "Tests"
     dependencies: ["Install and Build"]
     task:
       prologue:
         commands:
-          - cache restore
+          #- cache restore
       jobs:
         - name: Jest
           matrix:
             - env_var: NODE_VERSION
               values: ["10", "11", "12", "13", "14"]
           commands:
-            - cache restore packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION
+            - cache restore node_modules-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION
             - make test
         - name: Integration
           matrix:
             - env_var: NODE_VERSION
               values: ["10", "11", "12", "13", "14"]
           commands:
-            - cache restore packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION
+            - cache restore node_modules-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION
             - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
             - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
