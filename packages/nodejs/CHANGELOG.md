@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.3
+- Another fix for dynamic routes in Next PR #380
+- Fixes for data handling PR #385 
+
 ## 1.2.2
 - Report the install status as unknown in diagnose PR #373
 - Fix musl target and override reporting. PR #374
