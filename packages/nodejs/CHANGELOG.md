@@ -1,6 +1,7 @@
 # Changelog
 
 ## 1.2.3
+- Handle all non-dynamic paths as static routes in Next.js. PR #383
 - Another fix for dynamic routes in Next PR #380
 - Fixes for data handling PR #385 
 
