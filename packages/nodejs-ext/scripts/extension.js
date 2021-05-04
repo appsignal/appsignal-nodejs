@@ -42,7 +42,7 @@ function download(url, outputPath) {
 
 function extract(filepath) {
   return new Promise((resolve, reject) => {
-    childProcess.exec(`tar -C ext/ -xzf ${filepath}`, err => {
+    childProcess.exec(`tar -C ext/ -xzf "${filepath}"`, err => {
       return !err ? resolve() : reject(err)
     })
   })
