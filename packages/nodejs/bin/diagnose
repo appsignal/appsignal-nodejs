@@ -11,9 +11,9 @@ const { DiagnoseTool } = require("../dist/diagnose")
 // enable diagnose mode
 process.env["_APPSIGNAL_DIAGNOSE"] = "true"
 
-// providing --no-report at runtime stops the report from bieng sent
-// it can also be passed by @appsignal/cli
-const shouldSendReport = !process.argv.includes("--no-report")
+// providing --no-send-report at runtime stops the report from bieng sent it
+// can also be passed by @appsignal/cli
+const shouldSendReport = process.argv.includes("--send-report") && !process.argv.includes("--no-send-report")
 
 const tool = new DiagnoseTool({})
 
