@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -eu
+
+# Change version number to a release/tag available on the mono repo to update it
+# https://github.com/appsignal/mono/releases
+MONO_VERSION="v0.1.2-alpha.2"
+
+MONO_PATH="$HOME/mono"
+cache restore mono-$MONO_VERSION
+
+# Download mono if the cache restored nothing
+if [ ! -d $MONO_PATH ]; then
+  mkdir -p $MONO_PATH
+  curl --location https://github.com/appsignal/mono/archive/refs/tags/$MONO_VERSION.tar.gz | \
+    tar -xz --strip-components=1 --directory $MONO_PATH
+  cache store mono-$MONO_VERSION $MONO_PATH
+fi
+
+cd $MONO_PATH
+# Install mono always as it adds itself to the PATH
+bin/setup
