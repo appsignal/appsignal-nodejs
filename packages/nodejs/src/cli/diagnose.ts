@@ -20,17 +20,62 @@ export class Diagnose {
     console.log(`  Package version: ${data["library"]["package_version"]}`)
     console.log(`  Agent version: ${data["library"]["agent_version"]}`)
     console.log(
-      `  Extension loaded: ${this.yes_or_no(
+      `  Extension loaded: ${this.format_value(
         data["library"]["extension_loaded"]
+      )}`
+    )
+
+    this.print_newline()
+
+    console.log(`Extension installation report`)
+    console.log(`  Installation result`)
+    console.log(`    Status: success`)
+    console.log(`  Language details`)
+    console.log(`    Node.js version: ${data["host"]["language_version"]}`)
+    console.log(`  Download details`)
+    console.log(
+      `    Download URL: ${data["installation"]["download"]["download_url"]}`
+    )
+    console.log(`    Checksum: ${data["installation"]["download"]["checksum"]}`)
+    console.log(`  Build details`)
+    console.log(`    Install time: ${data["installation"]["build"]["time"]}`)
+    console.log(
+      `    Architecture: ${data["installation"]["build"]["architecture"]}`
+    )
+    console.log(`    Target: ${data["installation"]["build"]["target"]}`)
+    console.log(
+      `    Musl override: ${data["installation"]["build"]["musl_override"]}`
+    )
+    console.log(
+      `    Library type: ${data["installation"]["build"]["library_type"]}`
+    )
+    console.log(`  Host details`)
+    console.log(`    Root user: ${data["installation"]["host"]["root_user"]}`)
+    console.log(
+      `    Dependencies: ${this.format_value(
+        data["installation"]["host"]["dependencies"]
+      )}`
+    )
+
+    this.print_newline()
+
+    console.log(`  Host information`)
+    console.log(`    Architecture: ${data["host"]["architecture"]}`)
+    console.log(`    Operating System: ${data["host"]["os"]}`)
+    console.log(`    Node.js version: ${data["host"]["language_version"]}`)
+    console.log(`    Root user: ${this.format_value(data["host"]["root"])}`)
+    console.log(
+      `    Running in container: ${this.format_value(
+        data["host"]["running_in_container"]
       )}`
     )
   }
 
-  yes_or_no(value: boolean) {
-    return value ? "yes" : "no"
-  }
-
   print_newline() {
     console.log(``)
+  }
+
+  format_value(value: any) {
+    return util.inspect(value)
   }
 }
