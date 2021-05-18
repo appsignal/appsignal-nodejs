@@ -36,7 +36,7 @@ blocks:
               values: ["10", "11", "12", "13", "14"]
           commands:
             - mono build
-            - (cd packages/nodejs-ext && npm run build:ext)
+            - mono run npm run build:ext --package @appsignal/nodejs-ext
             - cache store packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION packages
   - name: "Tests"
     dependencies: ["Install and Build"]
