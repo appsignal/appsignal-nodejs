@@ -21,7 +21,8 @@ function createReport() {
 }
 
 function muslOverride() {
-  return process.env["APPSIGNAL_BUILD_FOR_MUSL"] === "true"
+  const musl = process.env["APPSIGNAL_BUILD_FOR_MUSL"]
+  return musl === "true" || musl === "1"
 }
 
 function agentTarget() {
@@ -29,7 +30,7 @@ function agentTarget() {
     return "linux-musl"
   }
 
-  const target = [process.platform];
+  const target = [process.platform]
   if (/linux/.test(target[0]) && hasMusl()) {
     target.push("-musl")
   }
