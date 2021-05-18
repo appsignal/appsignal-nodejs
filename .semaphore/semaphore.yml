@@ -73,6 +73,11 @@ blocks:
     - name: "@appsignal/nodejs - nodejs"
       commands:
       - mono test --package=@appsignal/nodejs
+    - name: "@appsignal/nodejs - nodejs - diagnose"
+      commands:
+      - git submodule init
+      - git submodule update
+      - LANGUAGE=nodejs test/integration/diagnose/bin/test
     - name: "@appsignal/nodejs-ext - nodejs-ext"
       commands:
       - mono test --package=@appsignal/nodejs-ext
@@ -125,6 +130,11 @@ blocks:
     - name: "@appsignal/nodejs - nodejs"
       commands:
       - mono test --package=@appsignal/nodejs
+    - name: "@appsignal/nodejs - nodejs - diagnose"
+      commands:
+      - git submodule init
+      - git submodule update
+      - LANGUAGE=nodejs test/integration/diagnose/bin/test
     - name: "@appsignal/nodejs-ext - nodejs-ext"
       commands:
       - mono test --package=@appsignal/nodejs-ext
@@ -177,6 +187,11 @@ blocks:
     - name: "@appsignal/nodejs - nodejs"
       commands:
       - mono test --package=@appsignal/nodejs
+    - name: "@appsignal/nodejs - nodejs - diagnose"
+      commands:
+      - git submodule init
+      - git submodule update
+      - LANGUAGE=nodejs test/integration/diagnose/bin/test
     - name: "@appsignal/nodejs-ext - nodejs-ext"
       commands:
       - mono test --package=@appsignal/nodejs-ext
@@ -229,6 +244,11 @@ blocks:
     - name: "@appsignal/nodejs - nodejs"
       commands:
       - mono test --package=@appsignal/nodejs
+    - name: "@appsignal/nodejs - nodejs - diagnose"
+      commands:
+      - git submodule init
+      - git submodule update
+      - LANGUAGE=nodejs test/integration/diagnose/bin/test
     - name: "@appsignal/nodejs-ext - nodejs-ext"
       commands:
       - mono test --package=@appsignal/nodejs-ext
@@ -281,6 +301,11 @@ blocks:
     - name: "@appsignal/nodejs - nodejs"
       commands:
       - mono test --package=@appsignal/nodejs
+    - name: "@appsignal/nodejs - nodejs - diagnose"
+      commands:
+      - git submodule init
+      - git submodule update
+      - LANGUAGE=nodejs test/integration/diagnose/bin/test
     - name: "@appsignal/nodejs-ext - nodejs-ext"
       commands:
       - mono test --package=@appsignal/nodejs-ext
@@ -333,6 +358,11 @@ blocks:
     - name: "@appsignal/nodejs - nodejs"
       commands:
       - mono test --package=@appsignal/nodejs
+    - name: "@appsignal/nodejs - nodejs - diagnose"
+      commands:
+      - git submodule init
+      - git submodule update
+      - LANGUAGE=nodejs test/integration/diagnose/bin/test
     - name: "@appsignal/nodejs-ext - nodejs-ext"
       commands:
       - mono test --package=@appsignal/nodejs-ext
@@ -385,6 +415,11 @@ blocks:
     - name: "@appsignal/nodejs - nodejs"
       commands:
       - mono test --package=@appsignal/nodejs
+    - name: "@appsignal/nodejs - nodejs - diagnose"
+      commands:
+      - git submodule init
+      - git submodule update
+      - LANGUAGE=nodejs test/integration/diagnose/bin/test
     - name: "@appsignal/nodejs-ext - nodejs-ext"
       commands:
       - mono test --package=@appsignal/nodejs-ext

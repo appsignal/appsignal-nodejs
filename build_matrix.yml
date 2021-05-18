@@ -55,6 +55,11 @@ matrix:
       path: "packages/nodejs"
       variations:
         - name: "nodejs"
+      extra_tests:
+        diagnose:
+          - git submodule init
+          - git submodule update
+          - LANGUAGE=nodejs test/integration/diagnose/bin/test
     - package: "@appsignal/nodejs-ext"
       path: "packages/nodejs-ext"
       variations:
