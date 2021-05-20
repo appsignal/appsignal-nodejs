@@ -64,7 +64,7 @@ mono run npm run build:watch --parallel
 You can also build the library without watching the directory:
 
 ```bash
-mono run build
+mono build
 ```
 
 Version management configuration is provided for [`asdf`](https://github.com/asdf-vm/asdf-nodejs).
