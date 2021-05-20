@@ -44,8 +44,8 @@
     "bootstrap": "mono bootstrap",
     "bootstrap:ci": "mono bootstrap --ci",
     "build": "mono build",
-    "build:watch": "mono run build:watch",
-    "build:ext": "mono run build:ext",
+    "build:watch": "mono run npm run build:watch --parallel",
+    "build:ext": "mono run npm run build:ext --package @appsignal/nodejs-ext",
     "clean": "mono clean",
     "test": "mono test"
   },
