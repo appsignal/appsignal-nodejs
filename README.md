@@ -4,7 +4,7 @@
 - [Documentation][docs]
 - [Support][contact]
 
-[![Build Status](https://appsignal.semaphoreci.com/badges/appsignal-nodejs/branches/main.svg?style=shields&key=7dd9fe64-f1d5-437b-a5b7-8ac337a26c5b)](https://travis-ci.org/appsignal/appsignal-nodejs) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+[![Build Status](https://appsignal.semaphoreci.com/badges/appsignal-nodejs/branches/main.svg?style=shields&key=7dd9fe64-f1d5-437b-a5b7-8ac337a26c5b)](https://travis-ci.org/appsignal/appsignal-nodejs) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 ## Installation
 
@@ -45,35 +45,36 @@ const appsignal = new Appsignal({
 
 ### Installation
 
-This repository is a Lerna-managed monorepo, containing packages (located in the `/packages` directory) that map to separate `npm` modules.
+This repository is a [mono-managed monorepo](https://github.com/appsignal/mono/), containing packages (located in the `/packages` directory) that map to separate `npm` modules.
 
-To install the dependencies:
+First install mono on your local machine by [following the mono installation steps](https://github.com/appsignal/mono/#installation).
+
+Then install the dependencies and prepare the project for development use using mono:
 
 ```bash
-npm install
-npx lerna bootstrap && npx lerna link
+mono bootstrap
 ```
 
-You can then run the following to start the compiler in _watch_ mode. 
+You can then run the following to start the compiler in _watch_ mode.
 
 ```bash
-npm run build:watch
+mono run npm run build:watch --parallel
 ```
 
 You can also build the library without watching the directory:
 
 ```bash
-npm run build
+mono run build
 ```
 
-Version management configuration is provided for [`volta`](https://volta.sh/) and [`asdf`](https://github.com/asdf-vm/asdf-nodejs).
+Version management configuration is provided for [`asdf`](https://github.com/asdf-vm/asdf-nodejs).
 
 ### Testing
 
 The tests for this library use [Jest](https://jestjs.io) as the test runner. Once you've installed the dependencies, you can run the following command in the root of this repository to run the tests for all packages, or in the directory of a package to run only the tests pertaining to that package:
 
 ```bash
-npm run test
+mono test
 ```
 
 ### Versioning
