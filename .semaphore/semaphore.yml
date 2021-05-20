@@ -17,18 +17,17 @@ global_job_config:
     commands:
       - checkout
       - sem-version node $NODE_VERSION
+
+      # Mono setup
+      - script/setup
+      - source ~/.bashrc
 blocks:
   - name: "Install and Build"
     dependencies: []
     task:
       prologue:
         commands:
-          - npm ci
-          # The below line shouldn't be necessarily, but lerna seems to behave
-          # differently on the CI server than to how it behaves locally
-          - cd packages/nodejs-ext && npm ci && cd ../../
-          - npx lerna bootstrap
-          - npx lerna link
+          - mono bootstrap --ci
           - cache store
       jobs:
         - name: Build
@@ -36,8 +35,8 @@ blocks:
             - env_var: NODE_VERSION
               values: ["10", "11", "12", "13", "14"]
           commands:
-            - npm run build
-            - npm run build:ext
+            - mono build
+            - mono run npm run build:ext --package @appsignal/nodejs-ext
             - cache store packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION packages
   - name: "Tests"
     dependencies: ["Install and Build"]
@@ -45,19 +44,19 @@ blocks:
       prologue:
         commands:
           - cache restore
+          - cache restore packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION
+          - mono bootstrap --ci
       jobs:
         - name: Jest
           matrix:
             - env_var: NODE_VERSION
               values: ["10", "11", "12", "13", "14"]
           commands:
-            - cache restore packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION
-            - npm run test
+            - mono test
         - name: Integration
           matrix:
             - env_var: NODE_VERSION
               values: ["10", "11", "12", "13", "14"]
           commands:
-            - cache restore packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION
             - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
             - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
