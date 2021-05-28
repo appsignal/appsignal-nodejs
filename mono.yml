@@ -2,5 +2,4 @@
 language: nodejs
 repo: "https://github.com/appsignal/appsignal-nodejs"
 npm_client: "npm"
-tag_prefix: "@appsignal/"
 packages_dir: "packages"
