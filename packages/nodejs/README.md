@@ -4,6 +4,8 @@
 
 The core AppSignal for Node.js library.
 
+See also the [mono repo README](../../README.md) for more information.
+
 ## Installation
 
 First, [sign up][appsignal-sign-up] for an AppSignal account and run our automated install tool, which will install `@appsignal/nodejs` and any relevant integrations to your project:
@@ -38,55 +40,6 @@ const appsignal = new Appsignal({
 ```
 
 > In order to auto-instrument modules, the Appsignal module must be both **required** and **initialized** before any other package.
-
-## Development
-
-### Installation
-
-This repository is a Lerna-managed monorepo, containing packages (located in the `/packages` directory) that map to separate `npm` modules.
-
-To install the dependencies:
-
-```bash
-npm install
-lerna bootstrap
-```
-
-You can then run the following to start the compiler in _watch_ mode. 
-
-```bash
-npm run build:watch
-```
-
-You can also build the library without watching the directory:
-
-```
-npm run build
-```
-
-### Testing
-
-The tests for this library use [Jest](https://jestjs.io) as the test runner. Once you've installed the dependencies, you can run the following command in the root of this repository to run the tests for all packages, or in the directory of a package to run only the tests pertaining to that package:
-
-```bash
-npm run test
-```
-
-### Versioning
-
-This repo uses [Semantic Versioning][semver] (often referred to as _semver_). Each package in the repository is versioned independently from one another.
-
-## Contributing
-
-Thinking of contributing to this repo? Awesome! 🚀
-
-Please follow our [Contributing guide][contributing-guide] in our documentation and follow our [Code of Conduct][coc].
-
-Also, we would be very happy to send you Stroopwafels. Have look at everyone we send a package to so far on our [Stroopwafels page][waffles-page].
-
-## Support
-
-[Contact us][contact] and speak directly with the engineers working on AppSignal. They will help you get set up, tweak your code and make sure you get the most out of using AppSignal.
 
 [appsignal]: https://appsignal.com
 [appsignal-sign-up]: https://appsignal.com/users/sign_up
