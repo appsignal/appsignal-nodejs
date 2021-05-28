@@ -1,4 +1,4 @@
-# Changelog
+# AppSignal for Node.js Changelog
 
 ## 1.2.4
 - Wrap filepath in quotes in tar command. PR #387
