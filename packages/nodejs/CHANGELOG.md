@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 1.2.5-alpha.1
+
+- [58e73ba](https://github.com/appsignal/appsignal-nodejs/commit/58e73ba815d31dbf5f25e74d50eb843b112fc3de) patch - Replace the `--no-report` option--which turned sending the diagnose report
+  to AppSignal's servers off--with `--send-report` and `--no-send-report`.
+  
+  By default, the report is not sent if you don't pass `--send-report`.
+- [08d5646](https://github.com/appsignal/appsignal-nodejs/commit/08d5646bc88a0049edfeb4475bc4e0a03ec08b04) patch - Update @appsignal/nodejs-ext dependency to 1.2.5
+
 ## 1.2.4
 - Wrap filepath in quotes in tar command. PR #387
 
