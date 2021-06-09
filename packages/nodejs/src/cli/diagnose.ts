@@ -69,6 +69,21 @@ export class Diagnose {
         data["host"]["running_in_container"]
       )}`
     )
+
+    this.print_newline()
+
+    console.log(`Configuration`)
+    console.log(
+      `  Environment: ${this.format_value(data["config"]["options"]["env"])}`
+    )
+
+    Object.keys(data["config"]["options"])
+      .filter(key => key != "env")
+      .forEach(key => {
+        console.log(
+          `  ${key}: ${this.format_value(data["config"]["options"][key])}`
+        )
+      })
   }
 
   print_newline() {
