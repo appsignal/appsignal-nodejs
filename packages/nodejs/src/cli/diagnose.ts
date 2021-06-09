@@ -84,6 +84,11 @@ export class Diagnose {
           `  ${key}: ${this.format_value(data["config"]["options"][key])}`
         )
       })
+
+    this.print_newline()
+
+    console.log(`Read more about how the diagnose config output is rendered`)
+    console.log(`https://docs.appsignal.com/nodejs/command-line/diagnose.html`)
   }
 
   print_newline() {
