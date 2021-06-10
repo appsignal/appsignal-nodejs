@@ -89,6 +89,15 @@ export class Diagnose {
 
     console.log(`Read more about how the diagnose config output is rendered`)
     console.log(`https://docs.appsignal.com/nodejs/command-line/diagnose.html`)
+
+    this.print_newline()
+
+    console.log(`Validation`)
+    console.log(
+      `  Validating Push API key: ${this.colorize(
+        data["validation"]["push_api_key"]
+      )}`
+    )
   }
 
   print_newline() {
@@ -97,5 +106,16 @@ export class Diagnose {
 
   format_value(value: any) {
     return util.inspect(value)
+  }
+
+  colorize(value: string) {
+    switch (value) {
+      case "invalid":
+        return `\x1b[31minvalid\x1b[0m`
+      case "valid":
+        return `\x1b[32mvalid\x1b[0m`
+      default:
+        return value
+    }
   }
 }
