@@ -41,13 +41,13 @@
     "typescript": "^4.1.3"
   },
   "scripts": {
-    "bootstrap": "mono bootstrap",
-    "bootstrap:ci": "mono bootstrap --ci",
-    "build": "mono build",
-    "build:watch": "mono run npm run build:watch --parallel",
-    "build:ext": "mono run npm run build:ext --package @appsignal/nodejs-ext",
-    "clean": "mono clean",
-    "test": "mono test"
+    "bootstrap": "echo Please run 'mono bootstrap' instead.",
+    "bootstrap:ci": "echo Please run 'mono bootstrap --ci' instead.",
+    "build": "echo Please run 'mono build' instead.",
+    "build:watch": "echo Please run 'mono run npm run build:watch --parallel' instead.",
+    "build:ext": "echo Please run 'mono run npm run build:ext --package @appsignal/nodejs-ext' instead.",
+    "clean": "echo Please run 'mono clean' instead.",
+    "test": "echo Please run 'mono test' instead."
   },
   "husky": {
     "hooks": {
