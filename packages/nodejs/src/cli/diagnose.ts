@@ -98,6 +98,27 @@ export class Diagnose {
         data["validation"]["push_api_key"]
       )}`
     )
+
+    this.print_newline()
+
+    console.log(`Paths`)
+
+    var contents = data["paths"]["appsignal.log"]["content"]
+
+    console.log(`  Current working directory`)
+    console.log(
+      `    Path: ${this.format_value(data["paths"]["working_dir"]["path"])}`
+    )
+    console.log(`  Log directory`)
+    console.log(
+      `    Path: ${this.format_value(data["paths"]["log_dir_path"]["path"])}`
+    )
+    console.log(`  AppSignal log`)
+    console.log(
+      `    Path: ${this.format_value(data["paths"]["appsignal.log"]["path"])}`
+    )
+    console.log(`    Contents \(last 9 lines\):`)
+    console.log(contents.slice(contents.length - 10).join("\n"))
   }
 
   print_newline() {
