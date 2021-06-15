@@ -109,16 +109,29 @@ export class Diagnose {
     console.log(
       `    Path: ${this.format_value(data["paths"]["working_dir"]["path"])}`
     )
+
+    this.print_newline()
+
     console.log(`  Log directory`)
     console.log(
       `    Path: ${this.format_value(data["paths"]["log_dir_path"]["path"])}`
     )
+
+    this.print_newline()
+
     console.log(`  AppSignal log`)
     console.log(
       `    Path: ${this.format_value(data["paths"]["appsignal.log"]["path"])}`
     )
     console.log(`    Contents \(last 9 lines\):`)
     console.log(contents.slice(contents.length - 10).join("\n"))
+
+    console.log(`Diagnostics report`)
+    console.log(`  Do you want to send this diagnostics report to AppSignal?`)
+    console.log(`  If you share this report you will be given a link to`)
+    console.log(`  AppSignal.com to validate the report.`)
+    console.log(`  You can also contact us at support@appsignal.com`)
+    console.log(`  with your support token.`)
   }
 
   print_newline() {
