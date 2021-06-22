@@ -1,4 +1,7 @@
 const { DiagnoseTool } = require("../diagnose")
+const fs = require("fs")
+const https = require("https")
+const path = require("path")
 const util = require("util")
 const readline = require("readline")
 
@@ -145,6 +148,47 @@ export class Diagnose {
       `  Send diagnostics report to AppSignal? (Y/n): `,
       function (answer: String) {
         switch (answer) {
+          case "":
+          case "y":
+            const json = JSON.stringify(data)
+
+            const opts = {
+              port: 443,
+              method: "POST",
+              host: "appsignal.com",
+              path: "/diag",
+              headers: {
+                "Content-Type": "application/json",
+                "Content-Length": json.length
+              },
+              cert: fs.readFileSync(
+                path.resolve(__dirname, "../../cert/cacert.pem"),
+                "utf-8"
+              )
+            }
+
+            const req = https.request(opts, (res: any) => {
+              res.setEncoding("utf8")
+
+              // print token to the console
+              res.on("data", (chunk: any) => {
+                const { token } = JSON.parse(chunk.toString())
+                console.log(`  Your support token:`, token)
+                console.log(
+                  `  View this report: https://appsignal.com/diagnose/${token}`
+                )
+              })
+            })
+
+            req.on("error", (e: any) => {
+              console.error(`Problem with diagnose request: ${e.message}`)
+            })
+
+            // Write data to request body
+            req.write(json)
+            req.end()
+            break
+
           default:
             console.log(`  Not sending diagnostics information to AppSignal.`)
         }
