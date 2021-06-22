@@ -1,5 +1,6 @@
 const { DiagnoseTool } = require("../diagnose")
 const util = require("util")
+const readline = require("readline")
 
 export class Diagnose {
   public run() {
@@ -132,6 +133,25 @@ export class Diagnose {
     console.log(`  AppSignal.com to validate the report.`)
     console.log(`  You can also contact us at support@appsignal.com`)
     console.log(`  with your support token.`)
+
+    this.print_newline()
+
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    })
+
+    rl.question(
+      `  Send diagnostics report to AppSignal? (Y/n): `,
+      function (answer: String) {
+        switch (answer) {
+          default:
+            console.log(`  Not sending diagnostics information to AppSignal.`)
+        }
+
+        rl.close()
+      }
+    )
   }
 
   print_newline() {
