@@ -139,28 +139,36 @@ export class Diagnose {
 
     this.print_newline()
 
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    })
+    if (process.argv.includes("--no-send-report")) {
+      console.log(
+        `  Not sending report. (Specified with the --no-send-report option.)`
+      )
+    } else if (process.argv.includes("--send-report")) {
+      this.send_report(data)
+    } else {
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      })
 
-    let self = this
-    rl.question(
-      `  Send diagnostics report to AppSignal? (Y/n): `,
-      function (answer: String) {
-        switch (answer) {
-          case "":
-          case "y":
-            self.send_report(data)
-            break
+      let self = this
+      rl.question(
+        `  Send diagnostics report to AppSignal? (Y/n): `,
+        function (answer: String) {
+          switch (answer) {
+            case "":
+            case "y":
+              self.send_report(data)
+              break
 
-          default:
-            console.log(`  Not sending diagnostics information to AppSignal.`)
+            default:
+              console.log(`  Not sending diagnostics information to AppSignal.`)
+          }
+
+          rl.close()
         }
-
-        rl.close()
-      }
-    )
+      )
+    }
   }
 
   send_report(data: object) {
