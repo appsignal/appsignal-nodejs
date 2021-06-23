@@ -144,49 +144,14 @@ export class Diagnose {
       output: process.stdout
     })
 
+    let self = this
     rl.question(
       `  Send diagnostics report to AppSignal? (Y/n): `,
       function (answer: String) {
         switch (answer) {
           case "":
           case "y":
-            const json = JSON.stringify(data)
-
-            const opts = {
-              port: 443,
-              method: "POST",
-              host: "appsignal.com",
-              path: "/diag",
-              headers: {
-                "Content-Type": "application/json",
-                "Content-Length": json.length
-              },
-              cert: fs.readFileSync(
-                path.resolve(__dirname, "../../cert/cacert.pem"),
-                "utf-8"
-              )
-            }
-
-            const req = https.request(opts, (res: any) => {
-              res.setEncoding("utf8")
-
-              // print token to the console
-              res.on("data", (chunk: any) => {
-                const { token } = JSON.parse(chunk.toString())
-                console.log(`  Your support token:`, token)
-                console.log(
-                  `  View this report: https://appsignal.com/diagnose/${token}`
-                )
-              })
-            })
-
-            req.on("error", (e: any) => {
-              console.error(`Problem with diagnose request: ${e.message}`)
-            })
-
-            // Write data to request body
-            req.write(json)
-            req.end()
+            self.send_report(data)
             break
 
           default:
@@ -196,6 +161,45 @@ export class Diagnose {
         rl.close()
       }
     )
+  }
+
+  send_report(data: object) {
+    const json = JSON.stringify(data)
+
+    const opts = {
+      port: 443,
+      method: "POST",
+      host: "appsignal.com",
+      path: "/diag",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": json.length
+      },
+      cert: fs.readFileSync(
+        path.resolve(__dirname, "../../cert/cacert.pem"),
+        "utf-8"
+      )
+    }
+
+    const req = https.request(opts, (res: any) => {
+      res.setEncoding("utf8")
+
+      // print token to the console
+      res.on("data", (chunk: any) => {
+        const { token } = JSON.parse(chunk.toString())
+        console.log(`  Your support token:`, token)
+        console.log(
+          `  View this report: https://appsignal.com/diagnose/${token}`
+        )
+      })
+    })
+
+    req.on("error", (e: any) => {
+      console.error(`Problem with diagnose request: ${e.message}`)
+    })
+
+    req.write(json)
+    req.end()
   }
 
   print_newline() {
