@@ -24,7 +24,7 @@ function hasLocalBuild() {
  */
 function hasSupportedArchitecture(arch) {
   // 'x32' and 'x64' supported
-  return arch === "x32" || arch === "x64"
+  return arch === "x32" || arch === "x64" || arch === "arm64"
 }
 
 /**
