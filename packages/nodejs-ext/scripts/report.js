@@ -25,7 +25,15 @@ function muslOverride() {
   return musl === "true" || musl === "1"
 }
 
+function linuxArmOverride() {
+  const arm = process.env["APPSIGNAL_BUILD_FOR_LINUX_ARM"]
+  return arm === "true" || arm === "1"
+}
+
 function agentTarget() {
+  if (linuxArmOverride()) {
+    return "linux"
+  }
   if (muslOverride()) {
     return "linux-musl"
   }
@@ -37,13 +45,21 @@ function agentTarget() {
   return target.join("")
 }
 
+function agentArchitecture() {
+  if (linuxArmOverride()) {
+    return "arm64"
+  }
+  return process.arch
+}
+
 function createBuildReport({ isLocalBuild = false }) {
   return {
     time: new Date().toISOString(),
     package_path: path.join(__dirname, "/../ext/"),
-    architecture: process.arch,
+    architecture: agentArchitecture(),
     target: agentTarget(),
     musl_override: muslOverride(),
+    linux_arm_override: linuxArmOverride(),
     library_type: "static",
     dependencies: {},
     flags: {},
