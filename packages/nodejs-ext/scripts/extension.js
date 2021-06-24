@@ -76,14 +76,30 @@ function dumpReport(report) {
   })
 }
 
-function getMetadataForTarget({
-  architecture,
-  target
-}) {
-  const triple = [
-    architecture === "x64" ? "x86_64" : "i686",
-    `-${target}`
-  ]
+function mapArchitecture(architecture) {
+  switch (architecture) {
+    case "x64":
+      return "x86_64"
+      break
+    case "x86":
+      return "i686"
+      break
+    case "arm64":
+      return "aarch64"
+      break
+  }
+
+  console.error(
+    `AppSignal currently does not know about your system architecture
+    (${architecture}). Please let us know at support@appsignal.com, we aim to
+    support everything our customers run.`
+  )
+
+  return process.exit(1)
+}
+
+function getMetadataForTarget({ architecture, target }) {
+  const triple = [mapArchitecture(architecture), `-${target}`]
 
   return TRIPLES[triple.join("")]
 }

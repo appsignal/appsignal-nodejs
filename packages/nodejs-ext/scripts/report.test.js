@@ -104,4 +104,41 @@ describe("muslOverride", () => {
       })
     })
   })
+
+  describe("with APPSIGNAL_BUILD_FOR_LINUX_ARM empty", () => {
+    test("returns linux-musl platform with musl_override === false", () => {
+      setPlatform("linux")
+      setEnv("APPSIGNAL_BUILD_FOR_LINUX_ARM", "")
+
+      expect(createBuildReport({})).toMatchObject({
+        architecture: "x64",
+        target: "linux",
+        linux_arm_override: false
+      })
+    })
+  })
+
+  describe("with APPSIGNAL_BUILD_FOR_LINUX_ARM=1", () => {
+    test("returns linux-musl platform with musl_override === true", () => {
+      setEnv("APPSIGNAL_BUILD_FOR_LINUX_ARM", "1")
+
+      expect(createBuildReport({})).toMatchObject({
+        architecture: "aarch64",
+        target: "linux",
+        linux_arm_override: true
+      })
+    })
+  })
+
+  describe("with APPSIGNAL_BUILD_FOR_LINUX_ARM=true", () => {
+    test("returns linux-musl platform with musl_override === true", () => {
+      setEnv("APPSIGNAL_BUILD_FOR_LINUX_ARM", "true")
+
+      expect(createBuildReport({})).toMatchObject({
+        architecture: "aarch64",
+        target: "linux",
+        linux_arm_override: true
+      })
+    })
+  })
 })
