@@ -1,3 +1,8 @@
+# DO NOT EDIT
+# This is a generated file by the `rake build_matrix:semaphore:generate` task.
+# See `build_matrix.yml` for the build matrix.
+# Generate this file with `rake build_matrix:semaphore:generate`.
+---
 version: v1.0
 name: AppSignal for Node.js
 agent:
@@ -13,50 +18,344 @@ global_job_config:
     value: 'true'
   - name: NODE_ENV
     value: test
+  - name: _PACKAGES_CACHE
+    value: v1
   prologue:
     commands:
-      - checkout
-      - sem-version node $NODE_VERSION
-
-      # Mono setup
-      - script/setup
-      - source ~/.bashrc
+    - checkout
+    - sem-version node $NODE_VERSION
+    - script/setup
+    - source ~/.bashrc
 blocks:
-  - name: "Install and Build"
-    dependencies: []
-    task:
-      prologue:
-        commands:
-          - mono bootstrap --ci
-          - cache store
-      jobs:
-        - name: Build
-          matrix:
-            - env_var: NODE_VERSION
-              values: ["10", "11", "12", "13", "14"]
-          commands:
-            - mono build
-            - mono run npm run build:ext --package @appsignal/nodejs-ext
-            - cache store packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION packages
-  - name: "Tests"
-    dependencies: ["Install and Build"]
-    task:
-      prologue:
-        commands:
-          - cache restore
-          - cache restore packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION
-          - mono bootstrap --ci
-      jobs:
-        - name: Jest
-          matrix:
-            - env_var: NODE_VERSION
-              values: ["10", "11", "12", "13", "14"]
-          commands:
-            - mono test
-        - name: Integration
-          matrix:
-            - env_var: NODE_VERSION
-              values: ["10", "11", "12", "13", "14"]
-          commands:
-            - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-            - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+- name: Validation
+  dependencies: []
+  task:
+    jobs:
+    - name: Validate CI setup
+      env_vars:
+      - name: NODE_VERSION
+        value: '15'
+      commands:
+      - rake build_matrix:semaphore:validate
+- name: Node.js 14 - Build
+  dependencies:
+  - Validation
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '14'
+    prologue:
+      commands:
+      - cache restore
+      - mono bootstrap --ci
+      - cache store
+    jobs:
+    - name: Build
+      commands:
+      - mono build
+      - mono run --package @appsignal/nodejs-ext -- npm run build:ext
+      - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+- name: Node.js 14 - Tests
+  dependencies:
+  - Node.js 14 - Build
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '14'
+    prologue:
+      commands:
+      - cache restore
+      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - mono bootstrap --ci
+    jobs:
+    - name: Test all packages
+      commands:
+      - mono test
+    - name: "@appsignal/nextjs - integrations"
+      commands: &1
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+- name: Node.js 14 - Packages
+  dependencies:
+  - Node.js 14 - Tests
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '14'
+    prologue:
+      commands:
+      - cache restore
+      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - mono bootstrap --ci
+    jobs:
+    - name: "@appsignal/nextjs - next.js@9.5.5 - integrations"
+      commands:
+      - npm install next@9.5.5 react@16.14.0 react-dom@16.14.0 --save-dev
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+    - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
+      commands:
+      - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+    - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
+      commands:
+      - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+- name: Node.js 13 - Build
+  dependencies:
+  - Validation
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '13'
+    prologue:
+      commands:
+      - cache restore
+      - mono bootstrap --ci
+      - cache store
+    jobs:
+    - name: Build
+      commands:
+      - mono build
+      - mono run --package @appsignal/nodejs-ext -- npm run build:ext
+      - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+- name: Node.js 13 - Tests
+  dependencies:
+  - Node.js 13 - Build
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '13'
+    prologue:
+      commands:
+      - cache restore
+      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - mono bootstrap --ci
+    jobs:
+    - name: Test all packages
+      commands:
+      - mono test
+    - name: "@appsignal/nextjs - integrations"
+      commands: *1
+- name: Node.js 13 - Packages
+  dependencies:
+  - Node.js 13 - Tests
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '13'
+    prologue:
+      commands:
+      - cache restore
+      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - mono bootstrap --ci
+    jobs:
+    - name: "@appsignal/nextjs - next.js@9.5.5 - integrations"
+      commands:
+      - npm install next@9.5.5 react@16.14.0 react-dom@16.14.0 --save-dev
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+    - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
+      commands:
+      - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+    - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
+      commands:
+      - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+- name: Node.js 12 - Build
+  dependencies:
+  - Validation
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '12'
+    prologue:
+      commands:
+      - cache restore
+      - mono bootstrap --ci
+      - cache store
+    jobs:
+    - name: Build
+      commands:
+      - mono build
+      - mono run --package @appsignal/nodejs-ext -- npm run build:ext
+      - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+- name: Node.js 12 - Tests
+  dependencies:
+  - Node.js 12 - Build
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '12'
+    prologue:
+      commands:
+      - cache restore
+      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - mono bootstrap --ci
+    jobs:
+    - name: Test all packages
+      commands:
+      - mono test
+    - name: "@appsignal/nextjs - integrations"
+      commands: *1
+- name: Node.js 12 - Packages
+  dependencies:
+  - Node.js 12 - Tests
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '12'
+    prologue:
+      commands:
+      - cache restore
+      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - mono bootstrap --ci
+    jobs:
+    - name: "@appsignal/nextjs - next.js@9.5.5 - integrations"
+      commands:
+      - npm install next@9.5.5 react@16.14.0 react-dom@16.14.0 --save-dev
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+    - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
+      commands:
+      - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+    - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
+      commands:
+      - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+- name: Node.js 11 - Build
+  dependencies:
+  - Validation
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '11'
+    prologue:
+      commands:
+      - cache restore
+      - mono bootstrap --ci
+      - cache store
+    jobs:
+    - name: Build
+      commands:
+      - mono build
+      - mono run --package @appsignal/nodejs-ext -- npm run build:ext
+      - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+- name: Node.js 11 - Tests
+  dependencies:
+  - Node.js 11 - Build
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '11'
+    prologue:
+      commands:
+      - cache restore
+      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - mono bootstrap --ci
+    jobs:
+    - name: Test all packages
+      commands:
+      - mono test
+    - name: "@appsignal/nextjs - integrations"
+      commands: *1
+- name: Node.js 11 - Packages
+  dependencies:
+  - Node.js 11 - Tests
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '11'
+    prologue:
+      commands:
+      - cache restore
+      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - mono bootstrap --ci
+    jobs:
+    - name: "@appsignal/nextjs - next.js@9.5.5 - integrations"
+      commands:
+      - npm install next@9.5.5 react@16.14.0 react-dom@16.14.0 --save-dev
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+    - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
+      commands:
+      - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+    - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
+      commands:
+      - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+- name: Node.js 10 - Build
+  dependencies:
+  - Validation
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '10'
+    prologue:
+      commands:
+      - cache restore
+      - mono bootstrap --ci
+      - cache store
+    jobs:
+    - name: Build
+      commands:
+      - mono build
+      - mono run --package @appsignal/nodejs-ext -- npm run build:ext
+      - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+- name: Node.js 10 - Tests
+  dependencies:
+  - Node.js 10 - Build
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '10'
+    prologue:
+      commands:
+      - cache restore
+      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - mono bootstrap --ci
+    jobs:
+    - name: Test all packages
+      commands:
+      - mono test
+    - name: "@appsignal/nextjs - integrations"
+      commands: *1
+- name: Node.js 10 - Packages
+  dependencies:
+  - Node.js 10 - Tests
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '10'
+    prologue:
+      commands:
+      - cache restore
+      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - mono bootstrap --ci
+    jobs:
+    - name: "@appsignal/nextjs - next.js@9.5.5 - integrations"
+      commands:
+      - npm install next@9.5.5 react@16.14.0 react-dom@16.14.0 --save-dev
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+    - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
+      commands:
+      - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+    - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
+      commands:
+      - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test

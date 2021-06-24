@@ -1,0 +1,69 @@
+semaphore: # Default `.semaphore/semaphore.yml` contents
+  version: v1.0
+  name: AppSignal for Node.js
+  agent:
+    machine:
+      type: e1-standard-2
+      os_image: ubuntu1804
+  auto_cancel:
+    running:
+      when: branch != 'main' AND branch != 'develop'
+  global_job_config:
+    env_vars:
+    - name: RUNNING_IN_CI
+      value: 'true'
+    - name: NODE_ENV
+      value: test
+    - name: _PACKAGES_CACHE
+      value: v1
+    prologue:
+      commands:
+        - checkout
+        - sem-version node $NODE_VERSION
+
+        # Mono setup
+        - script/setup
+        - source ~/.bashrc
+  blocks:
+    - name: Validation
+      dependencies: []
+      task:
+        jobs:
+        - name: Validate CI setup
+          env_vars:
+            - name: "NODE_VERSION"
+              value: "15"
+          commands:
+            - rake build_matrix:semaphore:validate
+
+matrix:
+  nodejs:
+    - nodejs: "14"
+    - nodejs: "13"
+    - nodejs: "12"
+    - nodejs: "11"
+    - nodejs: "10"
+  packages:
+    - package: "@appsignal/apollo-server"
+      path: "packages/apollo-server"
+    - package: "@appsignal/express"
+      path: "packages/express"
+    - package: "@appsignal/koa"
+      path: "packages/koa"
+    - package: "@appsignal/nextjs"
+      path: "packages/nextjs"
+      variations:
+        - name: "next.js@10.2.3"
+          packages:
+            next: "10.2.3"
+            react: "16.14.0"
+            react-dom: "16.14.0"
+        - name: "next.js@11.0.1"
+          packages:
+            next: "11.0.1"
+            react: "17.0.2"
+            react-dom: "17.0.2"
+      tests:
+        integrations:
+          - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+          - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
