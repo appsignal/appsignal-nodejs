@@ -61,6 +61,7 @@ export const JS_TO_RUBY_MAPPING: { [key: string]: string } = {
   debug: "debug",
   log: "log",
   logPath: "log_path",
+  logFilePath: "log_file_path",
   endpoint: "endpoint",
   apiKey: "push_api_key",
   name: "name",

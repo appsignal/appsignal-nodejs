@@ -38,6 +38,22 @@ blocks:
             - mono build
             - mono run npm run build:ext --package @appsignal/nodejs-ext
             - cache store packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION packages
+  - name: "Integration tests"
+    dependencies: ["Install and Build"]
+    task:
+      prologue:
+        commands:
+          - cache restore
+      env_vars:
+        - name: NODE_VERSION
+          value: "14"
+      jobs:
+        - name: Diagnose
+          commands:
+            - cache restore packages-$SEMAPHORE_GIT_SHA-$SEMAPHORE_GIT_BRANCH-v$NODE_VERSION
+            - git submodule init
+            - git submodule update
+            - LANGUAGE=nodejs test/integration/diagnose/bin/test
   - name: "Tests"
     dependencies: ["Install and Build"]
     task:
