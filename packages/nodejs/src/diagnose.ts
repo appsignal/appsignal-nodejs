@@ -101,10 +101,10 @@ export class DiagnoseTool {
         path: process.cwd()
       },
       log_dir_path: {
-        path: logPath.replace("/appsignal.log", "")
+        path: logPath
       },
       "appsignal.log": {
-        path: logPath,
+        path: [logPath, "appsignal.log"].join("/"),
         content: safeReadFromPath(logPath).split("\n")
       }
     }
