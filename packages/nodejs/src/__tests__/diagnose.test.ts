@@ -26,4 +26,14 @@ describe("DiagnoseTool", () => {
 
     expect(output.process.uid).toEqual(process.getuid())
   })
+
+  it("returns the log_dir_path", () => {
+    expect(tool.generate().paths.log_dir_path.path).toEqual("/tmp")
+  })
+
+  it("returns the appsignal.log path", () => {
+    expect(tool.generate().paths["appsignal.log"].path).toEqual(
+      "/tmp/appsignal.log"
+    )
+  })
 })
