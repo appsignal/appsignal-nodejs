@@ -104,8 +104,8 @@ export class DiagnoseTool {
         path: logPath.replace("/appsignal.log", "")
       },
       "appsignal.log": {
-        path: logPath,
-        content: safeReadFromPath(logPath).split("\n")
+        path: logPath + "/appsignal.log",
+        content: safeReadFromPath(logPath + "/appsignal.log").split("\n")
       }
     }
 
