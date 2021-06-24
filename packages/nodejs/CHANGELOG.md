@@ -1,5 +1,9 @@
 # AppSignal for Node.js Changelog
 
+## 1.2.6
+
+- patch - Update @appsignal/nodejs-ext dependency to 1.2.6.
+
 ## 1.2.5
 
 - [a55fd1f](https://github.com/appsignal/appsignal-nodejs/commit/a55fd1f0d7aedc1d06024031db80ee4543b332bf) patch - Package release.
