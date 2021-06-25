@@ -36,4 +36,21 @@ describe("DiagnoseTool", () => {
       "/tmp/appsignal.log"
     )
   })
+
+  describe("when to log path is configured as a full path", () => {
+    beforeEach(() => {
+      process.env["APPSIGNAL_LOG_PATH"] = "/path/to/appsignal.log"
+      tool = new DiagnoseTool({})
+    })
+
+    it("returns the log_dir_path", () => {
+      expect(tool.generate().paths.log_dir_path.path).toEqual("/path/to")
+    })
+
+    it("returns the appsignal.log path", () => {
+      expect(tool.generate().paths["appsignal.log"].path).toEqual(
+        "/path/to/appsignal.log"
+      )
+    })
+  })
 })

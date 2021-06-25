@@ -101,7 +101,7 @@ export class DiagnoseTool {
         path: process.cwd()
       },
       log_dir_path: {
-        path: this.#config.data.logPath!
+        path: this.#config.data.logPath!.replace("/appsignal.log", "")
       },
       "appsignal.log": {
         path: logFilePath,
