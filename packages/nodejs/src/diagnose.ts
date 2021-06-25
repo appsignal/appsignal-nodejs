@@ -93,8 +93,7 @@ export class DiagnoseTool {
 
     // we want to fall over if this value isn't present
     // (it should be)
-    const logDirPath = this.#config.data.logPath!
-    const logPath = this.#config.data.logFilePath!
+    const logFilePath = <string>this.#config.data.logFilePath!
 
     // add any paths we want to check to this object!
     const files = {
@@ -102,11 +101,11 @@ export class DiagnoseTool {
         path: process.cwd()
       },
       log_dir_path: {
-        path: logDirPath
+        path: this.#config.data.logPath!
       },
       "appsignal.log": {
-        path: logPath,
-        content: safeReadFromPath(logPath).split("\n")
+        path: logFilePath,
+        content: safeReadFromPath(logFilePath).split("\n")
       }
     }
 
