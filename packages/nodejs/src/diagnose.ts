@@ -94,7 +94,7 @@ export class DiagnoseTool {
     // we want to fall over if this value isn't present
     // (it should be)
     const logDirPath = this.#config.data.logPath!
-    const logPath = logDirPath + "/appsignal.log"
+    const logPath = this.#config.data.logFilePath!
 
     // add any paths we want to check to this object!
     const files = {
