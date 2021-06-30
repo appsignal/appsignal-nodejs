@@ -83,16 +83,24 @@ namespace :build_matrix do
             packages = variation["packages"].map { |name, version| "#{name}@#{version}" }.join(" ")
             update_package_version_command = "npm install #{packages} --save-dev"
 
-            # Test specific package versions
-            secondary_jobs << build_semaphore_job(
-              "name" => "#{package["package"]} - #{variation_name}",
-              "commands" => [
-                update_package_version_command,
-                "mono test --package=#{package["package"]}"
-              ]
-            )
+            # Run Node.js / Jest tests against specific package versions
+            if package_has_tests? package["path"]
+              # Only add a job to run Node.js / Jest tests if there are any. So
+              # we don't waste a lot of time on job setup that don't do
+              # anything. If a package suddenly does get tests the validation
+              # step will fail, and will require this task to be re-run, so
+              # that we don't forget to run those new tests.
+              secondary_jobs << build_semaphore_job(
+                "name" => "#{package["package"]} - #{variation_name}",
+                "commands" => [
+                  update_package_version_command,
+                  "mono test --package=#{package["package"]}"
+                ]
+              )
+            end
+            # Run extra tests against specific package versions. If configured,
+            # run the extra tests configured for the package.
             package["tests"].each do |test_name, extra_tests|
-              # Run extra tests against specific package versions
               secondary_jobs << build_semaphore_job(
                 "name" => "#{package["package"]} - #{variation_name} - #{test_name}",
                 "commands" => [update_package_version_command] + extra_tests
@@ -157,4 +165,8 @@ def build_semaphore_job(job_hash)
     "name" => job_hash.delete("name") { "`name` key not found" },
     "commands" => []
   }.merge(job_hash)
+end
+
+def package_has_tests?(package)
+  Dir.exist?(File.join(package, "src/__tests__"))
 end

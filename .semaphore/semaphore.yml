@@ -88,28 +88,16 @@ blocks:
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
-    - name: "@appsignal/nextjs - next.js@9.5.5"
-      commands:
-      - npm install next@9.5.5 react@16.14.0 react-dom@16.14.0 --save-dev
-      - mono test --package=@appsignal/nextjs
     - name: "@appsignal/nextjs - next.js@9.5.5 - integrations"
       commands:
       - npm install next@9.5.5 react@16.14.0 react-dom@16.14.0 --save-dev
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
-    - name: "@appsignal/nextjs - next.js@10.2.3"
-      commands:
-      - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
-      - mono test --package=@appsignal/nextjs
     - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
       commands:
       - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
-    - name: "@appsignal/nextjs - next.js@11.0.1"
-      commands:
-      - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
-      - mono test --package=@appsignal/nextjs
     - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
       commands:
       - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
@@ -164,28 +152,16 @@ blocks:
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
-    - name: "@appsignal/nextjs - next.js@9.5.5"
-      commands:
-      - npm install next@9.5.5 react@16.14.0 react-dom@16.14.0 --save-dev
-      - mono test --package=@appsignal/nextjs
     - name: "@appsignal/nextjs - next.js@9.5.5 - integrations"
       commands:
       - npm install next@9.5.5 react@16.14.0 react-dom@16.14.0 --save-dev
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
-    - name: "@appsignal/nextjs - next.js@10.2.3"
-      commands:
-      - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
-      - mono test --package=@appsignal/nextjs
     - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
       commands:
       - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
-    - name: "@appsignal/nextjs - next.js@11.0.1"
-      commands:
-      - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
-      - mono test --package=@appsignal/nextjs
     - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
       commands:
       - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
@@ -240,28 +216,16 @@ blocks:
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
-    - name: "@appsignal/nextjs - next.js@9.5.5"
-      commands:
-      - npm install next@9.5.5 react@16.14.0 react-dom@16.14.0 --save-dev
-      - mono test --package=@appsignal/nextjs
     - name: "@appsignal/nextjs - next.js@9.5.5 - integrations"
       commands:
       - npm install next@9.5.5 react@16.14.0 react-dom@16.14.0 --save-dev
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
-    - name: "@appsignal/nextjs - next.js@10.2.3"
-      commands:
-      - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
-      - mono test --package=@appsignal/nextjs
     - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
       commands:
       - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
-    - name: "@appsignal/nextjs - next.js@11.0.1"
-      commands:
-      - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
-      - mono test --package=@appsignal/nextjs
     - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
       commands:
       - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
@@ -316,28 +280,16 @@ blocks:
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
-    - name: "@appsignal/nextjs - next.js@9.5.5"
-      commands:
-      - npm install next@9.5.5 react@16.14.0 react-dom@16.14.0 --save-dev
-      - mono test --package=@appsignal/nextjs
     - name: "@appsignal/nextjs - next.js@9.5.5 - integrations"
       commands:
       - npm install next@9.5.5 react@16.14.0 react-dom@16.14.0 --save-dev
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
-    - name: "@appsignal/nextjs - next.js@10.2.3"
-      commands:
-      - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
-      - mono test --package=@appsignal/nextjs
     - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
       commands:
       - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
-    - name: "@appsignal/nextjs - next.js@11.0.1"
-      commands:
-      - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
-      - mono test --package=@appsignal/nextjs
     - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
       commands:
       - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
@@ -392,28 +344,16 @@ blocks:
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
-    - name: "@appsignal/nextjs - next.js@9.5.5"
-      commands:
-      - npm install next@9.5.5 react@16.14.0 react-dom@16.14.0 --save-dev
-      - mono test --package=@appsignal/nextjs
     - name: "@appsignal/nextjs - next.js@9.5.5 - integrations"
       commands:
       - npm install next@9.5.5 react@16.14.0 react-dom@16.14.0 --save-dev
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
-    - name: "@appsignal/nextjs - next.js@10.2.3"
-      commands:
-      - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
-      - mono test --package=@appsignal/nextjs
     - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
       commands:
       - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
-    - name: "@appsignal/nextjs - next.js@11.0.1"
-      commands:
-      - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
-      - mono test --package=@appsignal/nextjs
     - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
       commands:
       - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev

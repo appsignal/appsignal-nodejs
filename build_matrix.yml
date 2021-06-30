@@ -46,9 +46,13 @@ matrix:
     - nodejs: "10"
   packages:
     - package: "@appsignal/apollo-server"
+      path: "packages/apollo-server"
     - package: "@appsignal/express"
+      path: "packages/express"
     - package: "@appsignal/koa"
+      path: "packages/koa"
     - package: "@appsignal/nextjs"
+      path: "packages/nextjs"
       variations:
         - name: "next.js@9.5.5"
           packages:
