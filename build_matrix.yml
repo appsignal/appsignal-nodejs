@@ -46,8 +46,12 @@ matrix:
   packages:
     - package: "@appsignal/nodejs"
       path: "packages/nodejs"
+      variations:
+        - name: "nodejs"
     - package: "@appsignal/nodejs-ext"
       path: "packages/nodejs-ext"
+      variations:
+        - name: "nodejs-ext"
     # Library integrations
     - package: "@appsignal/apollo-server"
       path: "packages/apollo-server"

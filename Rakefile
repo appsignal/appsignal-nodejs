@@ -38,22 +38,43 @@ namespace :build_matrix do
         builds << build_block
 
         primary_block_name = "Node.js #{nodejs_version} - Tests"
-        primary_jobs = [
-          # Test minimal version of packages
-          build_semaphore_job(
-            "name" => "Test all packages",
-            "commands" => ["mono test"]
-          )
-        ]
+        primary_jobs = []
         matrix["packages"].each do |package|
-          next unless package["extra_tests"]
+          package["variations"].each do |variation|
+            variation_name = variation.fetch("name")
+            dependency_specification = variation["packages"]
+            update_package_version_command =
+              if dependency_specification
+                packages = dependency_specification.map { |name, version| "#{name}@#{version}" }.join(" ")
+                "npm install #{packages} --save-dev"
+              end
 
-          package["extra_tests"].each do |test_name, extra_tests|
-            # Run extra tests
-            primary_jobs << build_semaphore_job(
-              "name" => "#{package["package"]} - #{test_name}",
-              "commands" => extra_tests
-            )
+            # Run Node.js / Jest tests against specific package versions
+            if package_has_tests? package["path"]
+              # Only add a job to run Node.js / Jest tests if there are any. So
+              # we don't waste a lot of time on job setup that don't do
+              # anything. If a package suddenly does get tests the validation
+              # step will fail, and will require this task to be re-run, so
+              # that we don't forget to run those new tests.
+              primary_jobs << build_semaphore_job(
+                "name" => "#{package["package"]} - #{variation_name}",
+                "commands" => [
+                  update_package_version_command,
+                  "mono test --package=#{package["package"]}"
+                ].compact
+              )
+            end
+
+            next unless package["extra_tests"]
+
+            # Run extra tests against specific package versions. If configured,
+            # run the extra tests configured for the package.
+            package["extra_tests"].each do |test_name, extra_tests|
+              primary_jobs << build_semaphore_job(
+                "name" => "#{package["package"]} - #{variation_name} - #{test_name}",
+                "commands" => ([update_package_version_command] + extra_tests).compact
+              )
+            end
           end
         end
         primary_block =
@@ -73,62 +94,6 @@ namespace :build_matrix do
             }
           )
         builds << primary_block
-
-        secondary_jobs = []
-        matrix["packages"].each do |package|
-          next unless package["variations"]
-
-          package["variations"].each_with_index do |variation, index|
-            variation_name = variation.fetch("name")
-            packages = variation["packages"].map { |name, version| "#{name}@#{version}" }.join(" ")
-            update_package_version_command = "npm install #{packages} --save-dev"
-
-            # Run Node.js / Jest tests against specific package versions
-            if package_has_tests? package["path"]
-              # Only add a job to run Node.js / Jest tests if there are any. So
-              # we don't waste a lot of time on job setup that don't do
-              # anything. If a package suddenly does get tests the validation
-              # step will fail, and will require this task to be re-run, so
-              # that we don't forget to run those new tests.
-              secondary_jobs << build_semaphore_job(
-                "name" => "#{package["package"]} - #{variation_name}",
-                "commands" => [
-                  update_package_version_command,
-                  "mono test --package=#{package["package"]}"
-                ]
-              )
-            end
-
-            next unless package["extra_tests"]
-
-            # Run extra tests against specific package versions. If configured,
-            # run the extra tests configured for the package.
-            package["extra_tests"].each do |test_name, extra_tests|
-              secondary_jobs << build_semaphore_job(
-                "name" => "#{package["package"]} - #{variation_name} - #{test_name}",
-                "commands" => [update_package_version_command] + extra_tests
-              )
-            end
-          end
-        end
-        if secondary_jobs.count.nonzero?
-          secondary_block = build_semaphore_task(
-            "name" => "Node.js #{nodejs_version} - Packages",
-            "dependencies" => [primary_block_name],
-            "task" => {
-              "env_vars" => ["name" => "NODE_VERSION", "value" => nodejs_version],
-              "prologue" => {
-                "commands" => [
-                  "cache restore",
-                  "cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION",
-                  "mono bootstrap --ci"
-                ]
-              },
-              "jobs" => secondary_jobs
-            }
-          )
-          builds << secondary_block
-        end
       end
 
       semaphore["blocks"] += builds

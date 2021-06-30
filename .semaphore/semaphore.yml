@@ -68,26 +68,9 @@ blocks:
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
-    - name: Test all packages
+    - name: "@appsignal/nodejs - nodejs"
       commands:
-      - mono test
-    - name: "@appsignal/nextjs - integrations"
-      commands: &1
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
-- name: Node.js 14 - Packages
-  dependencies:
-  - Node.js 14 - Tests
-  task:
-    env_vars:
-    - name: NODE_VERSION
-      value: '14'
-    prologue:
-      commands:
-      - cache restore
-      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-      - mono bootstrap --ci
-    jobs:
+      - mono test --package=@appsignal/nodejs
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
@@ -134,24 +117,9 @@ blocks:
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
-    - name: Test all packages
+    - name: "@appsignal/nodejs - nodejs"
       commands:
-      - mono test
-    - name: "@appsignal/nextjs - integrations"
-      commands: *1
-- name: Node.js 13 - Packages
-  dependencies:
-  - Node.js 13 - Tests
-  task:
-    env_vars:
-    - name: NODE_VERSION
-      value: '13'
-    prologue:
-      commands:
-      - cache restore
-      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-      - mono bootstrap --ci
-    jobs:
+      - mono test --package=@appsignal/nodejs
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
@@ -198,24 +166,9 @@ blocks:
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
-    - name: Test all packages
+    - name: "@appsignal/nodejs - nodejs"
       commands:
-      - mono test
-    - name: "@appsignal/nextjs - integrations"
-      commands: *1
-- name: Node.js 12 - Packages
-  dependencies:
-  - Node.js 12 - Tests
-  task:
-    env_vars:
-    - name: NODE_VERSION
-      value: '12'
-    prologue:
-      commands:
-      - cache restore
-      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-      - mono bootstrap --ci
-    jobs:
+      - mono test --package=@appsignal/nodejs
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
@@ -262,24 +215,9 @@ blocks:
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
-    - name: Test all packages
+    - name: "@appsignal/nodejs - nodejs"
       commands:
-      - mono test
-    - name: "@appsignal/nextjs - integrations"
-      commands: *1
-- name: Node.js 11 - Packages
-  dependencies:
-  - Node.js 11 - Tests
-  task:
-    env_vars:
-    - name: NODE_VERSION
-      value: '11'
-    prologue:
-      commands:
-      - cache restore
-      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-      - mono bootstrap --ci
-    jobs:
+      - mono test --package=@appsignal/nodejs
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
@@ -326,24 +264,9 @@ blocks:
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
-    - name: Test all packages
+    - name: "@appsignal/nodejs - nodejs"
       commands:
-      - mono test
-    - name: "@appsignal/nextjs - integrations"
-      commands: *1
-- name: Node.js 10 - Packages
-  dependencies:
-  - Node.js 10 - Tests
-  task:
-    env_vars:
-    - name: NODE_VERSION
-      value: '10'
-    prologue:
-      commands:
-      - cache restore
-      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-      - mono bootstrap --ci
-    jobs:
+      - mono test --package=@appsignal/nodejs
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
