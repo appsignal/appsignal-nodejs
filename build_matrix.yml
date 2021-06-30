@@ -1,0 +1,109 @@
+semaphore: # Default `.semaphore/semaphore.yml` contents
+  version: v1.0
+  name: AppSignal for Node.js
+  agent:
+    machine:
+      type: e1-standard-2
+      os_image: ubuntu1804
+  auto_cancel:
+    running:
+      when: branch != 'main' AND branch != 'develop'
+  global_job_config:
+    env_vars:
+    - name: RUNNING_IN_CI
+      value: 'true'
+    - name: NODE_ENV
+      value: test
+    - name: _PACKAGES_CACHE
+      value: v1
+    prologue:
+      commands:
+        - checkout
+        - sem-version node $NODE_VERSION
+
+        # Mono setup
+        - script/setup
+        - source ~/.bashrc
+  blocks:
+    - name: Validation
+      dependencies: []
+      task:
+        jobs:
+        - name: Validate CI setup
+          env_vars:
+            - name: "NODE_VERSION"
+              value: "15"
+          commands:
+            - rake build_matrix:semaphore:validate
+
+matrix:
+  nodejs:
+    - nodejs: "14"
+    - nodejs: "13"
+    - nodejs: "12"
+    - nodejs: "11"
+    - nodejs: "10"
+  packages:
+    - package: "@appsignal/nodejs"
+      path: "packages/nodejs"
+    - package: "@appsignal/nodejs-ext"
+      path: "packages/nodejs-ext"
+    # Library integrations
+    - package: "@appsignal/apollo-server"
+      path: "packages/apollo-server"
+      variations:
+        - name: "apollo-server@latest"
+          packages:
+            apollo-server-plugin-base: "latest"
+        - name: "apollo-server@0.13.0"
+          packages:
+            apollo-server-plugin-base: "0.13.0"
+        - name: "apollo-server@0.12.0"
+          packages:
+            apollo-server-plugin-base: "0.12.0"
+        - name: "apollo-server@0.11.0"
+          packages:
+            apollo-server-plugin-base: "0.11.0"
+    - package: "@appsignal/express"
+      path: "packages/express"
+      variations:
+        - name: "express@latest"
+          packages:
+            express: "latest"
+        - name: "express@4.17.1"
+          packages:
+            express: "4.17.1"
+    - package: "@appsignal/koa"
+      path: "packages/koa"
+      variations:
+        - name: "koa@latest"
+          packages:
+            koa: "latest"
+        - name: "koa@2.13.1"
+          packages:
+            koa: "2.13.1"
+        - name: "koa@2.12.1"
+          packages:
+            koa: "2.12.1"
+    - package: "@appsignal/nextjs"
+      path: "packages/nextjs"
+      variations:
+        - name: "next.js@latest"
+          packages:
+            next: "latest"
+            react: "latest"
+            react-dom: "latest"
+        - name: "next.js@11.0.1"
+          packages:
+            next: "11.0.1"
+            react: "17.0.2"
+            react-dom: "17.0.2"
+        - name: "next.js@10.2.3"
+          packages:
+            next: "10.2.3"
+            react: "16.14.0"
+            react-dom: "16.14.0"
+      extra_tests:
+        integrations:
+          - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
+          - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
