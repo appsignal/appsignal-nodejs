@@ -38,6 +38,12 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
 
 matrix:
   nodejs:
+    - nodejs: "16"
+      setup:
+        # Configure the host to use GCC 8.3 for Node.js 16. This is the minimal
+        # required version for Node.js 16, and the extension won't compile
+        # without it.
+        - sem-version c 8
     - nodejs: "15"
     - nodejs: "14"
     - nodejs: "13"

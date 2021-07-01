@@ -9,6 +9,7 @@ namespace :build_matrix do
       builds = []
       matrix["nodejs"].each do |nodejs|
         nodejs_version = nodejs["nodejs"]
+        setup = nodejs.fetch("setup", [])
 
         build_block_name = "Node.js #{nodejs_version} - Build"
         build_block = build_semaphore_task(
@@ -17,7 +18,7 @@ namespace :build_matrix do
           "task" => {
             "env_vars" => ["name" => "NODE_VERSION", "value" => nodejs_version],
             "prologue" => {
-              "commands" => [
+              "commands" => setup + [
                 "cache restore",
                 "mono bootstrap --ci",
                 "cache store"
@@ -84,7 +85,7 @@ namespace :build_matrix do
             "task" => {
               "env_vars" => ["name" => "NODE_VERSION", "value" => nodejs_version],
               "prologue" => {
-                "commands" => [
+                "commands" => setup + [
                   "cache restore",
                   "cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION",
                   "mono bootstrap --ci"
