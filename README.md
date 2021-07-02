@@ -93,11 +93,11 @@ Also, we would be very happy to send you Stroopwafels. Have look at everyone we 
 
 [Contact us][contact] and speak directly with the engineers working on AppSignal. They will help you get set up, tweak your code and make sure you get the most out of using AppSignal.
 
-[appsignal]: https://appsignal.com
+[appsignal]: https://www.appsignal.com/nodejs
 [appsignal-sign-up]: https://appsignal.com/users/sign_up
 [contact]: mailto:support@appsignal.com
 [coc]: https://docs.appsignal.com/appsignal/code-of-conduct.html
-[waffles-page]: https://appsignal.com/waffles
+[waffles-page]: https://www.appsignal.com/waffles
 [docs]: https://docs.appsignal.com/nodejs/
 [contributing-guide]: http://docs.appsignal.com/appsignal/contributing.html
 [semver]: http://semver.org/
