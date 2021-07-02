@@ -14,7 +14,7 @@ RSpec.describe "Next.js" do
     read, write = IO.pipe
     @pid = spawn(command, out: write)
 
-    Timeout::timeout(10) do
+    Timeout::timeout(15) do
       read.each do |line|
         puts line
         break if line =~ /Ready on/
