@@ -51,6 +51,9 @@ export class Diagnose {
       `    Musl override: ${data["installation"]["build"]["musl_override"]}`
     )
     console.log(
+      `    Linux ARM override: ${data["installation"]["build"]["linux_arm_override"]}`
+    )
+    console.log(
       `    Library type: ${data["installation"]["build"]["library_type"]}`
     )
     console.log(`  Host details`)
