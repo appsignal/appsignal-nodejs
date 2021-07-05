@@ -81,13 +81,28 @@ export class Diagnose {
       `  Environment: ${this.format_value(data["config"]["options"]["env"])}`
     )
 
-    Object.keys(data["config"]["options"])
-      .filter(key => key != "env")
-      .forEach(key => {
-        console.log(
-          `  ${key}: ${this.format_value(data["config"]["options"][key])}`
-        )
-      })
+    console.log(
+      `  debug: ${this.format_value(data["config"]["options"]["debug"])}`
+    )
+
+    console.log(`  log: ${this.format_value(data["config"]["options"]["log"])}`)
+
+    console.log(
+      `  endpoint: ${this.format_value(data["config"]["options"]["endpoint"])}`
+    )
+    console.log(
+      `  ca_file_path: ${this.format_value(
+        data["config"]["options"]["ca_file_path"]
+      )}`
+    )
+    console.log(
+      `  active: ${this.format_value(data["config"]["options"]["active"])}`
+    )
+    console.log(
+      `  push_api_key: ${this.format_value(
+        data["config"]["options"]["push_api_key"]
+      )}`
+    )
 
     this.print_newline()
 
