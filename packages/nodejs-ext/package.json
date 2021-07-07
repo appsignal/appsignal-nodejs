@@ -9,14 +9,16 @@
     "node-gyp": "^7.1.2"
   },
   "scripts": {
-    "install": "node scripts/extension.js && node-gyp rebuild",
+    "install": "node scripts/extension.js",
     "build": "tsc -p tsconfig.json",
     "build:ext": "node-gyp rebuild",
     "build:watch": "tsc -p tsconfig.json -w --preserveWatchOutput",
     "clean": "rimraf dist coverage && rimraf ext/appsignal-agent ext/libappsignal.a ext/appsignal.* ext/*.tar.gz",
     "link:npm": "npm link",
     "link:yarn": "yarn link",
-    "test": "jest"
+    "test": "jest --filter=./test/filter.js",
+    "pretest:failure": "npm run clean",
+    "test:failure": "_TEST_APPSIGNAL_EXTENSION_FAILURE=true npm run install; _TEST_APPSIGNAL_EXTENSION_FAILURE=true jest --filter=./test/filter.js"
   },
   "os": [
     "linux",
