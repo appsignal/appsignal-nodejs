@@ -173,8 +173,7 @@ export class Diagnose {
       rl.question(
         `  Send diagnostics report to AppSignal? (Y/n): `,
         function (answer: String) {
-          switch (answer) {
-            case "":
+          switch (answer || "y") {
             case "y":
               self.send_report(data)
               break
