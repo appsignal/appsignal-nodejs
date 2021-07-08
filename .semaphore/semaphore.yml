@@ -57,7 +57,7 @@ blocks:
       - mono run --package @appsignal/nodejs-ext -- npm run build:ext
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
       - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-        /tmp/appsignal-install-report.json
+        /tmp/appsignal-*-install.report
 - name: Node.js 16 - Tests
   dependencies:
   - Node.js 16 - Build
@@ -119,7 +119,7 @@ blocks:
       - mono run --package @appsignal/nodejs-ext -- npm run build:ext
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
       - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-        /tmp/appsignal-install-report.json
+        /tmp/appsignal-*-install.report
 - name: Node.js 15 - Tests
   dependencies:
   - Node.js 15 - Build
@@ -180,7 +180,7 @@ blocks:
       - mono run --package @appsignal/nodejs-ext -- npm run build:ext
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
       - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-        /tmp/appsignal-install-report.json
+        /tmp/appsignal-*-install.report
 - name: Node.js 14 - Tests
   dependencies:
   - Node.js 14 - Build
@@ -241,7 +241,7 @@ blocks:
       - mono run --package @appsignal/nodejs-ext -- npm run build:ext
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
       - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-        /tmp/appsignal-install-report.json
+        /tmp/appsignal-*-install.report
 - name: Node.js 13 - Tests
   dependencies:
   - Node.js 13 - Build
@@ -302,7 +302,7 @@ blocks:
       - mono run --package @appsignal/nodejs-ext -- npm run build:ext
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
       - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-        /tmp/appsignal-install-report.json
+        /tmp/appsignal-*-install.report
 - name: Node.js 12 - Tests
   dependencies:
   - Node.js 12 - Build
@@ -363,7 +363,7 @@ blocks:
       - mono run --package @appsignal/nodejs-ext -- npm run build:ext
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
       - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-        /tmp/appsignal-install-report.json
+        /tmp/appsignal-*-install.report
 - name: Node.js 11 - Tests
   dependencies:
   - Node.js 11 - Build
@@ -424,7 +424,7 @@ blocks:
       - mono run --package @appsignal/nodejs-ext -- npm run build:ext
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
       - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-        /tmp/appsignal-install-report.json
+        /tmp/appsignal-*-install.report
 - name: Node.js 10 - Tests
   dependencies:
   - Node.js 10 - Build
