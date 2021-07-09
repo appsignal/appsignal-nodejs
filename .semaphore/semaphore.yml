@@ -56,6 +56,8 @@ blocks:
       - mono build
       - mono run --package @appsignal/nodejs-ext -- npm run build:ext
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+      - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+        /tmp/appsignal-install-report.json
 - name: Node.js 16 - Tests
   dependencies:
   - Node.js 16 - Build
@@ -68,6 +70,7 @@ blocks:
       - sem-version c 8
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
     - name: "@appsignal/nodejs - nodejs"
@@ -81,6 +84,7 @@ blocks:
     - name: "@appsignal/nodejs-ext - nodejs-ext"
       commands:
       - mono test --package=@appsignal/nodejs-ext
+      - mono run --package @appsignal/nodejs-ext -- npm run test:failure
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
@@ -114,6 +118,8 @@ blocks:
       - mono build
       - mono run --package @appsignal/nodejs-ext -- npm run build:ext
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+      - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+        /tmp/appsignal-install-report.json
 - name: Node.js 15 - Tests
   dependencies:
   - Node.js 15 - Build
@@ -125,6 +131,7 @@ blocks:
       commands:
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
     - name: "@appsignal/nodejs - nodejs"
@@ -138,6 +145,7 @@ blocks:
     - name: "@appsignal/nodejs-ext - nodejs-ext"
       commands:
       - mono test --package=@appsignal/nodejs-ext
+      - mono run --package @appsignal/nodejs-ext -- npm run test:failure
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
@@ -171,6 +179,8 @@ blocks:
       - mono build
       - mono run --package @appsignal/nodejs-ext -- npm run build:ext
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+      - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+        /tmp/appsignal-install-report.json
 - name: Node.js 14 - Tests
   dependencies:
   - Node.js 14 - Build
@@ -182,6 +192,7 @@ blocks:
       commands:
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
     - name: "@appsignal/nodejs - nodejs"
@@ -195,6 +206,7 @@ blocks:
     - name: "@appsignal/nodejs-ext - nodejs-ext"
       commands:
       - mono test --package=@appsignal/nodejs-ext
+      - mono run --package @appsignal/nodejs-ext -- npm run test:failure
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
@@ -228,6 +240,8 @@ blocks:
       - mono build
       - mono run --package @appsignal/nodejs-ext -- npm run build:ext
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+      - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+        /tmp/appsignal-install-report.json
 - name: Node.js 13 - Tests
   dependencies:
   - Node.js 13 - Build
@@ -239,6 +253,7 @@ blocks:
       commands:
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
     - name: "@appsignal/nodejs - nodejs"
@@ -252,6 +267,7 @@ blocks:
     - name: "@appsignal/nodejs-ext - nodejs-ext"
       commands:
       - mono test --package=@appsignal/nodejs-ext
+      - mono run --package @appsignal/nodejs-ext -- npm run test:failure
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
@@ -285,6 +301,8 @@ blocks:
       - mono build
       - mono run --package @appsignal/nodejs-ext -- npm run build:ext
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+      - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+        /tmp/appsignal-install-report.json
 - name: Node.js 12 - Tests
   dependencies:
   - Node.js 12 - Build
@@ -296,6 +314,7 @@ blocks:
       commands:
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
     - name: "@appsignal/nodejs - nodejs"
@@ -309,6 +328,7 @@ blocks:
     - name: "@appsignal/nodejs-ext - nodejs-ext"
       commands:
       - mono test --package=@appsignal/nodejs-ext
+      - mono run --package @appsignal/nodejs-ext -- npm run test:failure
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
@@ -342,6 +362,8 @@ blocks:
       - mono build
       - mono run --package @appsignal/nodejs-ext -- npm run build:ext
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+      - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+        /tmp/appsignal-install-report.json
 - name: Node.js 11 - Tests
   dependencies:
   - Node.js 11 - Build
@@ -353,6 +375,7 @@ blocks:
       commands:
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
     - name: "@appsignal/nodejs - nodejs"
@@ -366,6 +389,7 @@ blocks:
     - name: "@appsignal/nodejs-ext - nodejs-ext"
       commands:
       - mono test --package=@appsignal/nodejs-ext
+      - mono run --package @appsignal/nodejs-ext -- npm run test:failure
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
@@ -399,6 +423,8 @@ blocks:
       - mono build
       - mono run --package @appsignal/nodejs-ext -- npm run build:ext
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+      - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+        /tmp/appsignal-install-report.json
 - name: Node.js 10 - Tests
   dependencies:
   - Node.js 10 - Build
@@ -410,6 +436,7 @@ blocks:
       commands:
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     jobs:
     - name: "@appsignal/nodejs - nodejs"
@@ -423,6 +450,7 @@ blocks:
     - name: "@appsignal/nodejs-ext - nodejs-ext"
       commands:
       - mono test --package=@appsignal/nodejs-ext
+      - mono run --package @appsignal/nodejs-ext -- npm run test:failure
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev

@@ -21,9 +21,15 @@ const {
 } = require("./report")
 
 const EXT_PATH = path.join(__dirname, "/../ext/")
+const testExtensionFailure =
+  process.env._TEST_APPSIGNAL_EXTENSION_FAILURE === "true"
 
 function download(url, outputPath) {
   return new Promise((resolve, reject) => {
+    if (testExtensionFailure) {
+      throw new Error("AppSignal internal test failure")
+    }
+
     const file = fs.createWriteStream(outputPath)
 
     https.get(url, response => {
@@ -104,9 +110,21 @@ function getMetadataForTarget({ architecture, target }) {
   return TRIPLES[triple.join("")]
 }
 
+function install() {
+  return new Promise((resolve, reject) => {
+    childProcess.exec("node-gyp rebuild", error => {
+      if (error) {
+        return reject(error)
+      } else {
+        return resolve()
+      }
+    })
+  })
+}
+
 // Script logic begins here
 ;(function () {
-  if (hasLocalBuild()) {
+  if (hasLocalBuild() && !testExtensionFailure) {
     // check for a local build (dev only)
     console.warn(`Using local build for agent. Skipping download.`)
     return process.exit(0)
@@ -145,7 +163,6 @@ function getMetadataForTarget({ architecture, target }) {
       verify(filepath, metadata.checksum).then(() => extract(filepath))
     )
     .then(() => {
-      // once extracted, we can then hand off to node-gyp for building
       // @TODO: add cleanup step
       console.log("The agent has downloaded successfully! Building...")
 
@@ -153,9 +170,14 @@ function getMetadataForTarget({ architecture, target }) {
         verified: true,
         downloadUrl: metadata.downloadUrl
       })
-
       report.result.status = "unknown"
 
+      // Once extracted, we hand it off to node-gyp for building
+      return install().then(() => {
+        report.result.status = "success"
+      })
+    })
+    .then(() => {
       return dumpReport(report).then(() => {
         process.exit(0)
       })
@@ -163,6 +185,11 @@ function getMetadataForTarget({ architecture, target }) {
     .catch(error => {
       console.error(error)
 
+      report.result = {
+        status: "error",
+        error: error.message,
+        backtrace: error.stack.split("\n")
+      }
       report.download = createDownloadReport({
         verified: false,
         downloadUrl: metadata.downloadUrl

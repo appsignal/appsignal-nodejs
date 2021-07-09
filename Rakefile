@@ -30,7 +30,8 @@ namespace :build_matrix do
                 "commands" => [
                   "mono build",
                   "mono run --package @appsignal/nodejs-ext -- npm run build:ext",
-                  "cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages"
+                  "cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages",
+                  "cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION /tmp/appsignal-install-report.json"
                 ]
               )
             ]
@@ -59,10 +60,10 @@ namespace :build_matrix do
               # that we don't forget to run those new tests.
               primary_jobs << build_semaphore_job(
                 "name" => "#{package["package"]} - #{variation_name}",
-                "commands" => [
+                "commands" => ([
                   update_package_version_command,
                   "mono test --package=#{package["package"]}"
-                ].compact
+                ] + package.fetch("extra_commands", [])).compact
               )
             end
 
@@ -88,6 +89,7 @@ namespace :build_matrix do
                 "commands" => setup + [
                   "cache restore",
                   "cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION",
+                  "cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION",
                   "mono bootstrap --ci"
                 ]
               },
