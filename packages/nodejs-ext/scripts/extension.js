@@ -17,7 +17,8 @@ const {
 const {
   createReport,
   createBuildReport,
-  createDownloadReport
+  createDownloadReport,
+  reportPath
 } = require("./report")
 
 const EXT_PATH = path.join(__dirname, "/../ext/")
@@ -72,13 +73,9 @@ function verify(filepath, checksum) {
 
 function dumpReport(report) {
   return new Promise(resolve => {
-    fs.writeFile(
-      "/tmp/appsignal-install-report.json",
-      JSON.stringify(report, null, 2),
-      () => {
-        return resolve()
-      }
-    )
+    fs.writeFile(reportPath(), JSON.stringify(report, null, 2), () => {
+      return resolve()
+    })
   })
 }
 
@@ -96,8 +93,8 @@ function mapArchitecture(architecture) {
   }
 
   console.error(
-    `AppSignal currently does not know about your system architecture 
-    (${architecture}). Please let us know at support@appsignal.com, we aim to 
+    `AppSignal currently does not know about your system architecture
+    (${architecture}). Please let us know at support@appsignal.com, we aim to
     support everything our customers run.`
   )
 
@@ -132,8 +129,8 @@ function install() {
 
   if (!hasSupportedArchitecture(process.arch)) {
     console.error(
-      `AppSignal currently does not support your system architecture 
-        (${process.platform} ${process.arch}). Please let us know at 
+      `AppSignal currently does not support your system architecture
+        (${process.platform} ${process.arch}). Please let us know at
         support@appsignal.com, we aim to support everything our customers run.`
     )
 
@@ -142,8 +139,8 @@ function install() {
 
   if (!hasSupportedOs(process.platform)) {
     console.error(
-      `AppSignal currently does not support your operating system (${process.platform}). 
-      Please let us know at support@appsignal.com, we aim to support everything 
+      `AppSignal currently does not support your operating system (${process.platform}).
+      Please let us know at support@appsignal.com, we aim to support everything
       our customers run.`
     )
 

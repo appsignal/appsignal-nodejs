@@ -1,4 +1,6 @@
 import fs from "fs"
+import path from "path"
+import { createHash } from "crypto"
 
 import { Agent } from "./agent"
 import { Configuration } from "./config"
@@ -77,12 +79,8 @@ export class DiagnoseTool {
 
   private getInstallationReport() {
     try {
-      const report = fs.readFileSync(
-        "/tmp/appsignal-install-report.json",
-        "utf8"
-      )
-
-      return report ? JSON.parse(report) : {}
+      const rawReport = fs.readFileSync(reportPath(), "utf8")
+      return rawReport ? JSON.parse(rawReport) : {}
     } catch (e) {
       return {}
     }
@@ -152,6 +150,18 @@ export class DiagnoseTool {
 
     return config
   }
+}
+
+// This implementation should match the `packages/nodejs-ext/scripts/report.js`
+// implementation to generate the same path.
+function reportPath(): string {
+  // Navigate up to the app dir. Move up the src dir, package dir, @appsignal
+  // dir and node_modules dir.
+  const appPath = path.join(__dirname, "../../../../")
+  const hash = createHash("sha256")
+  hash.update(appPath)
+  const reportPathDigest = hash.digest("hex")
+  return path.join(`/tmp/appsignal-${reportPathDigest}-install.report`)
 }
 
 function isWriteableFile(path: string): boolean {

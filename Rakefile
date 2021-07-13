@@ -31,7 +31,7 @@ namespace :build_matrix do
                   "mono build",
                   "mono run --package @appsignal/nodejs-ext -- npm run build:ext",
                   "cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages",
-                  "cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION /tmp/appsignal-install-report.json"
+                  "cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION /tmp/appsignal-*-install.report"
                 ]
               )
             ]

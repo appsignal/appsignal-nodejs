@@ -1,5 +1,6 @@
 const fs = require("fs")
 const path = require("path")
+const { reportPath } = require("./report")
 
 function hasExtensionFailure() {
   if (process.env._TEST_APPSIGNAL_EXTENSION_FAILURE !== "true") {
@@ -26,9 +27,6 @@ describe("Extension install failure", () => {
 })
 
 function readReport() {
-  const contents = fs.readFileSync(
-    path.resolve("/tmp/appsignal-install-report.json"),
-    "utf-8"
-  )
+  const contents = fs.readFileSync(reportPath(), "utf-8")
   return JSON.parse(contents)
 }
