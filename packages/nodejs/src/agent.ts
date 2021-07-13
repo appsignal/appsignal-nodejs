@@ -1,4 +1,4 @@
-import {extension} from "./extension"
+import { extension } from "./extension"
 
 /**
  * The public interface for the extension.
@@ -8,7 +8,7 @@ import {extension} from "./extension"
 export class Agent {
   isLoaded = false
 
-  constructor(options?: {active: boolean}) {
+  constructor(options?: { active: boolean }) {
     if (options?.active) this.start()
   }
 
@@ -22,7 +22,7 @@ export class Agent {
     } catch (e) {
       if (e.message === "Extension module not loaded") {
         console.warn(
-          "AppSignal extension not loaded. This could mean that your current environment isn't supported, or that another error has occured."
+          "AppSignal extension not loaded. This could mean that your current environment isn't supported, or that another error has occurred."
         )
       } else {
         console.error(

@@ -8,7 +8,7 @@ import * as redisPlugin from "./instrumentation/redis"
 import * as gcProbe from "./probes/v8"
 
 /**
- * Initialises all the avaiable core instrumentation.
+ * Initialises all the available core instrumentation.
  *
  * "Core instrumentation" is things that we can hook into automatically
  * at runtime via monkeypatching an instance of a node module. This can
@@ -38,7 +38,7 @@ export function initCorePlugins(
 }
 
 /**
- * Initialises all the avaiable probes to attach automatically at runtime.
+ * Initialises all the available probes to attach automatically at runtime.
  */
 export function initCoreProbes(
   meter: Metrics,
