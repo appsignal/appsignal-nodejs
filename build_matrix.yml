@@ -19,7 +19,7 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
     prologue:
       commands:
         - checkout
-        - sem-version node $NODE_VERSION
+        - "[ -n \"$NODE_VERSION\" ] && sem-version node $NODE_VERSION || echo Skipping Node.js install"
 
         # Mono setup
         - script/setup
@@ -30,11 +30,19 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
       task:
         jobs:
         - name: Validate CI setup
-          env_vars:
-            - name: "NODE_VERSION"
-              value: "15"
           commands:
             - rake build_matrix:semaphore:validate
+    - name: Linters
+      dependencies: []
+      task:
+        jobs:
+        - name: Git Lint (Lintje)
+          env_vars:
+            - name: "LINTJE_VERSION"
+              value: "0.2.0"
+          commands:
+            - script/install_lintje
+            - $HOME/bin/lintje $SEMAPHORE_GIT_COMMIT_RANGE
 
 matrix:
   nodejs:
