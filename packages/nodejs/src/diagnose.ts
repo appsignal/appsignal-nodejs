@@ -103,7 +103,7 @@ export class DiagnoseTool {
       },
       "appsignal.log": {
         path: logFilePath,
-        content: safeReadFromPath(logFilePath).split("\n")
+        content: safeReadFromPath(logFilePath).trimEnd().split("\n")
       }
     }
 
