@@ -145,8 +145,10 @@ export class Diagnose {
     console.log(
       `    Path: ${this.format_value(data["paths"]["appsignal.log"]["path"])}`
     )
-    console.log(`    Contents \(last 9 lines\):`)
+    console.log(`    Contents \(last 10 lines\):`)
     console.log(contents.slice(contents.length - 10).join("\n"))
+
+    this.print_newline()
 
     console.log(`Diagnostics report`)
     console.log(`  Do you want to send this diagnostics report to AppSignal?`)
