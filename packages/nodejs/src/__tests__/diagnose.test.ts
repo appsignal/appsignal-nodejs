@@ -9,8 +9,8 @@ describe("DiagnoseTool", () => {
     tool = new DiagnoseTool({})
   })
 
-  it("generates a configuration", () => {
-    const output = tool.generate()
+  it("generates a configuration", async () => {
+    const output = await tool.generate()
 
     expect(output.library.package_version).toEqual(VERSION)
     expect(output.library.agent_version).toEqual(AGENT_VERSION)
@@ -28,31 +28,33 @@ describe("DiagnoseTool", () => {
     expect(output.process.uid).toEqual(process.getuid())
   })
 
-  it("returns the log_dir_path", () => {
-    expect(tool.generate().paths.log_dir_path.path).toEqual("/tmp")
+  it("returns the log_dir_path", async () => {
+    const report = await tool.generate()
+    expect(report.paths.log_dir_path.path).toEqual("/tmp")
   })
 
   describe("appsignal.log path", () => {
-    it("returns the appsignal.log path", () => {
-      expect(tool.generate().paths["appsignal.log"].path).toEqual(
-        "/tmp/appsignal.log"
-      )
+    it("returns the appsignal.log path", async () => {
+      const report = await tool.generate()
+      expect(report.paths["appsignal.log"].path).toEqual("/tmp/appsignal.log")
     })
 
-    it("returns all of the file if file is less than 2MiB in size", () => {
+    it("returns all of the file if file is less than 2MiB in size", async () => {
       const fileSize = 1.9 * 1024 * 1024 // Write 1.9 MiB of content
       const content = ".".repeat(fileSize)
       fs.writeFileSync("/tmp/appsignal.log", content, { flag: "w" })
 
-      const contentArray = tool.generate().paths["appsignal.log"].content
+      const report = await tool.generate()
+      const contentArray = report.paths["appsignal.log"].content
       expect(contentArray?.join("\n").length).toBeCloseTo(fileSize, 0)
     })
 
-    it("returns maximum 2MiB of content", () => {
+    it("returns maximum 2MiB of content", async () => {
       const content = ".".repeat(2.1 * 1024 * 1024) // Write 2.1 MiB of content
       fs.writeFileSync("/tmp/appsignal.log", content, { flag: "w" })
 
-      const contentArray = tool.generate().paths["appsignal.log"].content
+      const report = await tool.generate()
+      const contentArray = report.paths["appsignal.log"].content
       expect(contentArray?.join("\n").length).toEqual(2 * 1024 * 1024)
     })
   })
@@ -63,12 +65,14 @@ describe("DiagnoseTool", () => {
       tool = new DiagnoseTool({})
     })
 
-    it("returns the log_dir_path", () => {
-      expect(tool.generate().paths.log_dir_path.path).toEqual("/path/to")
+    it("returns the log_dir_path", async () => {
+      const report = await tool.generate()
+      expect(report.paths.log_dir_path.path).toEqual("/path/to")
     })
 
-    it("returns the appsignal.log path", () => {
-      expect(tool.generate().paths["appsignal.log"].path).toEqual(
+    it("returns the appsignal.log path", async () => {
+      const report = await tool.generate()
+      expect(report.paths["appsignal.log"].path).toEqual(
         "/path/to/appsignal.log"
       )
     })
