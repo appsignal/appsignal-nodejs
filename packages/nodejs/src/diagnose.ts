@@ -1,5 +1,7 @@
 import fs from "fs"
 import path from "path"
+import https from "https"
+import { URL, URLSearchParams } from "url"
 import { createHash } from "crypto"
 
 import { Agent } from "./agent"
@@ -33,7 +35,11 @@ export class DiagnoseTool {
    * Reports are serialized to JSON and send to an endpoint that expects
    * snake_case keys, thus the keys in the report on this side must be snake cased also.
    */
-  public generate() {
+  public async generate() {
+    let pushApiKeyValidation
+    await this.validatePushApiKey()
+      .then(result => (pushApiKeyValidation = result))
+      .catch(result => (pushApiKeyValidation = result))
     return {
       library: this.getLibraryData(),
       installation: this.getInstallationReport(),
@@ -44,7 +50,7 @@ export class DiagnoseTool {
         options: this.getConfigData(),
         sources: {}
       },
-      validation: { push_api_key: "valid" },
+      validation: { push_api_key: pushApiKeyValidation },
       process: {
         uid: process.getuid()
       },
@@ -84,6 +90,28 @@ export class DiagnoseTool {
     } catch (e) {
       return {}
     }
+  }
+
+  private async validatePushApiKey() {
+    return new Promise((resolve, reject) => {
+      const config = this.#config.data
+      const params = new URLSearchParams({ api_key: config["apiKey"] })
+      const url = new URL(`/1/auth?${params.toString()}`, config["endpoint"])
+      const options = { method: "POST" }
+
+      const request = https.request(url, options, function (response) {
+        const status = response.statusCode
+        if (status === 200) {
+          resolve("valid")
+        } else if (status === 401) {
+          reject("invalid")
+        } else {
+          reject(`Failed with status ${status}`)
+        }
+      })
+      request.write("{}") // Send empty JSON body
+      request.end()
+    })
   }
 
   private getPathsData() {

@@ -6,8 +6,8 @@ const util = require("util")
 const readline = require("readline")
 
 export class Diagnose {
-  public run() {
-    const data = new DiagnoseTool({}).generate()
+  public async run() {
+    const data = await new DiagnoseTool({}).generate()
 
     console.log(`AppSignal diagnose`)
     console.log(`=`.repeat(80))
