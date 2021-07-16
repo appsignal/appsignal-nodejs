@@ -183,15 +183,49 @@ function getPathType(stats: fs.Stats) {
   }
 }
 
+const BYTES_TO_READ_FOR_FILES = 2 * 1024 * 1024 // 2 Mebibytes
+
 /**
  * Attempts to read a UTF-8 from `path`, and either returns the result
  * as a string, or an empty string on error
  */
 function safeReadFromPath(path: string): string {
   try {
-    return fs.readFileSync(path, "utf8")
+    return readBytesFromPath(path, BYTES_TO_READ_FOR_FILES)
   } catch (_) {
     return ""
+  }
+}
+
+function readBytesFromPath(path: string, bytesToRead: number): string {
+  let fd
+  try {
+    const { readLength, startPosition } = readFileOptions(path, bytesToRead)
+    fd = fs.openSync(path, "r")
+    const buffer = Buffer.alloc(readLength)
+    fs.readSync(fd, buffer, 0, readLength, startPosition)
+    return buffer.toString("utf8")
+  } finally {
+    if (fd) {
+      fs.closeSync(fd)
+    }
+  }
+}
+
+function readFileOptions(path: string, bytesToRead: number) {
+  const stats = fs.statSync(path)
+  const fileSize = stats.size
+  if (fileSize < bytesToRead) {
+    return {
+      readLength: fileSize,
+      startPosition: 0
+    }
+  } else {
+    const startPosition = fileSize - bytesToRead
+    return {
+      readLength: bytesToRead,
+      startPosition
+    }
   }
 }
 

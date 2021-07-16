@@ -1,3 +1,4 @@
+import fs from "fs"
 import { DiagnoseTool } from "../diagnose"
 import { VERSION, AGENT_VERSION } from "../version"
 
@@ -31,10 +32,29 @@ describe("DiagnoseTool", () => {
     expect(tool.generate().paths.log_dir_path.path).toEqual("/tmp")
   })
 
-  it("returns the appsignal.log path", () => {
-    expect(tool.generate().paths["appsignal.log"].path).toEqual(
-      "/tmp/appsignal.log"
-    )
+  describe("appsignal.log path", () => {
+    it("returns the appsignal.log path", () => {
+      expect(tool.generate().paths["appsignal.log"].path).toEqual(
+        "/tmp/appsignal.log"
+      )
+    })
+
+    it("returns all of the file if file is less than 2MiB in size", () => {
+      const fileSize = 1.9 * 1024 * 1024 // Write 1.9 MiB of content
+      const content = ".".repeat(fileSize)
+      fs.writeFileSync("/tmp/appsignal.log", content, { flag: "w" })
+
+      const contentArray = tool.generate().paths["appsignal.log"].content
+      expect(contentArray?.join("\n").length).toBeCloseTo(fileSize, 0)
+    })
+
+    it("returns maximum 2MiB of content", () => {
+      const content = ".".repeat(2.1 * 1024 * 1024) // Write 2.1 MiB of content
+      fs.writeFileSync("/tmp/appsignal.log", content, { flag: "w" })
+
+      const contentArray = tool.generate().paths["appsignal.log"].content
+      expect(contentArray?.join("\n").length).toEqual(2 * 1024 * 1024)
+    })
   })
 
   describe("when to log path is configured as a full path", () => {
