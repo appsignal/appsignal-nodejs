@@ -1,5 +1,11 @@
 # AppSignal for Node.js extension Changelog
 
+## 1.2.7
+
+- [1b54698](https://github.com/appsignal/appsignal-nodejs/commit/1b54698178414559878ea1bba51408eac03600e3) patch - Fix installation report result. The installation report would report always "unknown" previously, now it will accurately report success and failure results. This will help the AppSignal team debug issues when the report is sent along with the diagnose report.
+- [24693ed](https://github.com/appsignal/appsignal-nodejs/commit/24693ed75a2a6a4895764386c9af9de3a1189290) patch - Bump agent to c2024bf with appsignal-agent diagnose timing issue fix when reading the report and improved filtering for HTTP request transmission logs.
+- [ffaaa92](https://github.com/appsignal/appsignal-nodejs/commit/ffaaa9259af0e7881aca505f7e70cf1a14d00b12) patch - Bump agent to version that is compatible with different error grouping types.
+
 ## 1.2.6
 
 - [8a26df7](https://github.com/appsignal/appsignal-nodejs/commit/8a26df7974dbb2751acf561890118e4fb6d1812e) patch - Add Linux ARM 64-bit experimental build, available behind a feature flag. To test this set the `APPSIGNAL_BUILD_FOR_LINUX_ARM` flag before compiling your apps: `export APPSIGNAL_BUILD_FOR_LINUX_ARM=1 <command>`. Please be aware this is an experimental build. Please report any issue you may encounter at our [support email](mailto:support@appsignal.com).
