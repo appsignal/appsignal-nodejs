@@ -1,5 +1,9 @@
 # AppSignal for Node.js extension Changelog
 
+## 1.2.8
+
+- [fc98c22](https://github.com/appsignal/appsignal-nodejs/commit/fc98c22ded10b836ed527fbd57bf3046107e0578) patch - Bump agent to v-891c6b0. Add experimental Apple Silicon M1 ARM64 build.
+
 ## 1.2.7
 
 - [1b54698](https://github.com/appsignal/appsignal-nodejs/commit/1b54698178414559878ea1bba51408eac03600e3) patch - Fix installation report result. The installation report would report always "unknown" previously, now it will accurately report success and failure results. This will help the AppSignal team debug issues when the report is sent along with the diagnose report.

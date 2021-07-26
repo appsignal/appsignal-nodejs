@@ -1,5 +1,9 @@
 # AppSignal for Node.js Changelog
 
+## 1.3.1
+
+- patch - Update @appsignal/nodejs-ext dependency to 1.2.8.
+
 ## 1.3.0
 
 - [87155be](https://github.com/appsignal/appsignal-nodejs/commit/87155bec7166aec036f1f861d57c17d102261ebb) minor - Format and print the diagnose report in a human-readable format.
