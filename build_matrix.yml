@@ -90,6 +90,10 @@ matrix:
         - name: "apollo-server@0.11.0"
           packages:
             apollo-server-plugin-base: "0.11.0"
+      extra_tests:
+        integrations:
+          - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
+          - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
     - package: "@appsignal/express"
       path: "packages/express"
       variations:
