@@ -1,3 +1,12 @@
+const { Appsignal } = require("../../../nodejs")
+const { createApolloPlugin } = require("../../../apollo-server")
+
+const appsignal = new Appsignal({
+  active: true,
+  name: "<YOUR APPLICATION NAME>",
+  apiKey: "<YOUR API KEY>"
+})
+
 const { ApolloServer, gql } = require("apollo-server")
 
 // A schema is a collection of type definitions (hence "typeDefs")
