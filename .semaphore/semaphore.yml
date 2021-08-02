@@ -94,6 +94,21 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
+    - name: "@appsignal/koa - koa@latest - integrations"
+      commands:
+      - npm install koa@latest --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+    - name: "@appsignal/koa - koa@2.13.1 - integrations"
+      commands:
+      - npm install koa@2.13.1 --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+    - name: "@appsignal/koa - koa@2.12.1 - integrations"
+      commands:
+      - npm install koa@2.12.1 --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
@@ -155,6 +170,21 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
+    - name: "@appsignal/koa - koa@latest - integrations"
+      commands:
+      - npm install koa@latest --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+    - name: "@appsignal/koa - koa@2.13.1 - integrations"
+      commands:
+      - npm install koa@2.13.1 --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+    - name: "@appsignal/koa - koa@2.12.1 - integrations"
+      commands:
+      - npm install koa@2.12.1 --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
@@ -216,6 +246,21 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
+    - name: "@appsignal/koa - koa@latest - integrations"
+      commands:
+      - npm install koa@latest --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+    - name: "@appsignal/koa - koa@2.13.1 - integrations"
+      commands:
+      - npm install koa@2.13.1 --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+    - name: "@appsignal/koa - koa@2.12.1 - integrations"
+      commands:
+      - npm install koa@2.12.1 --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
@@ -277,6 +322,21 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
+    - name: "@appsignal/koa - koa@latest - integrations"
+      commands:
+      - npm install koa@latest --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+    - name: "@appsignal/koa - koa@2.13.1 - integrations"
+      commands:
+      - npm install koa@2.13.1 --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+    - name: "@appsignal/koa - koa@2.12.1 - integrations"
+      commands:
+      - npm install koa@2.12.1 --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
@@ -338,6 +398,21 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
+    - name: "@appsignal/koa - koa@latest - integrations"
+      commands:
+      - npm install koa@latest --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+    - name: "@appsignal/koa - koa@2.13.1 - integrations"
+      commands:
+      - npm install koa@2.13.1 --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+    - name: "@appsignal/koa - koa@2.12.1 - integrations"
+      commands:
+      - npm install koa@2.12.1 --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
@@ -399,6 +474,21 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
+    - name: "@appsignal/koa - koa@latest - integrations"
+      commands:
+      - npm install koa@latest --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+    - name: "@appsignal/koa - koa@2.13.1 - integrations"
+      commands:
+      - npm install koa@2.13.1 --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+    - name: "@appsignal/koa - koa@2.12.1 - integrations"
+      commands:
+      - npm install koa@2.12.1 --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
@@ -460,6 +550,21 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
+    - name: "@appsignal/koa - koa@latest - integrations"
+      commands:
+      - npm install koa@latest --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+    - name: "@appsignal/koa - koa@2.13.1 - integrations"
+      commands:
+      - npm install koa@2.13.1 --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+    - name: "@appsignal/koa - koa@2.12.1 - integrations"
+      commands:
+      - npm install koa@2.12.1 --save-dev
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev

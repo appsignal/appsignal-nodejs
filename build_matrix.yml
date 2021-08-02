@@ -111,6 +111,10 @@ matrix:
         - name: "koa@2.12.1"
           packages:
             koa: "2.12.1"
+      extra_tests:
+        integrations:
+          - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
+          - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
     - package: "@appsignal/nextjs"
       path: "packages/nextjs"
       variations:
