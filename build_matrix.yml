@@ -7,7 +7,7 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
       os_image: ubuntu1804
   auto_cancel:
     running:
-      when: branch != 'main' AND branch != 'develop'
+      when: branch != 'main' AND branch != 'develop' AND branch != 'apollo-integration-test-debug'
   global_job_config:
     env_vars:
     - name: RUNNING_IN_CI
