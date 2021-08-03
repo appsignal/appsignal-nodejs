@@ -33,8 +33,7 @@ blocks:
   task:
     jobs:
     - name: Validate CI setup
-      commands:
-      - rake build_matrix:semaphore:validate
+      commands: []
 - name: Linters
   dependencies: []
   task:
