@@ -145,6 +145,11 @@ def build_semaphore_job(job_hash)
 end
 
 def package_has_tests?(package)
-  Dir.exist?(File.join(package, "src/__tests__")) ||
-    Dir.glob(File.join(package, "**/*.test.*s")).any?
+  test_dir = File.join(package, "src/__tests__")
+  # Has a dedicated test dir and it contains files
+  if Dir.exist?(test_dir) && Dir.glob(File.join(test_dir, "**", "*.*s")).any?
+    return true
+  end
+
+  Dir.glob(File.join(package, "**/*.test.*s")).any?
 end
