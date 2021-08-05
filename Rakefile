@@ -7,6 +7,7 @@ namespace :build_matrix do
       matrix = yaml["matrix"]
       semaphore = yaml["semaphore"]
       builds = []
+      skipped_packages = Set.new
       matrix["nodejs"].each do |nodejs|
         nodejs_version = nodejs["nodejs"]
         setup = nodejs.fetch("setup", [])
@@ -42,6 +43,13 @@ namespace :build_matrix do
         primary_block_name = "Node.js #{nodejs_version} - Tests"
         primary_jobs = []
         matrix["packages"].each do |package|
+          has_package_tests = package_has_tests? package["path"]
+          unless has_package_tests
+            if skipped_packages.add? package["package"]
+              puts "DEBUG: Skipping Node.js tests for #{package["package"]}: No test files found"
+            end
+          end
+
           package["variations"].each do |variation|
             variation_name = variation.fetch("name")
             dependency_specification = variation["packages"]
@@ -52,7 +60,7 @@ namespace :build_matrix do
               end
 
             # Run Node.js / Jest tests against specific package versions
-            if package_has_tests? package["path"]
+            if has_package_tests
               # Only add a job to run Node.js / Jest tests if there are any. So
               # we don't waste a lot of time on job setup that don't do
               # anything. If a package suddenly does get tests the validation
@@ -67,11 +75,9 @@ namespace :build_matrix do
               )
             end
 
-            next unless package["extra_tests"]
-
             # Run extra tests against specific package versions. If configured,
             # run the extra tests configured for the package.
-            package["extra_tests"].each do |test_name, extra_tests|
+            package.fetch("extra_tests", []).each do |test_name, extra_tests|
               primary_jobs << build_semaphore_job(
                 "name" => "#{package["package"]} - #{variation_name} - #{test_name}",
                 "commands" => ([update_package_version_command] + extra_tests).compact
