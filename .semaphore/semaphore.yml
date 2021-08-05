@@ -94,37 +94,21 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
-    - name: "@appsignal/apollo-server - apollo-server@latest"
-      commands:
-      - npm install apollo-server-plugin-base@latest --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@latest - integrations"
       commands:
       - npm install apollo-server-plugin-base@latest --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.13.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.13.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.13.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.13.0 --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.12.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.12.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.12.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.12.0 --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.11.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.11.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.11.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.11.0 --save-dev
@@ -191,37 +175,21 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
-    - name: "@appsignal/apollo-server - apollo-server@latest"
-      commands:
-      - npm install apollo-server-plugin-base@latest --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@latest - integrations"
       commands:
       - npm install apollo-server-plugin-base@latest --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.13.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.13.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.13.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.13.0 --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.12.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.12.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.12.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.12.0 --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.11.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.11.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.11.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.11.0 --save-dev
@@ -288,37 +256,21 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
-    - name: "@appsignal/apollo-server - apollo-server@latest"
-      commands:
-      - npm install apollo-server-plugin-base@latest --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@latest - integrations"
       commands:
       - npm install apollo-server-plugin-base@latest --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.13.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.13.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.13.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.13.0 --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.12.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.12.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.12.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.12.0 --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.11.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.11.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.11.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.11.0 --save-dev
@@ -385,37 +337,21 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
-    - name: "@appsignal/apollo-server - apollo-server@latest"
-      commands:
-      - npm install apollo-server-plugin-base@latest --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@latest - integrations"
       commands:
       - npm install apollo-server-plugin-base@latest --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.13.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.13.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.13.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.13.0 --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.12.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.12.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.12.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.12.0 --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.11.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.11.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.11.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.11.0 --save-dev
@@ -482,37 +418,21 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
-    - name: "@appsignal/apollo-server - apollo-server@latest"
-      commands:
-      - npm install apollo-server-plugin-base@latest --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@latest - integrations"
       commands:
       - npm install apollo-server-plugin-base@latest --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.13.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.13.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.13.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.13.0 --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.12.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.12.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.12.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.12.0 --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.11.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.11.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.11.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.11.0 --save-dev
@@ -579,37 +499,21 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
-    - name: "@appsignal/apollo-server - apollo-server@latest"
-      commands:
-      - npm install apollo-server-plugin-base@latest --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@latest - integrations"
       commands:
       - npm install apollo-server-plugin-base@latest --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.13.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.13.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.13.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.13.0 --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.12.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.12.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.12.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.12.0 --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.11.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.11.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.11.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.11.0 --save-dev
@@ -676,37 +580,21 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
-    - name: "@appsignal/apollo-server - apollo-server@latest"
-      commands:
-      - npm install apollo-server-plugin-base@latest --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@latest - integrations"
       commands:
       - npm install apollo-server-plugin-base@latest --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.13.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.13.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.13.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.13.0 --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.12.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.12.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.12.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.12.0 --save-dev
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle install
       - BUNDLE_GEMFILE=packages/apollo-server/test/Gemfile bundle exec rspec packages/apollo-server/test
-    - name: "@appsignal/apollo-server - apollo-server@0.11.0"
-      commands:
-      - npm install apollo-server-plugin-base@0.11.0 --save-dev
-      - mono test --package=@appsignal/apollo-server
     - name: "@appsignal/apollo-server - apollo-server@0.11.0 - integrations"
       commands:
       - npm install apollo-server-plugin-base@0.11.0 --save-dev
