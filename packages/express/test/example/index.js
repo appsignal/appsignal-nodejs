@@ -11,8 +11,14 @@ const { expressMiddleware } = require("@appsignal/express")
 const app = express()
 const port = 3000
 
+app.use(expressMiddleware(appsignal))
+
 app.get("/", (req, res) => {
   res.send("Hello World!")
+})
+
+app.get("/dashboard", (req, res) => {
+  res.send("Dashboard for user")
 })
 
 app.listen(port, () => {
