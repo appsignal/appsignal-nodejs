@@ -61,4 +61,20 @@ RSpec.describe "Express.js" do
       expect(/Set name 'GET \/dashboard' for span '#{$1}'/.match(log)).to be_truthy()
     end
   end
+
+  describe "/admin/dashboard" do
+    before do
+      @result = Net::HTTP.get(URI('http://localhost:3000/admin/dashboard?foo=bar'))
+    end
+
+    it "renders the page" do
+      expect(@result).to include("Dashboard for admin")
+    end
+
+    it "sets the root span's name" do
+      log = File.read(@log_path)
+      expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy()
+      expect(/Set name 'GET \/admin\/dashboard' for span '#{$1}'/.match(log)).to be_truthy()
+    end
+  end
 end

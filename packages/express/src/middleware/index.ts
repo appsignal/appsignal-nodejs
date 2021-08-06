@@ -38,7 +38,9 @@ export function expressMiddleware(appsignal: NodeClient): RequestHandler {
         // if there is no error passed to `next()`, the span name will
         // be updated to match the current path
         if (req.route?.path) {
-          span.setName(`${method} ${req.route.path}`)
+          // Prepend the namespace for middlewares
+          const baseUrl = req.baseUrl || ""
+          span.setName(`${method} ${baseUrl}${req.route.path}`)
         }
 
         // defeated the type checker here because i'm pretty sure the error

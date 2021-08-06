@@ -13,6 +13,9 @@ const port = 3000
 
 app.use(expressMiddleware(appsignal))
 
+const adminRoutes = require("./admin")
+app.use("/admin", adminRoutes)
+
 app.get("/", (req, res) => {
   res.send("Hello World!")
 })
