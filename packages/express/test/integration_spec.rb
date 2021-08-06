@@ -32,7 +32,7 @@ RSpec.describe "Express.js" do
 
   describe "/" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:3000/'))
+      @result = Net::HTTP.get(URI('http://localhost:3000/?foo=bar'))
     end
 
     it "renders the index page" do
