@@ -1,34 +1,15 @@
-require 'net/http'
-require 'tempfile'
-require 'timeout'
+require "net/http"
 
-RSpec.describe 'Express.js' do
-  before(:all) do
-    tmpdir = Dir.mktmpdir
-    @log_path = File.join(tmpdir, 'appsignal.log')
-    command = "APPSIGNAL_LOG_PATH='#{tmpdir}' APPSIGNAL_DEBUG='true' APPSIGNAL_TRANSACTION_DEBUG_MODE='true' node index.js"
+EXAMPLE_APP_DIR = File.expand_path(File.join("..", "example"), __dir__)
 
-    Dir.chdir File.expand_path("../example", __dir__)
-
-    puts command
-    read, write = IO.pipe
-    @pid = spawn(command, out: write)
-
-    Timeout.timeout(15) do
-      read.each do |line|
-        puts line
-        break if line =~ /Example app listening at/
-      end
-    end
+RSpec.describe "Koa" do
+  before(:context) do
+    @app = AppRunner.new("node index.js", EXAMPLE_APP_DIR)
+    @app.run
+    @app.wait_for_start!("Example app listening at")
   end
-
-  after(:all) do
-    Process.kill 3, @pid
-  end
-
-  after do
-    File.delete(@log_path)
-  end
+  after(:context) { @app.stop }
+  after { @app.cleanup }
 
   describe '/' do
     before do
@@ -40,9 +21,9 @@ RSpec.describe 'Express.js' do
     end
 
     it "sets the root span's name" do
-      log = File.read(@log_path)
-      expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy
-      expect(%r{Set name 'GET /' for span '#{Regexp.last_match(1)}'}.match(log)).to be_truthy
+      log = @app.logs
+      expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy, log
+      expect(%r{Set name 'GET /' for span '#{Regexp.last_match(1)}'}.match(log)).to be_truthy, log
     end
   end
 end

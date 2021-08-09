@@ -32,6 +32,6 @@ app.prepare().then(() => {
     handle(req, res, parsedUrl)
   }).listen(PORT, err => {
     if (err) throw err
-    console.log(`> Ready on http://localhost:${PORT}`)
+    console.log(`Example app listening at http://localhost:${PORT}`)
   })
 })
