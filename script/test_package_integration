@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -eu
+
+package=$1
+
+if [ "$package" == "" ]; then
+  echo "No package specified!"
+  echo "Usage: test_package_integration <package dir>"
+  echo "Example: test_package_integration koa"
+  exit 1
+fi
+
+package_path="packages/$package/test"
+
+if [ ! -d $package_path ]; then
+  echo "No test directory for package $package in $package_path"
+  echo "Please check if the directory exists in the packages/ directory"
+  exit 1
+fi
+
+cd $package_path
+bundle check || bundle install
+bundle exec rspec

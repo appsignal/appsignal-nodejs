@@ -97,43 +97,35 @@ blocks:
     - name: "@appsignal/express - express@latest - integrations"
       commands:
       - npm install express@latest --save-dev
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+      - script/test_package_integration express
     - name: "@appsignal/express - express@4.17.1 - integrations"
       commands:
       - npm install express@4.17.1 --save-dev
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+      - script/test_package_integration express
     - name: "@appsignal/koa - koa@latest - integrations"
       commands:
       - npm install koa@latest --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/koa - koa@2.13.1 - integrations"
       commands:
       - npm install koa@2.13.1 --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/koa - koa@2.12.1 - integrations"
       commands:
       - npm install koa@2.12.1 --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
       commands:
       - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
       commands:
       - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
 - name: Node.js 15 - Build
   dependencies:
   - Validation
@@ -183,43 +175,35 @@ blocks:
     - name: "@appsignal/express - express@latest - integrations"
       commands:
       - npm install express@latest --save-dev
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+      - script/test_package_integration express
     - name: "@appsignal/express - express@4.17.1 - integrations"
       commands:
       - npm install express@4.17.1 --save-dev
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+      - script/test_package_integration express
     - name: "@appsignal/koa - koa@latest - integrations"
       commands:
       - npm install koa@latest --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/koa - koa@2.13.1 - integrations"
       commands:
       - npm install koa@2.13.1 --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/koa - koa@2.12.1 - integrations"
       commands:
       - npm install koa@2.12.1 --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
       commands:
       - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
       commands:
       - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
 - name: Node.js 14 - Build
   dependencies:
   - Validation
@@ -269,43 +253,35 @@ blocks:
     - name: "@appsignal/express - express@latest - integrations"
       commands:
       - npm install express@latest --save-dev
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+      - script/test_package_integration express
     - name: "@appsignal/express - express@4.17.1 - integrations"
       commands:
       - npm install express@4.17.1 --save-dev
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+      - script/test_package_integration express
     - name: "@appsignal/koa - koa@latest - integrations"
       commands:
       - npm install koa@latest --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/koa - koa@2.13.1 - integrations"
       commands:
       - npm install koa@2.13.1 --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/koa - koa@2.12.1 - integrations"
       commands:
       - npm install koa@2.12.1 --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
       commands:
       - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
       commands:
       - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
 - name: Node.js 13 - Build
   dependencies:
   - Validation
@@ -355,43 +331,35 @@ blocks:
     - name: "@appsignal/express - express@latest - integrations"
       commands:
       - npm install express@latest --save-dev
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+      - script/test_package_integration express
     - name: "@appsignal/express - express@4.17.1 - integrations"
       commands:
       - npm install express@4.17.1 --save-dev
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+      - script/test_package_integration express
     - name: "@appsignal/koa - koa@latest - integrations"
       commands:
       - npm install koa@latest --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/koa - koa@2.13.1 - integrations"
       commands:
       - npm install koa@2.13.1 --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/koa - koa@2.12.1 - integrations"
       commands:
       - npm install koa@2.12.1 --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
       commands:
       - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
       commands:
       - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
 - name: Node.js 12 - Build
   dependencies:
   - Validation
@@ -441,43 +409,35 @@ blocks:
     - name: "@appsignal/express - express@latest - integrations"
       commands:
       - npm install express@latest --save-dev
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+      - script/test_package_integration express
     - name: "@appsignal/express - express@4.17.1 - integrations"
       commands:
       - npm install express@4.17.1 --save-dev
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+      - script/test_package_integration express
     - name: "@appsignal/koa - koa@latest - integrations"
       commands:
       - npm install koa@latest --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/koa - koa@2.13.1 - integrations"
       commands:
       - npm install koa@2.13.1 --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/koa - koa@2.12.1 - integrations"
       commands:
       - npm install koa@2.12.1 --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
       commands:
       - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
       commands:
       - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
 - name: Node.js 11 - Build
   dependencies:
   - Validation
@@ -527,43 +487,35 @@ blocks:
     - name: "@appsignal/express - express@latest - integrations"
       commands:
       - npm install express@latest --save-dev
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+      - script/test_package_integration express
     - name: "@appsignal/express - express@4.17.1 - integrations"
       commands:
       - npm install express@4.17.1 --save-dev
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+      - script/test_package_integration express
     - name: "@appsignal/koa - koa@latest - integrations"
       commands:
       - npm install koa@latest --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/koa - koa@2.13.1 - integrations"
       commands:
       - npm install koa@2.13.1 --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/koa - koa@2.12.1 - integrations"
       commands:
       - npm install koa@2.12.1 --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
       commands:
       - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
       commands:
       - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
 - name: Node.js 10 - Build
   dependencies:
   - Validation
@@ -613,40 +565,32 @@ blocks:
     - name: "@appsignal/express - express@latest - integrations"
       commands:
       - npm install express@latest --save-dev
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+      - script/test_package_integration express
     - name: "@appsignal/express - express@4.17.1 - integrations"
       commands:
       - npm install express@4.17.1 --save-dev
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+      - script/test_package_integration express
     - name: "@appsignal/koa - koa@latest - integrations"
       commands:
       - npm install koa@latest --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/koa - koa@2.13.1 - integrations"
       commands:
       - npm install koa@2.13.1 --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/koa - koa@2.12.1 - integrations"
       commands:
       - npm install koa@2.12.1 --save-dev
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+      - script/test_package_integration koa
     - name: "@appsignal/nextjs - next.js@latest - integrations"
       commands:
       - npm install next@latest react@latest react-dom@latest --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
       commands:
       - npm install next@11.0.1 react@17.0.2 react-dom@17.0.2 --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
       commands:
       - npm install next@10.2.3 react@16.14.0 react-dom@16.14.0 --save-dev
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-      - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+      - script/test_package_integration nextjs
