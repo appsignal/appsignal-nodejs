@@ -32,7 +32,7 @@ RSpec.describe "Next.js" do
 
   describe "/" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:3000/'))
+      @result = Net::HTTP.get(URI('http://localhost:4010/'))
     end
 
     it "renders the index page" do
@@ -48,7 +48,7 @@ RSpec.describe "Next.js" do
 
   describe "/blog" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:3000/blog'))
+      @result = Net::HTTP.get(URI('http://localhost:4010/blog'))
     end
 
     it "renders the index page" do
@@ -64,7 +64,7 @@ RSpec.describe "Next.js" do
 
   describe "/post/1" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:3000/post/1'))
+      @result = Net::HTTP.get(URI('http://localhost:4010/post/1'))
     end
 
     it "renders the post page" do

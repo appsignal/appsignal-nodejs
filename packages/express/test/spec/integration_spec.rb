@@ -32,7 +32,7 @@ RSpec.describe "Express.js" do
 
   describe "/" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:3000/?foo=bar'))
+      @result = Net::HTTP.get(URI('http://localhost:4010/?foo=bar'))
     end
 
     it "renders the index page" do
@@ -48,7 +48,7 @@ RSpec.describe "Express.js" do
 
   describe "/dashboard" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:3000/dashboard?foo=bar'))
+      @result = Net::HTTP.get(URI('http://localhost:4010/dashboard?foo=bar'))
     end
 
     it "renders the page" do
@@ -64,7 +64,7 @@ RSpec.describe "Express.js" do
 
   describe "/admin/dashboard" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:3000/admin/dashboard?foo=bar'))
+      @result = Net::HTTP.get(URI('http://localhost:4010/admin/dashboard?foo=bar'))
     end
 
     it "renders the page" do
