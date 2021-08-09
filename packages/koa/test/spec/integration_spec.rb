@@ -8,7 +8,7 @@ RSpec.describe 'Express.js' do
     @log_path = File.join(tmpdir, 'appsignal.log')
     command = "APPSIGNAL_LOG_PATH='#{tmpdir}' APPSIGNAL_DEBUG='true' APPSIGNAL_TRANSACTION_DEBUG_MODE='true' node index.js"
 
-    Dir.chdir File.join(__dir__, 'example')
+    Dir.chdir File.expand_path("../example", __dir__)
 
     puts command
     read, write = IO.pipe

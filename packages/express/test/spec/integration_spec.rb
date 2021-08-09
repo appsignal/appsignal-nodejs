@@ -2,13 +2,13 @@ require 'net/http'
 require 'tempfile'
 require 'timeout'
 
-RSpec.describe "Next.js" do
+RSpec.describe "Express.js" do
   before(:all) do
     tmpdir = Dir.mktmpdir
     @log_path = File.join(tmpdir, "appsignal.log")
-    command = "APPSIGNAL_LOG_PATH='#{tmpdir}' APPSIGNAL_DEBUG='true' APPSIGNAL_TRANSACTION_DEBUG_MODE='true' node server.js"
+    command = "APPSIGNAL_LOG_PATH='#{tmpdir}' APPSIGNAL_DEBUG='true' APPSIGNAL_TRANSACTION_DEBUG_MODE='true' node index.js"
 
-    Dir.chdir File.join(__dir__, 'example')
+    Dir.chdir File.expand_path("../example", __dir__)
 
     puts command
     read, write = IO.pipe
@@ -17,7 +17,7 @@ RSpec.describe "Next.js" do
     Timeout::timeout(15) do
       read.each do |line|
         puts line
-        break if line =~ /Ready on/
+        break if line =~ /Example app listening at/
       end
     end
   end
@@ -32,11 +32,11 @@ RSpec.describe "Next.js" do
 
   describe "/" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:3000/'))
+      @result = Net::HTTP.get(URI('http://localhost:3000/?foo=bar'))
     end
 
     it "renders the index page" do
-      expect(@result).to match(/Welcome to .+Next\.js!/)
+      expect(@result).to match(/Hello World!/)
     end
 
     it "sets the root span's name" do
@@ -46,36 +46,35 @@ RSpec.describe "Next.js" do
     end
   end
 
-  describe "/blog" do
+  describe "/dashboard" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:3000/blog'))
+      @result = Net::HTTP.get(URI('http://localhost:3000/dashboard?foo=bar'))
     end
 
-    it "renders the index page" do
-      expect(@result).to match(/Blog/)
+    it "renders the page" do
+      expect(@result).to match("Dashboard for user")
     end
 
-    it "sets the root span's name" do
+    it "renders the dashboard page" do
       log = File.read(@log_path)
       expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy()
-      expect(/Set name 'GET \/blog' for span '#{$1}'/.match(log)).to be_truthy()
+      expect(/Set name 'GET \/dashboard' for span '#{$1}'/.match(log)).to be_truthy()
     end
   end
 
-  describe "/post/1" do
+  describe "/admin/dashboard" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:3000/post/1'))
+      @result = Net::HTTP.get(URI('http://localhost:3000/admin/dashboard?foo=bar'))
     end
 
-    it "renders the post page" do
-      expect(@result).to match(/Post: /)
+    it "renders the page" do
+      expect(@result).to include("Dashboard for admin")
     end
 
     it "sets the root span's name" do
       log = File.read(@log_path)
-
       expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy()
-      expect(/Set name 'GET \/post\/\[id\]' for span '#{$1}'/.match(log)).to be_truthy()
+      expect(/Set name 'GET \/admin\/dashboard' for span '#{$1}'/.match(log)).to be_truthy()
     end
   end
 end
