@@ -94,6 +94,16 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
+    - name: "@appsignal/express - express@latest - integrations"
+      commands:
+      - npm install express@latest --save-dev
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+    - name: "@appsignal/express - express@4.17.1 - integrations"
+      commands:
+      - npm install express@4.17.1 --save-dev
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
     - name: "@appsignal/koa - koa@latest - integrations"
       commands:
       - npm install koa@latest --save-dev
@@ -170,6 +180,16 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
+    - name: "@appsignal/express - express@latest - integrations"
+      commands:
+      - npm install express@latest --save-dev
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+    - name: "@appsignal/express - express@4.17.1 - integrations"
+      commands:
+      - npm install express@4.17.1 --save-dev
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
     - name: "@appsignal/koa - koa@latest - integrations"
       commands:
       - npm install koa@latest --save-dev
@@ -246,6 +266,16 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
+    - name: "@appsignal/express - express@latest - integrations"
+      commands:
+      - npm install express@latest --save-dev
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+    - name: "@appsignal/express - express@4.17.1 - integrations"
+      commands:
+      - npm install express@4.17.1 --save-dev
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
     - name: "@appsignal/koa - koa@latest - integrations"
       commands:
       - npm install koa@latest --save-dev
@@ -322,6 +352,16 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
+    - name: "@appsignal/express - express@latest - integrations"
+      commands:
+      - npm install express@latest --save-dev
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+    - name: "@appsignal/express - express@4.17.1 - integrations"
+      commands:
+      - npm install express@4.17.1 --save-dev
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
     - name: "@appsignal/koa - koa@latest - integrations"
       commands:
       - npm install koa@latest --save-dev
@@ -398,6 +438,16 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
+    - name: "@appsignal/express - express@latest - integrations"
+      commands:
+      - npm install express@latest --save-dev
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+    - name: "@appsignal/express - express@4.17.1 - integrations"
+      commands:
+      - npm install express@4.17.1 --save-dev
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
     - name: "@appsignal/koa - koa@latest - integrations"
       commands:
       - npm install koa@latest --save-dev
@@ -474,6 +524,16 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
+    - name: "@appsignal/express - express@latest - integrations"
+      commands:
+      - npm install express@latest --save-dev
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+    - name: "@appsignal/express - express@4.17.1 - integrations"
+      commands:
+      - npm install express@4.17.1 --save-dev
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
     - name: "@appsignal/koa - koa@latest - integrations"
       commands:
       - npm install koa@latest --save-dev
@@ -550,6 +610,16 @@ blocks:
       commands:
       - mono test --package=@appsignal/nodejs-ext
       - mono run --package @appsignal/nodejs-ext -- npm run test:failure
+    - name: "@appsignal/express - express@latest - integrations"
+      commands:
+      - npm install express@latest --save-dev
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+    - name: "@appsignal/express - express@4.17.1 - integrations"
+      commands:
+      - npm install express@4.17.1 --save-dev
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
+      - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
     - name: "@appsignal/koa - koa@latest - integrations"
       commands:
       - npm install koa@latest --save-dev

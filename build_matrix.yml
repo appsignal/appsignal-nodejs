@@ -99,6 +99,10 @@ matrix:
         - name: "express@4.17.1"
           packages:
             express: "4.17.1"
+      extra_tests:
+        integrations:
+          - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
+          - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
     - package: "@appsignal/koa"
       path: "packages/koa"
       variations:
