@@ -1,4 +1,4 @@
-require_relative "../../../../test/support/app_runner"
+require_relative "../../../../test/integration/support/app_runner"
 
 RSpec.configure do |config|
   config.example_status_persistence_file_path = "spec/examples.txt"
