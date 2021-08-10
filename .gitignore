@@ -83,3 +83,4 @@ build/
 # Agent archives
 packages/nodejs-ext/ext/*.tar.gz
 
+packages/*/test/spec/examples.txt

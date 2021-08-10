@@ -8,7 +8,7 @@ RSpec.describe "Next.js" do
     @log_path = File.join(tmpdir, "appsignal.log")
     command = "APPSIGNAL_LOG_PATH='#{tmpdir}' APPSIGNAL_DEBUG='true' APPSIGNAL_TRANSACTION_DEBUG_MODE='true' node server.js"
 
-    Dir.chdir File.join(__dir__, 'example')
+    Dir.chdir File.expand_path("../example", __dir__)
 
     puts command
     read, write = IO.pipe
@@ -32,7 +32,7 @@ RSpec.describe "Next.js" do
 
   describe "/" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:3000/'))
+      @result = Net::HTTP.get(URI('http://localhost:4010/'))
     end
 
     it "renders the index page" do
@@ -48,7 +48,7 @@ RSpec.describe "Next.js" do
 
   describe "/blog" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:3000/blog'))
+      @result = Net::HTTP.get(URI('http://localhost:4010/blog'))
     end
 
     it "renders the index page" do
@@ -64,7 +64,7 @@ RSpec.describe "Next.js" do
 
   describe "/post/1" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:3000/post/1'))
+      @result = Net::HTTP.get(URI('http://localhost:4010/post/1'))
     end
 
     it "renders the post page" do

@@ -101,8 +101,7 @@ matrix:
             express: "4.17.1"
       extra_tests:
         integrations:
-          - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle install
-          - BUNDLE_GEMFILE=packages/express/test/Gemfile bundle exec rspec packages/express/test
+          - script/test_package_integration express
     - package: "@appsignal/koa"
       path: "packages/koa"
       variations:
@@ -117,8 +116,7 @@ matrix:
             koa: "2.12.1"
       extra_tests:
         integrations:
-          - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle install
-          - BUNDLE_GEMFILE=packages/koa/test/Gemfile bundle exec rspec packages/koa/test
+          - script/test_package_integration koa
     - package: "@appsignal/nextjs"
       path: "packages/nextjs"
       variations:
@@ -139,5 +137,4 @@ matrix:
             react-dom: "16.14.0"
       extra_tests:
         integrations:
-          - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle install
-          - BUNDLE_GEMFILE=packages/nextjs/test/Gemfile bundle exec rspec packages/nextjs/test
+          - script/test_package_integration nextjs
