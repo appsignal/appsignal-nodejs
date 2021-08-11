@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "../../../../test/integration/support/app_runner"
 
 RSpec.configure do |config|

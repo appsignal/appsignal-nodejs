@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "net/http"
 
 EXAMPLE_APP_DIR = File.expand_path(File.join("..", "example"), __dir__)
@@ -11,19 +13,19 @@ RSpec.describe "Koa" do
   after(:context) { @app.stop }
   after { @app.cleanup }
 
-  describe '/' do
+  describe "/" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:4010/'))
+      @result = Net::HTTP.get(URI("http://localhost:4010/"))
     end
 
-    it 'renders the index page' do
+    it "renders the index page" do
       expect(@result).to match(/Hello World!/)
     end
 
     it "sets the root span's name" do
       log = @app.logs
       expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy, log
-      expect(%r{Set name 'GET /' for span '#{Regexp.last_match(1)}'}.match(log)).to be_truthy, log
+      expect(log).to match(%r{Set name 'GET /' for span '#{Regexp.last_match(1)}'})
     end
   end
 end

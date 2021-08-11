@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "timeout"
 require "tempfile"
 
@@ -48,6 +50,7 @@ class AppRunner
       loop do
         raise AppError, output unless running?
         break if output.include?(message)
+
         sleep 0.05
       end
     end
@@ -61,7 +64,7 @@ class AppRunner
     # containers.
     processes = `ps aux | grep "#{@command}" | grep -v "defunct" | grep -v "grep"`
     # Any output remaining? The app must be running.
-    processes.lines.length > 0
+    processes.lines.any?
   rescue Errno::ESRCH
     false
   end

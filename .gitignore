@@ -84,3 +84,4 @@ build/
 packages/nodejs-ext/ext/*.tar.gz
 
 packages/*/test/spec/examples.txt
+tmp
