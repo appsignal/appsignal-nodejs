@@ -1,6 +1,6 @@
 {
   "name": "@appsignal/express",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "main": "dist/index",
   "types": "dist/index",
   "license": "MIT",

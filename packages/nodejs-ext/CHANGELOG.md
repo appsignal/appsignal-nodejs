@@ -1,5 +1,14 @@
 # AppSignal for Node.js extension Changelog
 
+## 1.2.9
+
+- [7d55636](https://github.com/appsignal/appsignal-nodejs/commit/7d55636f74d5280317df7719ddd3933bbebb5e6e) patch - Bump agent to 0f40689
+  
+  - Add Apple Darwin ARM alias.
+  - Improve appsignal.h documentation.
+  - Improve transaction debug log for errors.
+  - Fix agent zombie/defunct issue on containers without process reaping.
+
 ## 1.2.8
 
 - [fc98c22](https://github.com/appsignal/appsignal-nodejs/commit/fc98c22ded10b836ed527fbd57bf3046107e0578) patch - Bump agent to v-891c6b0. Add experimental Apple Silicon M1 ARM64 build.

@@ -1,5 +1,9 @@
 # AppSignal for Node.js Changelog
 
+## 1.3.2
+
+- patch - Update @appsignal/nodejs-ext dependency to 1.2.9.
+
 ## 1.3.1
 
 - patch - Update @appsignal/nodejs-ext dependency to 1.2.8.
