@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../../../../test/integration/support/integration_helper"
-require_relative "../../../../test/integration/support/app_runner"
+require_relative "../../../../test/integration/support"
 
 RSpec.configure do |config|
   config.include IntegrationHelper
