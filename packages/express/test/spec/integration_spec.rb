@@ -24,8 +24,8 @@ RSpec.describe "Express" do
 
     it "sets the root span's name" do
       log = @app.logs
-      expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy, log
-      expect(log).to match(%r{Set name 'GET /' for span '#{Regexp.last_match(1)}'})
+      span_id = fetch_root_span_id(log)
+      expect(log).to include("Set name 'GET /' for span '#{span_id}'")
     end
   end
 
@@ -40,8 +40,8 @@ RSpec.describe "Express" do
 
     it "sets the root span's name" do
       log = @app.logs
-      expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy, log
-      expect(log).to match(%r{Set name 'GET /dashboard' for span '#{Regexp.last_match(1)}'})
+      span_id = fetch_root_span_id(log)
+      expect(log).to include("Set name 'GET /dashboard' for span '#{span_id}'")
     end
   end
 
@@ -56,8 +56,8 @@ RSpec.describe "Express" do
 
     it "sets the root span's name" do
       log = @app.logs
-      expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy, log
-      expect(log).to match(%r{Set name 'GET /admin/dashboard' for span '#{Regexp.last_match(1)}'})
+      span_id = fetch_root_span_id(log)
+      expect(log).to include("Set name 'GET /admin/dashboard' for span '#{span_id}'")
     end
   end
 end
