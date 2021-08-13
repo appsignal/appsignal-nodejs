@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "yaml"
 
 namespace :build_matrix do
@@ -31,8 +33,10 @@ namespace :build_matrix do
                 "commands" => [
                   "mono build",
                   "mono run --package @appsignal/nodejs-ext -- npm run build:ext",
-                  "cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages",
-                  "cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION /tmp/appsignal-*-install.report"
+                  "cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION " \
+                    "packages",
+                  "cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION " \
+                    "/tmp/appsignal-*-install.report"
                 ]
               )
             ]
@@ -44,10 +48,8 @@ namespace :build_matrix do
         primary_jobs = []
         matrix["packages"].each do |package|
           has_package_tests = package_has_tests? package["path"]
-          unless has_package_tests
-            if skipped_packages.add? package["package"]
-              puts "DEBUG: Skipping Node.js tests for #{package["package"]}: No test files found"
-            end
+          if !has_package_tests && skipped_packages.add?(package["package"])
+            puts "DEBUG: Skipping Node.js tests for #{package["package"]}: No test files found"
           end
 
           package["variations"].each do |variation|
@@ -55,7 +57,9 @@ namespace :build_matrix do
             dependency_specification = variation["packages"]
             update_package_version_command =
               if dependency_specification
-                packages = dependency_specification.map { |name, version| "#{name}@#{version}" }.join(" ")
+                packages = dependency_specification.map do |name, version|
+                  "#{name}@#{version}"
+                end.join(" ")
                 "npm install #{packages} --save-dev"
               end
 
@@ -133,7 +137,7 @@ def build_semaphore_task(task_hash)
   {
     "name" => task_hash.delete("name") { raise "`name` key not found for task" },
     "dependencies" => [],
-    "task" => task_hash.delete("task") { raise "`task` key not found for task" },
+    "task" => task_hash.delete("task") { raise "`task` key not found for task" }
   }.merge(task_hash)
 end
 
@@ -147,9 +151,7 @@ end
 def package_has_tests?(package)
   test_dir = File.join(package, "src/__tests__")
   # Has a dedicated test dir and it contains files
-  if Dir.exist?(test_dir) && Dir.glob(File.join(test_dir, "**", "*.*s")).any?
-    return true
-  end
+  return true if Dir.exist?(test_dir) && Dir.glob(File.join(test_dir, "**", "*.*s")).any?
 
   Dir.glob(File.join(package, "**/*.test.*s")).any?
 end

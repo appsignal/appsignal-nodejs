@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "net/http"
 
 EXAMPLE_APP_DIR = File.expand_path(File.join("..", "example"), __dir__)
@@ -13,7 +15,7 @@ RSpec.describe "Express" do
 
   describe "/" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:4010/?foo=bar'))
+      @result = Net::HTTP.get(URI("http://localhost:4010/?foo=bar"))
     end
 
     it "renders the index page" do
@@ -22,14 +24,14 @@ RSpec.describe "Express" do
 
     it "sets the root span's name" do
       log = @app.logs
-      expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy, log
-      expect(/Set name 'GET \/' for span '#{$1}'/.match(log)).to be_truthy, log
+      span_id = fetch_root_span_id(log)
+      expect(log).to include("Set name 'GET /' for span '#{span_id}'")
     end
   end
 
   describe "/dashboard" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:4010/dashboard?foo=bar'))
+      @result = Net::HTTP.get(URI("http://localhost:4010/dashboard?foo=bar"))
     end
 
     it "renders the page" do
@@ -38,14 +40,14 @@ RSpec.describe "Express" do
 
     it "sets the root span's name" do
       log = @app.logs
-      expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy, log
-      expect(/Set name 'GET \/dashboard' for span '#{$1}'/.match(log)).to be_truthy, log
+      span_id = fetch_root_span_id(log)
+      expect(log).to include("Set name 'GET /dashboard' for span '#{span_id}'")
     end
   end
 
   describe "/admin/dashboard" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:4010/admin/dashboard?foo=bar'))
+      @result = Net::HTTP.get(URI("http://localhost:4010/admin/dashboard?foo=bar"))
     end
 
     it "renders the page" do
@@ -54,8 +56,8 @@ RSpec.describe "Express" do
 
     it "sets the root span's name" do
       log = @app.logs
-      expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy, log
-      expect(/Set name 'GET \/admin\/dashboard' for span '#{$1}'/.match(log)).to be_truthy, log
+      span_id = fetch_root_span_id(log)
+      expect(log).to include("Set name 'GET /admin/dashboard' for span '#{span_id}'")
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "net/http"
 
 EXAMPLE_APP_DIR = File.expand_path(File.join("..", "example"), __dir__)
@@ -13,7 +15,7 @@ RSpec.describe "Next.js" do
 
   describe "/" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:4010/'))
+      @result = Net::HTTP.get(URI("http://localhost:4010/"))
     end
 
     it "renders the index page" do
@@ -22,14 +24,14 @@ RSpec.describe "Next.js" do
 
     it "sets the root span's name" do
       log = @app.logs
-      expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy()
-      expect(/Set name 'GET \/' for span '#{$1}'/.match(log)).to be_truthy()
+      span_id = fetch_root_span_id(log)
+      expect(log).to include("Set name 'GET /' for span '#{span_id}'")
     end
   end
 
   describe "/blog" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:4010/blog'))
+      @result = Net::HTTP.get(URI("http://localhost:4010/blog"))
     end
 
     it "renders the index page" do
@@ -38,14 +40,14 @@ RSpec.describe "Next.js" do
 
     it "sets the root span's name" do
       log = @app.logs
-      expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy()
-      expect(/Set name 'GET \/blog' for span '#{$1}'/.match(log)).to be_truthy()
+      span_id = fetch_root_span_id(log)
+      expect(log).to include("Set name 'GET /blog' for span '#{span_id}'")
     end
   end
 
   describe "/post/1" do
     before do
-      @result = Net::HTTP.get(URI('http://localhost:4010/post/1'))
+      @result = Net::HTTP.get(URI("http://localhost:4010/post/1"))
     end
 
     it "renders the post page" do
@@ -54,8 +56,8 @@ RSpec.describe "Next.js" do
 
     it "sets the root span's name" do
       log = @app.logs
-      expect(/Start root span '(\w+)' in 'web'/.match(log)).to be_truthy()
-      expect(/Set name 'GET \/post\/\[id\]' for span '#{$1}'/.match(log)).to be_truthy()
+      span_id = fetch_root_span_id(log)
+      expect(log).to include("Set name 'GET /post/[id]' for span '#{span_id}'")
     end
   end
 end

@@ -16,6 +16,8 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
       value: test
     - name: _PACKAGES_CACHE
       value: v1
+    - name: _BUNDLER_CACHE
+      value: v1
     prologue:
       commands:
         - checkout
@@ -36,6 +38,14 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
       dependencies: []
       task:
         jobs:
+        - name: Ruby Lint (RuboCop)
+          commands:
+            - cache restore $_BUNDLER_CACHE-bundler-$(checksum Gemfile.lock)
+            - bundle config set clean 'true'
+            - bundle config set path .bundle
+            - bundle install --jobs=3 --retry=3
+            - cache store $_BUNDLER_CACHE-bundler-$(checksum Gemfile.lock) .bundle
+            - bundle exec rubocop
         - name: Git Lint (Lintje)
           env_vars:
             - name: "LINTJE_VERSION"
