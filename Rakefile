@@ -153,5 +153,8 @@ def package_has_tests?(package)
   # Has a dedicated test dir and it contains files
   return true if Dir.exist?(test_dir) && Dir.glob(File.join(test_dir, "**", "*.*s")).any?
 
-  Dir.glob(File.join(package, "**/*.test.*s")).any?
+  Dir
+    .glob(File.join(package, "**/*.test.*s"))
+    .reject { |file| file.include?("/node_modules/") }
+    .any?
 end
