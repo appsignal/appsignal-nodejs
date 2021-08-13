@@ -50,12 +50,8 @@ blocks:
       - cache store $_BUNDLER_CACHE-bundler-$(checksum Gemfile.lock) .bundle
       - bundle exec rubocop
     - name: Git Lint (Lintje)
-      env_vars:
-      - name: LINTJE_VERSION
-        value: 0.3.0
       commands:
-      - script/install_lintje
-      - "$HOME/bin/lintje $SEMAPHORE_GIT_COMMIT_RANGE"
+      - script/lint_git
 - name: Node.js 16 - Build
   dependencies:
   - Validation
