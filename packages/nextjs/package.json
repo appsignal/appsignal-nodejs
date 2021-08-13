@@ -11,6 +11,9 @@
   "peerDependencies": {
     "next": ">= 10.2.3"
   },
+  "devDependencies": {
+    "next": "*"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "build:ext": "node-gyp rebuild",

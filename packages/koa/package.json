@@ -12,6 +12,12 @@
   "peerDependencies": {
     "koa": ">= 2.0.0"
   },
+  "devDependencies": {
+    "koa": "*",
+    "@types/koa": "*",
+    "@types/koa__router": "*",
+    "@types/shimmer": "*"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "build:ext": "node-gyp rebuild",
