@@ -10,8 +10,15 @@ extern "C" {
 // value has to stay an in scope for as long as the appsignal string is used.
 // Node will free it immediately after it goes out of scope and accessing the
 // string will result in random memory access.
-static inline appsignal_string_t MakeAppsignalString(const std::string &value) {
-  return appsignal_string_t{.len = value.size(), .buf = value.c_str()};
+static inline appsignal_string_t MakeAppsignalString(const std::string &str) {
+  return appsignal_string_t{.len = str.size(), .buf = str.c_str()};
+}
+
+// Make a Node.js string out of an appsignal string struct
+static inline Napi::String MakeNodeString(Napi::Env &env, appsignal_string_t str) {
+  Napi::String out = Napi::String::New(env, str.buf, str.len);
+  appsignal_free_string(str);
+  return out;
 }
 
 // Extension
@@ -30,7 +37,7 @@ Napi::Value DiagnoseRaw(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
   appsignal_string_t str = appsignal_diagnose();
 
-  return Napi::String::New(env, str.buf, str.len);
+  return MakeNodeString(env, str);
 }
 
 Napi::Value RunningInContainer(const Napi::CallbackInfo &info) {
@@ -247,7 +254,7 @@ Napi::Value GetDataToJson(const Napi::CallbackInfo &info) {
 
   appsignal_string_t str = appsignal_data_to_json(data.Data());
 
-  return Napi::String::New(env, str.buf, str.len);
+  return MakeNodeString(env, str);
 }
 
 // SPAN API
@@ -296,12 +303,9 @@ Napi::Value CreateRootSpan(const Napi::CallbackInfo &info) {
 
   Napi::String namesp = info[0].As<Napi::String>();
 
-  const std::string &value = namesp.Utf8Value();
-  const char *cstr = value.c_str();
-  appsignal_string_t value_string_t =
-      appsignal_string_t{.len = value.size(), .buf = cstr};
+  const std::string namesp_utf8 = namesp.Utf8Value();
 
-  appsignal_span_t *span_ptr = appsignal_create_root_span(value_string_t);
+  appsignal_span_t *span_ptr = appsignal_create_root_span(MakeAppsignalString(namesp_utf8));
 
   return Napi::External<appsignal_span_t>::New(
       env, span_ptr,
@@ -313,16 +317,13 @@ Napi::Value CreateRootSpanWithTimestamp(const Napi::CallbackInfo &info) {
 
   Napi::String namesp = info[0].As<Napi::String>();
 
-  const std::string &value = namesp.Utf8Value();
-  const char *cstr = value.c_str();
-  appsignal_string_t value_string_t =
-      appsignal_string_t{.len = value.size(), .buf = cstr};
+  const std::string namesp_utf8 = namesp.Utf8Value();
 
   Napi::Number sec = info[1].As<Napi::Number>();
   Napi::Number nsec = info[2].As<Napi::Number>();
 
   appsignal_span_t *span_ptr = appsignal_create_root_span_with_timestamp(
-      value_string_t, (long)sec.DoubleValue(), (long)nsec.DoubleValue());
+      MakeAppsignalString(namesp_utf8), (long)sec.DoubleValue(), (long)nsec.DoubleValue());
 
   return Napi::External<appsignal_span_t>::New(
       env, span_ptr,
@@ -396,7 +397,7 @@ Napi::Value GetTraceId(const Napi::CallbackInfo &info) {
 
   appsignal_string_t str = appsignal_trace_id(span.Data());
 
-  return Napi::String::New(env, str.buf, str.len);
+  return MakeNodeString(env, str);
 }
 
 Napi::Value GetSpanId(const Napi::CallbackInfo &info) {
@@ -407,7 +408,7 @@ Napi::Value GetSpanId(const Napi::CallbackInfo &info) {
 
   appsignal_string_t str = appsignal_span_id(span.Data());
 
-  return Napi::String::New(env, str.buf, str.len);
+  return MakeNodeString(env, str);
 }
 
 Napi::Value SpanToJSON(const Napi::CallbackInfo &info) {
@@ -418,7 +419,7 @@ Napi::Value SpanToJSON(const Napi::CallbackInfo &info) {
 
   appsignal_string_t str = appsignal_span_to_json(span.Data());
 
-  return Napi::String::New(env, str.buf, str.len);
+  return MakeNodeString(env, str);
 }
 
 Napi::Value AddSpanError(const Napi::CallbackInfo &info) {
