@@ -21,4 +21,5 @@ fi
 
 cd $package_path
 bundle check || bundle install
+(cd example && npm install)
 bundle exec rspec

@@ -46,9 +46,10 @@ class AppRunner
   # Block execution of the Ruby app until the example app has printed the
   # String supplied in the `message` argument.
   def wait_for_start!(message, options = {})
+    raise AppError, output unless running?
+
     Timeout.timeout(options.fetch(:timeout, 15), WaitForStartTimeoutError) do
       loop do
-        raise AppError, output unless running?
         break if output.include?(message)
 
         sleep 0.05
@@ -62,19 +63,27 @@ class AppRunner
     # Check all processes that are started with the given command.
     # Filter out any defunct processes that haven't been reaped, like in
     # containers.
-    processes = `ps aux | grep "#{@command}" | grep -v "defunct" | grep -v "grep"`
+    #
+    # The `-o` option on `ps` will allow us to configure which columns are
+    # printed and reduces the risk of false positives on other random output.
+    # The `=` symbol in the column names indicates that we don't want to print
+    # a line with a heading for each column.
+    processes = `ps -o "state=,command=" -p "#{@pid}" | grep -v "Z+" | grep -v "defunct"`
     # Any output remaining? The app must be running.
     processes.lines.any?
-  rescue Errno::ESRCH
-    false
   end
 
   # Stop the example app if it is running
   def stop
     Timeout.timeout(15, StopTimeoutError) do
       while running?
-        Process.kill 3, @pid
-        sleep 1
+        # Send signal 2 on macOS and signal 3 on Linux to send the stop signal
+        # to the test app process. This way the test app process is really
+        # stopped after running the test suite. I don't know why it's
+        # different, but this way works.
+        signal = RbConfig::CONFIG["host_os"].include?("darwin") ? 2 : 3
+        Process.kill signal, @pid
+        sleep 0.5
       end
     end
     @log_thread.kill

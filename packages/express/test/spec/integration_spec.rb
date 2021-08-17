@@ -6,7 +6,7 @@ EXAMPLE_APP_DIR = File.expand_path(File.join("..", "example"), __dir__)
 
 RSpec.describe "Express" do
   before(:context) do
-    @app = AppRunner.new("node index.js", EXAMPLE_APP_DIR)
+    @app = AppRunner.new("npm run start", EXAMPLE_APP_DIR)
     @app.run
     @app.wait_for_start!("Example app listening at")
   end
