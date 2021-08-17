@@ -10,8 +10,15 @@ extern "C" {
 // value has to stay an in scope for as long as the appsignal string is used.
 // Node will free it immediately after it goes out of scope and accessing the
 // string will result in random memory access.
-static inline appsignal_string_t MakeAppsignalString(const std::string &value) {
-  return appsignal_string_t{.len = value.size(), .buf = value.c_str()};
+static inline appsignal_string_t MakeAppsignalString(const std::string &str) {
+  return appsignal_string_t{.len = str.size(), .buf = str.c_str()};
+}
+
+// Make a Node.js string out of an appsignal string struct
+static inline Napi::String MakeNodeString(Napi::Env &env, appsignal_string_t str) {
+  Napi::String out = Napi::String::New(env, str.buf, str.len);
+  appsignal_free_string(str);
+  return out;
 }
 
 // Extension
@@ -30,7 +37,7 @@ Napi::Value DiagnoseRaw(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
   appsignal_string_t str = appsignal_diagnose();
 
-  return Napi::String::New(env, str.buf, str.len);
+  return MakeNodeString(env, str);
 }
 
 Napi::Value RunningInContainer(const Napi::CallbackInfo &info) {
@@ -247,7 +254,7 @@ Napi::Value GetDataToJson(const Napi::CallbackInfo &info) {
 
   appsignal_string_t str = appsignal_data_to_json(data.Data());
 
-  return Napi::String::New(env, str.buf, str.len);
+  return MakeNodeString(env, str);
 }
 
 // SPAN API
