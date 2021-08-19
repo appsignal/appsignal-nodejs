@@ -94,6 +94,9 @@ matrix:
         - name: "apollo-server@0.11.0"
           packages:
             apollo-server-plugin-base: "0.11.0"
+      extra_tests:
+        integrations:
+          - script/test_package_integration apollo-server
     - package: "@appsignal/express"
       path: "packages/express"
       variations:
