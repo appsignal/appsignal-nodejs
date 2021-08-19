@@ -11,6 +11,10 @@
   "peerDependencies": {
     "express": ">= 4.0.0"
   },
+  "devDependencies": {
+    "express": "*",
+    "@types/express": "*"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "build:ext": "node-gyp rebuild",

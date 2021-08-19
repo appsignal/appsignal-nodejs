@@ -18,6 +18,13 @@
   "optionalDependencies": {
     "@appsignal/nodejs-ext": "=1.2.9"
   },
+  "devDependencies": {
+    "@types/semver": "*",
+    "@types/pg": "*",
+    "pg": "*",
+    "@types/redis": "*",
+    "redis": "*"
+  },
   "scripts": {
     "prebuild": "npm run versionfile",
     "build": "tsc -p tsconfig.json",

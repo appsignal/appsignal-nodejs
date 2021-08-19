@@ -84,4 +84,5 @@ build/
 packages/nodejs-ext/ext/*.tar.gz
 
 packages/*/test/spec/examples.txt
+packages/*/test/example/package-lock.json
 tmp

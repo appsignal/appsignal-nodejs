@@ -55,12 +55,16 @@ namespace :build_matrix do
           package["variations"].each do |variation|
             variation_name = variation.fetch("name")
             dependency_specification = variation["packages"]
-            update_package_version_command =
+            update_package_version_command, update_test_app_version_command =
               if dependency_specification
                 packages = dependency_specification.map do |name, version|
                   "#{name}@#{version}"
                 end.join(" ")
-                "npm install #{packages} --save-dev"
+                [
+                  "cd #{package["path"]} && npm instal #{packages} --save-dev",
+                  "script/install_test_example_packages " \
+                    "#{File.basename package["path"]} #{packages}"
+                ]
               end
 
             # Run Node.js / Jest tests against specific package versions
@@ -84,7 +88,7 @@ namespace :build_matrix do
             package.fetch("extra_tests", []).each do |test_name, extra_tests|
               primary_jobs << build_semaphore_job(
                 "name" => "#{package["package"]} - #{variation_name} - #{test_name}",
-                "commands" => ([update_package_version_command] + extra_tests).compact
+                "commands" => ([update_test_app_version_command] + extra_tests).compact
               )
             end
           end
