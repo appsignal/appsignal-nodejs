@@ -16,8 +16,9 @@ export function getPackageVerson(basedir: string): string {
 }
 
 /**
- * Given a valid POSIX `timestamp`, return an object containing a
- * representation if that timestamps in seconds and nanoseconds.
+ * Given a valid POSIX `timestamp` in milliseconds since the UNIX epoch,
+ * return an object containing a representation if that timestamps in
+ * seconds and nanoseconds.
  *
  * @function
  */
