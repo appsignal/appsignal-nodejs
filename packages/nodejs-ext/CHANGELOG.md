@@ -1,5 +1,14 @@
 # AppSignal for Node.js extension Changelog
 
+## 2.0.0
+
+- [f7acf83](https://github.com/appsignal/appsignal-nodejs/commit/f7acf8396d10af361fb1fd515942a8eae319af33) major - Drop support for Node.js 10 and 11. These are unmaintained versions of Node.js.
+- [9b4c67c](https://github.com/appsignal/appsignal-nodejs/commit/9b4c67c7c95060c064396611bdd81f339b999d7b) patch - Bump agent to v-0318770.
+  
+  - Improve Dokku platform detection. Do not disable host metrics on
+    Dokku.
+  - Report CPU steal metric.
+
 ## 1.2.9
 
 - [7d55636](https://github.com/appsignal/appsignal-nodejs/commit/7d55636f74d5280317df7719ddd3933bbebb5e6e) patch - Bump agent to 0f40689

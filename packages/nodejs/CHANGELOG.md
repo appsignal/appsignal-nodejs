@@ -1,5 +1,10 @@
 # AppSignal for Node.js Changelog
 
+## 2.0.0
+
+- [f7acf83](https://github.com/appsignal/appsignal-nodejs/commit/f7acf8396d10af361fb1fd515942a8eae319af33) major - Drop support for Node.js 10 and 11. These are unmaintained versions of Node.js.
+- patch - Update @appsignal/nodejs-ext dependency to 2.0.0.
+
 ## 1.3.2
 
 - patch - Update @appsignal/nodejs-ext dependency to 1.2.9.
