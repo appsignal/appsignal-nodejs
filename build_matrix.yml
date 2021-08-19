@@ -62,8 +62,6 @@ matrix:
     - nodejs: "14"
     - nodejs: "13"
     - nodejs: "12"
-    - nodejs: "11"
-    - nodejs: "10"
   packages:
     - package: "@appsignal/nodejs"
       path: "packages/nodejs"
