@@ -23,8 +23,9 @@ export function getPackageVerson(basedir: string): string {
  * @function
  */
 export function getAgentTimestamps(timestamp: number) {
+  const sec = Math.round(timestamp / 1000)
   return {
-    sec: Math.round(timestamp / 1000), // seconds
-    nsec: Math.round(timestamp * 1e6) // nanoseconds
+    sec: sec, // seconds
+    nsec: timestamp * 1e6 - sec * 1e9 // nanoseconds
   }
 }
