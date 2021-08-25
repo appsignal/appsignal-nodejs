@@ -32,10 +32,12 @@ type ContextWrapped<T> = T & { [WRAPPED]?: boolean }
  * @class
  */
 export class ScopeManager {
+  #roots: Map<number, NodeSpan | undefined>
   #scopes: Map<number, NodeSpan | undefined>
   #asyncHook: asyncHooks.AsyncHook
 
   constructor() {
+    this.#roots = new Map()
     this.#scopes = new Map()
 
     const init = (id: number, type: string, triggerId: number) => {
@@ -103,6 +105,22 @@ export class ScopeManager {
   public active(): NodeSpan | undefined {
     const uid = asyncHooks.executionAsyncId()
     return this.#scopes.get(uid)
+  }
+
+  /**
+   * Sets the root `Span`
+   */
+  public setRoot(rootSpan: NodeSpan) {
+    const uid = asyncHooks.executionAsyncId()
+    this.#roots.set(uid, rootSpan)
+  }
+
+  /**
+   * Returns the current root `Span`.
+   */
+  public root(): NodeSpan | undefined {
+    const uid = asyncHooks.executionAsyncId()
+    return this.#roots.get(uid)
   }
 
   /**

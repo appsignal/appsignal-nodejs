@@ -1,5 +1,5 @@
 import { ScopeManager } from "../scope"
-import { RootSpan } from "../span"
+import { RootSpan, ChildSpan } from "../span"
 
 describe("ScopeManager", () => {
   let scopeManager: ScopeManager
@@ -70,8 +70,11 @@ describe("ScopeManager", () => {
     })
 
     it("should finally restore an old scope", done => {
-      const scope1 = new RootSpan({ namespace: "scope1" })
-      const scope2 = new RootSpan({ namespace: "scope2" })
+      const rootSpan = new RootSpan()
+      const scope1 = new ChildSpan(rootSpan)
+      const scope2 = new ChildSpan(rootSpan)
+
+      expect(scopeManager.active()).toStrictEqual(scopeManager.root())
 
       scopeManager.withContext(scope1, () => {
         expect(scopeManager.active()).toStrictEqual(scope1)
@@ -84,6 +87,8 @@ describe("ScopeManager", () => {
 
         return done()
       })
+
+      expect(scopeManager.active()).toStrictEqual(scopeManager.root())
     })
   })
 

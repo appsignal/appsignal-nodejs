@@ -48,10 +48,16 @@ export class BaseTracer implements Tracer {
     options?: Partial<NodeSpanOptions>,
     spanOrContext?: NodeSpan | SpanContext
   ): NodeSpan {
-    if (!spanOrContext) {
-      return new RootSpan(options)
-    } else {
+    const activeRootSpan = this.rootSpan()
+
+    if (spanOrContext) {
       return new ChildSpan(spanOrContext, options)
+    } else if (!activeRootSpan) {
+      const rootSpan = new RootSpan(options)
+      this.#scopeManager.setRoot(rootSpan)
+      return rootSpan
+    } else {
+      return new ChildSpan(activeRootSpan, options)
     }
   }
 
@@ -62,6 +68,15 @@ export class BaseTracer implements Tracer {
    */
   public currentSpan(): NodeSpan {
     return this.#scopeManager.active() || new NoopSpan()
+  }
+
+  /**
+   * Returns the root Span.
+   *
+   * If ther is no root Span available, `undefined` is returned.
+   */
+  public rootSpan(): NodeSpan | undefined {
+    return this.#scopeManager.root()
   }
 
   /**
