@@ -1,10 +1,10 @@
-import { NodeClient, Metrics, Plugin, Tracer } from "@appsignal/types"
+import { Metrics, Plugin } from "@appsignal/types"
 
 import { Agent } from "./agent"
 import { Configuration } from "./config"
-import { BaseTracer } from "./tracer"
+import { Tracer, NoopTracer } from "./tracer"
 import { BaseMetrics } from "./metrics"
-import { NoopTracer, NoopMetrics } from "./noops"
+import { NoopMetrics } from "./noops"
 import { Instrumentation } from "./instrument"
 import { initCorePlugins, initCoreProbes } from "./bootstrap"
 import { demo } from "./demo"
@@ -20,14 +20,14 @@ import { AppsignalOptions } from "./interfaces/options"
  *
  * @class
  */
-export class Client implements NodeClient {
+export class Client {
   readonly VERSION = VERSION
 
   config: Configuration
   agent: Agent
   instrumentation: Instrumentation
 
-  #tracer: Tracer = new BaseTracer()
+  #tracer: Tracer = new Tracer()
   #metrics: Metrics = new BaseMetrics()
 
   /**
@@ -96,7 +96,7 @@ export class Client implements NodeClient {
    * If the agent is inactive when this method is called, the method
    * returns a `NoopTracer`, which will do nothing.
    */
-  public tracer(): Tracer {
+  public tracer(): Tracer | NoopTracer {
     if (!this.isActive) {
       return new NoopTracer()
     }

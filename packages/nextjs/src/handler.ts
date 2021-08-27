@@ -1,5 +1,4 @@
 import url from "url"
-import { NodeClient } from "@appsignal/types"
 import { ServerResponse, IncomingMessage } from "http"
 
 interface NextServer {
@@ -33,7 +32,7 @@ interface NextServer {
  * span with data.
  */
 export function getRequestHandler<T extends NextServer>(
-  appsignal: NodeClient,
+  appsignal: any,
   app: T
 ) {
   const handler = app.getRequestHandler()

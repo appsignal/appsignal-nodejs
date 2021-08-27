@@ -1,5 +1,3 @@
-import { NodeClient } from "@appsignal/types"
-
 import {
   Request,
   Response,
@@ -12,7 +10,7 @@ import {
  * Returns an Express middleware that can augment the current span
  * with data.
  */
-export function expressMiddleware(appsignal: NodeClient): RequestHandler {
+export function expressMiddleware(appsignal: any): RequestHandler {
   return function (req: Request, res: Response, next: NextFunction) {
     const tracer = appsignal.tracer()
     const rootSpan = tracer.currentSpan()
@@ -21,7 +19,7 @@ export function expressMiddleware(appsignal: NodeClient): RequestHandler {
       return next()
     }
 
-    return tracer.withSpan(rootSpan, span => {
+    return tracer.withSpan(rootSpan, (span: any) => {
       const originalEnd = res.end
 
       tracer.wrapEmitter(req)
@@ -58,7 +56,7 @@ export function expressMiddleware(appsignal: NodeClient): RequestHandler {
 }
 
 export function expressErrorHandler(
-  appsignal: NodeClient
+  appsignal: any
 ): ErrorRequestHandler {
   return function (
     err: Error & { status?: number },
@@ -66,7 +64,8 @@ export function expressErrorHandler(
     res: Response,
     next: NextFunction
   ) {
-    const span = appsignal.tracer().currentSpan()
+    const tracer = appsignal.tracer()
+    const span = tracer.currentSpan()
 
     if (!span) {
       return next()
@@ -75,7 +74,7 @@ export function expressErrorHandler(
     // if there's no `status` property, forward the error
     // we also ignore client errors here
     if (err && (!err.status || (err.status && err.status >= 500))) {
-      span.addError(err)
+      tracer.addError(err)
     }
 
     return next(err)

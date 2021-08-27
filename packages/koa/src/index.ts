@@ -1,7 +1,7 @@
 import shimmer from "shimmer"
 
 import koa from "koa"
-import type { Tracer, Plugin } from "@appsignal/types"
+import type { Plugin } from "@appsignal/types"
 import { getKoaUsePatch } from "./patches"
 
 export const PLUGIN_NAME = "koa"
@@ -11,7 +11,7 @@ type KoaModule = typeof koa
 
 export const instrument = (
   mod: KoaModule,
-  tracer: Tracer
+  tracer: any
 ): Plugin<KoaModule> => ({
   version: ">= 2.0.0",
   install(): KoaModule {

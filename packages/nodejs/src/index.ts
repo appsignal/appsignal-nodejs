@@ -6,4 +6,5 @@
  */
 
 export { Client as Appsignal } from "./client"
+export { Tracer } from "./tracer"
 export { EXPERIMENTAL } from "./experimental"

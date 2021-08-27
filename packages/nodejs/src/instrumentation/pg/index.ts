@@ -1,4 +1,5 @@
-import { Tracer, Plugin } from "@appsignal/types"
+import { Tracer } from "../../tracer"
+import { Plugin } from "@appsignal/types"
 import shimmer from "shimmer"
 import pg from "pg"
 import { EventEmitter } from "events"
@@ -61,7 +62,7 @@ export const instrument = (
           if (returned instanceof EventEmitter) {
             tracer.wrapEmitter(returned)
           } else if (typeof returned.then === "function") {
-            returned = patchPromise(span, returned)
+            returned = patchPromise(tracer, span, returned)
           }
         }
 

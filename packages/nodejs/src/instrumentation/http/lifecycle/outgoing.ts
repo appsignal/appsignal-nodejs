@@ -4,7 +4,8 @@
  * Copyright 2019, OpenTelemetry Authors
  */
 
-import { Tracer, NodeSpan } from "@appsignal/types"
+import { Tracer } from "../../../tracer"
+import { NodeSpan } from "@appsignal/types"
 import url from "url"
 import { IncomingMessage, ClientRequest, RequestOptions } from "http"
 
@@ -109,7 +110,8 @@ function outgoingRequestFunction(
       try {
         req = original.apply(this, [urlOrOptions, ...args])
       } catch (err) {
-        span.addError(err).close()
+        tracer.addError(err)
+        span.close()
         throw err
       }
 
@@ -128,7 +130,8 @@ function outgoingRequestFunction(
       })
 
       req.on("error", (error: Error) => {
-        span.addError(error).close()
+        tracer.addError(error)
+        span.close()
       })
 
       return req

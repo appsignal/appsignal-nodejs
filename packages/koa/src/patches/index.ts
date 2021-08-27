@@ -4,7 +4,6 @@
  * Copyright 2019, OpenTelemetry Authors
  */
 
-import type { Tracer } from "@appsignal/types"
 import koa, { Middleware, ParameterizedContext, DefaultState } from "koa"
 import type { RouterParamContext } from "@koa/router"
 import type * as Router from "@koa/router"
@@ -18,7 +17,7 @@ type KoaMiddleware = Middleware<DefaultState, KoaContext> & {
   router?: Router
 }
 
-export function getKoaUsePatch(tracer: Tracer) {
+export function getKoaUsePatch(tracer: any) {
   return function koaUsePatch(original: (middleware: KoaMiddleware) => koa) {
     return function use(this: koa, middlewareFunction: KoaMiddleware) {
       let patchedFunction: KoaMiddleware
@@ -42,7 +41,7 @@ export function getKoaUsePatch(tracer: Tracer) {
  * to the @function patchLayer function.
  */
 function patchRouterDispatch(
-  tracer: Tracer,
+  tracer: any,
   dispatchLayer: KoaMiddleware
 ): KoaMiddleware {
   const router = dispatchLayer.router
@@ -70,7 +69,7 @@ function patchRouterDispatch(
  * span and propagate context.
  */
 function patchLayer(
-  tracer: Tracer,
+  tracer: any,
   middlewareLayer: KoaMiddleware,
   {
     isRouter,
@@ -95,7 +94,7 @@ function patchLayer(
       span.setName(`${context.method} ${middlewareLayer.name || "/"}`)
     }
 
-    return tracer.withSpan(span.child(), async child => {
+    return tracer.withSpan(span.child(), async (child: any) => {
       const result = await middlewareLayer(context, next)
       child.setCategory(`${isRouter ? "router" : "middleware"}.koa`).close()
       return result

@@ -1,4 +1,5 @@
-import { Plugin, Tracer, Metrics } from "@appsignal/types"
+import { Plugin, Metrics } from "@appsignal/types"
+import { Tracer, NoopTracer } from "./tracer"
 import Hook from "require-in-the-middle"
 import semver from "semver"
 
@@ -13,10 +14,10 @@ type InstrumentedModule = { name: string; hook: Hook }
 export class Instrumentation {
   active: InstrumentedModule[]
 
-  #tracer: Tracer
+  #tracer: Tracer | NoopTracer
   #meter: Metrics
 
-  constructor(tracer: Tracer, meter: Metrics) {
+  constructor(tracer: Tracer | NoopTracer, meter: Metrics) {
     this.active = []
 
     this.#tracer = tracer
@@ -29,7 +30,7 @@ export class Instrumentation {
    */
   public load<T>(
     name: string,
-    fn: (module: T, tracer: Tracer, meter: Metrics) => Plugin<T>
+    fn: (module: T, tracer: Tracer | NoopTracer, meter: Metrics) => Plugin<T>
   ): void {
     const hook = Hook([name], (mod: T, _, basedir: string) => {
       // we use the current node version as the given version

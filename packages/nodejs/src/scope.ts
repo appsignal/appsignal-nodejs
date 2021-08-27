@@ -129,13 +129,14 @@ export class ScopeManager {
   public withContext<T>(span: NodeSpan, fn: (s: NodeSpan) => T): T {
     const uid = asyncHooks.executionAsyncId()
     const oldScope = this.#scopes.get(uid)
+    const rootSpan = this.#roots.get(uid)
 
     this.#scopes.set(uid, span)
 
     try {
       return fn(span)
     } catch (err) {
-      span?.addError(err)
+      rootSpan?.addError(err)
       throw err
     } finally {
       // revert to the previous span

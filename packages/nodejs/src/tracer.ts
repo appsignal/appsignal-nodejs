@@ -1,5 +1,4 @@
 import {
-  Tracer,
   NodeSpan,
   NodeSpanOptions,
   SpanContext,
@@ -16,7 +15,7 @@ import { NoopSpan } from "./noops"
  *
  * @class
  */
-export class BaseTracer implements Tracer {
+export class Tracer {
   #scopeManager: ScopeManager
 
   constructor() {
@@ -52,7 +51,7 @@ export class BaseTracer implements Tracer {
 
     if (spanOrContext) {
       return new ChildSpan(spanOrContext, options)
-    } else if (!activeRootSpan) {
+    } else if (activeRootSpan instanceof NoopSpan) {
       const rootSpan = new RootSpan(options)
       this.#scopeManager.setRoot(rootSpan)
       return rootSpan
@@ -73,10 +72,25 @@ export class BaseTracer implements Tracer {
   /**
    * Returns the root Span.
    *
-   * If ther is no root Span available, `undefined` is returned.
+   * If there is no root Span available, `undefined` is returned.
    */
-  public rootSpan(): NodeSpan | undefined {
-    return this.#scopeManager.root()
+  public rootSpan(): NodeSpan {
+    return this.#scopeManager.root() || new NoopSpan()
+  }
+
+  /**
+   * Adds the given error to the root Span.
+   *
+   * If there is no root Span available to add the error, `undefined` is returned.
+   */
+  public addError(error: Error): NodeSpan | undefined {
+    const activeRootSpan = this.rootSpan()
+
+    if (activeRootSpan instanceof NoopSpan) return
+
+    activeRootSpan.addError(error)
+
+    return activeRootSpan
   }
 
   /**
@@ -104,5 +118,38 @@ export class BaseTracer implements Tracer {
    */
   public wrapEmitter(emitter: EventEmitter): void {
     return this.#scopeManager.emitWithContext(emitter)
+  }
+}
+
+export class NoopTracer extends Tracer {
+  public createSpan(
+    options?: Partial<NodeSpanOptions>,
+    spanOrContext?: NodeSpan | SpanContext
+  ): NodeSpan {
+    return new NoopSpan()
+  }
+
+  public currentSpan(): NodeSpan {
+    return new NoopSpan()
+  }
+
+  public rootSpan(): NodeSpan {
+    return new NoopSpan()
+  }
+
+  public addError(error: Error): NodeSpan {
+    return new NoopSpan()
+  }
+
+  public withSpan<T>(span: NodeSpan, fn: (s: NodeSpan) => T): T {
+    return fn(span)
+  }
+
+  public wrap<T>(fn: Func<T>): Func<T> {
+    return fn
+  }
+
+  public wrapEmitter(emitter: EventEmitter): void {
+    return
   }
 }

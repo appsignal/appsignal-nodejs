@@ -1,4 +1,5 @@
-import { Tracer, NodeSpan } from "@appsignal/types"
+import { Tracer } from "../../../tracer"
+import { NodeSpan } from "@appsignal/types"
 import shimmer from "shimmer"
 import { Submittable } from "pg"
 
@@ -13,7 +14,7 @@ export function patchCallback(
   callback: Function
 ) {
   return tracer.wrap((err: Error | null, res?) => {
-    if (err) span.addError(err)
+    if (err) tracer.addError(err)
     span.close()
     return callback(err, res)
   })
@@ -31,7 +32,8 @@ export function patchSubmittable(
       return tracer.wrap(function (this: Submittable, ...args: any[]): void {
         if (!spanEnded) {
           const err: Error = args[0]
-          span.addError(err).close()
+          tracer.addError(err)
+          span.close()
           spanEnded = true
         }
 
@@ -60,14 +62,15 @@ export function patchSubmittable(
   return submittable
 }
 
-export function patchPromise<T>(span: NodeSpan, promise: Promise<T>) {
+export function patchPromise<T>(tracer: Tracer, span: NodeSpan, promise: Promise<T>) {
   return promise.then(
     res => {
       span.close()
       return res
     },
     err => {
-      span.addError(err).close()
+      tracer.addError(err)
+      span.close()
       throw err
     }
   )

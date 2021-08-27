@@ -1,4 +1,4 @@
-import { BaseTracer as Tracer } from "../tracer"
+import { Tracer } from "../tracer"
 import { RootSpan, ChildSpan } from "../span"
 
 describe("Tracer", () => {
