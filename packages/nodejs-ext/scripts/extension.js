@@ -6,7 +6,7 @@ const fs = require("fs")
 const crypto = require("crypto")
 const childProcess = require("child_process")
 
-const { TRIPLES } = require("./extension/constants")
+const { AGENT_VERSION, MIRRORS, TRIPLES } = require("./extension/constants")
 
 const {
   hasLocalBuild,
@@ -25,12 +25,17 @@ const EXT_PATH = path.join(__dirname, "/../ext/")
 const testExtensionFailure =
   process.env._TEST_APPSIGNAL_EXTENSION_FAILURE === "true"
 
-function download(url, outputPath) {
-  return new Promise((resolve, reject) => {
-    if (testExtensionFailure) {
-      throw new Error("AppSignal internal test failure")
-    }
+class DownloadError extends Error {
+  constructor(message, downloadUrl) {
+    super(message)
+    this.name = this.constructor.name
+    this.downloadUrl = downloadUrl
+  }
+}
 
+function downloadFromMirror(mirror, filename, outputPath) {
+  return new Promise((resolve, reject) => {
+    const url = path.join(mirror, AGENT_VERSION, filename)
     const file = fs.createWriteStream(outputPath)
 
     https.get(url, response => {
@@ -38,12 +43,40 @@ function download(url, outputPath) {
 
       if (statusCode >= 400) {
         return reject(
-          new Error(`Request to CDN failed with code HTTP ${statusCode}`)
+          new DownloadError(`Request to CDN failed with code HTTP ${statusCode}`, url)
         )
+      } else {
+        response.pipe(file).on("finish", () => resolve(url))
       }
-
-      response.pipe(file).on("finish", () => resolve(outputPath))
     })
+  })
+}
+
+function download(mirrors, filename, outputPath) {
+  return new Promise((resolve, reject) => {
+    if (testExtensionFailure) {
+      throw new DownloadError("AppSignal internal test failure", undefined)
+    }
+
+    if (mirrors.length === 0) {
+      reject(new DownloadError("Could not download agent from any mirror", undefined))
+      return
+    }
+
+    downloadFromMirror(mirrors.shift(), filename, outputPath)
+      .then(url => {
+        const downloadData = {
+          downloadUrl: url,
+          outputPath: outputPath
+        }
+        resolve(downloadData)
+      })
+      .catch(error => {
+        console.error("Error downloading from mirror:", error)
+        download(mirrors, filename, outputPath)
+          .then(downloadData => resolve(downloadData))
+          .catch(error => reject(error))
+      })
   })
 }
 
@@ -152,27 +185,26 @@ function install() {
 
   // try and get one from the CDN
   const metadata = getMetadataForTarget(report.build)
-  const filename = metadata.downloadUrl.split("/")[4]
+  const filename = metadata.filename
   const outputPath = path.join(EXT_PATH, filename)
 
   report.build.source = "remote"
-  report.download = createDownloadReport({
-    download_url: metadata.downloadUrl
-  })
-  return download(metadata.downloadUrl, outputPath)
-    .then(filepath =>
-      verify(filepath, metadata.checksum).then(() => {
+
+  return download(MIRRORS, filename, outputPath)
+    .then(downloadData => {
+      report.download.download_url = downloadData.downloadUrl
+
+      verify(downloadData.outputPath, metadata.checksum).then(() => {
         report.download.checksum = "verified"
-        return extract(filepath)
+
+        return extract(downloadData.outputPath)
       })
-    )
+    })
     .then(() => {
       // @TODO: add cleanup step
       console.log("The agent has downloaded successfully! Building...")
 
       report.result.status = "unknown"
-
-      // Once extracted, we hand it off to node-gyp for building
       return install().then(() => {
         report.result.status = "success"
       })
@@ -189,6 +221,10 @@ function install() {
         status: "error",
         error: error.message,
         backtrace: error.stack.split("\n")
+      }
+
+      if (error.downloadUrl) {
+        report.download.download_url = error.downloadUrl
       }
 
       return dumpReport(report).then(() => {
