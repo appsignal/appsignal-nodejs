@@ -65,6 +65,10 @@ blocks:
       - cache restore
       - mono bootstrap --ci
       - cache store
+    epilogue: &1
+      on_fail:
+        commands:
+        - cat /tmp/appsignal-*-install.report
     jobs:
     - name: Build
       commands:
@@ -87,6 +91,7 @@ blocks:
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
+    epilogue: *1
     jobs:
     - name: "@appsignal/nodejs - nodejs"
       commands:
@@ -160,6 +165,7 @@ blocks:
       - cache restore
       - mono bootstrap --ci
       - cache store
+    epilogue: *1
     jobs:
     - name: Build
       commands:
@@ -181,6 +187,7 @@ blocks:
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
+    epilogue: *1
     jobs:
     - name: "@appsignal/nodejs - nodejs"
       commands:
@@ -254,6 +261,7 @@ blocks:
       - cache restore
       - mono bootstrap --ci
       - cache store
+    epilogue: *1
     jobs:
     - name: Build
       commands:
@@ -275,6 +283,7 @@ blocks:
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
+    epilogue: *1
     jobs:
     - name: "@appsignal/nodejs - nodejs"
       commands:
@@ -348,6 +357,7 @@ blocks:
       - cache restore
       - mono bootstrap --ci
       - cache store
+    epilogue: *1
     jobs:
     - name: Build
       commands:
@@ -369,6 +379,7 @@ blocks:
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
+    epilogue: *1
     jobs:
     - name: "@appsignal/nodejs - nodejs"
       commands:
@@ -442,6 +453,7 @@ blocks:
       - cache restore
       - mono bootstrap --ci
       - cache store
+    epilogue: *1
     jobs:
     - name: Build
       commands:
@@ -463,6 +475,7 @@ blocks:
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
+    epilogue: *1
     jobs:
     - name: "@appsignal/nodejs - nodejs"
       commands:

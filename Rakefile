@@ -27,6 +27,7 @@ namespace :build_matrix do
                 "cache store"
               ]
             },
+            "epilogue" => matrix["epilogue"],
             "jobs" => [
               build_semaphore_job(
                 "name" => "Build",
@@ -107,6 +108,7 @@ namespace :build_matrix do
                   "mono bootstrap --ci"
                 ]
               },
+              "epilogue" => matrix["epilogue"],
               "jobs" => primary_jobs
             }
           )
