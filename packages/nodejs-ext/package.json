@@ -18,7 +18,7 @@
     "link:yarn": "yarn link",
     "test": "jest --filter=./test/filter.js",
     "pretest:failure": "npm run clean",
-    "test:failure": "_TEST_APPSIGNAL_EXTENSION_FAILURE=true npm run install; _TEST_APPSIGNAL_EXTENSION_FAILURE=true jest --filter=./test/filter.js"
+    "test:failure": "_TEST_APPSIGNAL_EXTENSION_FAILURE=true _APPSIGNAL_SKIP_EXTENSION_INSTALL=false npm run install; _TEST_APPSIGNAL_EXTENSION_FAILURE=true jest --filter=./test/filter.js"
   },
   "os": [
     "linux",

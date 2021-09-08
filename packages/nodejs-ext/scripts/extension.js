@@ -24,13 +24,18 @@ const {
 const EXT_PATH = path.join(__dirname, "/../ext/")
 const testExtensionFailure =
   process.env._TEST_APPSIGNAL_EXTENSION_FAILURE === "true"
+const skipExtensionInstall =
+  process.env._APPSIGNAL_SKIP_EXTENSION_INSTALL === "true"
+
+function failOnPurposeIfConfigured() {
+  if (testExtensionFailure) {
+    throw new Error("AppSignal internal test failure")
+  }
+}
 
 function download(url, outputPath) {
   return new Promise((resolve, reject) => {
-    if (testExtensionFailure) {
-      throw new Error("AppSignal internal test failure")
-    }
-
+    failOnPurposeIfConfigured()
     const file = fs.createWriteStream(outputPath)
 
     https.get(url, response => {
@@ -121,62 +126,70 @@ function install() {
 
 // Script logic begins here
 ;(function () {
-  if (hasLocalBuild() && !testExtensionFailure) {
-    // check for a local build (dev only)
-    console.warn(`Using local build for agent. Skipping download.`)
+  if (skipExtensionInstall) {
+    console.warn(
+      `Skipping download and install because _APPSIGNAL_SKIP_EXTENSION_INSTALL is "true".`
+    )
     return process.exit(0)
   }
+  const isLocalBuild = hasLocalBuild()
 
-  if (!hasSupportedArchitecture(process.arch)) {
-    console.error(
-      `AppSignal currently does not support your system architecture
-        (${process.platform} ${process.arch}). Please let us know at
-        support@appsignal.com, we aim to support everything our customers run.`
-    )
+  if (!isLocalBuild) {
+    if (!hasSupportedArchitecture(process.arch)) {
+      console.error(
+        `AppSignal currently does not support your system architecture
+          (${process.platform} ${process.arch}). Please let us know at
+          support@appsignal.com, we aim to support everything our customers run.`
+      )
 
-    return process.exit(1)
-  }
+      return process.exit(1)
+    }
 
-  if (!hasSupportedOs(process.platform)) {
-    console.error(
-      `AppSignal currently does not support your operating system (${process.platform}).
-      Please let us know at support@appsignal.com, we aim to support everything
-      our customers run.`
-    )
+    if (!hasSupportedOs(process.platform)) {
+      console.error(
+        `AppSignal currently does not support your operating system (${process.platform}).
+        Please let us know at support@appsignal.com, we aim to support everything
+        our customers run.`
+      )
 
-    return process.exit(1)
+      return process.exit(1)
+    }
   }
 
   const report = createReport()
   report.build = createBuildReport({})
 
-  // try and get one from the CDN
-  const metadata = getMetadataForTarget(report.build)
-  const filename = metadata.downloadUrl.split("/")[4]
-  const outputPath = path.join(EXT_PATH, filename)
-
-  report.build.source = "remote"
-  report.download = createDownloadReport({
-    download_url: metadata.downloadUrl
-  })
-  return download(metadata.downloadUrl, outputPath)
-    .then(filepath =>
-      verify(filepath, metadata.checksum).then(() => {
-        report.download.checksum = "verified"
-        return extract(filepath)
-      })
-    )
-    .then(() => {
-      // @TODO: add cleanup step
-      console.log("The agent has downloaded successfully! Building...")
-
-      report.result.status = "unknown"
-
-      // Once extracted, we hand it off to node-gyp for building
-      return install().then(() => {
-        report.result.status = "success"
-      })
+  let result
+  if (isLocalBuild) {
+    console.warn(`Using local build for agent. Skipping download.`)
+    result = Promise.resolve().then(() => failOnPurposeIfConfigured())
+    report.download = createDownloadReport({})
+    report.build.source = "local"
+  } else {
+    // Download agent and extension archive from CDN
+    const metadata = getMetadataForTarget(report.build)
+    const filename = metadata.downloadUrl.split("/")[4]
+    const outputPath = path.join(EXT_PATH, filename)
+    report.build.source = "remote"
+    report.download = createDownloadReport({
+      downloadUrl: metadata.downloadUrl
     })
+    result = download(metadata.downloadUrl, outputPath)
+      .then(filepath =>
+        verify(filepath, metadata.checksum).then(() => {
+          report.download.checksum = "verified"
+          return extract(filepath)
+        })
+      )
+      .then(() => {
+        // @TODO: add cleanup step
+        console.log("The agent has downloaded successfully! Building...")
+        report.result.status = "unknown"
+      })
+  }
+
+  return result
+    .then(() => install().then(() => (report.result.status = "success")))
     .then(() => {
       return dumpReport(report).then(() => {
         process.exit(0)
