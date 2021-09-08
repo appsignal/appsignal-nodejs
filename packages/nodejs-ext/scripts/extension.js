@@ -24,6 +24,14 @@ const {
 const EXT_PATH = path.join(__dirname, "/../ext/")
 const testExtensionFailure =
   process.env._TEST_APPSIGNAL_EXTENSION_FAILURE === "true"
+const installAllowedEnv = process.env._APPSIGNAL_EXTENSION_INSTALL
+const installAllowed = installAllowedEnv !== "false"
+
+function failOnPurposeIfConfigured() {
+  if (testExtensionFailure) {
+    throw new Error("AppSignal internal test failure")
+  }
+}
 
 class DownloadError extends Error {
   constructor(message, downloadUrl) {
@@ -35,6 +43,8 @@ class DownloadError extends Error {
 
 function downloadFromMirror(mirror, filename, outputPath) {
   return new Promise((resolve, reject) => {
+    failOnPurposeIfConfigured()
+
     const url = path.join(mirror, AGENT_VERSION, filename)
     const file = fs.createWriteStream(outputPath)
 
@@ -153,44 +163,53 @@ function install() {
 
 // Script logic begins here
 ;(function () {
-  if (hasLocalBuild() && !testExtensionFailure) {
-    // check for a local build (dev only)
-    console.warn(`Using local build for agent. Skipping download.`)
+  if (!installAllowed) {
+    console.warn(
+      `_APPSIGNAL_EXTENSION_INSTALL is set to "${installAllowedEnv}". Skipping install.`
+    )
     return process.exit(0)
   }
 
-  if (!hasSupportedArchitecture(process.arch)) {
-    console.error(
-      `AppSignal currently does not support your system architecture
-        (${process.platform} ${process.arch}). Please let us know at
-        support@appsignal.com, we aim to support everything our customers run.`
-    )
+  const isLocalBuild = hasLocalBuild()
 
-    return process.exit(1)
-  }
+  if (!isLocalBuild) {
+    if (!hasSupportedArchitecture(process.arch)) {
+      console.error(
+        `AppSignal currently does not support your system architecture
+          (${process.platform} ${process.arch}). Please let us know at
+          support@appsignal.com, we aim to support everything our customers run.`
+      )
 
-  if (!hasSupportedOs(process.platform)) {
-    console.error(
-      `AppSignal currently does not support your operating system (${process.platform}).
-      Please let us know at support@appsignal.com, we aim to support everything
-      our customers run.`
-    )
+      return process.exit(1)
+    }
 
-    return process.exit(1)
+    if (!hasSupportedOs(process.platform)) {
+      console.error(
+        `AppSignal currently does not support your operating system (${process.platform}).
+        Please let us know at support@appsignal.com, we aim to support everything
+        our customers run.`
+      )
+
+      return process.exit(1)
+    }
   }
 
   const report = createReport()
+  report.download = createDownloadReport({})
   report.build = createBuildReport({})
 
-  // try and get one from the CDN
-  const metadata = getMetadataForTarget(report.build)
-  const filename = metadata.filename
-  const outputPath = path.join(EXT_PATH, filename)
-
-  report.build.source = "remote"
-
-  return download(MIRRORS, filename, outputPath)
-    .then(url => {
+  let result
+  if (isLocalBuild) {
+    console.warn(`Using local build for agent. Skipping download.`)
+    result = Promise.resolve().then(() => failOnPurposeIfConfigured())
+    report.build.source = "local"
+  } else {
+    // Download agent and extension archive from CDN
+    const metadata = getMetadataForTarget(report.build)
+    const filename = metadata.filename
+    const outputPath = path.join(EXT_PATH, filename)
+    report.build.source = "remote"
+    result = download(MIRRORS, filename, outputPath).then(url => {
       report.download.download_url = url
 
       verify(outputPath, metadata.checksum).then(() => {
@@ -199,6 +218,9 @@ function install() {
         return extract(outputPath)
       })
     })
+  }
+
+  return result
     .then(() => {
       // @TODO: add cleanup step
       console.log("The agent has downloaded successfully! Building...")
