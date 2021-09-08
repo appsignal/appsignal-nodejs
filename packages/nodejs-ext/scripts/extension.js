@@ -155,6 +155,7 @@ function install() {
   const filename = metadata.downloadUrl.split("/")[4]
   const outputPath = path.join(EXT_PATH, filename)
 
+  report.build.source = "remote"
   report.download = createDownloadReport({
     download_url: metadata.downloadUrl
   })
