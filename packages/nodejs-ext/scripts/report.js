@@ -69,11 +69,11 @@ function createBuildReport({ isLocalBuild = false }) {
   }
 }
 
-function createDownloadReport({ verified = false, downloadUrl: download_url }) {
+function createDownloadReport(report) {
   return {
-    checksum: verified ? "verified" : "unverified",
+    checksum: "unverified",
     http_proxy: null,
-    download_url
+    ...report
   }
 }
 
