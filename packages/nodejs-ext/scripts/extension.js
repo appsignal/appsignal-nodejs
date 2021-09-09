@@ -155,18 +155,21 @@ function install() {
   const filename = metadata.downloadUrl.split("/")[4]
   const outputPath = path.join(EXT_PATH, filename)
 
+  report.build.source = "remote"
+  report.download = createDownloadReport({
+    download_url: metadata.downloadUrl
+  })
   return download(metadata.downloadUrl, outputPath)
     .then(filepath =>
-      verify(filepath, metadata.checksum).then(() => extract(filepath))
+      verify(filepath, metadata.checksum).then(() => {
+        report.download.checksum = "verified"
+        return extract(filepath)
+      })
     )
     .then(() => {
       // @TODO: add cleanup step
       console.log("The agent has downloaded successfully! Building...")
 
-      report.download = createDownloadReport({
-        verified: true,
-        downloadUrl: metadata.downloadUrl
-      })
       report.result.status = "unknown"
 
       // Once extracted, we hand it off to node-gyp for building
@@ -187,10 +190,6 @@ function install() {
         error: error.message,
         backtrace: error.stack.split("\n")
       }
-      report.download = createDownloadReport({
-        verified: false,
-        downloadUrl: metadata.downloadUrl
-      })
 
       return dumpReport(report).then(() => {
         process.exit(1)

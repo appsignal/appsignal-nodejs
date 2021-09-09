@@ -27,12 +27,12 @@ namespace :build_matrix do
                 "cache store"
               ]
             },
+            "epilogue" => matrix["epilogue"],
             "jobs" => [
               build_semaphore_job(
                 "name" => "Build",
                 "commands" => [
                   "mono build",
-                  "mono run --package @appsignal/nodejs-ext -- npm run build:ext",
                   "cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION " \
                     "packages",
                   "cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION " \
@@ -107,6 +107,7 @@ namespace :build_matrix do
                   "mono bootstrap --ci"
                 ]
               },
+              "epilogue" => matrix["epilogue"],
               "jobs" => primary_jobs
             }
           )

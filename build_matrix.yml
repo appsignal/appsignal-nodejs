@@ -51,6 +51,11 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
             - script/lint_git
 
 matrix:
+  epilogue: # Shared for all jobs in the build matrix
+    on_fail:
+      commands:
+        - "cat /tmp/appsignal-*-install.report"
+
   nodejs:
     - nodejs: "16"
       setup:
