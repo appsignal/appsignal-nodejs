@@ -43,7 +43,10 @@ function downloadFromMirror(mirror, filename, outputPath) {
 
       if (statusCode >= 400) {
         return reject(
-          new DownloadError(`Request to CDN failed with code HTTP ${statusCode}`, url)
+          new DownloadError(
+            `Request to CDN failed with code HTTP ${statusCode}`,
+            url
+          )
         )
       } else {
         response.pipe(file).on("finish", () => resolve(url))
@@ -59,7 +62,9 @@ function download(mirrors, filename, outputPath) {
     }
 
     if (mirrors.length === 0) {
-      reject(new DownloadError("Could not download agent from any mirror", undefined))
+      reject(
+        new DownloadError("Could not download agent from any mirror", undefined)
+      )
       return
     }
 
