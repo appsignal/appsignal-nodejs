@@ -69,17 +69,11 @@ function download(mirrors, filename, outputPath) {
     }
 
     downloadFromMirror(mirrors.shift(), filename, outputPath)
-      .then(url => {
-        const downloadData = {
-          downloadUrl: url,
-          outputPath: outputPath
-        }
-        resolve(downloadData)
-      })
+      .then(url => resolve(url))
       .catch(error => {
         console.error("Error downloading from mirror:", error)
         download(mirrors, filename, outputPath)
-          .then(downloadData => resolve(downloadData))
+          .then(url => resolve(url))
           .catch(error => reject(error))
       })
   })
@@ -196,13 +190,13 @@ function install() {
   report.build.source = "remote"
 
   return download(MIRRORS, filename, outputPath)
-    .then(downloadData => {
-      report.download.download_url = downloadData.downloadUrl
+    .then(url => {
+      report.download.download_url = url
 
-      verify(downloadData.outputPath, metadata.checksum).then(() => {
+      verify(outputPath, metadata.checksum).then(() => {
         report.download.checksum = "verified"
 
-        return extract(downloadData.outputPath)
+        return extract(outputPath)
       })
     })
     .then(() => {
