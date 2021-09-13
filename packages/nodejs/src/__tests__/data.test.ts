@@ -16,16 +16,16 @@ describe("Data", () => {
 
   it("creates a map with nested data", () => {
     const nested = {
-      "string": "payload",
-      "int": 9999,
-      "float": 99.0,
+      string: "payload",
+      int: 9999,
+      float: 99.0,
       1: true,
       null: "null_key",
-      "null_value": null,
-      "array": [1, 2, "three"],
-      "map": { "foo": "bʊr" },
-      "nested_array": [1, 2, "three", { "foo": "bar" }],
-      "nested_map": { "foo": "bʊr", "arr": [1, 2] },
+      null_value: null,
+      array: [1, 2, "three"],
+      map: { foo: "bʊr" },
+      nested_array: [1, 2, "three", { foo: "bar" }],
+      nested_map: { foo: "bʊr", arr: [1, 2] }
     }
 
     let map = Data.generate(nested, false)
@@ -34,21 +34,21 @@ describe("Data", () => {
   })
 
   it("creates a map with a non-standard type in it", () => {
-    let map = Data.generate({ "key": SyntaxError() }, false)
+    let map = Data.generate({ key: SyntaxError() }, false)
 
-    expect(Data.toJson(map)).toEqual({ "key": "SyntaxError" })
+    expect(Data.toJson(map)).toEqual({ key: "SyntaxError" })
   })
 
   it("creates a map with undefined in it", () => {
-    let map = Data.generate({ "key": undefined }, false)
+    let map = Data.generate({ key: undefined }, false)
 
-    expect(Data.toJson(map)).toEqual({ "key": "undefined" })
+    expect(Data.toJson(map)).toEqual({ key: "undefined" })
   })
 
   it("creates an array with a big int type in it", () => {
-    let array = Data.generate({ "key": BigInt(9007199254740991) }, false)
+    let array = Data.generate({ key: BigInt(9007199254740991) }, false)
 
-    expect(Data.toJson(array)).toEqual({ "key": "bigint:9007199254740991" })
+    expect(Data.toJson(array)).toEqual({ key: "bigint:9007199254740991" })
   })
 
   it("creates an array with nested data", () => {
@@ -60,8 +60,8 @@ describe("Data", () => {
       9999,
       99.0,
       [1, 2, 3],
-      { "foo": "bʊr" },
-      { "arr": [1, 2, "three"], "foo": "bʊr" }
+      { foo: "bʊr" },
+      { arr: [1, 2, "three"], foo: "bʊr" }
     ]
 
     let array = Data.generate(nested, false)

@@ -36,7 +36,9 @@ describe("Configuration", () => {
   })
 
   it("uses a default log file path", () => {
-    expect(process.env["_APPSIGNAL_LOG_FILE_PATH"]).toEqual("/tmp/appsignal.log")
+    expect(process.env["_APPSIGNAL_LOG_FILE_PATH"]).toEqual(
+      "/tmp/appsignal.log"
+    )
   })
 
   describe("Overriden log path with file specified", () => {
@@ -47,7 +49,9 @@ describe("Configuration", () => {
 
     it("uses the overwritten path", () => {
       // Test backwards compatibility with previous behaviour
-      expect(process.env["_APPSIGNAL_LOG_FILE_PATH"]).toEqual("/other_path/appsignal.log")
+      expect(process.env["_APPSIGNAL_LOG_FILE_PATH"]).toEqual(
+        "/other_path/appsignal.log"
+      )
     })
   })
 
@@ -58,7 +62,9 @@ describe("Configuration", () => {
     })
 
     it("uses the overwritten path", () => {
-      expect(process.env["_APPSIGNAL_LOG_FILE_PATH"]).toEqual("/other_path/appsignal.log")
+      expect(process.env["_APPSIGNAL_LOG_FILE_PATH"]).toEqual(
+        "/other_path/appsignal.log"
+      )
     })
   })
 })
