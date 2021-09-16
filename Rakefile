@@ -98,7 +98,16 @@ namespace :build_matrix do
             "name" => primary_block_name,
             "dependencies" => [build_block_name],
             "task" => {
-              "env_vars" => ["name" => "NODE_VERSION", "value" => nodejs_version],
+              "env_vars" => [
+                {
+                  "name" => "NODE_VERSION",
+                  "value" => nodejs_version
+                },
+                {
+                  "name" => "_APPSIGNAL_EXTENSION_INSTALL",
+                  "value" => "false"
+                }
+              ],
               "prologue" => {
                 "commands" => setup + [
                   "cache restore",

@@ -94,6 +94,8 @@ blocks:
     env_vars:
     - name: NODE_VERSION
       value: '16'
+    - name: _APPSIGNAL_EXTENSION_INSTALL
+      value: 'false'
     prologue:
       commands:
       - sem-version c 8
@@ -190,6 +192,8 @@ blocks:
     env_vars:
     - name: NODE_VERSION
       value: '15'
+    - name: _APPSIGNAL_EXTENSION_INSTALL
+      value: 'false'
     prologue:
       commands:
       - cache restore
@@ -285,6 +289,8 @@ blocks:
     env_vars:
     - name: NODE_VERSION
       value: '14'
+    - name: _APPSIGNAL_EXTENSION_INSTALL
+      value: 'false'
     prologue:
       commands:
       - cache restore
@@ -380,6 +386,8 @@ blocks:
     env_vars:
     - name: NODE_VERSION
       value: '13'
+    - name: _APPSIGNAL_EXTENSION_INSTALL
+      value: 'false'
     prologue:
       commands:
       - cache restore
@@ -475,6 +483,8 @@ blocks:
     env_vars:
     - name: NODE_VERSION
       value: '12'
+    - name: _APPSIGNAL_EXTENSION_INSTALL
+      value: 'false'
     prologue:
       commands:
       - cache restore
