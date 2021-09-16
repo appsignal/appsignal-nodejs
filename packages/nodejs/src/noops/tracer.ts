@@ -21,6 +21,14 @@ export class NoopTracer implements Tracer {
     return new NoopSpan()
   }
 
+  public rootSpan(): NodeSpan {
+    return new NoopSpan()
+  }
+
+  public addError(error: Error): NodeSpan {
+    return new NoopSpan()
+  }
+
   public withSpan<T>(span: NodeSpan, fn: (s: NodeSpan) => T): T {
     return fn(span)
   }

@@ -66,7 +66,8 @@ export function expressErrorHandler(
     res: Response,
     next: NextFunction
   ) {
-    const span = appsignal.tracer().currentSpan()
+    const tracer = appsignal.tracer()
+    const span = tracer.currentSpan()
 
     if (!span) {
       return next()
@@ -75,7 +76,7 @@ export function expressErrorHandler(
     // if there's no `status` property, forward the error
     // we also ignore client errors here
     if (err && (!err.status || (err.status && err.status >= 500))) {
-      span.addError(err)
+      tracer.addError(err)
     }
 
     return next(err)

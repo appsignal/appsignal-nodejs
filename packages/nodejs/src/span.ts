@@ -145,6 +145,8 @@ export class BaseSpan implements NodeSpan {
 
   /**
    * Adds a given `Error` object to the current `Span`.
+   * @deprecated Since version 2.1.0. Will be deleted in version 3.0.0
+   * use tracer.addError() instead.
    */
   public addError(error: Error): this {
     if (!error) return this
@@ -240,5 +242,20 @@ export class RootSpan extends BaseSpan {
     } else {
       this._ref = span.createRootSpan(namespace)
     }
+  }
+
+  /*
+   * Adds a given `Error` object to the current `RootSpan`.
+   */
+  public addError(error: Error): this {
+    if (!error) return this
+
+    const stackdata = Data.generate(
+      error.stack ? error.stack.split("\n") : ["No stacktrace available."]
+    )
+
+    span.addSpanError(this._ref, error.name, error.message, stackdata)
+
+    return this
   }
 }
