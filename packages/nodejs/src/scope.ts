@@ -50,6 +50,7 @@ export class ScopeManager {
 
         if (this.#scopes.get(currentId)) {
           this.#scopes.set(id, this.#scopes.get(currentId))
+          this.#roots.set(id, this.#roots.get(currentId))
         }
       } else {
         /**
@@ -62,6 +63,7 @@ export class ScopeManager {
          */
         if (this.#scopes.get(triggerId)) {
           this.#scopes.set(id, this.#scopes.get(triggerId))
+          this.#roots.set(id, this.#roots.get(triggerId))
         }
       }
     }
@@ -137,7 +139,7 @@ export class ScopeManager {
     try {
       return fn(span)
     } catch (err) {
-      rootSpan?.addError(err)
+      rootSpan?.setError(err)
       throw err
     } finally {
       // revert to the previous span
@@ -146,6 +148,7 @@ export class ScopeManager {
         this.#roots.delete(uid)
       } else {
         this.#scopes.set(uid, oldScope)
+        this.#roots.set(uid, rootSpan)
       }
     }
   }

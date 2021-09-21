@@ -25,7 +25,7 @@ export class NoopTracer implements Tracer {
     return new NoopSpan()
   }
 
-  public addError(error: Error): NodeSpan {
+  public setError(error: Error): NodeSpan {
     return new NoopSpan()
   }
 

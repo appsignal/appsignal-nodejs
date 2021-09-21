@@ -44,9 +44,7 @@ const Router = require("@koa/router"); // @koa/router is also supported out of t
 app.on("error", (error) => {
   appsignal
     .tracer()
-    .currentSpan()
-    .addError(error)
-    .close()
+    .setError(error)
 });
 
 const app = new Koa();

@@ -61,7 +61,7 @@ export const instrument = (
           if (returned instanceof EventEmitter) {
             tracer.wrapEmitter(returned)
           } else if (typeof returned.then === "function") {
-            returned = patchPromise(span, returned)
+            returned = patchPromise(tracer, span, returned)
           }
         }
 

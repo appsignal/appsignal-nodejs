@@ -25,7 +25,7 @@ export const createApolloPlugin = (appsignal: NodeClient, _options = {}) => {
 
           return {
             executionDidEnd: err => {
-              if (err) tracer.addError(err)
+              if (err) tracer.setError(err)
               execSpan.close()
             }
           }
@@ -34,7 +34,7 @@ export const createApolloPlugin = (appsignal: NodeClient, _options = {}) => {
           const parseSpan = rootSpan.child().setCategory("parse.graphql")
 
           return err => {
-            if (err) tracer.addError(err)
+            if (err) tracer.setError(err)
             parseSpan.close()
           }
         },
@@ -43,7 +43,7 @@ export const createApolloPlugin = (appsignal: NodeClient, _options = {}) => {
 
           return err => {
             // take only the first error
-            if (err) tracer.addError(err[0])
+            if (err) tracer.setError(err[0])
             validateSpan.close()
           }
         }

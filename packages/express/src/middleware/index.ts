@@ -76,7 +76,7 @@ export function expressErrorHandler(
     // if there's no `status` property, forward the error
     // we also ignore client errors here
     if (err && (!err.status || (err.status && err.status >= 500))) {
-      tracer.addError(err)
+      tracer.setError(err)
     }
 
     return next(err)

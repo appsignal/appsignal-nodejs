@@ -17,7 +17,7 @@ export class NoopSpan implements NodeSpan {
     return new NoopSpan()
   }
 
-  public addError(error: Error): this {
+  public setError(error: Error): this {
     return this
   }
 

@@ -85,10 +85,10 @@ export class BaseTracer implements Tracer {
    * If there is no root Span available, a NoopSpan will be used instead,
    * and nothing will be tracked.
    */
-  public addError(error: Error): NodeSpan | undefined {
+  public setError(error: Error): NodeSpan | undefined {
     const activeRootSpan = this.rootSpan()
 
-    activeRootSpan.addError(error)
+    activeRootSpan.setError(error)
 
     return activeRootSpan
   }
