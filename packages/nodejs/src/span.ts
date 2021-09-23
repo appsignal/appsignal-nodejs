@@ -144,16 +144,11 @@ export class BaseSpan implements NodeSpan {
   }
 
   /**
-   * Adds a given `Error` object to the current `Span`.
+   * Set a given `Error` object to the current `Span`.
+   * Use tracer.setError() instead.
    */
-  public addError(error: Error): this {
-    if (!error) return this
-
-    const stackdata = Data.generate(
-      error.stack ? error.stack.split("\n") : ["No stacktrace available."]
-    )
-
-    span.addSpanError(this._ref, error.name, error.message, stackdata)
+  public setError(error: Error): this {
+    console.warn("setError() can only be called from a RootSpan object")
 
     return this
   }
@@ -240,5 +235,20 @@ export class RootSpan extends BaseSpan {
     } else {
       this._ref = span.createRootSpan(namespace)
     }
+  }
+
+  /*
+   * Sets a given `Error` object to the current `RootSpan`.
+   */
+  public setError(error: Error): this {
+    if (!error) return this
+
+    const stackdata = Data.generate(
+      error.stack ? error.stack.split("\n") : ["No stacktrace available."]
+    )
+
+    span.addSpanError(this._ref, error.name, error.message, stackdata)
+
+    return this
   }
 }

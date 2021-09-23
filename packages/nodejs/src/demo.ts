@@ -30,14 +30,12 @@ export function demo(tracer: Tracer) {
 
   // error sample
   tracer.withSpan(tracer.createSpan(), span => {
-    span
-      .setName("GET /demo")
-      .setCategory("process_request.http")
-      .addError(
-        new Error(
-          "Hello world! This is an error used for demonstration purposes."
-        )
+    tracer.setError(
+      new Error(
+        "Hello world! This is an error used for demonstration purposes."
       )
-      .close()
+    )
+
+    span.setName("GET /demo").setCategory("process_request.http").close()
   })
 }

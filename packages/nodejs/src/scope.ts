@@ -32,10 +32,12 @@ type ContextWrapped<T> = T & { [WRAPPED]?: boolean }
  * @class
  */
 export class ScopeManager {
+  #roots: Map<number, NodeSpan | undefined>
   #scopes: Map<number, NodeSpan | undefined>
   #asyncHook: asyncHooks.AsyncHook
 
   constructor() {
+    this.#roots = new Map()
     this.#scopes = new Map()
 
     const init = (id: number, type: string, triggerId: number) => {
@@ -48,6 +50,7 @@ export class ScopeManager {
 
         if (this.#scopes.get(currentId)) {
           this.#scopes.set(id, this.#scopes.get(currentId))
+          this.#roots.set(id, this.#roots.get(currentId))
         }
       } else {
         /**
@@ -60,6 +63,7 @@ export class ScopeManager {
          */
         if (this.#scopes.get(triggerId)) {
           this.#scopes.set(id, this.#scopes.get(triggerId))
+          this.#roots.set(id, this.#roots.get(triggerId))
         }
       }
     }
@@ -70,6 +74,7 @@ export class ScopeManager {
      */
     const destroy = (id: number) => {
       this.#scopes.delete(id)
+      this.#roots.delete(id)
     }
 
     this.#asyncHook = asyncHooks.createHook({
@@ -106,25 +111,44 @@ export class ScopeManager {
   }
 
   /**
+   * Sets the root `Span`
+   */
+  public setRoot(rootSpan: NodeSpan) {
+    const uid = asyncHooks.executionAsyncId()
+    this.#roots.set(uid, rootSpan)
+  }
+
+  /*
+   * Returns the current root `Span`.
+   */
+  public root(): NodeSpan | undefined {
+    const uid = asyncHooks.executionAsyncId()
+    return this.#roots.get(uid)
+  }
+
+  /**
    * Executes a given function within the context of a given `Span`.
    */
   public withContext<T>(span: NodeSpan, fn: (s: NodeSpan) => T): T {
     const uid = asyncHooks.executionAsyncId()
     const oldScope = this.#scopes.get(uid)
+    const rootSpan = this.#roots.get(uid)
 
     this.#scopes.set(uid, span)
 
     try {
       return fn(span)
     } catch (err) {
-      span?.addError(err)
+      rootSpan?.setError(err)
       throw err
     } finally {
       // revert to the previous span
       if (oldScope === undefined) {
         this.#scopes.delete(uid)
+        this.#roots.delete(uid)
       } else {
         this.#scopes.set(uid, oldScope)
+        this.#roots.set(uid, rootSpan)
       }
     }
   }

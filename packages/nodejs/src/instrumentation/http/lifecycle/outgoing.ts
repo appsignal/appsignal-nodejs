@@ -109,7 +109,8 @@ function outgoingRequestFunction(
       try {
         req = original.apply(this, [urlOrOptions, ...args])
       } catch (err) {
-        span.addError(err).close()
+        tracer.setError(err)
+        span.close()
         throw err
       }
 
@@ -128,7 +129,8 @@ function outgoingRequestFunction(
       })
 
       req.on("error", (error: Error) => {
-        span.addError(error).close()
+        tracer.setError(error)
+        span.close()
       })
 
       return req
