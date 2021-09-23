@@ -17,6 +17,12 @@ export class NoopSpan implements NodeSpan {
     return new NoopSpan()
   }
 
+  public addError(error: Error): this {
+    console.warn("addError() is deprecated. Use setError() from tracer object instead")
+
+    return this
+  }
+
   public setError(error: Error): this {
     return this
   }

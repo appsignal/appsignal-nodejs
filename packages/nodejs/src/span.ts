@@ -154,6 +154,16 @@ export class BaseSpan implements NodeSpan {
   }
 
   /**
+   * @deprecated since version 2.1.0
+   * Use `setError` instead
+   */
+  public addError(error: Error): this {
+    console.warn("addError() is deprecated. Use setError() from tracer object instead")
+
+    return this
+  }
+
+  /**
    * Completes the current `Span`.
    *
    * If an `endTime` is passed as an argument, the `Span` is closed with the
