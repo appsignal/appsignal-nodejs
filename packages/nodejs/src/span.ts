@@ -144,11 +144,29 @@ export class BaseSpan implements NodeSpan {
   }
 
   /**
+   * Add a given `Error` object to the current `Span`.
+   * Use `tracer.setError()` instead.
+   *
+   * @deprecated since Node.js version 2.1.0
+   */
+  public addError(error: Error): this {
+    console.warn(
+      "DEPRECATED: Please use the `tracer.setError` helper instead to set the error on the root span."
+    )
+
+    return this
+  }
+
+  /**
    * Set a given `Error` object to the current `Span`.
-   * Use tracer.setError() instead.
+   * Use `tracer.setError()` instead.
+   *
+   * @deprecated since Node.js version 2.1.0
    */
   public setError(error: Error): this {
-    console.warn("setError() can only be called from a RootSpan object")
+    console.warn(
+      "DEPRECATED: Please use the `tracer.setError` helper instead to set the error on the root span."
+    )
 
     return this
   }
