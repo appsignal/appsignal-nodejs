@@ -37,6 +37,48 @@ describe("Tracer", () => {
     })
   })
 
+  describe(".sendError()", () => {
+    const err = new Error("FooBarError")
+
+    it("works without metadata callback", () => {
+      tracer.sendError(err)
+    })
+
+    it("uses a RootSpan", done => {
+      tracer.sendError(err, rootSpan => {
+        expect(rootSpan).toBeInstanceOf(RootSpan)
+
+        return done()
+      })
+    })
+
+    it("assigns metadata to the span if needed", done => {
+      tracer.sendError(err, rootSpan => {
+        rootSpan.setName("foo")
+        rootSpan.setCategory("bar")
+        rootSpan.set("pod", 42)
+
+        const rootSpanData = JSON.parse(rootSpan.toJSON())
+
+        expect(rootSpanData.name).toEqual("foo")
+        expect(rootSpanData.attributes["appsignal:category"]).toEqual("bar")
+        expect(rootSpanData.attributes.pod).toEqual(42)
+
+        return done()
+      })
+    })
+
+    it("adds the given error to the span", done => {
+      tracer.sendError(err, rootSpan => {
+        const rootSpanData = JSON.parse(rootSpan.toJSON())
+
+        expect(rootSpanData.error.message).toEqual("FooBarError")
+
+        return done()
+      })
+    })
+  })
+
   describe("Span instrumentation", () => {
     it("can instrument a function (async)", async done => {
       const rootSpan = tracer.createSpan().setName(name)
