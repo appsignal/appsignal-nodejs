@@ -29,6 +29,10 @@ export class NoopTracer implements Tracer {
     return new NoopSpan()
   }
 
+  public sendError<T>(error: Error, fn: (s: NodeSpan) => T): void {
+    return
+  }
+
   public withSpan<T>(span: NodeSpan, fn: (s: NodeSpan) => T): T {
     return fn(span)
   }
