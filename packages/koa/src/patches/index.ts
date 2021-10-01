@@ -4,7 +4,7 @@
  * Copyright 2019, OpenTelemetry Authors
  */
 
-import type { Tracer } from "@appsignal/types"
+import type { Tracer } from "@appsignal/nodejs"
 import koa, { Middleware, ParameterizedContext, DefaultState } from "koa"
 import type { RouterParamContext } from "@koa/router"
 import type * as Router from "@koa/router"

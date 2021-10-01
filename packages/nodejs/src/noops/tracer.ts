@@ -1,39 +1,36 @@
-import {
-  NodeSpan,
-  NodeSpanOptions,
-  SpanContext,
-  Tracer,
-  Func
-} from "@appsignal/types"
+import { Func } from "@appsignal/types"
+
+import { Span, SpanOptions, SpanContext, Tracer } from "../interfaces"
+
 import { EventEmitter } from "events"
 
 import { NoopSpan } from "./span"
 
 export class NoopTracer implements Tracer {
   public createSpan(
-    options?: Partial<NodeSpanOptions>,
-    spanOrContext?: NodeSpan | SpanContext
-  ): NodeSpan {
+    options?: Partial<SpanOptions>,
+    spanOrContext?: Span | SpanContext
+  ): Span {
     return new NoopSpan()
   }
 
-  public currentSpan(): NodeSpan {
+  public currentSpan(): Span {
     return new NoopSpan()
   }
 
-  public rootSpan(): NodeSpan {
+  public rootSpan(): Span {
     return new NoopSpan()
   }
 
-  public setError(error: Error): NodeSpan {
+  public setError(error: Error): Span {
     return new NoopSpan()
   }
 
-  public sendError<T>(error: Error, fn: (s: NodeSpan) => T): void {
+  public sendError<T>(error: Error, fn: (s: Span) => T): void {
     return
   }
 
-  public withSpan<T>(span: NodeSpan, fn: (s: NodeSpan) => T): T {
+  public withSpan<T>(span: Span, fn: (s: Span) => T): T {
     return fn(span)
   }
 

@@ -1,6 +1,6 @@
 import url from "url"
 import { IncomingMessage, ServerResponse } from "http"
-import { NodeClient, Metrics } from "@appsignal/types"
+import { Client, Metrics } from "@appsignal/nodejs"
 
 function handleWebVital(
   metric: { name: string; value: number },
@@ -45,7 +45,7 @@ function handleNextMetric(
  * Usage of this function is EXPERIMENTAL and may change or be deprecated
  * in future releases.
  */
-export function getWebVitalsHandler(appsignal: NodeClient) {
+export function getWebVitalsHandler(appsignal: Client) {
   return function (
     req: IncomingMessage,
     res: ServerResponse,

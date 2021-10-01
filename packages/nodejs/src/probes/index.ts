@@ -1,5 +1,5 @@
 import { EventEmitter } from "events"
-import { Probes } from "@appsignal/types"
+import { Probes } from "../interfaces"
 
 /**
  * The Minutely probes object.

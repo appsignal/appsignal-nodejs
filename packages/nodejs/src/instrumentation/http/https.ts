@@ -1,4 +1,4 @@
-import { Tracer, Plugin } from "@appsignal/types"
+import { Tracer, Plugin } from "../../interfaces"
 import shimmer from "shimmer"
 import https from "https"
 

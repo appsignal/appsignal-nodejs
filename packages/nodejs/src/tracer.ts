@@ -1,10 +1,7 @@
-import {
-  Tracer,
-  NodeSpan,
-  NodeSpanOptions,
-  SpanContext,
-  Func
-} from "@appsignal/types"
+import { Func } from "@appsignal/types"
+
+import { Tracer, Span, SpanOptions, SpanContext } from "./interfaces"
+
 import { EventEmitter } from "events"
 
 import { ScopeManager } from "./scope"
@@ -27,27 +24,21 @@ export class BaseTracer implements Tracer {
    * Creates a new `Span` instance. If a `Span` is passed as the optional second
    * argument, then the returned `Span` will be a `ChildSpan`.
    */
-  public createSpan(
-    options?: Partial<NodeSpanOptions>,
-    span?: NodeSpan
-  ): NodeSpan
+  public createSpan(options?: Partial<SpanOptions>, span?: Span): Span
 
   /**
    * Creates a new `Span` instance. If a `SpanContext` is passed as the optional second
    * argument, then the returned `Span` will be a `ChildSpan`.
    */
-  public createSpan(
-    options?: Partial<NodeSpanOptions>,
-    context?: SpanContext
-  ): NodeSpan
+  public createSpan(options?: Partial<SpanOptions>, context?: SpanContext): Span
 
   /**
    * Creates a new `Span` instance.
    */
   public createSpan(
-    options?: Partial<NodeSpanOptions>,
-    spanOrContext?: NodeSpan | SpanContext
-  ): NodeSpan {
+    options?: Partial<SpanOptions>,
+    spanOrContext?: Span | SpanContext
+  ): Span {
     const activeRootSpan = this.rootSpan()
 
     if (spanOrContext) {
@@ -66,7 +57,7 @@ export class BaseTracer implements Tracer {
    *
    * If there is no current Span available, `undefined` is returned.
    */
-  public currentSpan(): NodeSpan {
+  public currentSpan(): Span {
     return this.#scopeManager.active() || new NoopSpan()
   }
 
@@ -75,7 +66,7 @@ export class BaseTracer implements Tracer {
    *
    * If there is no root Span available, a NoopSpan is returned.
    */
-  public rootSpan(): NodeSpan {
+  public rootSpan(): Span {
     return this.#scopeManager.root() || new NoopSpan()
   }
 
@@ -85,7 +76,7 @@ export class BaseTracer implements Tracer {
    * If there is no root Span available, a NoopSpan will be used instead,
    * and nothing will be tracked.
    */
-  public setError(error: Error): NodeSpan | undefined {
+  public setError(error: Error): Span | undefined {
     const activeRootSpan = this.rootSpan()
 
     activeRootSpan.setError(error)
@@ -100,7 +91,7 @@ export class BaseTracer implements Tracer {
    * The created `RootSpan` is passed as the single argument to the given function.
    * This allows you to add arbitrary metadata to it.
    */
-  public sendError<T>(error: Error, fn?: (s: NodeSpan) => T): void {
+  public sendError<T>(error: Error, fn?: (s: Span) => T): void {
     const rootSpan = new RootSpan()
 
     rootSpan.setError(error)
@@ -117,7 +108,7 @@ export class BaseTracer implements Tracer {
    * allows you to create children of the `Span` for instrumenting nested
    * operations.
    */
-  public withSpan<T>(span: NodeSpan, fn: (s: NodeSpan) => T): T {
+  public withSpan<T>(span: Span, fn: (s: Span) => T): T {
     return this.#scopeManager.withContext(span, fn)
   }
 

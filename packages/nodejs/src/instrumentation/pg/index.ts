@@ -1,4 +1,4 @@
-import { Tracer, Plugin } from "@appsignal/types"
+import { Tracer, Plugin } from "../../interfaces"
 import shimmer from "shimmer"
 import pg from "pg"
 import { EventEmitter } from "events"

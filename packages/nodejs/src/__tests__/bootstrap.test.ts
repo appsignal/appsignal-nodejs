@@ -1,4 +1,4 @@
-import { Metrics } from "@appsignal/types"
+import { Metrics } from "../interfaces"
 import { Instrumentation } from "../instrument"
 import { initCorePlugins, initCoreProbes } from "../bootstrap"
 

@@ -1,16 +1,10 @@
-import { Metrics, Probes } from "./interfaces"
-import { BaseProbes } from "./probes"
-import { metrics } from "./extension"
-import { Data } from "./internal/data"
+import { Probes } from "./probes"
+import { HashMap, HashMapValue } from "@appsignal/types"
 
 /**
- * The metrics object.
- *
- * @class
+ * Records raw measurements or metrics.
  */
-export class BaseMetrics implements Metrics {
-  #probes = new BaseProbes()
-
+export interface Metrics {
   /**
    * A gauge is a metric value at a specific time. If you set more
    * than one gauge with the same key, the latest value for that
@@ -21,17 +15,7 @@ export class BaseMetrics implements Metrics {
    * accounts, etc.). Currently all AppSignal host metrics are stored
    * as gauges.
    */
-  public setGauge(
-    key: string,
-    value: number,
-    tags?: { [key: string]: string | number | boolean }
-  ) {
-    if (!key || typeof value !== "number") return this
-
-    metrics.setGauge(key, value, Data.generate(tags || {}))
-
-    return this
-  }
+  setGauge(key: string, value: number, tags?: HashMap<HashMapValue>): this
 
   /**
    * Measurements are used for things like response times. We allow you to
@@ -46,17 +30,11 @@ export class BaseMetrics implements Metrics {
    * - `P90`, the 90th percentile of the metric value for the point in time.
    * - `P95`, the 95th percentile of the metric value for the point in time.
    */
-  public addDistributionValue(
+  addDistributionValue(
     key: string,
     value: number,
-    tags?: { [key: string]: string | number | boolean }
-  ) {
-    if (!key || typeof value !== "number") return this
-
-    metrics.addDistributionValue(key, value, Data.generate(tags || {}))
-
-    return this
-  }
+    tags?: HashMap<HashMapValue>
+  ): this
 
   /**
    * The counter metric type stores a number value for a given time frame. These
@@ -72,24 +50,16 @@ export class BaseMetrics implements Metrics {
    *
    * When this method is called multiple times, the total/sum of all calls is persisted.
    */
-  public incrementCounter(
+  incrementCounter(
     key: string,
     value: number,
-    tags?: { [key: string]: string | number | boolean }
-  ) {
-    if (!key || typeof value !== "number") return this
-
-    metrics.incrementCounter(key, value, Data.generate(tags || {}))
-
-    return this
-  }
+    tags?: HashMap<HashMapValue>
+  ): this
 
   /**
    * Minutely probes allow the AppSignal module to collect custom metrics
    * for integrations and app-specific metrics by calling a user-defined function
    * every minute.
    */
-  public probes(): Probes {
-    return this.#probes
-  }
+  probes(): Probes
 }

@@ -1,4 +1,4 @@
-import { Metrics } from "@appsignal/types"
+import { Metrics } from "../../interfaces"
 import v8 from "v8"
 
 export const PROBE_NAME = "v8_stats"

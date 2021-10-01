@@ -1,4 +1,4 @@
-import { NodeSpan, Tracer, Plugin } from "@appsignal/types"
+import { Span, Tracer, Plugin } from "../../interfaces"
 import shimmer from "shimmer"
 import redis from "redis"
 
@@ -9,7 +9,7 @@ type RedisModule = typeof redis
 
 type RedisCallback = <T>(err: Error | null, reply: T) => void
 
-function wrapCallback(tracer: Tracer, span: NodeSpan, done: RedisCallback) {
+function wrapCallback(tracer: Tracer, span: Span, done: RedisCallback) {
   // @TODO: add results to span here?
   const fn = function <T>(err: Error | null, res: T) {
     if (err) tracer.setError(err)

@@ -4,7 +4,7 @@
  * Copyright 2019, OpenTelemetry Authors
  */
 
-import { Tracer, NodeSpan } from "@appsignal/types"
+import { Tracer, Span } from "../../../interfaces"
 import url from "url"
 import { IncomingMessage, ClientRequest, RequestOptions } from "http"
 
@@ -72,7 +72,7 @@ function outgoingRequestFunction(
     urlOrOptions: string | url.URL | RequestOptions,
     ...args: unknown[]
   ): ClientRequest {
-    let span: NodeSpan
+    let span: Span
     let origin: string
     let method: string
 

@@ -1,4 +1,4 @@
-import { Metrics, Probes } from "@appsignal/types"
+import { Metrics, Probes } from "../interfaces"
 import { BaseProbes } from "../probes"
 
 export class NoopMetrics implements Metrics {
