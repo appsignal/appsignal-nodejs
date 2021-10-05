@@ -1,5 +1,16 @@
 # AppSignal for Node.js extension Changelog
 
+## 2.0.1
+
+- [6830d4a](https://github.com/appsignal/appsignal-nodejs/commit/6830d4a6ab10ac533e9ce2556d09ce887e9f9dd1) patch - Report a more accurate state of the AppSignal extension installation on failures. Useful for the AppSignal team when debugging.
+- [8745424](https://github.com/appsignal/appsignal-nodejs/commit/874542478cbf45e11ea6cc8042cfe3abfec5c014) patch - Track AppSignal extension installation source in the installation report. Used by the AppSignal team when debugging.
+- [bf11c4b](https://github.com/appsignal/appsignal-nodejs/commit/bf11c4b801b0dd23537d479c84876b7ce53456c9) patch - Add mirrors to download the agent from different online sources in case some sources are not available to the app network.
+- [763c826](https://github.com/appsignal/appsignal-nodejs/commit/763c826c067ba4933d3eb645a77b3dfeb4a5e28a) patch - Support local installs when using `npm run install`. This will generate an install report for local installs in development.
+- [ac90d69](https://github.com/appsignal/appsignal-nodejs/commit/ac90d697d40e6dd8eafe7ef1ea9d512fd3cdd7c0) patch - Bump agent to 7376537
+  
+  - Support JSON PostgreSQL operator in sql_lexer.
+  - Do not strip comments from SQL queries.
+
 ## 2.0.0
 
 - [f7acf83](https://github.com/appsignal/appsignal-nodejs/commit/f7acf8396d10af361fb1fd515942a8eae319af33) major - Drop support for Node.js 10 and 11. These are unmaintained versions of Node.js.

@@ -1,5 +1,33 @@
 # AppSignal for Node.js Changelog
 
+## 2.1.0
+
+- [723b98d](https://github.com/appsignal/appsignal-nodejs/commit/723b98d1370cb74d3d0198f4c7d49d08691095c2) minor - Add rootSpan and setError helpers.
+  
+  Errors added to child spans are ignored by the agent. Now the rootSpan is
+  always accessible from the tracer object as well as setError. The setError
+  function allows to track errors on demand and they will be always attached
+  to the main current span, so they don't get ignored by the agent.
+- [f0256d3](https://github.com/appsignal/appsignal-nodejs/commit/f0256d3979fef129ded0644e712efbb96036967a) patch - Bug fix in custom timestamp calculation
+- [1f182a4](https://github.com/appsignal/appsignal-nodejs/commit/1f182a49548322b8af8ecec59ca5efe85cbebc29) patch - Deprecate the addError function on the Span interface. Instead use the Tracer's `setError` function to set the error on the root span.
+- [96df8a4](https://github.com/appsignal/appsignal-nodejs/commit/96df8a43d7e9061233ac9ff9e5f2dde3c8d83ff7) patch - Add sendError helper to Tracer object.
+  
+  This new helper allows you to track an error separately from any other span
+  inside the current context. Or use it to set up in your own error handling to
+  report errors in a catch-statement if no performance monitoring is needed.
+  
+  ```js
+  try {
+    // Do complex stuff
+  } catch (error) {
+    appsignal.tracer().sendError(error, span => {
+      span.setName("daily.task"); // Set a recognizable action name
+      span.set("user_id", user_id); // Set custom tags
+    });
+  }
+  ```
+- patch - Update @appsignal/nodejs-ext dependency to 2.0.1.
+
 ## 2.0.0
 
 - [f7acf83](https://github.com/appsignal/appsignal-nodejs/commit/f7acf8396d10af361fb1fd515942a8eae319af33) major - Drop support for Node.js 10 and 11. These are unmaintained versions of Node.js.
