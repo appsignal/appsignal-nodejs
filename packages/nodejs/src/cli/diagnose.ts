@@ -35,7 +35,9 @@ export class Diagnose {
     console.log(`  Installation result`)
     console.log(`    Status: success`)
     console.log(`  Language details`)
-    console.log(`    Node.js version: ${data["host"]["language_version"]}`)
+    console.log(
+      `    Node.js version: ${data["installation"]["language"]["version"]}`
+    )
     console.log(`  Download details`)
     console.log(
       `    Download URL: ${data["installation"]["download"]["download_url"]}`
