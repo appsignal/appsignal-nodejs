@@ -22,6 +22,12 @@ interface FileMetadata {
   writable?: boolean
 }
 
+interface ParsingError {
+  error: string
+  backtrace: []
+  raw?: string
+}
+
 export class DiagnoseTool {
   #config: Configuration
   #extension: Extension
@@ -84,11 +90,21 @@ export class DiagnoseTool {
   }
 
   private getInstallationReport() {
+    let rawReport
     try {
-      const rawReport = fs.readFileSync(reportPath(), "utf8")
-      return rawReport ? JSON.parse(rawReport) : {}
-    } catch (e) {
-      return {}
+      rawReport = fs.readFileSync(reportPath(), "utf8")
+      return JSON.parse(rawReport)
+    } catch (error) {
+      const report = {
+        parsing_error: {
+          error: `${error.name}: ${error.message}`,
+          backtrace: error.stack.split("\n")
+        } as ParsingError
+      }
+      if (rawReport) {
+        report.parsing_error.raw = rawReport
+      }
+      return report
     }
   }
 
