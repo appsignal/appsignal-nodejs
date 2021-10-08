@@ -1,5 +1,5 @@
 import { Data } from "../internal/data"
-import { datamap, dataarray } from "../extension"
+import { datamap, dataarray } from "../extension_wrapper"
 
 describe("Data", () => {
   it("creates an empty map", () => {

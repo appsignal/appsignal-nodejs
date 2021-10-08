@@ -6,7 +6,7 @@ import {
   HashMapValue
 } from "@appsignal/types"
 
-import { span } from "./extension"
+import { span } from "./extension_wrapper"
 import { Data } from "./internal/data"
 import { getAgentTimestamps } from "./utils"
 

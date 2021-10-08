@@ -1,5 +1,5 @@
 import { HashMap } from "@appsignal/types"
-import { datamap, dataarray } from "../extension"
+import { datamap, dataarray } from "../extension_wrapper"
 
 export class Data {
   public static generate(
