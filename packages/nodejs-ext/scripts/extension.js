@@ -212,7 +212,7 @@ function install() {
     result = download(MIRRORS, filename, outputPath).then(url => {
       report.download.download_url = url
 
-      verify(outputPath, metadata.checksum).then(() => {
+      return verify(outputPath, metadata.checksum).then(() => {
         report.download.checksum = "verified"
 
         return extract(outputPath)
