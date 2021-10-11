@@ -2,6 +2,4 @@
 bump: "patch"
 ---
 
-Rename Agent to Extension
-
-To fit with our naming standards, Agent class is now Called Extension.
+Rename the `Agent` module to `Extension` to fit better with our naming standards.
