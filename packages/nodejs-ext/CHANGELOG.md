@@ -1,5 +1,9 @@
 # AppSignal for Node.js extension Changelog
 
+## 2.0.2
+
+- [bfa4083](https://github.com/appsignal/appsignal-nodejs/commit/bfa40837d6bf3ff0558dd01f3e4705bcfd304340) patch - Fix the checksum verification failure on extension installation. If the download checksum verification failed it would not write a diagnose report and it would be difficult to debug the cause for the AppSignal team.
+
 ## 2.0.1
 
 - [6830d4a](https://github.com/appsignal/appsignal-nodejs/commit/6830d4a6ab10ac533e9ce2556d09ce887e9f9dd1) patch - Report a more accurate state of the AppSignal extension installation on failures. Useful for the AppSignal team when debugging.

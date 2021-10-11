@@ -1,5 +1,12 @@
 # AppSignal for Node.js Changelog
 
+## 2.1.1
+
+- [42edcc0](https://github.com/appsignal/appsignal-nodejs/commit/42edcc06b9258cc30ea13008d1f7ebc39332e28d) patch - Show correct language version in diagnose's extension installation section. It did not show the language version used during install, but the current one used to run the diagnose tool.
+- [99b2f6c](https://github.com/appsignal/appsignal-nodejs/commit/99b2f6cd6ca743d42c59587a05e979efe080797a) patch - Rename the `Agent` module to `Extension` to fit better with our naming standards.
+- [ad6be4f](https://github.com/appsignal/appsignal-nodejs/commit/ad6be4f38a6caff7fdfa06ae1d1ef51145bc004d) patch - Fix diagnose installation status reporting. It previously always reported "success", but will now also print failures.
+- patch - Update @appsignal/nodejs-ext dependency to 2.0.2.
+
 ## 2.1.0
 
 - [723b98d](https://github.com/appsignal/appsignal-nodejs/commit/723b98d1370cb74d3d0198f4c7d49d08691095c2) minor - Add rootSpan and setError helpers.
