@@ -33,7 +33,17 @@ export class Diagnose {
 
     console.log(`Extension installation report`)
     console.log(`  Installation result`)
-    console.log(`    Status: success`)
+    const installReport = data["installation"]
+    console.log(`    Status: ${installReport["result"]["status"]}`)
+    const resultMessage = data["installation"]["result"]["message"]
+    if (resultMessage) {
+      console.log(`    Message: ${resultMessage}`)
+    }
+    const resultError = data["installation"]["result"]["error"]
+    if (resultError) {
+      console.log(`    Error: ${resultError}`)
+    }
+
     console.log(`  Language details`)
     console.log(
       `    Node.js version: ${data["installation"]["language"]["version"]}`
