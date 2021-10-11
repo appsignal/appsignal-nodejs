@@ -4,7 +4,7 @@ import https from "https"
 import { URL, URLSearchParams } from "url"
 import { createHash } from "crypto"
 
-import { Agent } from "./agent"
+import { Extension } from "./extension"
 import { Configuration } from "./config"
 import { AGENT_VERSION, VERSION } from "./version"
 import { JS_TO_RUBY_MAPPING } from "./config/configmap"
@@ -24,11 +24,11 @@ interface FileMetadata {
 
 export class DiagnoseTool {
   #config: Configuration
-  #agent: Agent
+  #extension: Extension
 
   constructor({ active = true }) {
     this.#config = new Configuration({ active })
-    this.#agent = new Agent({ active })
+    this.#extension = new Extension({ active })
   }
 
   /**
@@ -45,7 +45,7 @@ export class DiagnoseTool {
       installation: this.getInstallationReport(),
       host: this.getHostData(),
       app: {},
-      agent: this.#agent.diagnose(),
+      extension: this.#extension.diagnose(),
       config: {
         options: this.getConfigData(),
         sources: {}
@@ -63,7 +63,7 @@ export class DiagnoseTool {
       language: "nodejs",
       package_version: VERSION,
       agent_version: AGENT_VERSION,
-      extension_loaded: this.#agent.isLoaded
+      extension_loaded: this.#extension.isLoaded
     }
   }
 

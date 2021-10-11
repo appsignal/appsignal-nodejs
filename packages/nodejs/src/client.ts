@@ -1,6 +1,6 @@
 import { NodeClient, Metrics, Plugin, Tracer } from "@appsignal/types"
 
-import { Agent } from "./agent"
+import { Extension } from "./extension"
 import { Configuration } from "./config"
 import { BaseTracer } from "./tracer"
 import { BaseMetrics } from "./metrics"
@@ -24,7 +24,7 @@ export class Client implements NodeClient {
   readonly VERSION = VERSION
 
   config: Configuration
-  agent: Agent
+  extension: Extension
   instrumentation: Instrumentation
 
   #tracer: Tracer = new BaseTracer()
@@ -41,7 +41,7 @@ export class Client implements NodeClient {
     } = options
 
     this.config = new Configuration(options)
-    this.agent = new Agent({ active })
+    this.extension = new Extension({ active })
 
     this.instrumentation = new Instrumentation(this.tracer(), this.metrics())
 
@@ -53,7 +53,7 @@ export class Client implements NodeClient {
    * Returns `true` if the agent is loaded and configuration is valid
    */
   get isActive(): boolean {
-    return this.agent.isLoaded && this.config.isValid
+    return this.extension.isLoaded && this.config.isValid
   }
 
   set isActive(arg) {
@@ -68,7 +68,7 @@ export class Client implements NodeClient {
    */
   public start(): void {
     if (this.config.isValid) {
-      this.agent.start()
+      this.extension.start()
     } else {
       console.error("Not starting, no valid config for this environment")
     }
@@ -87,7 +87,7 @@ export class Client implements NodeClient {
       console.log("Stopping AppSignal")
     }
 
-    this.agent.stop()
+    this.extension.stop()
   }
 
   /**

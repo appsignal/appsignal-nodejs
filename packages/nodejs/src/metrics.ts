@@ -1,7 +1,7 @@
 import { Metrics, Probes } from "@appsignal/types"
 
 import { BaseProbes } from "./probes"
-import { metrics } from "./extension"
+import { metrics } from "./extension_wrapper"
 import { Data } from "./internal/data"
 
 /**
