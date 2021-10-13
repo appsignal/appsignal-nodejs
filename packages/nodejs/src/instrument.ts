@@ -1,4 +1,5 @@
-import { Plugin, Tracer, Metrics } from "@appsignal/types"
+import { Plugin, Tracer, Metrics } from "./interfaces"
+
 import Hook from "require-in-the-middle"
 import semver from "semver"
 

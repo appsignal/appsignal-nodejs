@@ -4,7 +4,7 @@
  * Copyright 2019, OpenTelemetry Authors
  */
 
-import { Tracer } from "@appsignal/types"
+import { Tracer } from "../../../interfaces"
 import { parse } from "url"
 import { IncomingMessage, ServerResponse } from "http"
 

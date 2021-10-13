@@ -1,4 +1,4 @@
-import { NodeClient } from "@appsignal/types"
+import { Client } from "@appsignal/nodejs"
 
 import {
   Request,
@@ -12,7 +12,7 @@ import {
  * Returns an Express middleware that can augment the current span
  * with data.
  */
-export function expressMiddleware(appsignal: NodeClient): RequestHandler {
+export function expressMiddleware(appsignal: Client): RequestHandler {
   return function (req: Request, res: Response, next: NextFunction) {
     const tracer = appsignal.tracer()
     const rootSpan = tracer.currentSpan()
@@ -57,9 +57,7 @@ export function expressMiddleware(appsignal: NodeClient): RequestHandler {
   }
 }
 
-export function expressErrorHandler(
-  appsignal: NodeClient
-): ErrorRequestHandler {
+export function expressErrorHandler(appsignal: Client): ErrorRequestHandler {
   return function (
     err: Error & { status?: number },
     req: Request,

@@ -1,10 +1,6 @@
-import {
-  NodeSpan,
-  NodeSpanOptions,
-  SpanContext,
-  HashMap,
-  HashMapValue
-} from "@appsignal/types"
+import { HashMap, HashMapValue } from "@appsignal/types"
+
+import { Span, SpanOptions, SpanContext } from "./interfaces"
 
 import { span } from "./extension_wrapper"
 import { Data } from "./internal/data"
@@ -19,7 +15,7 @@ import { getAgentTimestamps } from "./utils"
  *
  * @class
  */
-export class BaseSpan implements NodeSpan {
+export class BaseSpan implements Span {
   protected _ref: unknown
 
   /**
@@ -50,7 +46,7 @@ export class BaseSpan implements NodeSpan {
   /**
    * Returns a new `Span` object that is a child of the current `Span`.
    */
-  public child(options?: Partial<NodeSpanOptions>): ChildSpan {
+  public child(options?: Partial<SpanOptions>): ChildSpan {
     return new ChildSpan(this, options)
   }
 
@@ -211,13 +207,13 @@ export class BaseSpan implements NodeSpan {
  * be a parent to many `ChildSpan`s.
  */
 export class ChildSpan extends BaseSpan {
-  constructor(span: NodeSpan, options?: Partial<NodeSpanOptions>)
+  constructor(span: Span, options?: Partial<SpanOptions>)
 
-  constructor(context: SpanContext, options?: Partial<NodeSpanOptions>)
+  constructor(context: SpanContext, options?: Partial<SpanOptions>)
 
   constructor(
-    spanOrContext: NodeSpan | SpanContext,
-    { startTime }: Partial<NodeSpanOptions> = {}
+    spanOrContext: Span | SpanContext,
+    { startTime }: Partial<SpanOptions> = {}
   ) {
     super()
 
@@ -244,7 +240,7 @@ export class ChildSpan extends BaseSpan {
  * created from.
  */
 export class RootSpan extends BaseSpan {
-  constructor({ namespace = "web", startTime }: Partial<NodeSpanOptions> = {}) {
+  constructor({ namespace = "web", startTime }: Partial<SpanOptions> = {}) {
     super()
 
     if (startTime) {

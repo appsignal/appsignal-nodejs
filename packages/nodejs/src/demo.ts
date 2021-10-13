@@ -1,4 +1,4 @@
-import { Tracer } from "@appsignal/types"
+import { Tracer } from "./interfaces"
 
 /**
  * Sends a demonstration/test sample for a exception and a performance issue.

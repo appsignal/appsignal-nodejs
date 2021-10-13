@@ -1,21 +1,21 @@
-import { Client } from "../client"
+import { BaseClient } from "../client"
 import { BaseTracer as Tracer } from "../tracer"
 import { BaseMetrics as Metrics } from "../metrics"
 import { NoopTracer, NoopMetrics } from "../noops"
 
 jest.mock("../tracer")
 
-describe("Client", () => {
+describe("BaseClient", () => {
   const name = "TEST APP"
   const apiKey = "TEST_API_KEY"
 
-  let client: Client
+  let client: BaseClient
 
   // enableMinutelyProbes is set to false so we don't leak timers
   const DEFAULT_OPTS = { name, apiKey, enableMinutelyProbes: false }
 
   beforeEach(() => {
-    client = new Client({ ...DEFAULT_OPTS })
+    client = new BaseClient({ ...DEFAULT_OPTS })
   })
 
   it("starts the client", () => {
@@ -29,7 +29,7 @@ describe("Client", () => {
   })
 
   it("starts the client when the active option is true", () => {
-    client = new Client({ ...DEFAULT_OPTS, active: true })
+    client = new BaseClient({ ...DEFAULT_OPTS, active: true })
     expect(client.isActive).toBeTruthy()
   })
 
@@ -39,7 +39,7 @@ describe("Client", () => {
   })
 
   it("returns a `Tracer` object if the agent is started", () => {
-    client = new Client({ ...DEFAULT_OPTS, active: true })
+    client = new BaseClient({ ...DEFAULT_OPTS, active: true })
     const tracer = client.tracer()
     expect(tracer).toBeInstanceOf(Tracer)
   })
@@ -50,7 +50,7 @@ describe("Client", () => {
   })
 
   it("returns a `Metrics` object if the agent is started", () => {
-    client = new Client({ ...DEFAULT_OPTS, active: true })
+    client = new BaseClient({ ...DEFAULT_OPTS, active: true })
     const meter = client.metrics()
     expect(meter).toBeInstanceOf(Metrics)
   })

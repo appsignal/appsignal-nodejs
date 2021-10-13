@@ -1,4 +1,4 @@
-import { NodeClient, Metrics, Plugin, Tracer } from "@appsignal/types"
+import { Client, Metrics, Plugin, Tracer, AppsignalOptions } from "./interfaces"
 
 import { Extension } from "./extension"
 import { Configuration } from "./config"
@@ -8,9 +8,7 @@ import { NoopTracer, NoopMetrics } from "./noops"
 import { Instrumentation } from "./instrument"
 import { initCorePlugins, initCoreProbes } from "./bootstrap"
 import { demo } from "./demo"
-
 import { VERSION } from "./version"
-import { AppsignalOptions } from "./interfaces/options"
 
 /**
  * AppSignal for Node.js's main class.
@@ -20,7 +18,7 @@ import { AppsignalOptions } from "./interfaces/options"
  *
  * @class
  */
-export class Client implements NodeClient {
+export class BaseClient implements Client {
   readonly VERSION = VERSION
 
   config: Configuration
