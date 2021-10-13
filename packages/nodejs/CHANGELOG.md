@@ -1,5 +1,16 @@
 # AppSignal for Node.js Changelog
 
+## 2.2.0
+
+- [9c8319e](https://github.com/appsignal/appsignal-nodejs/commit/9c8319e7d014882b9d4fe609ac49e3918f4e0259) minor - Remove interface usage from @appsignal/types
+  
+  All Node.js-specific interfaces from the types package are now defined
+  inside the nodejs core package. There's still a dependency from types
+  package for common types as Func, HashMap, and HasMapValue.
+  
+  With this change, we keep taking advantage of interfaces, but now they're
+  defined in a place where they're used.
+
 ## 2.1.1
 
 - [42edcc0](https://github.com/appsignal/appsignal-nodejs/commit/42edcc06b9258cc30ea13008d1f7ebc39332e28d) patch - Show correct language version in diagnose's extension installation section. It did not show the language version used during install, but the current one used to run the diagnose tool.
