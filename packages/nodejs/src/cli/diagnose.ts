@@ -78,13 +78,13 @@ export class Diagnose {
 
     this.print_newline()
 
-    console.log(`  Host information`)
-    console.log(`    Architecture: ${data["host"]["architecture"]}`)
-    console.log(`    Operating System: ${data["host"]["os"]}`)
-    console.log(`    Node.js version: ${data["host"]["language_version"]}`)
-    console.log(`    Root user: ${this.format_value(data["host"]["root"])}`)
+    console.log(`Host information`)
+    console.log(`  Architecture: ${data["host"]["architecture"]}`)
+    console.log(`  Operating System: ${data["host"]["os"]}`)
+    console.log(`  Node.js version: ${data["host"]["language_version"]}`)
+    console.log(`  Root user: ${this.format_value(data["host"]["root"])}`)
     console.log(
-      `    Running in container: ${this.format_value(
+      `  Running in container: ${this.format_value(
         data["host"]["running_in_container"]
       )}`
     )
