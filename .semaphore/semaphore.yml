@@ -58,7 +58,6 @@ blocks:
       - cache restore
       - mono bootstrap --ci
       - cache store
-      - mono bootstrap
       - npm run lint
     - name: Git Lint (Lintje)
       commands:
