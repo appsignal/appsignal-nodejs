@@ -32,49 +32,61 @@ export class Diagnose {
     this.print_newline()
 
     console.log(`Extension installation report`)
-    console.log(`  Installation result`)
     const installReport = data["installation"]
-    console.log(`    Status: ${installReport["result"]["status"]}`)
-    const resultMessage = data["installation"]["result"]["message"]
-    if (resultMessage) {
-      console.log(`    Message: ${resultMessage}`)
-    }
-    const resultError = data["installation"]["result"]["error"]
-    if (resultError) {
-      console.log(`    Error: ${resultError}`)
-    }
+    const parsingError = installReport["parsing_error"]
+    if (parsingError) {
+      console.log(`  Error found while parsing the report.`)
+      console.log(`  Error: ${parsingError["error"]}`)
+      if (parsingError["raw"]) {
+        console.log(`  Raw report:`)
+        console.log(parsingError["raw"])
+      }
+    } else {
+      console.log(`  Installation result`)
+      console.log(`    Status: ${installReport["result"]["status"]}`)
+      const resultMessage = data["installation"]["result"]["message"]
+      if (resultMessage) {
+        console.log(`    Message: ${resultMessage}`)
+      }
+      const resultError = data["installation"]["result"]["error"]
+      if (resultError) {
+        console.log(`    Error: ${resultError}`)
+      }
 
-    console.log(`  Language details`)
-    console.log(
-      `    Node.js version: ${data["installation"]["language"]["version"]}`
-    )
-    console.log(`  Download details`)
-    console.log(
-      `    Download URL: ${data["installation"]["download"]["download_url"]}`
-    )
-    console.log(`    Checksum: ${data["installation"]["download"]["checksum"]}`)
-    console.log(`  Build details`)
-    console.log(`    Install time: ${data["installation"]["build"]["time"]}`)
-    console.log(
-      `    Architecture: ${data["installation"]["build"]["architecture"]}`
-    )
-    console.log(`    Target: ${data["installation"]["build"]["target"]}`)
-    console.log(
-      `    Musl override: ${data["installation"]["build"]["musl_override"]}`
-    )
-    console.log(
-      `    Linux ARM override: ${data["installation"]["build"]["linux_arm_override"]}`
-    )
-    console.log(
-      `    Library type: ${data["installation"]["build"]["library_type"]}`
-    )
-    console.log(`  Host details`)
-    console.log(`    Root user: ${data["installation"]["host"]["root_user"]}`)
-    console.log(
-      `    Dependencies: ${this.format_value(
-        data["installation"]["host"]["dependencies"]
-      )}`
-    )
+      console.log(`  Language details`)
+      console.log(
+        `    Node.js version: ${data["installation"]["language"]["version"]}`
+      )
+      console.log(`  Download details`)
+      console.log(
+        `    Download URL: ${data["installation"]["download"]["download_url"]}`
+      )
+      console.log(
+        `    Checksum: ${data["installation"]["download"]["checksum"]}`
+      )
+      console.log(`  Build details`)
+      console.log(`    Install time: ${data["installation"]["build"]["time"]}`)
+      console.log(
+        `    Architecture: ${data["installation"]["build"]["architecture"]}`
+      )
+      console.log(`    Target: ${data["installation"]["build"]["target"]}`)
+      console.log(
+        `    Musl override: ${data["installation"]["build"]["musl_override"]}`
+      )
+      console.log(
+        `    Linux ARM override: ${data["installation"]["build"]["linux_arm_override"]}`
+      )
+      console.log(
+        `    Library type: ${data["installation"]["build"]["library_type"]}`
+      )
+      console.log(`  Host details`)
+      console.log(`    Root user: ${data["installation"]["host"]["root_user"]}`)
+      console.log(
+        `    Dependencies: ${this.format_value(
+          data["installation"]["host"]["dependencies"]
+        )}`
+      )
+    }
 
     this.print_newline()
 
