@@ -21,12 +21,14 @@ export class Diagnose {
 
     console.log(`AppSignal library`)
     console.log(`  Language: Node.js`)
-    console.log(`  Package version: ${data["library"]["package_version"]}`)
-    console.log(`  Agent version: ${data["library"]["agent_version"]}`)
     console.log(
-      `  Extension loaded: ${this.format_value(
-        data["library"]["extension_loaded"]
-      )}`
+      `  Package version: ${format_value(data["library"]["package_version"])}`
+    )
+    console.log(
+      `  Agent version: ${format_value(data["library"]["agent_version"])}`
+    )
+    console.log(
+      `  Extension loaded: ${format_value(data["library"]["extension_loaded"])}`
     )
 
     this.print_newline()
@@ -55,34 +57,58 @@ export class Diagnose {
 
       console.log(`  Language details`)
       console.log(
-        `    Node.js version: ${data["installation"]["language"]["version"]}`
+        `    Node.js version: ${format_value(
+          data["installation"]["language"]["version"]
+        )}`
       )
       console.log(`  Download details`)
       console.log(
-        `    Download URL: ${data["installation"]["download"]["download_url"]}`
+        `    Download URL: ${format_value(
+          data["installation"]["download"]["download_url"]
+        )}`
       )
       console.log(
-        `    Checksum: ${data["installation"]["download"]["checksum"]}`
+        `    Checksum: ${format_value(
+          data["installation"]["download"]["checksum"]
+        )}`
       )
       console.log(`  Build details`)
-      console.log(`    Install time: ${data["installation"]["build"]["time"]}`)
       console.log(
-        `    Architecture: ${data["installation"]["build"]["architecture"]}`
-      )
-      console.log(`    Target: ${data["installation"]["build"]["target"]}`)
-      console.log(
-        `    Musl override: ${data["installation"]["build"]["musl_override"]}`
+        `    Install time: ${format_value(
+          data["installation"]["build"]["time"]
+        )}`
       )
       console.log(
-        `    Linux ARM override: ${data["installation"]["build"]["linux_arm_override"]}`
+        `    Architecture: ${format_value(
+          data["installation"]["build"]["architecture"]
+        )}`
       )
       console.log(
-        `    Library type: ${data["installation"]["build"]["library_type"]}`
+        `    Target: ${format_value(data["installation"]["build"]["target"])}`
+      )
+      console.log(
+        `    Musl override: ${format_value(
+          data["installation"]["build"]["musl_override"]
+        )}`
+      )
+      console.log(
+        `    Linux ARM override: ${format_value(
+          data["installation"]["build"]["linux_arm_override"]
+        )}`
+      )
+      console.log(
+        `    Library type: ${format_value(
+          data["installation"]["build"]["library_type"]
+        )}`
       )
       console.log(`  Host details`)
-      console.log(`    Root user: ${data["installation"]["host"]["root_user"]}`)
       console.log(
-        `    Dependencies: ${this.format_value(
+        `    Root user: ${format_value(
+          data["installation"]["host"]["root_user"]
+        )}`
+      )
+      console.log(
+        `    Dependencies: ${format_value(
           data["installation"]["host"]["dependencies"]
         )}`
       )
@@ -91,12 +117,14 @@ export class Diagnose {
     this.print_newline()
 
     console.log(`Host information`)
-    console.log(`  Architecture: ${data["host"]["architecture"]}`)
-    console.log(`  Operating System: ${data["host"]["os"]}`)
-    console.log(`  Node.js version: ${data["host"]["language_version"]}`)
-    console.log(`  Root user: ${this.format_value(data["host"]["root"])}`)
+    console.log(`  Architecture: ${format_value(data["host"]["architecture"])}`)
+    console.log(`  Operating System: ${format_value(data["host"]["os"])}`)
     console.log(
-      `  Running in container: ${this.format_value(
+      `  Node.js version: ${format_value(data["host"]["language_version"])}`
+    )
+    console.log(`  Root user: ${format_value(data["host"]["root"])}`)
+    console.log(
+      `  Running in container: ${format_value(
         data["host"]["running_in_container"]
       )}`
     )
@@ -105,28 +133,26 @@ export class Diagnose {
 
     console.log(`Configuration`)
     console.log(
-      `  Environment: ${this.format_value(data["config"]["options"]["env"])}`
+      `  Environment: ${format_value(data["config"]["options"]["env"])}`
     )
 
-    console.log(
-      `  debug: ${this.format_value(data["config"]["options"]["debug"])}`
-    )
+    console.log(`  debug: ${format_value(data["config"]["options"]["debug"])}`)
 
-    console.log(`  log: ${this.format_value(data["config"]["options"]["log"])}`)
+    console.log(`  log: ${format_value(data["config"]["options"]["log"])}`)
 
     console.log(
-      `  endpoint: ${this.format_value(data["config"]["options"]["endpoint"])}`
+      `  endpoint: ${format_value(data["config"]["options"]["endpoint"])}`
     )
     console.log(
-      `  ca_file_path: ${this.format_value(
+      `  ca_file_path: ${format_value(
         data["config"]["options"]["ca_file_path"]
       )}`
     )
     console.log(
-      `  active: ${this.format_value(data["config"]["options"]["active"])}`
+      `  active: ${format_value(data["config"]["options"]["active"])}`
     )
     console.log(
-      `  push_api_key: ${this.format_value(
+      `  push_api_key: ${format_value(
         data["config"]["options"]["push_api_key"]
       )}`
     )
@@ -153,21 +179,21 @@ export class Diagnose {
 
     console.log(`  Current working directory`)
     console.log(
-      `    Path: ${this.format_value(data["paths"]["working_dir"]["path"])}`
+      `    Path: ${format_value(data["paths"]["working_dir"]["path"])}`
     )
 
     this.print_newline()
 
     console.log(`  Log directory`)
     console.log(
-      `    Path: ${this.format_value(data["paths"]["log_dir_path"]["path"])}`
+      `    Path: ${format_value(data["paths"]["log_dir_path"]["path"])}`
     )
 
     this.print_newline()
 
     console.log(`  AppSignal log`)
     console.log(
-      `    Path: ${this.format_value(data["paths"]["appsignal.log"]["path"])}`
+      `    Path: ${format_value(data["paths"]["appsignal.log"]["path"])}`
     )
     console.log(`    Contents \(last 10 lines\):`)
     console.log(contents.slice(contents.length - 10).join("\n"))
@@ -257,10 +283,6 @@ export class Diagnose {
     console.log(``)
   }
 
-  format_value(value: any) {
-    return util.inspect(value)
-  }
-
   colorize(value: string) {
     switch (value) {
       case "invalid":
@@ -271,4 +293,8 @@ export class Diagnose {
         return value
     }
   }
+}
+
+function format_value(value: any) {
+  return util.inspect(value)
 }
