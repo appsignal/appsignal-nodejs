@@ -1,5 +1,11 @@
 # AppSignal for Node.js Changelog
 
+## 2.2.1
+
+- [98f11a0](https://github.com/appsignal/appsignal-nodejs/commit/98f11a0685f05676669ded7fa852536c59991e80) patch - The diagnose report will report parsing errors on reading or parsing the installation report. Previously, a missing installation report file would crash the diagnose tool.
+- [e4215a1](https://github.com/appsignal/appsignal-nodejs/commit/e4215a119849a709fc44f8b5d1d2b96ea0e1a269) patch - Print String values in the diagnose report surrounded by quotes. Makes it more clear that it's a String value and not a label we print.
+- [d0a05ae](https://github.com/appsignal/appsignal-nodejs/commit/d0a05ae9bcaeef6d4443e53952920774821aeb5c) patch - Correct the diagnose host section indenting, it was indented one level too far to the right when printed.
+
 ## 2.2.0
 
 - [9c8319e](https://github.com/appsignal/appsignal-nodejs/commit/9c8319e7d014882b9d4fe609ac49e3918f4e0259) minor - Remove interface usage from @appsignal/types
