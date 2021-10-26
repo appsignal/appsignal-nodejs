@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "set"
 require "yaml"
 
 namespace :build_matrix do
@@ -13,13 +14,19 @@ namespace :build_matrix do
       matrix["nodejs"].each do |nodejs|
         nodejs_version = nodejs["nodejs"]
         setup = nodejs.fetch("setup", [])
+        env_vars = nodejs.fetch("env_vars", [])
 
         build_block_name = "Node.js #{nodejs_version} - Build"
         build_block = build_semaphore_task(
           "name" => build_block_name,
           "dependencies" => ["Validation"],
           "task" => {
-            "env_vars" => ["name" => "NODE_VERSION", "value" => nodejs_version],
+            "env_vars" => env_vars + [
+              {
+                "name" => "NODE_VERSION",
+                "value" => nodejs_version
+              }
+            ],
             "prologue" => {
               "commands" => setup + [
                 "cache restore",
@@ -98,7 +105,7 @@ namespace :build_matrix do
             "name" => primary_block_name,
             "dependencies" => [build_block_name],
             "task" => {
-              "env_vars" => [
+              "env_vars" => env_vars + [
                 {
                   "name" => "NODE_VERSION",
                   "value" => nodejs_version
