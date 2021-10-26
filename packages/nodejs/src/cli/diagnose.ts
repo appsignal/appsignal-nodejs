@@ -5,6 +5,37 @@ const path = require("path")
 const util = require("util")
 const readline = require("readline")
 
+interface AgentUnitTestDefinition {
+  label: string
+  values?: {
+    [key: string]: string
+  }
+}
+interface AgentTestDefinition {
+  [key: string]: {
+    // component: agent/extension
+    label: string
+    tests: {
+      [key: string]: {
+        // category: config/boot/some_dir/etc
+        [key: string]: AgentUnitTestDefinition // test: valid/started/uid/gid/etc
+      }
+    }
+  }
+}
+interface AgentReportUnit {
+  result?: string | boolean
+  error?: any
+  output?: any
+}
+interface AgentReport {
+  [key: string]: {
+    [key: string]: {
+      [key: string]: AgentReportUnit
+    }
+  }
+}
+
 export class Diagnose {
   public async run() {
     const data = await new DiagnoseTool({}).generate()
@@ -128,6 +159,9 @@ export class Diagnose {
         data["host"]["running_in_container"]
       )}`
     )
+    this.print_newline()
+
+    this.printAgentDiagnose(data["agent"])
 
     this.print_newline()
 
@@ -237,6 +271,108 @@ export class Diagnose {
           rl.close()
         }
       )
+    }
+  }
+
+  printAgentDiagnose(report: AgentReport) {
+    if (report["error"]) {
+      console.log("  Error while parsing agent diagnostics report:")
+      console.log(`    Error: ${report["error"]}`)
+      console.log(`    Output: ${report["output"]}`)
+    } else {
+      console.log("Agent diagnostics")
+      const reportDefinition = this.agentDiagnosticTestDefinition()
+      for (const component in reportDefinition) {
+        const componentDefinition = reportDefinition[component]
+        const componentTests = componentDefinition["tests"]
+        console.log(`  ${componentDefinition.label}`)
+        for (const category in componentTests) {
+          const tests = componentTests[category]
+          for (const testName in tests) {
+            const testDefinition = tests[testName]
+            const testReport = report[component][category][testName]
+            this.printAgentTest(testDefinition, testReport)
+          }
+        }
+      }
+    }
+  }
+
+  printAgentTest(definition: AgentUnitTestDefinition, test: AgentReportUnit) {
+    const value = test["result"]
+    const error = test["error"]
+    const output = test["output"]
+
+    let formattedValue
+    if (value !== undefined) {
+      const stringValue = value.toString()
+      formattedValue = definition.values
+        ? definition.values[stringValue]
+        : stringValue
+    }
+    if (!formattedValue) {
+      formattedValue = "-"
+    }
+    console.log(`    ${definition["label"]}: ${formattedValue}`)
+    if (error) {
+      console.log(`      Error: ${error}`)
+    }
+    if (output) {
+      console.log(`      Output: ${output}`)
+    }
+  }
+
+  agentDiagnosticTestDefinition(): AgentTestDefinition {
+    return {
+      extension: {
+        label: "Extension tests",
+        tests: {
+          config: {
+            valid: {
+              label: "Configuration",
+              values: { true: "valid", false: "invalid" }
+            }
+          }
+        }
+      },
+      agent: {
+        label: "Agent tests",
+        tests: {
+          boot: {
+            started: {
+              label: "Started",
+              values: { true: "started", false: "not started" }
+            }
+          },
+          host: {
+            uid: { label: "Process user id" },
+            gid: { label: "Process user group id" }
+          },
+          config: {
+            valid: {
+              label: "Configuration",
+              values: { true: "valid", false: "invalid" }
+            }
+          },
+          logger: {
+            started: {
+              label: "Logger",
+              values: { true: "started", false: "not started" }
+            }
+          },
+          working_directory_stat: {
+            uid: { label: "Working directory user id" },
+            gid: { label: "Working directory user group id" },
+            mode: { label: "Working directory permissions" }
+          },
+          lock_path: {
+            created: {
+              label: "Lock path",
+              values: { true: "writable", false: "not writable" }
+            }
+          }
+        }
+      }
     }
   }
 
