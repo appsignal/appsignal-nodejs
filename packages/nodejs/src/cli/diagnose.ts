@@ -290,7 +290,9 @@ export class Diagnose {
           const tests = componentTests[category]
           for (const testName in tests) {
             const testDefinition = tests[testName]
-            const testReport = report[component][category][testName]
+            const componentReport = report[component] || {}
+            const categoryReport = componentReport[category] || {}
+            const testReport = categoryReport[testName] || {}
             this.printAgentTest(testDefinition, testReport)
           }
         }
