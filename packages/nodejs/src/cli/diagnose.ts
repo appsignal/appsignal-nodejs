@@ -4,37 +4,7 @@ const https = require("https")
 const path = require("path")
 const util = require("util")
 const readline = require("readline")
-
-interface AgentUnitTestDefinition {
-  label: string
-  values?: {
-    [key: string]: string
-  }
-}
-interface AgentTestDefinition {
-  [key: string]: {
-    // component: agent/extension
-    label: string
-    tests: {
-      [key: string]: {
-        // category: config/boot/some_dir/etc
-        [key: string]: AgentUnitTestDefinition // test: valid/started/uid/gid/etc
-      }
-    }
-  }
-}
-interface AgentReportUnit {
-  result?: string | boolean
-  error?: any
-  output?: any
-}
-interface AgentReport {
-  [key: string]: {
-    [key: string]: {
-      [key: string]: AgentReportUnit
-    }
-  }
-}
+import { HashMap } from "@appsignal/types"
 
 export class Diagnose {
   public async run() {
@@ -274,7 +244,7 @@ export class Diagnose {
     }
   }
 
-  printAgentDiagnose(report: AgentReport) {
+  printAgentDiagnose(report: HashMap<any>) {
     if (report["error"]) {
       console.log("  Error while parsing agent diagnostics report:")
       console.log(`    Error: ${report["error"]}`)
@@ -300,7 +270,7 @@ export class Diagnose {
     }
   }
 
-  printAgentTest(definition: AgentUnitTestDefinition, test: AgentReportUnit) {
+  printAgentTest(definition: HashMap<any>, test: HashMap<any>) {
     const value = test["result"]
     const error = test["error"]
     const output = test["output"]
@@ -324,7 +294,7 @@ export class Diagnose {
     }
   }
 
-  agentDiagnosticTestDefinition(): AgentTestDefinition {
+  agentDiagnosticTestDefinition(): HashMap<any> {
     return {
       extension: {
         label: "Extension tests",
