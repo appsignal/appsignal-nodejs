@@ -1,32 +1,32 @@
 export interface AppsignalOptions {
-  name: string
-  apiKey: string
   active: boolean
-  debug: boolean
-  logPath: string
-  log: string
-  endpoint: string
+  apiKey: string
   caFilePath: string
-  hostname: string
-  sendParams: string[]
-  filterParameters: string[]
-  filterSessionData: string[]
+  debug: boolean
   dnsServers: string[]
-  ignoreActions: string[]
-  ignoreErrors: string[]
-  ignoreNamespaces: string[]
-  ignoreInstrumentation: string[]
-  httpProxy: string
-  runningInContainer: boolean
-  workingDirPath: string
-  workingDirectoryPath: string
   enableHostMetrics: boolean
   enableMinutelyProbes: boolean
   enableStatsd: boolean
-  skipSessionData: boolean
+  endpoint: string
+  environment: string
   filesWorldAccessible: boolean
+  filterParameters: string[]
+  filterSessionData: string[]
+  hostname: string
+  httpProxy: string
+  ignoreActions: string[]
+  ignoreErrors: string[]
+  ignoreInstrumentation: string[]
+  ignoreNamespaces: string[]
+  log: string
+  logPath: string
+  name: string
   requestHeaders: string[]
   revision: string
-  environment: string
+  runningInContainer: boolean
+  sendParams: string[]
+  skipSessionData: boolean
+  workingDirPath: string
+  workingDirectoryPath: string
   [key: string]: string | string[] | boolean
 }
