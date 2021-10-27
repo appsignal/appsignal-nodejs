@@ -22,6 +22,7 @@ export interface AppsignalOptions {
   workingDirectoryPath: string
   enableHostMetrics: boolean
   enableMinutelyProbes: boolean
+  enableStatsd: boolean
   skipSessionData: boolean
   filesWorldAccessible: boolean
   requestHeaders: string[]

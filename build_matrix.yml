@@ -70,12 +70,22 @@ matrix:
         - "cat /tmp/appsignal-*-install.report"
 
   nodejs:
-    - nodejs: "16"
-      setup:
-        # Configure the host to use GCC 8.3 for Node.js 16. This is the minimal
-        # required version for Node.js 16, and the extension won't compile
-        # without it.
+    - nodejs: "17"
+      setup: &gcc8
+        # Configure the host to use GCC 8.3 for Node.js 16 and above. This
+        # is the minimal required version for Node.js 16 and above, and the
+        # extension won't compile without it.
         - sem-version c 8
+      env_vars:
+        # Set `NODE_OPTIONS` to `--openssl-legacy-provider`, as a workaround
+        # for this `webpack` bug affecting the `@appsignal/nextjs` tests
+        # when running on Node 17:
+        # https://github.com/webpack/webpack/issues/14532
+        # https://github.com/nodejs/node/issues/40455
+        - name: NODE_OPTIONS
+          value: "--openssl-legacy-provider"
+    - nodejs: "16"
+      setup: *gcc8
     - nodejs: "15"
     - nodejs: "14"
     - nodejs: "13"
