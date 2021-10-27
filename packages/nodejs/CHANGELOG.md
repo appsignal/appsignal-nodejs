@@ -1,5 +1,11 @@
 # AppSignal for Node.js Changelog
 
+## 2.2.2
+
+- [fbea22c](https://github.com/appsignal/appsignal-nodejs/commit/fbea22cd6f3a1e9d4c6e1b29446ee772025b6a0c) patch - Fix sending the agent diagnose report with all reports. It was sent, but with the wrong key, which made our server side validator report it as missing.
+- [619b02a](https://github.com/appsignal/appsignal-nodejs/commit/619b02a30b453b1cf44ad228a1e59233c06602dc) patch - Print agent diagnose report in diagnose CLI output.
+- [1e35cf8](https://github.com/appsignal/appsignal-nodejs/commit/1e35cf8d814e0087b2e10dfcb463831c6d34b18e) patch - Add new config option to enable/disable StatsD server in the AppSignal agent. This new config option is called `enableStatsd` and is set to `false` by default. If set to `true`, the AppSignal agent will start a StatsD server on port 8125 on the host.
+
 ## 2.2.1
 
 - [98f11a0](https://github.com/appsignal/appsignal-nodejs/commit/98f11a0685f05676669ded7fa852536c59991e80) patch - The diagnose report will report parsing errors on reading or parsing the installation report. Previously, a missing installation report file would crash the diagnose tool.
