@@ -51,7 +51,7 @@ export class DiagnoseTool {
       installation: this.getInstallationReport(),
       host: this.getHostData(),
       app: {},
-      extension: this.#extension.diagnose(),
+      agent: this.#extension.diagnose(),
       config: {
         options: this.getConfigData(),
         sources: {}

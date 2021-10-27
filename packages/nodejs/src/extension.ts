@@ -50,7 +50,18 @@ export class Extension {
 
   public diagnose(): object {
     if (this.isLoaded) {
-      return JSON.parse(extension.diagnoseRaw())
+      process.env._APPSIGNAL_DIAGNOSE = "true"
+      const diagnostics_report_string = extension.diagnoseRaw()
+      delete process.env._APPSIGNAL_DIAGNOSE
+
+      try {
+        return JSON.parse(diagnostics_report_string)
+      } catch (error) {
+        return {
+          error: error,
+          output: diagnostics_report_string.split("\n")
+        }
+      }
     } else {
       return {}
     }
