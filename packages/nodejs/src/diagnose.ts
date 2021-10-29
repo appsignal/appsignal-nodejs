@@ -194,6 +194,52 @@ export class DiagnoseTool {
 
     return config
   }
+
+  public sendReport(data: object) {
+    const json = JSON.stringify(data)
+
+    const config = this.#config.data
+    const params = new URLSearchParams({ api_key: config["apiKey"] || "" })
+
+    const opts = {
+      port: 443,
+      method: "POST",
+      host: "appsignal.com",
+      path: `/diag?${params.toString()}`,
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": json.length
+      },
+      cert: fs.readFileSync(
+        path.resolve(__dirname, "../cert/cacert.pem"),
+        "utf-8"
+      )
+    }
+
+    const request = https.request(opts, (response: any) => {
+      const responseStatus = response.statusCode
+      response.setEncoding("utf8")
+
+      response.on("data", (responseData: any) => {
+        if (responseStatus === 200) {
+          const { token } = JSON.parse(responseData.toString())
+          console.log(`  Your support token:`, token)
+          console.log(
+            `  View this report: https://appsignal.com/diagnose/${token}`
+          )
+        } else {
+          console.error(
+            "  Error: Something went wrong while submitting the report to AppSignal."
+          )
+          console.error(`  Response code: ${responseStatus}`)
+          console.error(`  Response body:\n${responseData}`)
+        }
+      })
+    })
+
+    request.write(json)
+    request.end()
+  }
 }
 
 // This implementation should match the `packages/nodejs-ext/scripts/report.js`
