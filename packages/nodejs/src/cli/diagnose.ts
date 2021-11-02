@@ -224,7 +224,7 @@ export class Diagnose {
         `  Not sending report. (Specified with the --no-send-report option.)`
       )
     } else if (process.argv.includes("--send-report")) {
-      this.#diagnose.sendReport(data)
+      this.sendReport(data)
     } else {
       const rl = readline.createInterface({
         input: process.stdin,
@@ -237,7 +237,7 @@ export class Diagnose {
         function (answer: String) {
           switch (answer || "y") {
             case "y":
-              self.#diagnose.sendReport(data)
+              self.sendReport(data)
               break
 
             default:
@@ -248,6 +248,10 @@ export class Diagnose {
         }
       )
     }
+  }
+
+  sendReport(data: object) {
+    this.#diagnose.sendReport(data)
   }
 
   printAgentDiagnose(report: HashMap<any>) {
