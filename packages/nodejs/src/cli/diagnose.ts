@@ -251,6 +251,8 @@ export class Diagnose {
   }
 
   sendReport(data: object) {
+    console.log("  Transmitting diagnostics report")
+    console.log("")
     this.#diagnose.sendReport(data)
   }
 

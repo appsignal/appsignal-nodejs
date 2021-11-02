@@ -231,7 +231,7 @@ export class DiagnoseTool {
           const { token } = JSON.parse(responseData.toString())
           console.log(`  Your support token:`, token)
           console.log(
-            `  View this report: https://appsignal.com/diagnose/${token}`
+            `  View this report:   https://appsignal.com/diagnose/${token}`
           )
         } else {
           console.error(
