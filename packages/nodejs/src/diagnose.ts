@@ -1,6 +1,7 @@
 import fs from "fs"
 import path from "path"
 import https from "https"
+import http from "http"
 import { URL, URLSearchParams } from "url"
 import { createHash } from "crypto"
 
@@ -50,7 +51,6 @@ export class DiagnoseTool {
       library: this.getLibraryData(),
       installation: this.getInstallationReport(),
       host: this.getHostData(),
-      app: {},
       agent: this.#extension.diagnose(),
       config: {
         options: this.getConfigData(),
@@ -196,16 +196,21 @@ export class DiagnoseTool {
   }
 
   public sendReport(data: object) {
-    const json = JSON.stringify(data)
+    const json = JSON.stringify({ diagnose: data })
 
     const config = this.#config.data
     const params = new URLSearchParams({ api_key: config["apiKey"] || "" })
 
+    const diagnoseEndpoint =
+      process.env.APPSIGNAL_DIAGNOSE_ENDPOINT || "https://appsignal.com/diag"
+    const url = new URL(diagnoseEndpoint)
+
     const opts = {
-      port: 443,
       method: "POST",
-      host: "appsignal.com",
-      path: `/diag?${params.toString()}`,
+      protocol: url.protocol,
+      host: url.hostname,
+      port: url.port,
+      path: `${url.pathname}?${params.toString()}`,
       headers: {
         "Content-Type": "application/json",
         "Content-Length": json.length
@@ -216,7 +221,8 @@ export class DiagnoseTool {
       )
     }
 
-    const request = https.request(opts, (response: any) => {
+    const requestModule = url.protocol == "http:" ? http : https
+    const request = requestModule.request(opts, (response: any) => {
       const responseStatus = response.statusCode
       response.setEncoding("utf8")
 
