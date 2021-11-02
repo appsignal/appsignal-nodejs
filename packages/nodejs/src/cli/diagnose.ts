@@ -7,8 +7,14 @@ const readline = require("readline")
 import { HashMap } from "@appsignal/types"
 
 export class Diagnose {
+  #diagnose: typeof DiagnoseTool
+
+  constructor() {
+    this.#diagnose = new DiagnoseTool({})
+  }
+
   public async run() {
-    const data = await new DiagnoseTool({}).generate()
+    const data = await this.#diagnose.generate()
 
     console.log(`AppSignal diagnose`)
     console.log(`=`.repeat(80))
@@ -218,7 +224,7 @@ export class Diagnose {
         `  Not sending report. (Specified with the --no-send-report option.)`
       )
     } else if (process.argv.includes("--send-report")) {
-      this.send_report(data)
+      this.#diagnose.sendReport(data)
     } else {
       const rl = readline.createInterface({
         input: process.stdin,
@@ -231,7 +237,7 @@ export class Diagnose {
         function (answer: String) {
           switch (answer || "y") {
             case "y":
-              self.send_report(data)
+              self.#diagnose.sendReport(data)
               break
 
             default:
@@ -346,45 +352,6 @@ export class Diagnose {
         }
       }
     }
-  }
-
-  send_report(data: object) {
-    const json = JSON.stringify(data)
-
-    const opts = {
-      port: 443,
-      method: "POST",
-      host: "appsignal.com",
-      path: "/diag",
-      headers: {
-        "Content-Type": "application/json",
-        "Content-Length": json.length
-      },
-      cert: fs.readFileSync(
-        path.resolve(__dirname, "../../cert/cacert.pem"),
-        "utf-8"
-      )
-    }
-
-    const req = https.request(opts, (res: any) => {
-      res.setEncoding("utf8")
-
-      // print token to the console
-      res.on("data", (chunk: any) => {
-        const { token } = JSON.parse(chunk.toString())
-        console.log(`  Your support token:`, token)
-        console.log(
-          `  View this report: https://appsignal.com/diagnose/${token}`
-        )
-      })
-    })
-
-    req.on("error", (e: any) => {
-      console.error(`Problem with diagnose request: ${e.message}`)
-    })
-
-    req.write(json)
-    req.end()
   }
 
   print_newline() {
