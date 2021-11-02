@@ -13,7 +13,7 @@ import { JS_TO_RUBY_MAPPING } from "./config/configmap"
 interface FileMetadata {
   content?: string[]
   exists: boolean
-  mode?: number
+  mode?: string
   ownership?: {
     gid: number
     uid: number
@@ -161,7 +161,7 @@ export class DiagnoseTool {
         paths[key] = {
           ...data,
           exists: true,
-          mode,
+          mode: mode.toString(8),
           ownership: {
             gid,
             uid
