@@ -142,30 +142,11 @@ export class Diagnose {
     this.print_newline()
 
     console.log(`Configuration`)
-    console.log(
-      `  Environment: ${format_value(data["config"]["options"]["env"])}`
-    )
-
-    console.log(`  debug: ${format_value(data["config"]["options"]["debug"])}`)
-
-    console.log(`  log: ${format_value(data["config"]["options"]["log"])}`)
-
-    console.log(
-      `  endpoint: ${format_value(data["config"]["options"]["endpoint"])}`
-    )
-    console.log(
-      `  ca_file_path: ${format_value(
-        data["config"]["options"]["ca_file_path"]
-      )}`
-    )
-    console.log(
-      `  active: ${format_value(data["config"]["options"]["active"])}`
-    )
-    console.log(
-      `  push_api_key: ${format_value(
-        data["config"]["options"]["push_api_key"]
-      )}`
-    )
+    Object.keys(data["config"]["options"])
+      .sort()
+      .forEach(key => {
+        console.log(`  ${key}: ${format_value(data["config"]["options"][key])}`)
+      })
 
     this.print_newline()
 
