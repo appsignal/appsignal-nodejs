@@ -3,6 +3,7 @@ import path from "path"
 import { VERSION } from "./version"
 import { AppsignalOptions } from "./interfaces/options"
 import { ENV_TO_KEY_MAPPING, PRIVATE_ENV_MAPPING } from "./config/configmap"
+import { HashMap } from "@appsignal/types"
 
 /**
  * The AppSignal configuration object.
@@ -14,15 +15,20 @@ import { ENV_TO_KEY_MAPPING, PRIVATE_ENV_MAPPING } from "./config/configmap"
  */
 export class Configuration {
   data: Partial<AppsignalOptions>
+  sources: HashMap<Partial<AppsignalOptions>>
 
   constructor(options: Partial<AppsignalOptions>) {
     writePrivateConstants()
 
-    this.data = {
-      ...this._defaultValues(),
-      ...this._loadFromEnvironment(),
-      ...options
+    this.sources = {
+      default: this._defaultValues(),
+      env: this._loadFromEnvironment(),
+      initial: options
     }
+
+    this.data = Object.values(this.sources).reduce((data, options) => {
+      return {...data, ...options}
+    }, {});
 
     this._write(this.data)
   }

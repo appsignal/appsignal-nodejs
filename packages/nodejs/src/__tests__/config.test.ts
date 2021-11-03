@@ -6,44 +6,62 @@ describe("Configuration", () => {
   const apiKey = "TEST_API_KEY"
 
   let config: Configuration
+  let initialEnv: { [key: string]: any }
+
+  function resetEnv() {
+    Object.keys(process.env).forEach(key => {
+      if (!initialEnv.hasOwnProperty(key)) {
+        delete process.env[key]
+      }
+    })
+  }
+
+  beforeAll(() => {
+    initialEnv = Object.assign({}, process.env)
+  })
+
+  afterAll(() => {
+    resetEnv()
+  })
 
   beforeEach(() => {
     jest.resetModules()
+    resetEnv()
     config = new Configuration({ name, apiKey })
   })
 
-  it("writes key and name to the environment", () => {
-    expect(process.env["_APPSIGNAL_APP_NAME"]).toEqual(name)
-    expect(process.env["_APPSIGNAL_PUSH_API_KEY"]).toEqual(apiKey)
-  })
+  describe("Private environment variables", () => {
+    it("writes initial values to the environment", () => {
+      expect(process.env["_APPSIGNAL_APP_NAME"]).toEqual(name)
+      expect(process.env["_APPSIGNAL_PUSH_API_KEY"]).toEqual(apiKey)
+    })
 
-  it("writes private constants to the environment", () => {
-    expect(process.env["_APPSIGNAL_AGENT_PATH"]).toBeDefined()
-    expect(process.env["_APPSIGNAL_ENVIRONMENT"]).toBeDefined()
-    expect(process.env["_APPSIGNAL_PROCESS_NAME"]).toBeDefined()
-    expect(process.env["_APPSIGNAL_LANGUAGE_INTEGRATION_VERSION"]).toBeDefined()
-    expect(process.env["_APPSIGNAL_APP_PATH"]).toBeDefined()
-  })
+    it("writes private constants to the environment", () => {
+      expect(process.env["_APPSIGNAL_AGENT_PATH"]).toBeDefined()
+      expect(process.env["_APPSIGNAL_ENVIRONMENT"]).toBeDefined()
+      expect(process.env["_APPSIGNAL_PROCESS_NAME"]).toBeDefined()
+      expect(
+        process.env["_APPSIGNAL_LANGUAGE_INTEGRATION_VERSION"]
+      ).toBeDefined()
+      expect(process.env["_APPSIGNAL_APP_PATH"]).toBeDefined()
+    })
 
-  it("recognises a valid configuration", () => {
-    expect(config.isValid).toBeTruthy()
-  })
+    it("loads configuration from the environment", () => {
+      process.env["APPSIGNAL_ACTIVE"] = "true"
 
-  it("loads configuration from the environment", () => {
-    process.env["APPSIGNAL_ACTIVE"] = "true"
+      config = new Configuration({ name, apiKey })
+      expect(process.env["_APPSIGNAL_ACTIVE"]).toBeTruthy()
+    })
 
-    config = new Configuration({ name, apiKey })
-    expect(process.env["_APPSIGNAL_ACTIVE"]).toBeTruthy()
-  })
-
-  it("uses a default log file path", () => {
-    expect(process.env["_APPSIGNAL_LOG_FILE_PATH"]).toEqual(
-      "/tmp/appsignal.log"
-    )
+    it("uses a default log file path", () => {
+      expect(process.env["_APPSIGNAL_LOG_FILE_PATH"]).toEqual(
+        "/tmp/appsignal.log"
+      )
+    })
   })
 
   describe("Default options", () => {
-    const expectedConfig = {
+    const expectedDefaultConfig = {
       caFilePath: path.join(__dirname, "../../cert/cacert.pem"),
       debug: false,
       dnsServers: [],
@@ -64,25 +82,59 @@ describe("Configuration", () => {
       transactionDebugMode: false
     }
 
+    const expectedInitialConfig = {
+      name,
+      apiKey
+    }
+
+    const expectedConfig = {
+      ...expectedDefaultConfig,
+      ...expectedInitialConfig
+    }
+
     it("loads all default options when no options are overwritten", () => {
-      expect(config.data).toMatchObject(expectedConfig)
+      expect(config.data).toEqual(expectedConfig)
+
+      expect(config.sources.default).toEqual(expectedDefaultConfig)
+      expect(config.sources.initial).toEqual(expectedInitialConfig)
+      expect(config.sources.env).toEqual({})
     })
 
-    it("loads default options and overwrites the specified ones", () => {
-      const expectedOverwrittenConfig = {
-        ...expectedConfig,
+    describe("overwrites default values", () => {
+      const overwrittenConfig = {
         debug: true,
         enableStatsd: true
       }
 
-      config = new Configuration({
-        name,
-        apiKey,
-        debug: true,
-        enableStatsd: true
+      const expectedConfig = {
+        ...expectedDefaultConfig,
+        ...overwrittenConfig
+      }
+
+      it("with initial values", () => {
+        config = new Configuration({
+          ...overwrittenConfig
+        })
+
+        expect(config.data).toEqual(expectedConfig)
+
+        expect(config.sources.default).toEqual(expectedDefaultConfig)
+        expect(config.sources.initial).toEqual(overwrittenConfig)
+        expect(config.sources.env).toEqual({})
       })
 
-      expect(config.data).toMatchObject(expectedOverwrittenConfig)
+      it("with environment values", () => {
+        process.env["APPSIGNAL_DEBUG"] = "true"
+        process.env["APPSIGNAL_ENABLE_STATSD"] = "true"
+
+        config = new Configuration({})
+
+        expect(config.data).toEqual(expectedConfig)
+
+        expect(config.sources.default).toEqual(expectedDefaultConfig)
+        expect(config.sources.initial).toEqual({})
+        expect(config.sources.env).toEqual(overwrittenConfig)
+      })
     })
   })
 
