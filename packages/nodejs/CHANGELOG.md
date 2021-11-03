@@ -1,5 +1,11 @@
 # AppSignal for Node.js Changelog
 
+## 2.2.3
+
+- [1d3eccc](https://github.com/appsignal/appsignal-nodejs/commit/1d3eccc86c05add0ef5d80d47228ab84d42edd89) patch - Fix diagnose report recognition when sent to the server. It was sent without an `api_key` parameter, which resulted in apps not being linked to the parent organization based on the known Push API key.
+- [9171182](https://github.com/appsignal/appsignal-nodejs/commit/9171182ac1d5c907df631ac5d00d729348527bb5) patch - Transmit the path file modes in the diagnose report as an octal number. Previously it send values like `33188` and now it transmits `100644`, which is a bit more human readable.
+- patch - Update @appsignal/nodejs-ext dependency to 2.0.3.
+
 ## 2.2.2
 
 - [fbea22c](https://github.com/appsignal/appsignal-nodejs/commit/fbea22cd6f3a1e9d4c6e1b29446ee772025b6a0c) patch - Fix sending the agent diagnose report with all reports. It was sent, but with the wrong key, which made our server side validator report it as missing.

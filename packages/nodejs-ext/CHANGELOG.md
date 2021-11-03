@@ -1,5 +1,13 @@
 # AppSignal for Node.js extension Changelog
 
+## 2.0.3
+
+- [6ba536e](https://github.com/appsignal/appsignal-nodejs/commit/6ba536ec60d972d16969be21d46864fef843d112) patch - Bump agent to 09308fb
+  
+  - Update sql_lexer dependency with support for reversed operators in queries.
+  - Add debug level logging to custom metrics in transaction_debug_mode.
+  - Add hostname config option to standalone agent.
+
 ## 2.0.2
 
 - [bfa4083](https://github.com/appsignal/appsignal-nodejs/commit/bfa40837d6bf3ff0558dd01f3e4705bcfd304340) patch - Fix the checksum verification failure on extension installation. If the download checksum verification failed it would not write a diagnose report and it would be difficult to debug the cause for the AppSignal team.
