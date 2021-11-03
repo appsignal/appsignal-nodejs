@@ -1,3 +1,4 @@
+import path from "path"
 import { Configuration } from "../config"
 
 describe("Configuration", () => {
@@ -39,6 +40,50 @@ describe("Configuration", () => {
     expect(process.env["_APPSIGNAL_LOG_FILE_PATH"]).toEqual(
       "/tmp/appsignal.log"
     )
+  })
+
+  describe("Default options", () => {
+    const expectedConfig = {
+      caFilePath: path.join(__dirname, "../../cert/cacert.pem"),
+      debug: false,
+      dnsServers: [],
+      enableHostMetrics: true,
+      enableMinutelyProbes: true,
+      enableStatsd: false,
+      endpoint: "https://push.appsignal.com",
+      environment: process.env.NODE_ENV || "development",
+      filesWorldAccessible: true,
+      filterDataKeys: [],
+      filterParameters: [],
+      filterSessionData: [],
+      ignoreActions: [],
+      ignoreErrors: [],
+      ignoreNamespaces: [],
+      log: "file",
+      logPath: "/tmp",
+      transactionDebugMode: false
+    }
+
+    it("loads all default options when no options are overwritten", () => {
+      expect(config.data).toMatchObject(expectedConfig)
+    })
+
+    it("loads default options and overwrites the specified ones", () => {
+      const expectedOverwrittenConfig = {
+        ...expectedConfig,
+        debug: true,
+        enableStatsd: true
+      }
+
+      config = new Configuration({
+        name,
+        apiKey,
+        debug: true,
+        enableStatsd: true
+      })
+
+      expect(config.data).toMatchObject(expectedOverwrittenConfig)
+    })
   })
 
   describe("Overriden log path with file specified", () => {
