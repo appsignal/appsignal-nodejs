@@ -19,12 +19,7 @@ export class Configuration {
     writePrivateConstants()
 
     this.data = {
-      debug: false,
-      log: "file",
-      logPath: "/tmp",
-      caFilePath: path.join(__dirname, "../cert/cacert.pem"),
-      endpoint: "https://push.appsignal.com",
-      environment: process.env.NODE_ENV || "development",
+      ...this._defaultValues(),
       ...this._loadFromEnvironment(),
       ...options
     }
@@ -46,6 +41,34 @@ export class Configuration {
    */
   public get isValid(): boolean {
     return true
+  }
+
+  /**
+   * Explicit default configuration values
+   *
+   * @private
+   */
+  private _defaultValues(): { [key: string]: any } {
+    return {
+      caFilePath: path.join(__dirname, "../cert/cacert.pem"),
+      debug: false,
+      dnsServers: [],
+      enableHostMetrics: true,
+      enableMinutelyProbes: true,
+      enableStatsd: false,
+      endpoint: "https://push.appsignal.com",
+      environment: process.env.NODE_ENV || "development",
+      filesWorldAccessible: true,
+      filterDataKeys: [],
+      filterParameters: [],
+      filterSessionData: [],
+      ignoreActions: [],
+      ignoreErrors: [],
+      ignoreNamespaces: [],
+      log: "file",
+      logPath: "/tmp",
+      transactionDebugMode: false
+    }
   }
 
   /**
