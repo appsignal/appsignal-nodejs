@@ -1,11 +1,11 @@
 {
   "name": "@appsignal/nextjs",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "main": "dist/index",
   "types": "dist/index",
   "license": "MIT",
   "dependencies": {
-    "@appsignal/nodejs": "=2.2.3",
+    "@appsignal/nodejs": "=2.2.4",
     "tslib": "^2.0.3"
   },
   "peerDependencies": {

@@ -1,5 +1,11 @@
 # AppSignal for Node.js Changelog
 
+## 2.2.4
+
+- [ec93e49](https://github.com/appsignal/appsignal-nodejs/commit/ec93e49a29c56b7b0d5f66a9d069cc8e82cdf76a) patch - All user-configurable options are now printed in the diagnose report.
+  
+  Check the [list of available options](https://docs.appsignal.com/nodejs/configuration/options.html).
+
 ## 2.2.3
 
 - [1d3eccc](https://github.com/appsignal/appsignal-nodejs/commit/1d3eccc86c05add0ef5d80d47228ab84d42edd89) patch - Fix diagnose report recognition when sent to the server. It was sent without an `api_key` parameter, which resulted in apps not being linked to the parent organization based on the known Push API key.
