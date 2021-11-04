@@ -134,9 +134,7 @@ export class DiagnoseTool {
   private getPathsData() {
     const paths: { [key: string]: FileMetadata } = {}
 
-    // we want to fall over if this value isn't present
-    // (it should be)
-    const logFilePath = <string>this.#config.data.logFilePath!
+    const logFilePath = this.#config.logFilePath
 
     // add any paths we want to check to this object!
     const files = {
@@ -210,9 +208,12 @@ export class DiagnoseTool {
    * option keys with snake_case names.
    */
   private getSources() {
-    return Object.entries(this.#config.sources).reduce((sources, [name, options]) => {
-      return {...sources, [name]: this.optionsObject(options)}
-    }, {})
+    return Object.entries(this.#config.sources).reduce(
+      (sources, [name, options]) => {
+        return { ...sources, [name]: this.optionsObject(options) }
+      },
+      {}
+    )
   }
 
   public sendReport(data: object) {

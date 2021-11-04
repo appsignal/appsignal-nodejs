@@ -345,62 +345,40 @@ export class Diagnose {
     }
   }
 
-  printConfiguration(
-    {options, sources}: {
-      options: { [key: string]: any },
-      sources: { [source: string]: { [key: string]: any } }
-    }
-  ) {
+  printConfiguration({
+    options,
+    sources
+  }: {
+    options: { [key: string]: any }
+    sources: { [source: string]: { [key: string]: any } }
+  }) {
     console.log(`Configuration`)
     Object.keys(options)
       .sort()
       .forEach(key => {
         let keySources = this.configurationKeySources(key, sources)
 
-        switch (Object.keys(keySources).length) {
-          case 0:
-            if (key == 'log_file_path') {
-              // The `log_file_path` configuration key is generated after
-              // the config is read and does not belong to any sources.
-              // Since it is derived from `log_path`, let's give it the
-              // same source as `log_path`'s final value.
-              const logPathSources = Object.keys(
-                this.configurationKeySources('log_path', sources)
-              )
-              // `log_path` has a default value, so it always has at least
-              // one source. The sources are inserted in the order they are
-              // processed, so the last one overrides the others.
-              const logPathSource = logPathSources[logPathSources.length - 1]
-              keySources[logPathSource] = options[key]
-            } else {
-              // This branch should not be executed. But if it does,
-              // let's pretend this key comes from the default source.
-              keySources["default"] = options[key]
-            }
-            // Intentional absence of `break` so that the value is printed
-            // by the next `case`.
-          case 1:
-            const source = Object.keys(keySources)[0]
+        if (Object.keys(keySources).length == 1) {
+          const source = Object.keys(keySources)[0]
 
-            let extra = ""
-            if (source !== "default") {
-              extra = ` (Loaded from: ${source})`
-            }
+          let extra = ""
+          if (source !== "default") {
+            extra = ` (Loaded from: ${source})`
+          }
 
-            console.log(`  ${key}: ${format_value(options[key])}${extra}`)
-            break;
-          default:
-            console.log(`  ${key}: ${format_value(options[key])}`)
-            console.log(`    Sources:`)
-            const maxSourceLength = Object.keys(keySources)
-              // Adding one to account for the `:` after the source name.
-              .map(source => source.length + 1)
-              .reduce((max, source) => Math.max(max, source), 0);
+          console.log(`  ${key}: ${format_value(options[key])}${extra}`)
+        } else {
+          console.log(`  ${key}: ${format_value(options[key])}`)
+          console.log(`    Sources:`)
+          const maxSourceLength = Object.keys(keySources)
+            // Adding one to account for the `:` after the source name.
+            .map(source => source.length + 1)
+            .reduce((max, source) => Math.max(max, source), 0)
 
-            Object.entries(keySources).forEach(([source, value]) => {
-              source = `${source}:`.padEnd(maxSourceLength, ' ')
-              console.log(`      ${source} ${format_value(value)}`)
-            })
+          Object.entries(keySources).forEach(([source, value]) => {
+            source = `${source}:`.padEnd(maxSourceLength, " ")
+            console.log(`      ${source} ${format_value(value)}`)
+          })
         }
       })
   }
@@ -408,15 +386,17 @@ export class Diagnose {
   configurationKeySources(
     key: string,
     sources: { [source: string]: { [key: string]: any } }
-  ) : { [source: string]: any } {
-    return Object.entries(sources)
-      .reduce((keySources, [source, sourceOptions]) => {
+  ): { [source: string]: any } {
+    return Object.entries(sources).reduce(
+      (keySources, [source, sourceOptions]) => {
         if (sourceOptions.hasOwnProperty(key)) {
-          return {...keySources, [source]: sourceOptions[key]}
+          return { ...keySources, [source]: sourceOptions[key] }
         } else {
           return keySources
         }
-      }, {})
+      },
+      {}
+    )
   }
 
   print_newline() {

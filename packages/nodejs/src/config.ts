@@ -18,8 +18,6 @@ export class Configuration {
   sources: HashMap<Partial<AppsignalOptions>>
 
   constructor(options: Partial<AppsignalOptions>) {
-    writePrivateConstants()
-
     this.sources = {
       default: this._defaultValues(),
       env: this._loadFromEnvironment(),
@@ -27,10 +25,10 @@ export class Configuration {
     }
 
     this.data = Object.values(this.sources).reduce((data, options) => {
-      return {...data, ...options}
-    }, {});
+      return { ...data, ...options }
+    }, {})
 
-    this._write(this.data)
+    this.writePrivateConfig(this.data)
   }
 
   /**
@@ -45,6 +43,16 @@ export class Configuration {
    */
   public get isValid(): boolean {
     return (this.data.apiKey || "").trim() !== ""
+  }
+
+  public get logFilePath(): string {
+    let logPath = this.data["logPath"]!
+
+    if (!logPath.endsWith("appsignal.log")) {
+      logPath = path.join(logPath, "appsignal.log")
+    }
+
+    return logPath
   }
 
   /**
@@ -104,13 +112,10 @@ export class Configuration {
    *
    * @private
    */
-  private _write(config: { [key: string]: any }) {
-    // First write log file path based on log path
-    if (config["logPath"].endsWith("appsignal.log")) {
-      config["logFilePath"] = config["logPath"]
-    } else {
-      config["logFilePath"] = path.join(config["logPath"], "appsignal.log")
-    }
+  private writePrivateConfig(config: { [key: string]: any }) {
+    this.writePrivateConstants()
+    process.env["_APPSIGNAL_LOG_FILE_PATH"] = this.logFilePath
+
     // write to a "private" environment variable if it exists in the
     // config structure
     Object.entries(PRIVATE_ENV_MAPPING).forEach(([k, v]) => {
@@ -123,26 +128,24 @@ export class Configuration {
 
       if (current) process.env[k] = String(current)
     })
-
-    return
-  }
-}
-
-/**
- * Writes private environment variables that are not user configured,
- * and static in the lifecycle of the agent.
- *
- * @function
- * @private
- */
-function writePrivateConstants() {
-  const priv = {
-    // @TODO: is this path always correct?
-    _APPSIGNAL_AGENT_PATH: path.join(__dirname, "/../../nodejs-ext/ext"),
-    _APPSIGNAL_PROCESS_NAME: process.title,
-    _APPSIGNAL_LANGUAGE_INTEGRATION_VERSION: `nodejs-${VERSION}`,
-    _APPSIGNAL_APP_PATH: process.cwd()
   }
 
-  Object.entries(priv).forEach(([k, v]) => (process.env[k] = v))
+  /**
+   * Writes private environment variables that are not user configured,
+   * and static in the lifecycle of the agent.
+   *
+   * @function
+   * @private
+   */
+  private writePrivateConstants() {
+    const priv = {
+      // @TODO: is this path always correct?
+      _APPSIGNAL_AGENT_PATH: path.join(__dirname, "/../../nodejs-ext/ext"),
+      _APPSIGNAL_PROCESS_NAME: process.title,
+      _APPSIGNAL_LANGUAGE_INTEGRATION_VERSION: `nodejs-${VERSION}`,
+      _APPSIGNAL_APP_PATH: process.cwd()
+    }
+
+    Object.entries(priv).forEach(([k, v]) => (process.env[k] = v))
+  }
 }
