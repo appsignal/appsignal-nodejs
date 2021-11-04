@@ -199,7 +199,12 @@ export class DiagnoseTool {
     const json = JSON.stringify({ diagnose: data })
 
     const config = this.#config.data
-    const params = new URLSearchParams({ api_key: config["apiKey"] || "" })
+    const params = new URLSearchParams({
+      api_key: config["apiKey"] || "",
+      name: config["name"] || "",
+      environment: config["environment"] || "",
+      hostname: config["hostname"] || ""
+    })
 
     const diagnoseEndpoint =
       process.env.APPSIGNAL_DIAGNOSE_ENDPOINT || "https://appsignal.com/diag"
