@@ -28,6 +28,12 @@ describe("BaseClient", () => {
     expect(client.isActive).toBeFalsy()
   })
 
+  it("does not start the client if config is not valid", () => {
+    process.env["APPSIGNAL_PUSH_API_KEY"] = undefined
+    client = new BaseClient({ name, enableMinutelyProbes: false })
+    expect(client.isActive).toBeFalsy()
+  })
+
   it("starts the client when the active option is true", () => {
     client = new BaseClient({ ...DEFAULT_OPTS, active: true })
     expect(client.isActive).toBeTruthy()

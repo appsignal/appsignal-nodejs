@@ -86,6 +86,28 @@ describe("Configuration", () => {
     })
   })
 
+  describe(".isValid", () => {
+    it("is valid if apiKey is present", () => {
+      expect(config.isValid).toBeTruthy()
+    })
+
+    it("is invalid if apiKey is not present", () => {
+      process.env["APPSIGNAL_PUSH_API_KEY"] = undefined
+      config = new Configuration({ name })
+      expect(config.isValid).toBeFalsy()
+    })
+
+    it("is invalid if apiKey is an empty string", () => {
+      config = new Configuration({ name, apiKey: "" })
+      expect(config.isValid).toBeFalsy()
+    })
+
+    it("is invalid if apiKey is a string with only whitespaces", () => {
+      config = new Configuration({ name, apiKey: "  " })
+      expect(config.isValid).toBeFalsy()
+    })
+  })
+
   describe("Overriden log path with file specified", () => {
     beforeEach(() => {
       process.env["APPSIGNAL_LOG_PATH"] = "/other_path/appsignal.log"

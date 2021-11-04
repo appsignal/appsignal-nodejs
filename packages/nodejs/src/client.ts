@@ -68,7 +68,7 @@ export class BaseClient implements Client {
     if (this.config.isValid) {
       this.extension.start()
     } else {
-      console.error("Not starting, no valid config for this environment")
+      console.error("Not starting, no valid AppSignal configuration found")
     }
   }
 

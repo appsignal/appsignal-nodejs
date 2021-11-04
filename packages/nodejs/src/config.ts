@@ -36,11 +36,9 @@ export class Configuration {
 
   /**
    * Returns `true` if the current configuration is valid.
-   *
-   * @todo
    */
   public get isValid(): boolean {
-    return true
+    return (this.data.apiKey || "").trim() !== ""
   }
 
   /**
