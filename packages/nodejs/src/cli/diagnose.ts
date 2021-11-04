@@ -108,6 +108,14 @@ export class Diagnose {
           data["installation"]["build"]["library_type"]
         )}`
       )
+      console.log(
+        `    Dependencies: ${format_value(
+          data["installation"]["build"]["dependencies"]
+        )}`
+      )
+      console.log(
+        `    Flags: ${format_value(data["installation"]["build"]["flags"])}`
+      )
       console.log(`  Host details`)
       console.log(
         `    Root user: ${format_value(
