@@ -5,6 +5,7 @@ const path = require("path")
 const util = require("util")
 const readline = require("readline")
 import { HashMap } from "@appsignal/types"
+import { AppsignalOptions } from ".."
 
 export class Diagnose {
   #diagnose: typeof DiagnoseTool
@@ -149,12 +150,7 @@ export class Diagnose {
 
     this.print_newline()
 
-    console.log(`Configuration`)
-    Object.keys(data["config"]["options"])
-      .sort()
-      .forEach(key => {
-        console.log(`  ${key}: ${format_value(data["config"]["options"][key])}`)
-      })
+    this.printConfiguration(data["config"])
 
     this.print_newline()
 
@@ -347,6 +343,60 @@ export class Diagnose {
         }
       }
     }
+  }
+
+  printConfiguration({
+    options,
+    sources
+  }: {
+    options: { [key: string]: any }
+    sources: { [source: string]: { [key: string]: any } }
+  }) {
+    console.log(`Configuration`)
+    Object.keys(options)
+      .sort()
+      .forEach(key => {
+        let keySources = this.configurationKeySources(key, sources)
+
+        if (Object.keys(keySources).length == 1) {
+          const source = Object.keys(keySources)[0]
+
+          let extra = ""
+          if (source !== "default") {
+            extra = ` (Loaded from: ${source})`
+          }
+
+          console.log(`  ${key}: ${format_value(options[key])}${extra}`)
+        } else {
+          console.log(`  ${key}: ${format_value(options[key])}`)
+          console.log(`    Sources:`)
+          const maxSourceLength = Object.keys(keySources)
+            // Adding one to account for the `:` after the source name.
+            .map(source => source.length + 1)
+            .reduce((max, source) => Math.max(max, source), 0)
+
+          Object.entries(keySources).forEach(([source, value]) => {
+            source = `${source}:`.padEnd(maxSourceLength, " ")
+            console.log(`      ${source} ${format_value(value)}`)
+          })
+        }
+      })
+  }
+
+  configurationKeySources(
+    key: string,
+    sources: { [source: string]: { [key: string]: any } }
+  ): { [source: string]: any } {
+    return Object.entries(sources).reduce(
+      (keySources, [source, sourceOptions]) => {
+        if (sourceOptions.hasOwnProperty(key)) {
+          return { ...keySources, [source]: sourceOptions[key] }
+        } else {
+          return keySources
+        }
+      },
+      {}
+    )
   }
 
   print_newline() {

@@ -9,6 +9,7 @@ import { Extension } from "./extension"
 import { Configuration } from "./config"
 import { AGENT_VERSION, VERSION } from "./version"
 import { JS_TO_RUBY_MAPPING } from "./config/configmap"
+import { AppsignalOptions } from "."
 
 interface FileMetadata {
   content?: string[]
@@ -54,7 +55,7 @@ export class DiagnoseTool {
       agent: this.#extension.diagnose(),
       config: {
         options: this.getConfigData(),
-        sources: {}
+        sources: this.getSources()
       },
       validation: { push_api_key: pushApiKeyValidation },
       process: {
@@ -133,9 +134,7 @@ export class DiagnoseTool {
   private getPathsData() {
     const paths: { [key: string]: FileMetadata } = {}
 
-    // we want to fall over if this value isn't present
-    // (it should be)
-    const logFilePath = <string>this.#config.data.logFilePath!
+    const logFilePath = this.#config.logFilePath
 
     // add any paths we want to check to this object!
     const files = {
@@ -182,17 +181,39 @@ export class DiagnoseTool {
 
   /**
    * Reads all configuration and re-maps it to keys with
-   * snake_case names as they appear in our API.
+   * snake_case names.
    */
   private getConfigData() {
+    return this.optionsObject(this.#config.data)
+  }
+
+  /**
+   * Converts an AppsignalOptions object into a plain JS object,
+   * re-mapping its keys to snake_case names as they appear
+   * in our API.
+   */
+  private optionsObject(options: Partial<AppsignalOptions>) {
     const config: { [key: string]: any } = {}
 
-    Object.keys(this.#config.data).forEach(key => {
+    Object.keys(options).forEach(key => {
       const newKey = JS_TO_RUBY_MAPPING[key]
-      config[newKey] = this.#config.data[key]
+      config[newKey] = options[key]
     })
 
     return config
+  }
+
+  /**
+   * Reads all configuration sources, remapping each source's
+   * option keys with snake_case names.
+   */
+  private getSources() {
+    return Object.entries(this.#config.sources).reduce(
+      (sources, [name, options]) => {
+        return { ...sources, [name]: this.optionsObject(options) }
+      },
+      {}
+    )
   }
 
   public sendReport(data: object) {
