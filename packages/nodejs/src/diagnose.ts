@@ -112,21 +112,27 @@ export class DiagnoseTool {
   private async validatePushApiKey() {
     return new Promise((resolve, reject) => {
       const config = this.#config.data
-      const params = new URLSearchParams({ api_key: config["apiKey"] })
+      const params = new URLSearchParams({
+        api_key: config["apiKey"] || "",
+        name: config["name"] || "",
+        environment: config["environment"] || "",
+        hostname: config["hostname"] || ""
+      })
       const url = new URL(`/1/auth?${params.toString()}`, config["endpoint"])
       const options = { method: "POST" }
 
-      const request = https.request(url, options, function (response) {
+      const requestModule = url.protocol == "http:" ? http : https
+      const request = requestModule.request(url, options, function (response) {
         const status = response.statusCode
         if (status === 200) {
           resolve("valid")
         } else if (status === 401) {
           reject("invalid")
         } else {
-          reject(`Failed with status ${status}`)
+          reject(`Failed to validate: status ${status}`)
         }
       })
-      request.write("{}") // Send empty JSON body
+      request.write("") // Send empty body
       request.end()
     })
   }
