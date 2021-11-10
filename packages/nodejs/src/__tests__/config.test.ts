@@ -9,6 +9,27 @@ describe("Configuration", () => {
   let config: Configuration
   let initialEnv: { [key: string]: any }
 
+  const expectedDefaultConfig = {
+    caFilePath: path.join(__dirname, "../../cert/cacert.pem"),
+    debug: false,
+    dnsServers: [],
+    enableHostMetrics: true,
+    enableMinutelyProbes: true,
+    enableStatsd: false,
+    endpoint: "https://push.appsignal.com",
+    environment: process.env.NODE_ENV || "development",
+    filesWorldAccessible: true,
+    filterDataKeys: [],
+    filterParameters: [],
+    filterSessionData: [],
+    ignoreActions: [],
+    ignoreErrors: [],
+    ignoreNamespaces: [],
+    log: "file",
+    logPath: "/tmp",
+    transactionDebugMode: false
+  }
+
   function resetEnv() {
     Object.keys(process.env).forEach(key => {
       if (!initialEnv.hasOwnProperty(key)) {
@@ -34,92 +55,59 @@ describe("Configuration", () => {
     resetEnv()
   })
 
-  describe("Default options", () => {
-    const expectedDefaultConfig = {
-      caFilePath: path.join(__dirname, "../../cert/cacert.pem"),
-      debug: false,
-      dnsServers: [],
-      enableHostMetrics: true,
-      enableMinutelyProbes: true,
-      enableStatsd: false,
-      endpoint: "https://push.appsignal.com",
-      environment: process.env.NODE_ENV || "development",
-      filesWorldAccessible: true,
-      filterDataKeys: [],
-      filterParameters: [],
-      filterSessionData: [],
-      ignoreActions: [],
-      ignoreErrors: [],
-      ignoreNamespaces: [],
-      log: "file",
-      logPath: "/tmp",
-      transactionDebugMode: false
-    }
+  describe("with only default options", () => {
+    it("loads all default options", () => {
+      config = new Configuration({})
 
-    const expectedInitialConfig = {
-      name,
-      apiKey
-    }
-
-    const expectedConfig = {
-      ...expectedDefaultConfig,
-      ...expectedInitialConfig
-    }
-
-    it("loads all default options when no options are overwritten", () => {
-      config = new Configuration({ name, apiKey })
-
-      expect(config.data).toEqual(expectedConfig)
+      expect(config.data).toEqual(expectedDefaultConfig)
 
       expect(config.sources.default).toEqual(expectedDefaultConfig)
-      expect(config.sources.initial).toEqual(expectedInitialConfig)
+      expect(config.sources.initial).toEqual({})
       expect(config.sources.env).toEqual({})
     })
+  })
 
-    describe("overwrites default values", () => {
-      const overwrittenConfig = {
+  describe("with initial config options", () => {
+    it("loads initial config options", () => {
+      const initialOptions = {
         debug: true,
         enableStatsd: true
       }
-
-      const expectedConfig = {
+      const options = {
         ...expectedDefaultConfig,
-        ...overwrittenConfig
+        ...initialOptions
       }
-
-      it("with initial values", () => {
-        config = new Configuration({
-          ...overwrittenConfig
-        })
-
-        expect(config.data).toEqual(expectedConfig)
-
-        expect(config.sources.default).toEqual(expectedDefaultConfig)
-        expect(config.sources.initial).toEqual(overwrittenConfig)
-        expect(config.sources.env).toEqual({})
+      config = new Configuration({
+        ...initialOptions
       })
 
-      it("with environment values", () => {
-        process.env["APPSIGNAL_DEBUG"] = "true"
-        process.env["APPSIGNAL_ENABLE_STATSD"] = "true"
+      expect(config.data).toEqual(options)
 
-        config = new Configuration({})
-
-        expect(config.data).toEqual(expectedConfig)
-
-        expect(config.sources.default).toEqual(expectedDefaultConfig)
-        expect(config.sources.initial).toEqual({})
-        expect(config.sources.env).toEqual(overwrittenConfig)
-      })
+      expect(config.sources.default).toEqual(expectedDefaultConfig)
+      expect(config.sources.initial).toEqual(initialOptions)
+      expect(config.sources.env).toEqual({})
     })
   })
 
   describe("with config in the environment", () => {
     it("loads configuration from the environment", () => {
-      process.env["APPSIGNAL_ACTIVE"] = "true"
+      process.env["APPSIGNAL_DEBUG"] = "true"
+      process.env["APPSIGNAL_ENABLE_STATSD"] = "true"
+      const envOptions = {
+        debug: true,
+        enableStatsd: true
+      }
+      const expectedConfig = {
+        ...expectedDefaultConfig,
+        ...envOptions
+      }
+      config = new Configuration({})
 
-      new Configuration({ name, apiKey })
-      expect(env("_APPSIGNAL_ACTIVE")).toBeTruthy()
+      expect(config.data).toEqual(expectedConfig)
+
+      expect(config.sources.default).toEqual(expectedDefaultConfig)
+      expect(config.sources.initial).toEqual({})
+      expect(config.sources.env).toEqual(envOptions)
     })
   })
 
