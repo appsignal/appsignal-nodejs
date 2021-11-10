@@ -1,4 +1,5 @@
 import path from "path"
+import { VERSION } from "../version"
 import { Configuration } from "../config"
 
 describe("Configuration", () => {
@@ -186,10 +187,12 @@ describe("Configuration", () => {
     })
 
     it("writes private constants to the environment", () => {
-      expect(env("_APPSIGNAL_AGENT_PATH")).toBeDefined()
-      expect(env("_APPSIGNAL_PROCESS_NAME")).toBeDefined()
-      expect(env("_APPSIGNAL_LANGUAGE_INTEGRATION_VERSION")).toBeDefined()
-      expect(env("_APPSIGNAL_APP_PATH")).toBeDefined()
+      expect(env("_APPSIGNAL_AGENT_PATH")).toMatch(/nodejs-ext\/ext$/)
+      expect(env("_APPSIGNAL_PROCESS_NAME")).toEqual("node")
+      expect(env("_APPSIGNAL_LANGUAGE_INTEGRATION_VERSION")).toEqual(
+        `nodejs-${VERSION}`
+      )
+      expect(env("_APPSIGNAL_APP_PATH")).toEqual(process.cwd())
     })
 
     describe("with config options set to non-default values", () => {
