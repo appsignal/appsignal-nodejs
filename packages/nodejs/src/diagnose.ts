@@ -10,6 +10,7 @@ import { Configuration } from "./config"
 import { AGENT_VERSION, VERSION } from "./version"
 import { JS_TO_RUBY_MAPPING } from "./config/configmap"
 import { AppsignalOptions } from "."
+import { HashMap } from "@appsignal/types"
 
 interface FileMetadata {
   content?: string[]
@@ -54,8 +55,8 @@ export class DiagnoseTool {
       host: this.getHostData(),
       agent: this.#extension.diagnose(),
       config: {
-        options: this.getConfigData(),
-        sources: this.getSources()
+        options: this.#config.data,
+        sources: this.#config.sources
       },
       validation: { push_api_key: pushApiKeyValidation },
       process: {
@@ -222,7 +223,9 @@ export class DiagnoseTool {
     )
   }
 
-  public sendReport(data: object) {
+  public sendReport(data: HashMap<any>) {
+    data.config.options = this.getConfigData()
+    data.config.sources = this.getSources()
     const json = JSON.stringify({ diagnose: data })
 
     const config = this.#config.data
