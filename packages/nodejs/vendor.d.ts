@@ -17,3 +17,9 @@ declare module "require-in-the-middle" {
 
   export = Hook
 }
+
+declare module NodeJS {
+  interface Global {
+    __APPSIGNAL__: any
+  }
+}

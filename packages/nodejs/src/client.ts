@@ -45,6 +45,8 @@ export class BaseClient implements Client {
 
     initCorePlugins(this.instrumentation, { ignoreInstrumentation })
     initCoreProbes(this.metrics(), { enableMinutelyProbes })
+
+    this.storeInGlobal()
   }
 
   /**
@@ -144,5 +146,12 @@ export class BaseClient implements Client {
    */
   public demo() {
     return demo(this.tracer())
+  }
+
+  /**
+   * Stores the client in global object after initializing
+   */
+  private storeInGlobal(): void {
+    global.__APPSIGNAL__ = this
   }
 }
