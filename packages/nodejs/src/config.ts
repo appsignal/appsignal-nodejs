@@ -48,11 +48,15 @@ export class Configuration {
   public get logFilePath(): string {
     let logPath = this.data["logPath"]!
 
-    if (!logPath.endsWith("appsignal.log")) {
-      logPath = path.join(logPath, "appsignal.log")
+    if (path.extname(logPath) != "") {
+      console.warn(
+        "DEPRECATED: File names are no longer supported in the 'logPath' config option. Changing the filename to 'appsignal.log'"
+      )
+
+      logPath = path.dirname(logPath)
     }
 
-    return logPath
+    return path.join(logPath, "appsignal.log")
   }
 
   /**
