@@ -2,14 +2,11 @@ import { HashMap } from "@appsignal/types"
 import { datamap, dataarray } from "../extension_wrapper"
 
 export class Data {
-  public static generate(
-    data: Array<any> | HashMap<any>,
-    filtered: boolean = false
-  ) {
+  public static generate(data: Array<any> | HashMap<any>) {
     if (data.constructor.name === "Object") {
-      return this.mapObject(data, filtered)
+      return this.mapObject(data)
     } else if (Array.isArray(data)) {
-      return this.mapArray(data, filtered)
+      return this.mapArray(data)
     } else {
       throw new Error(
         `Body of type ${data.constructor.name} should be a Object or Array`
@@ -21,8 +18,8 @@ export class Data {
     return JSON.parse(datamap.toJson(data))
   }
 
-  private static mapObject(hash_value: HashMap<any>, filtered: boolean): any {
-    let map = filtered ? datamap.createFiltered() : datamap.create()
+  private static mapObject(hash_value: HashMap<any>): any {
+    let map = datamap.create()
 
     Object.entries(hash_value).forEach(([key, value]) => {
       switch (typeof value) {
@@ -50,9 +47,9 @@ export class Data {
           if (!value) {
             datamap.setNull(key, map)
           } else if (Array.isArray(value)) {
-            datamap.setData(key, this.mapArray(value, filtered), map)
+            datamap.setData(key, this.mapArray(value), map)
           } else if (value?.constructor.name === "Object") {
-            datamap.setData(key, this.mapObject(value, filtered), map)
+            datamap.setData(key, this.mapObject(value), map)
           } else {
             // attempt to co-erce whatever the data is to a string
             datamap.setString(key, String(value), map)
@@ -65,7 +62,7 @@ export class Data {
     return map
   }
 
-  private static mapArray(array_value: Array<any>, filtered: boolean) {
+  private static mapArray(array_value: Array<any>) {
     let array = dataarray.create()
 
     array_value.forEach(value => {
@@ -95,9 +92,9 @@ export class Data {
           if (!value) {
             dataarray.appendNull(array)
           } else if (Array.isArray(value)) {
-            dataarray.appendData(this.mapArray(value, filtered), array)
+            dataarray.appendData(this.mapArray(value), array)
           } else if (value?.constructor.name === "Object") {
-            dataarray.appendData(this.mapObject(value, filtered), array)
+            dataarray.appendData(this.mapObject(value), array)
           } else {
             // attempt to co-erce whatever the data is to a string
             dataarray.appendString(String(value), array)

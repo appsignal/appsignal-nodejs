@@ -75,7 +75,6 @@ export class Configuration {
       endpoint: "https://push.appsignal.com",
       environment: process.env.NODE_ENV || "development",
       filesWorldAccessible: true,
-      filterDataKeys: [],
       filterParameters: [],
       filterSessionData: [],
       ignoreActions: [],
