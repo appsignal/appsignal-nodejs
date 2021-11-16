@@ -129,13 +129,19 @@ describe("Configuration", () => {
     })
 
     describe("with logPath option with file specified", () => {
-      beforeEach(() => {
-        config = new Configuration({ logPath: "/other_path/appsignal.log" })
-      })
+      it("uses the overwritten path but changes the file name", () => {
+        const warnMock = jest
+          .spyOn(console, "warn")
+          .mockImplementation(() => {})
+        config = new Configuration({ logPath: "/other_path/foo.log" })
 
-      it("uses the overwritten path", () => {
+        expect(warnMock).toBeCalledWith(
+          "DEPRECATED: File names are no longer supported in the 'logPath' config option. Changing the filename to 'appsignal.log'"
+        )
         // Test backwards compatibility with previous behaviour
         expect(config.logFilePath).toEqual("/other_path/appsignal.log")
+
+        warnMock.mockReset()
       })
     })
   })
