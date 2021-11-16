@@ -86,9 +86,7 @@ matrix:
           value: "--openssl-legacy-provider"
     - nodejs: "16"
       setup: *gcc8
-    - nodejs: "15"
     - nodejs: "14"
-    - nodejs: "13"
     - nodejs: "12"
   packages:
     - package: "@appsignal/nodejs"
