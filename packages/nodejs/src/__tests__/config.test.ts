@@ -19,7 +19,6 @@ describe("Configuration", () => {
     endpoint: "https://push.appsignal.com",
     environment: process.env.NODE_ENV || "development",
     filesWorldAccessible: true,
-    filterDataKeys: [],
     filterParameters: [],
     filterSessionData: [],
     ignoreActions: [],
@@ -201,7 +200,8 @@ describe("Configuration", () => {
           enableMinutelyProbes: false,
           enableStatsd: true,
           filesWorldAccessible: true,
-          filterDataKeys: ["password", "confirm_password"],
+          filterParameters: ["password", "confirm_password"],
+          filterSessionData: ["key1", "key2"],
           hostname: "MyHostName",
           httpProxy: "http://localhost",
           ignoreActions: ["MyAction", "MyOtherAction"],
@@ -222,9 +222,10 @@ describe("Configuration", () => {
         expect(env("_APPSIGNAL_ENABLE_HOST_METRICS")).toEqual("true")
         expect(env("_APPSIGNAL_ENABLE_STATSD")).toEqual("true")
         expect(env("_APPSIGNAL_FILES_WORLD_ACCESSIBLE")).toEqual("true")
-        expect(env("_APPSIGNAL_FILTER_DATA_KEYS")).toEqual(
+        expect(env("_APPSIGNAL_FILTER_PARAMETERS")).toEqual(
           "password,confirm_password"
         )
+        expect(env("_APPSIGNAL_FILTER_SESSION_DATA")).toEqual("key1,key2")
         expect(env("_APPSIGNAL_HOSTNAME")).toEqual("MyHostName")
         expect(env("_APPSIGNAL_HTTP_PROXY")).toEqual("http://localhost")
         expect(env("_APPSIGNAL_IGNORE_ACTIONS")).toEqual(

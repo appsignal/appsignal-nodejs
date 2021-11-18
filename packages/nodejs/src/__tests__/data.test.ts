@@ -3,13 +3,13 @@ import { datamap, dataarray } from "../extension_wrapper"
 
 describe("Data", () => {
   it("creates an empty map", () => {
-    let map = Data.generate({}, false)
+    let map = Data.generate({})
 
     expect(Data.toJson(map)).toEqual({})
   })
 
   it("creates an empty array", () => {
-    let map = Data.generate([], false)
+    let map = Data.generate([])
 
     expect(Data.toJson(map)).toEqual([])
   })
@@ -28,25 +28,25 @@ describe("Data", () => {
       nested_map: { foo: "bʊr", arr: [1, 2] }
     }
 
-    let map = Data.generate(nested, false)
+    let map = Data.generate(nested)
 
     expect(Data.toJson(map)).toEqual(nested)
   })
 
   it("creates a map with a non-standard type in it", () => {
-    let map = Data.generate({ key: SyntaxError() }, false)
+    let map = Data.generate({ key: SyntaxError() })
 
     expect(Data.toJson(map)).toEqual({ key: "SyntaxError" })
   })
 
   it("creates a map with undefined in it", () => {
-    let map = Data.generate({ key: undefined }, false)
+    let map = Data.generate({ key: undefined })
 
     expect(Data.toJson(map)).toEqual({ key: "undefined" })
   })
 
   it("creates an array with a big int type in it", () => {
-    let array = Data.generate({ key: BigInt(9007199254740991) }, false)
+    let array = Data.generate({ key: BigInt(9007199254740991) })
 
     expect(Data.toJson(array)).toEqual({ key: "bigint:9007199254740991" })
   })
@@ -64,25 +64,25 @@ describe("Data", () => {
       { arr: [1, 2, "three"], foo: "bʊr" }
     ]
 
-    let array = Data.generate(nested, false)
+    let array = Data.generate(nested)
 
     expect(Data.toJson(array)).toEqual(nested)
   })
 
   it("creates an array with a non-standard type in it", () => {
-    let array = Data.generate([SyntaxError()], false)
+    let array = Data.generate([SyntaxError()])
 
     expect(Data.toJson(array)).toEqual(["SyntaxError"])
   })
 
   it("creates an array with undefined in it", () => {
-    let array = Data.generate([undefined], false)
+    let array = Data.generate([undefined])
 
     expect(Data.toJson(array)).toEqual(["undefined"])
   })
 
   it("creates an array with a big int type in it", () => {
-    let array = Data.generate([BigInt(9007199254740991)], false)
+    let array = Data.generate([BigInt(9007199254740991)])
 
     expect(Data.toJson(array)).toEqual(["bigint:9007199254740991"])
   })
