@@ -120,6 +120,22 @@ export class Configuration {
       ignoreNamespaces: [],
       log: "file",
       logPath: this._tmpdir(),
+      requestHeaders: [
+        "accept",
+        "accept-charset",
+        "accept-encoding",
+        "accept-language",
+        "cache-control",
+        "connection",
+        "content-length",
+        "path-info",
+        "range",
+        "request-method",
+        "request-uri",
+        "server-name",
+        "server-port",
+        "server-protocol"
+      ],
       transactionDebugMode: false
     }
   }

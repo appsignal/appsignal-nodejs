@@ -416,5 +416,9 @@ export class Diagnose {
 }
 
 function format_value(value: any) {
-  return util.inspect(value)
+  if (typeof value == "object") {
+    return JSON.stringify(value)
+  } else {
+    return util.inspect(value)
+  }
 }
