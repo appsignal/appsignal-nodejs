@@ -128,13 +128,7 @@ export class Configuration {
         "cache-control",
         "connection",
         "content-length",
-        "path-info",
-        "range",
-        "request-method",
-        "request-uri",
-        "server-name",
-        "server-port",
-        "server-protocol"
+        "range"
       ],
       transactionDebugMode: false
     }

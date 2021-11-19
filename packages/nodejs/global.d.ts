@@ -1,5 +1,7 @@
 export {}
 
+import { Client } from "./src/interfaces"
+
 declare global {
-  var __APPSIGNAL__: any
+  var __APPSIGNAL__: Client
 }
