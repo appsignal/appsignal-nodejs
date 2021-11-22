@@ -21,6 +21,7 @@ export interface AppsignalOptions {
   log: string
   logPath: string
   name: string
+  pushApiKey: string
   requestHeaders: string[]
   revision: string
   runningInContainer: boolean

@@ -7,12 +7,12 @@ jest.mock("../tracer")
 
 describe("BaseClient", () => {
   const name = "TEST APP"
-  const apiKey = "TEST_API_KEY"
+  const pushApiKey = "TEST_API_KEY"
 
   let client: BaseClient
 
   // enableMinutelyProbes is set to false so we don't leak timers
-  const DEFAULT_OPTS = { name, apiKey, enableMinutelyProbes: false }
+  const DEFAULT_OPTS = { name, pushApiKey, enableMinutelyProbes: false }
 
   beforeEach(() => {
     client = new BaseClient({ ...DEFAULT_OPTS })

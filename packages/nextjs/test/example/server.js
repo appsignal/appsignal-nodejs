@@ -5,7 +5,7 @@ const { Appsignal } = require("../../../nodejs")
 const appsignal = new Appsignal({
   active: true,
   name: "<YOUR APPLICATION NAME>",
-  apiKey: "<YOUR API KEY>"
+  pushApiKey: "<YOUR API KEY>"
 })
 
 const { getRequestHandler } = require("../../../nextjs")
