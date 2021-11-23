@@ -143,8 +143,7 @@ export class DiagnoseTool {
 
     const logFilePath = this.#config.logFilePath
 
-    // add any paths we want to check to this object!
-    const files = {
+    const pathsToCheck = {
       working_dir: {
         path: process.cwd()
       },
@@ -157,7 +156,7 @@ export class DiagnoseTool {
       }
     }
 
-    Object.entries(files).forEach(([key, data]) => {
+    Object.entries(pathsToCheck).forEach(([key, data]) => {
       const { path } = data
 
       try {
