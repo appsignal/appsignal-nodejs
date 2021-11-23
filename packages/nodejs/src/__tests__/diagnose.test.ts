@@ -23,7 +23,6 @@ describe("DiagnoseTool", () => {
 
     expect(output.config.options).toHaveProperty("debug")
     expect(output.config.options).toHaveProperty("log")
-    expect(output.config.options).toHaveProperty("logPath")
     expect(output.config.options).toHaveProperty("caFilePath")
     expect(output.config.options).toHaveProperty("endpoint")
     expect(output.config.options).toHaveProperty("environment")

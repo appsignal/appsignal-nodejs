@@ -57,9 +57,9 @@ export class Configuration {
   }
 
   public get logFilePath(): string {
-    let logPath = this.data["logPath"]!
-
-    if (path.extname(logPath) != "") {
+    const filename = "appsignal.log"
+    let logPath = this.data["logPath"]
+    if (logPath && path.extname(logPath) != "") {
       console.warn(
         "DEPRECATED: File names are no longer supported in the 'logPath' config option. Changing the filename to 'appsignal.log'"
       )
@@ -67,17 +67,17 @@ export class Configuration {
       logPath = path.dirname(logPath)
     }
 
-    if (!isWritable(logPath)) {
-      const newLogPath = this._tmpdir()
-
-      console.warn(
-        `Unable to log to '${logPath}'. Logging to '${newLogPath}' instead. Please check the permissions for the configured 'logPath' directory`
-      )
-
-      logPath = newLogPath
+    if (logPath && isWritable(logPath)) {
+      return path.join(logPath, filename)
+    } else {
+      const tmpDir = this._tmpdir()
+      if (logPath) {
+        console.warn(
+          `Unable to log to '${logPath}'. Logging to '${tmpDir}' instead. Please check the permissions of the 'logPath' directory.`
+        )
+      }
+      return path.join(tmpDir, filename)
     }
-
-    return path.join(logPath, "appsignal.log")
   }
 
   /**
@@ -118,7 +118,6 @@ export class Configuration {
       ignoreErrors: [],
       ignoreNamespaces: [],
       log: "file",
-      logPath: this._tmpdir(),
       requestHeaders: [
         "accept",
         "accept-charset",
