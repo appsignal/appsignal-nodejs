@@ -28,6 +28,7 @@ export class Configuration {
     }
     this.sources = {
       default: this._defaultValues(),
+      system: this._systemValues(),
       env: this._loadFromEnvironment(),
       initial: options
     }
@@ -92,6 +93,19 @@ export class Configuration {
       logPath: "/tmp",
       transactionDebugMode: false
     }
+  }
+
+  /**
+   * Config options based on the host environment.
+   *
+   * @private
+   */
+  private _systemValues(): { [key: string]: any } {
+    const config = {} as { [key: string]: any }
+    if (process.env.DYNO) {
+      config["log"] = "stdout"
+    }
+    return config
   }
 
   /**
