@@ -1,3 +1,4 @@
+import os from "os"
 import path from "path"
 
 import { VERSION } from "./version"
@@ -18,6 +19,13 @@ export class Configuration {
   sources: HashMap<Partial<AppsignalOptions>>
 
   constructor(options: Partial<AppsignalOptions>) {
+    if (options.apiKey) {
+      console.warn(
+        "DEPRECATED: The `apiKey` config option was renamed to `pushApiKey`. Please rename the config option given to the Appsignal module."
+      )
+      options.pushApiKey = options.apiKey
+      delete options.apiKey
+    }
     this.sources = {
       default: this._defaultValues(),
       env: this._loadFromEnvironment(),
@@ -42,7 +50,7 @@ export class Configuration {
    * Returns `true` if the current configuration is valid.
    */
   public get isValid(): boolean {
-    return (this.data.apiKey || "").trim() !== ""
+    return (this.data.pushApiKey || "").trim() !== ""
   }
 
   public get logFilePath(): string {

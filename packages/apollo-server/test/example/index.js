@@ -4,7 +4,7 @@ const { createApolloPlugin } = require("../../../apollo-server")
 const appsignal = new Appsignal({
   active: true,
   name: "<YOUR APPLICATION NAME>",
-  apiKey: "<YOUR API KEY>"
+  pushApiKey: "<YOUR API KEY>"
 })
 
 const { ApolloServer, gql } = require("apollo-server")

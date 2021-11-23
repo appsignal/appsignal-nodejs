@@ -114,7 +114,7 @@ export class DiagnoseTool {
     return new Promise((resolve, reject) => {
       const config = this.#config.data
       const params = new URLSearchParams({
-        api_key: config["apiKey"] || "",
+        api_key: config["pushApiKey"] || "",
         name: config["name"] || "",
         environment: config["environment"] || "",
         hostname: config["hostname"] || ""
@@ -230,7 +230,7 @@ export class DiagnoseTool {
 
     const config = this.#config.data
     const params = new URLSearchParams({
-      api_key: config["apiKey"] || "",
+      api_key: config["pushApiKey"] || "",
       name: config["name"] || "",
       environment: config["environment"] || "",
       hostname: config["hostname"] || ""

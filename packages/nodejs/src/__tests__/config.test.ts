@@ -1,10 +1,11 @@
+import os from "os"
 import path from "path"
 import { VERSION } from "../version"
 import { Configuration } from "../config"
 
 describe("Configuration", () => {
   const name = "TEST APP"
-  const apiKey = "TEST_API_KEY"
+  const pushApiKey = "TEST_API_KEY"
 
   let config: Configuration
   let initialEnv: { [key: string]: any }
@@ -110,9 +111,25 @@ describe("Configuration", () => {
     })
   })
 
+  describe("apiKey option", () => {
+    it("sets the pushApiKey config option with the apiKey value", () => {
+      const warnMock = jest.spyOn(console, "warn").mockImplementation(() => {})
+      const apiKey = "my key"
+      config = new Configuration({ apiKey })
+
+      expect(config.data.pushApiKey).toEqual(apiKey)
+      expect(config.data.apiKey).toBeUndefined()
+      expect(config.sources.initial.pushApiKey).toEqual(apiKey)
+      expect(config.sources.initial.apiKey).toBeUndefined()
+      expect(warnMock).toBeCalledWith(
+        "DEPRECATED: The `apiKey` config option was renamed to `pushApiKey`. Please rename the config option given to the Appsignal module."
+      )
+    })
+  })
+
   describe("logFilePath", () => {
     it("uses the default log file path", () => {
-      config = new Configuration({ name, apiKey })
+      config = new Configuration({ name, pushApiKey })
 
       expect(config.logFilePath).toEqual("/tmp/appsignal.log")
     })
@@ -193,7 +210,7 @@ describe("Configuration", () => {
         new Configuration({
           name,
           active: true,
-          apiKey,
+          pushApiKey,
           debug: true,
           dnsServers: ["8.8.8.8", "8.8.4.4"],
           enableHostMetrics: false,
@@ -242,7 +259,7 @@ describe("Configuration", () => {
         expect(env("_APPSIGNAL_PUSH_API_ENDPOINT")).toEqual(
           "https://push.appsignal.com"
         )
-        expect(env("_APPSIGNAL_PUSH_API_KEY")).toEqual(apiKey)
+        expect(env("_APPSIGNAL_PUSH_API_KEY")).toEqual(pushApiKey)
         expect(env("_APPSIGNAL_RUNNING_IN_CONTAINER")).toEqual("true")
         // Only set because `debug` is set to true
         // @TODO: https://github.com/appsignal/appsignal-nodejs/issues/379
@@ -255,23 +272,23 @@ describe("Configuration", () => {
   })
 
   describe(".isValid", () => {
-    it("is valid if apiKey is present", () => {
-      config = new Configuration({ apiKey })
+    it("is valid if pushApiKey is present", () => {
+      config = new Configuration({ pushApiKey })
       expect(config.isValid).toBeTruthy()
     })
 
-    it("is invalid if apiKey is not present", () => {
+    it("is invalid if pushApiKey is not present", () => {
       config = new Configuration({ name })
       expect(config.isValid).toBeFalsy()
     })
 
-    it("is invalid if apiKey is an empty string", () => {
-      config = new Configuration({ name, apiKey: "" })
+    it("is invalid if pushApiKey is an empty string", () => {
+      config = new Configuration({ name, pushApiKey: "" })
       expect(config.isValid).toBeFalsy()
     })
 
-    it("is invalid if apiKey is a string with only whitespaces", () => {
-      config = new Configuration({ name, apiKey: "  " })
+    it("is invalid if pushApiKey is a string with only whitespaces", () => {
+      config = new Configuration({ name, pushApiKey: "  " })
       expect(config.isValid).toBeFalsy()
     })
   })

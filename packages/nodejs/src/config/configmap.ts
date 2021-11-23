@@ -20,7 +20,7 @@ export const ENV_TO_KEY_MAPPING: { [key: string]: string } = {
   APPSIGNAL_LOG: "log",
   APPSIGNAL_LOG_PATH: "logPath",
   APPSIGNAL_PUSH_API_ENDPOINT: "endpoint",
-  APPSIGNAL_PUSH_API_KEY: "apiKey",
+  APPSIGNAL_PUSH_API_KEY: "pushApiKey",
   APPSIGNAL_REQUEST_HEADERS: "requestHeaders",
   APPSIGNAL_RUNNING_IN_CONTAINER: "runningInContainer",
   APPSIGNAL_SEND_PARAMS: "sendParams",
@@ -50,7 +50,7 @@ export const PRIVATE_ENV_MAPPING: { [key: string]: string } = {
   _APPSIGNAL_IGNORE_NAMESPACES: "ignoreNamespaces",
   _APPSIGNAL_LOG: "log",
   _APPSIGNAL_PUSH_API_ENDPOINT: "endpoint",
-  _APPSIGNAL_PUSH_API_KEY: "apiKey",
+  _APPSIGNAL_PUSH_API_KEY: "pushApiKey",
   _APPSIGNAL_RUNNING_IN_CONTAINER: "runningInContainer",
   _APPSIGNAL_TRANSACTION_DEBUG_MODE: "debug",
   _APPSIGNAL_WORKING_DIRECTORY_PATH: "workingDirectoryPath",
@@ -60,7 +60,7 @@ export const PRIVATE_ENV_MAPPING: { [key: string]: string } = {
 
 export const JS_TO_RUBY_MAPPING: { [key: string]: string } = {
   active: "active",
-  apiKey: "push_api_key",
+  pushApiKey: "push_api_key",
   caFilePath: "ca_file_path",
   debug: "debug",
   dnsServers: "dns_servers",
