@@ -62,6 +62,23 @@ describe("Configuration", () => {
       expect(config.data).toEqual(expectedDefaultConfig)
 
       expect(config.sources.default).toEqual(expectedDefaultConfig)
+      expect(config.sources.system).toEqual({})
+      expect(config.sources.initial).toEqual({})
+      expect(config.sources.env).toEqual({})
+    })
+  })
+
+  describe("system values", () => {
+    it("sets log output to stdout on Heroku", () => {
+      process.env.DYNO = "web.1"
+      const systemConfig = { log: "stdout" }
+      config = new Configuration({})
+      delete process.env.DYNO
+
+      expect(config.data).toEqual({ ...expectedDefaultConfig, ...systemConfig })
+
+      expect(config.sources.default).toEqual(expectedDefaultConfig)
+      expect(config.sources.system).toEqual(systemConfig)
       expect(config.sources.initial).toEqual({})
       expect(config.sources.env).toEqual({})
     })
@@ -84,6 +101,7 @@ describe("Configuration", () => {
       expect(config.data).toEqual(options)
 
       expect(config.sources.default).toEqual(expectedDefaultConfig)
+      expect(config.sources.system).toEqual({})
       expect(config.sources.initial).toEqual(initialOptions)
       expect(config.sources.env).toEqual({})
     })
@@ -106,6 +124,7 @@ describe("Configuration", () => {
       expect(config.data).toEqual(expectedConfig)
 
       expect(config.sources.default).toEqual(expectedDefaultConfig)
+      expect(config.sources.system).toEqual({})
       expect(config.sources.initial).toEqual({})
       expect(config.sources.env).toEqual(envOptions)
     })
