@@ -29,6 +29,16 @@ describe("Configuration", () => {
     ignoreNamespaces: [],
     log: "file",
     logPath: "/tmp",
+    requestHeaders: [
+      "accept",
+      "accept-charset",
+      "accept-encoding",
+      "accept-language",
+      "cache-control",
+      "connection",
+      "content-length",
+      "range"
+    ],
     transactionDebugMode: false
   }
 

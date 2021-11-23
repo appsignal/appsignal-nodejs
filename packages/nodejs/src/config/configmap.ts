@@ -79,6 +79,7 @@ export const JS_TO_RUBY_MAPPING: { [key: string]: string } = {
   log: "log",
   logPath: "log_path",
   name: "name",
+  requestHeaders: "request_headers",
   revision: "revision",
   runningInContainer: "running_in_container",
   transactionDebugMode: "transaction_debug_mode",

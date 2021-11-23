@@ -1,5 +1,5 @@
 import { Client } from "@appsignal/nodejs"
-
+import { HashMap } from "@appsignal/types"
 import {
   Request,
   Response,
@@ -7,6 +7,7 @@ import {
   ErrorRequestHandler,
   RequestHandler
 } from "express"
+import { IncomingHttpHeaders } from "http"
 
 /**
  * Returns an Express middleware that can augment the current span
@@ -33,7 +34,8 @@ export function expressMiddleware(appsignal: Client): RequestHandler {
       res.end = function (this: Response) {
         res.end = originalEnd
 
-        const { method = "GET", params = {}, query = {} } = req
+        const { method = "GET", params = {}, query = {}, headers } = req
+        const filteredHeaders = filterHeaders(headers, appsignal)
 
         // if there is no error passed to `next()`, the span name will
         // be updated to match the current path
@@ -48,6 +50,7 @@ export function expressMiddleware(appsignal: Client): RequestHandler {
         // @TODO: keep an eye on this
         // @ts-ignore
         span.setSampleData("params", { ...params, ...query })
+        span.setSampleData("environment", filteredHeaders)
 
         return res.end.apply(this, arguments as any)
       }
@@ -79,4 +82,20 @@ export function expressErrorHandler(appsignal: Client): ErrorRequestHandler {
 
     return next(err)
   }
+}
+
+function filterHeaders(
+  headers: IncomingHttpHeaders,
+  appsignal: Client
+): HashMap<any> {
+  let filtered: HashMap<any> = {}
+  const headersAllowList = appsignal.config.data.requestHeaders || []
+
+  headersAllowList.forEach(key => {
+    if (headers[key] != undefined) {
+      filtered[key] = headers[key]
+    }
+  })
+
+  return filtered
 }

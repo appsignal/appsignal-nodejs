@@ -5,8 +5,9 @@
  */
 
 import { Tracer } from "../../../interfaces"
+import { HashMap } from "@appsignal/types"
 import { parse } from "url"
-import { IncomingMessage, ServerResponse } from "http"
+import { IncomingMessage, ServerResponse, IncomingHttpHeaders } from "http"
 
 // explicitly ignore some urls that we can't guarantee groupings on, or
 // routes that cause known issues.
@@ -32,8 +33,9 @@ function incomingRequest(
     }
 
     const [req, res] = args as [IncomingMessage, ServerResponse]
-    const { method = "GET", url = "/" } = req
+    const { method = "GET", url = "/", headers } = req
     const { pathname, query } = parse(url)
+    const allowedHeaders = filterHeaders(headers)
 
     // don't start a span for ignored urls
     if (url && DEFAULT_IGNORED_URLS.some(el => el.test(url))) {
@@ -58,6 +60,7 @@ function incomingRequest(
       .setName(`${method} ${pathname === "/" ? pathname : "[unknown route]"}`)
       .setCategory("process_request.http")
       .set("method", method)
+      .setSampleData("environment", allowedHeaders)
       .setSampleData("params", query ? { query } : {})
 
     return tracer.withSpan(rootSpan, span => {
@@ -81,6 +84,19 @@ function incomingRequest(
       return original.apply(this, [event, ...args])
     })
   }
+}
+
+function filterHeaders(headers: IncomingHttpHeaders): HashMap<any> {
+  let filtered: HashMap<any> = {}
+  const headersAllowList = global.__APPSIGNAL__.config.data.requestHeaders || []
+
+  headersAllowList.forEach(key => {
+    if (headers[key] != undefined) {
+      filtered[key] = headers[key]
+    }
+  })
+
+  return filtered
 }
 
 export function getPatchIncomingRequestFunction(tracer: Tracer) {
