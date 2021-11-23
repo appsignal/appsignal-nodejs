@@ -173,7 +173,7 @@ export class DiagnoseTool {
             uid
           },
           type: getPathType(stats),
-          writable: isWriteableFile(path)
+          writable: isWriteable(path)
         }
       } catch (_) {
         paths[key] = {
@@ -295,9 +295,9 @@ function reportPath(): string {
   return path.join(`/tmp/appsignal-${reportPathDigest}-install.report`)
 }
 
-function isWriteableFile(path: string): boolean {
+function isWriteable(path: string): boolean {
   try {
-    fs.accessSync(path, fs.constants.R_OK)
+    fs.accessSync(path, fs.constants.W_OK)
     return true
   } catch (e) {
     return false
