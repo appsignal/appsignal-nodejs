@@ -5,6 +5,7 @@ import http from "http"
 import { URL, URLSearchParams } from "url"
 import { createHash } from "crypto"
 
+import { isWritable } from "./utils"
 import { Extension } from "./extension"
 import { Configuration } from "./config"
 import { AGENT_VERSION, VERSION } from "./version"
@@ -172,7 +173,7 @@ export class DiagnoseTool {
             uid
           },
           type: getPathType(stats),
-          writable: isWriteable(path)
+          writable: isWritable(path)
         }
       } catch (_) {
         paths[key] = {
@@ -292,15 +293,6 @@ function reportPath(): string {
   hash.update(appPath)
   const reportPathDigest = hash.digest("hex")
   return path.join(`/tmp/appsignal-${reportPathDigest}-install.report`)
-}
-
-function isWriteable(path: string): boolean {
-  try {
-    fs.accessSync(path, fs.constants.W_OK)
-    return true
-  } catch (e) {
-    return false
-  }
 }
 
 function getPathType(stats: fs.Stats) {

@@ -3,6 +3,7 @@ import os from "os"
 import fs from "fs"
 
 import { VERSION } from "./version"
+import { isWritable } from "./utils"
 import { AppsignalOptions } from "./interfaces/options"
 import { ENV_TO_KEY_MAPPING, PRIVATE_ENV_MAPPING } from "./config/configmap"
 import { HashMap } from "@appsignal/types"
@@ -66,9 +67,7 @@ export class Configuration {
       logPath = path.dirname(logPath)
     }
 
-    try {
-      fs.accessSync(logPath, fs.constants.W_OK)
-    } catch (_err) {
+    if (!isWritable(logPath)) {
       const newLogPath = this._tmpdir()
 
       console.warn(
