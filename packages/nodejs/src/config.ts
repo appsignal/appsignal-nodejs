@@ -1,5 +1,6 @@
-import os from "os"
 import path from "path"
+import os from "os"
+import fs from "fs"
 
 import { VERSION } from "./version"
 import { AppsignalOptions } from "./interfaces/options"
@@ -65,7 +66,35 @@ export class Configuration {
       logPath = path.dirname(logPath)
     }
 
+    try {
+      fs.accessSync(logPath, fs.constants.W_OK)
+    } catch (_err) {
+      const newLogPath = this._tmpdir()
+
+      console.warn(
+        `Unable to log to '${logPath}'. Logging to '${newLogPath}' instead. Please check the permissions for the configured 'logPath' directory`
+      )
+
+      logPath = newLogPath
+    }
+
     return path.join(logPath, "appsignal.log")
+  }
+
+  /**
+   * Returns default OS tmp dir. Uses OS package for Windows. Linux and macOS
+   * have `/tmp` hardcoded as a default
+   *
+   * @private
+   */
+  private _tmpdir(): string {
+    const isWindows = process.platform == "win32"
+
+    if (isWindows) {
+      return os.tmpdir()
+    } else {
+      return "/tmp"
+    }
   }
 
   /**
@@ -90,7 +119,7 @@ export class Configuration {
       ignoreErrors: [],
       ignoreNamespaces: [],
       log: "file",
-      logPath: "/tmp",
+      logPath: this._tmpdir(),
       transactionDebugMode: false
     }
   }

@@ -1,5 +1,7 @@
 import os from "os"
 import path from "path"
+import fs from "fs"
+
 import { VERSION } from "../version"
 import { Configuration } from "../config"
 
@@ -44,6 +46,7 @@ describe("Configuration", () => {
 
   beforeAll(() => {
     initialEnv = Object.assign({}, process.env)
+    jest.clearAllMocks()
   })
 
   afterAll(() => {
@@ -148,6 +151,9 @@ describe("Configuration", () => {
 
   describe("logFilePath", () => {
     it("uses the default log file path", () => {
+      const fsAccessSpy = jest
+        .spyOn(fs, "accessSync")
+        .mockImplementation(() => {})
       config = new Configuration({ name, pushApiKey })
 
       expect(config.logFilePath).toEqual("/tmp/appsignal.log")
@@ -159,12 +165,41 @@ describe("Configuration", () => {
       })
 
       it("uses the overwritten path", () => {
+        const fsAccessSpy = jest
+          .spyOn(fs, "accessSync")
+          .mockImplementation(() => {})
+
+        jest.spyOn(fs, "accessSync").mockImplementation(() => {})
         expect(config.logFilePath).toEqual("/other_path/appsignal.log")
+      })
+    })
+
+    describe("when logPath is not writtable", () => {
+      it("switches it to default tmp dir", () => {
+        const fsAccessSpy = jest
+          .spyOn(fs, "accessSync")
+          .mockImplementation(() => {
+            throw "Error"
+          })
+        const warnMock = jest
+          .spyOn(console, "warn")
+          .mockImplementation(() => {})
+
+        config = new Configuration({ logPath: "/foo_dir" })
+
+        expect(warnMock).toBeCalledWith(
+          `Unable to log to '/foo_dir'. Logging to '/tmp' instead. Please check the permissions for the configured 'logPath' directory`
+        )
+        expect(config.logFilePath).toEqual("/tmp/appsignal.log")
       })
     })
 
     describe("with logPath option with file specified", () => {
       it("uses the overwritten path but changes the file name", () => {
+        const fsAccessSpy = jest
+          .spyOn(fs, "accessSync")
+          .mockImplementation(() => {})
+
         const warnMock = jest
           .spyOn(console, "warn")
           .mockImplementation(() => {})
@@ -175,8 +210,6 @@ describe("Configuration", () => {
         )
         // Test backwards compatibility with previous behaviour
         expect(config.logFilePath).toEqual("/other_path/appsignal.log")
-
-        warnMock.mockReset()
       })
     })
   })
