@@ -1,3 +1,4 @@
+import fs from "fs"
 import path from "path"
 
 /**
@@ -27,5 +28,17 @@ export function getAgentTimestamps(timestamp: number) {
   return {
     sec: sec, // seconds
     nsec: timestamp * 1e6 - sec * 1e9 // nanoseconds
+  }
+}
+
+/**
+ * Checks if the given path is writable by the process.
+ */
+export function isWritable(path: string) {
+  try {
+    fs.accessSync(path, fs.constants.W_OK)
+    return true
+  } catch (e) {
+    return false
   }
 }

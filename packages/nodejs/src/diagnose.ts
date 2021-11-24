@@ -5,6 +5,7 @@ import http from "http"
 import { URL, URLSearchParams } from "url"
 import { createHash } from "crypto"
 
+import { isWritable } from "./utils"
 import { Extension } from "./extension"
 import { Configuration } from "./config"
 import { AGENT_VERSION, VERSION } from "./version"
@@ -148,33 +149,42 @@ export class DiagnoseTool {
         path: process.cwd()
       },
       log_dir_path: {
-        path: path.dirname(logFilePath)
+        path: logFilePath ? path.dirname(logFilePath) : ""
       },
       "appsignal.log": {
-        path: logFilePath,
-        content: safeReadFromPath(logFilePath).trimEnd().split("\n")
+        path: logFilePath || "",
+        content: logFilePath
+          ? safeReadFromPath(logFilePath).trimEnd().split("\n")
+          : []
       }
     }
 
     Object.entries(pathsToCheck).forEach(([key, data]) => {
       const { path } = data
 
-      try {
-        const stats = fs.statSync(path)
-        const { mode, gid, uid } = stats
+      if (fs.existsSync(path)) {
+        try {
+          let stats = fs.statSync(path)
+          const { mode, gid, uid } = stats
 
-        paths[key] = {
-          ...data,
-          exists: true,
-          mode: mode.toString(8),
-          ownership: {
-            gid,
-            uid
-          },
-          type: getPathType(stats),
-          writable: isWriteable(path)
+          paths[key] = {
+            ...data,
+            exists: true,
+            mode: mode.toString(8),
+            ownership: {
+              gid,
+              uid
+            },
+            type: getPathType(stats),
+            writable: isWritable(path)
+          }
+        } catch (_) {
+          paths[key] = {
+            ...data,
+            exists: true
+          }
         }
-      } catch (_) {
+      } else {
         paths[key] = {
           ...data,
           exists: false
@@ -292,15 +302,6 @@ function reportPath(): string {
   hash.update(appPath)
   const reportPathDigest = hash.digest("hex")
   return path.join(`/tmp/appsignal-${reportPathDigest}-install.report`)
-}
-
-function isWriteable(path: string): boolean {
-  try {
-    fs.accessSync(path, fs.constants.W_OK)
-    return true
-  } catch (e) {
-    return false
-  }
 }
 
 function getPathType(stats: fs.Stats) {

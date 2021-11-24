@@ -3,6 +3,7 @@ import os from "os"
 import fs from "fs"
 
 import { VERSION } from "./version"
+import { isWritable } from "./utils"
 import { AppsignalOptions } from "./interfaces/options"
 import { ENV_TO_KEY_MAPPING, PRIVATE_ENV_MAPPING } from "./config/configmap"
 import { HashMap } from "@appsignal/types"
@@ -55,10 +56,10 @@ export class Configuration {
     return (this.data.pushApiKey || "").trim() !== ""
   }
 
-  public get logFilePath(): string {
-    let logPath = this.data["logPath"]!
-
-    if (path.extname(logPath) != "") {
+  public get logFilePath(): string | undefined {
+    const filename = "appsignal.log"
+    let logPath = this.data["logPath"]
+    if (logPath && path.extname(logPath) != "") {
       console.warn(
         "DEPRECATED: File names are no longer supported in the 'logPath' config option. Changing the filename to 'appsignal.log'"
       )
@@ -66,19 +67,27 @@ export class Configuration {
       logPath = path.dirname(logPath)
     }
 
-    try {
-      fs.accessSync(logPath, fs.constants.W_OK)
-    } catch (_err) {
-      const newLogPath = this._tmpdir()
-
-      console.warn(
-        `Unable to log to '${logPath}'. Logging to '${newLogPath}' instead. Please check the permissions for the configured 'logPath' directory`
-      )
-
-      logPath = newLogPath
+    if (logPath && isWritable(logPath)) {
+      return path.join(logPath, filename)
+    } else {
+      const tmpDir = this._tmpdir()
+      if (isWritable(tmpDir)) {
+        if (logPath) {
+          console.warn(
+            `Unable to log to '${logPath}'. Logging to '${tmpDir}' instead. Please check the permissions of the 'logPath' directory.`
+          )
+        }
+        return path.join(tmpDir, filename)
+      } else {
+        let configuredPath = ""
+        if (logPath) {
+          configuredPath = `'${logPath}' or `
+        }
+        console.warn(
+          `Unable to log to ${configuredPath}'${tmpDir}' fallback. Please check the permissions of these directories.`
+        )
+      }
     }
-
-    return path.join(logPath, "appsignal.log")
   }
 
   /**
@@ -119,7 +128,6 @@ export class Configuration {
       ignoreErrors: [],
       ignoreNamespaces: [],
       log: "file",
-      logPath: this._tmpdir(),
       requestHeaders: [
         "accept",
         "accept-charset",
@@ -178,7 +186,10 @@ export class Configuration {
    */
   private writePrivateConfig(config: { [key: string]: any }) {
     this.writePrivateConstants()
-    process.env["_APPSIGNAL_LOG_FILE_PATH"] = this.logFilePath
+    const logFilePath = this.logFilePath
+    if (logFilePath) {
+      process.env["_APPSIGNAL_LOG_FILE_PATH"] = logFilePath
+    }
 
     // write to a "private" environment variable if it exists in the
     // config structure

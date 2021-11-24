@@ -28,7 +28,6 @@ describe("Configuration", () => {
     ignoreErrors: [],
     ignoreNamespaces: [],
     log: "file",
-    logPath: "/tmp",
     requestHeaders: [
       "accept",
       "accept-charset",
@@ -170,11 +169,8 @@ describe("Configuration", () => {
     })
 
     describe("with logPath option", () => {
-      beforeEach(() => {
+      it("uses the configured path", () => {
         config = new Configuration({ logPath: "/other_path" })
-      })
-
-      it("uses the overwritten path", () => {
         const fsAccessSpy = jest
           .spyOn(fs, "accessSync")
           .mockImplementation(() => {})
@@ -182,25 +178,47 @@ describe("Configuration", () => {
         jest.spyOn(fs, "accessSync").mockImplementation(() => {})
         expect(config.logFilePath).toEqual("/other_path/appsignal.log")
       })
-    })
 
-    describe("when logPath is not writtable", () => {
-      it("switches it to default tmp dir", () => {
-        const fsAccessSpy = jest
-          .spyOn(fs, "accessSync")
-          .mockImplementation(() => {
-            throw "Error"
-          })
-        const warnMock = jest
-          .spyOn(console, "warn")
-          .mockImplementation(() => {})
+      describe("when the logPath directory can't be written to", () => {
+        it("uses the system tmp dir", () => {
+          const fsAccessSpy = jest
+            .spyOn(fs, "accessSync")
+            .mockImplementation(path => {
+              if (path === "/foo_dir") {
+                throw "Error"
+              } else {
+                return true
+              }
+            })
+          const warnMock = jest
+            .spyOn(console, "warn")
+            .mockImplementation(() => {})
 
-        config = new Configuration({ logPath: "/foo_dir" })
+          config = new Configuration({ logPath: "/foo_dir" })
 
-        expect(warnMock).toBeCalledWith(
-          `Unable to log to '/foo_dir'. Logging to '/tmp' instead. Please check the permissions for the configured 'logPath' directory`
-        )
-        expect(config.logFilePath).toEqual("/tmp/appsignal.log")
+          expect(warnMock).toHaveBeenLastCalledWith(
+            `Unable to log to '/foo_dir'. Logging to '/tmp' instead. Please check the permissions of the 'logPath' directory.`
+          )
+          expect(config.logFilePath).toEqual("/tmp/appsignal.log")
+        })
+
+        it("return undefined if the system tmp dir can't be written to", () => {
+          const fsAccessSpy = jest
+            .spyOn(fs, "accessSync")
+            .mockImplementation(() => {
+              throw "Error"
+            })
+          const warnMock = jest
+            .spyOn(console, "warn")
+            .mockImplementation(() => {})
+
+          config = new Configuration({ logPath: "/foo_dir" })
+
+          expect(warnMock).toHaveBeenLastCalledWith(
+            `Unable to log to '/foo_dir' or '/tmp' fallback. Please check the permissions of these directories.`
+          )
+          expect(config.logFilePath).toBeUndefined()
+        })
       })
     })
 
@@ -215,7 +233,7 @@ describe("Configuration", () => {
           .mockImplementation(() => {})
         config = new Configuration({ logPath: "/other_path/foo.log" })
 
-        expect(warnMock).toBeCalledWith(
+        expect(warnMock).toHaveBeenLastCalledWith(
           "DEPRECATED: File names are no longer supported in the 'logPath' config option. Changing the filename to 'appsignal.log'"
         )
         // Test backwards compatibility with previous behaviour
