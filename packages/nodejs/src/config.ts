@@ -56,7 +56,7 @@ export class Configuration {
     return (this.data.pushApiKey || "").trim() !== ""
   }
 
-  public get logFilePath(): string {
+  public get logFilePath(): string | undefined {
     const filename = "appsignal.log"
     let logPath = this.data["logPath"]
     if (logPath && path.extname(logPath) != "") {
@@ -71,12 +71,22 @@ export class Configuration {
       return path.join(logPath, filename)
     } else {
       const tmpDir = this._tmpdir()
-      if (logPath) {
+      if (isWritable(tmpDir)) {
+        if (logPath) {
+          console.warn(
+            `Unable to log to '${logPath}'. Logging to '${tmpDir}' instead. Please check the permissions of the 'logPath' directory.`
+          )
+        }
+        return path.join(tmpDir, filename)
+      } else {
+        let configuredPath = ""
+        if (logPath) {
+          configuredPath = `'${logPath}' or `
+        }
         console.warn(
-          `Unable to log to '${logPath}'. Logging to '${tmpDir}' instead. Please check the permissions of the 'logPath' directory.`
+          `Unable to log to ${configuredPath}'${tmpDir}' fallback. Please check the permissions of these directories.`
         )
       }
-      return path.join(tmpDir, filename)
     }
   }
 
@@ -176,7 +186,10 @@ export class Configuration {
    */
   private writePrivateConfig(config: { [key: string]: any }) {
     this.writePrivateConstants()
-    process.env["_APPSIGNAL_LOG_FILE_PATH"] = this.logFilePath
+    const logFilePath = this.logFilePath
+    if (logFilePath) {
+      process.env["_APPSIGNAL_LOG_FILE_PATH"] = logFilePath
+    }
 
     // write to a "private" environment variable if it exists in the
     // config structure

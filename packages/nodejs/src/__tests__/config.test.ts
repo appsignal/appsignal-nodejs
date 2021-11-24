@@ -184,7 +184,11 @@ describe("Configuration", () => {
           const fsAccessSpy = jest
             .spyOn(fs, "accessSync")
             .mockImplementation(path => {
-              throw "Error"
+              if (path === "/foo_dir") {
+                throw "Error"
+              } else {
+                return true
+              }
             })
           const warnMock = jest
             .spyOn(console, "warn")
@@ -196,6 +200,24 @@ describe("Configuration", () => {
             `Unable to log to '/foo_dir'. Logging to '/tmp' instead. Please check the permissions of the 'logPath' directory.`
           )
           expect(config.logFilePath).toEqual("/tmp/appsignal.log")
+        })
+
+        it("return undefined if the system tmp dir can't be written to", () => {
+          const fsAccessSpy = jest
+            .spyOn(fs, "accessSync")
+            .mockImplementation(() => {
+              throw "Error"
+            })
+          const warnMock = jest
+            .spyOn(console, "warn")
+            .mockImplementation(() => {})
+
+          config = new Configuration({ logPath: "/foo_dir" })
+
+          expect(warnMock).toHaveBeenLastCalledWith(
+            `Unable to log to '/foo_dir' or '/tmp' fallback. Please check the permissions of these directories.`
+          )
+          expect(config.logFilePath).toBeUndefined()
         })
       })
     })

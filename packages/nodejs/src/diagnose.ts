@@ -149,33 +149,42 @@ export class DiagnoseTool {
         path: process.cwd()
       },
       log_dir_path: {
-        path: path.dirname(logFilePath)
+        path: logFilePath ? path.dirname(logFilePath) : ""
       },
       "appsignal.log": {
-        path: logFilePath,
-        content: safeReadFromPath(logFilePath).trimEnd().split("\n")
+        path: logFilePath || "",
+        content: logFilePath
+          ? safeReadFromPath(logFilePath).trimEnd().split("\n")
+          : []
       }
     }
 
     Object.entries(pathsToCheck).forEach(([key, data]) => {
       const { path } = data
 
-      try {
-        const stats = fs.statSync(path)
-        const { mode, gid, uid } = stats
+      if (fs.existsSync(path)) {
+        try {
+          let stats = fs.statSync(path)
+          const { mode, gid, uid } = stats
 
-        paths[key] = {
-          ...data,
-          exists: true,
-          mode: mode.toString(8),
-          ownership: {
-            gid,
-            uid
-          },
-          type: getPathType(stats),
-          writable: isWritable(path)
+          paths[key] = {
+            ...data,
+            exists: true,
+            mode: mode.toString(8),
+            ownership: {
+              gid,
+              uid
+            },
+            type: getPathType(stats),
+            writable: isWritable(path)
+          }
+        } catch (_) {
+          paths[key] = {
+            ...data,
+            exists: true
+          }
         }
-      } catch (_) {
+      } else {
         paths[key] = {
           ...data,
           exists: false
