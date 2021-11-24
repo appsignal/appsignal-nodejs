@@ -1,5 +1,10 @@
 
 
+## 2.0.6
+
+- patch - Update @appsignal/nodejs dependency to 2.2.5.
+- patch - Update @appsignal/nodejs dependency to 2.2.5.
+
 ## 2.0.5
 
 - patch - Update @appsignal/nodejs dependency to 2.2.4.

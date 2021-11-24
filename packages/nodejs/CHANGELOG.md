@@ -1,5 +1,34 @@
 # AppSignal for Node.js Changelog
 
+## 2.2.5
+
+- [c750216](https://github.com/appsignal/appsignal-nodejs/commit/c750216b4c0ce4e40f97513787516532a35b35de) patch - Send the diagnose report with correct query parameters to help link the report to the app and organization on AppSignal.com.
+- [2ceda25](https://github.com/appsignal/appsignal-nodejs/commit/2ceda25637935753fe0404d79ef7bf79d65e556d) patch - The AppSignal config is not considered valid anymore when the apiKey config option is not set.
+- [4711784](https://github.com/appsignal/appsignal-nodejs/commit/4711784dc3f1acf361728d1849a3acff25ae6c23) patch - Print the extension installation dependencies and flags in the diagnose report output.
+- [5ab6e0a](https://github.com/appsignal/appsignal-nodejs/commit/5ab6e0a65248d1848a1ed1416a42069358dc9216) patch - Add information about the sources of each configuration value in the output of the diagnose report.
+- [3a3dca3](https://github.com/appsignal/appsignal-nodejs/commit/3a3dca3550835dafa7922babef45bb2712b34cce) patch - Include the sources of each configuration value in the diagnose report that is sent to AppSignal.com.
+- [4308789](https://github.com/appsignal/appsignal-nodejs/commit/43087898d17b647467c7166e2909f782728626ee) patch - Standardize diagnose validation failure message. Explain the diagnose request failed and why.
+- [dc6cc13](https://github.com/appsignal/appsignal-nodejs/commit/dc6cc1371e85b8e5846839f50aeb382f7f4e0ae7) patch - Diagnose report config opts are now printed in camel case format,
+  matching how the configuration options are provided to the `Appsignal` object
+- [c1dae16](https://github.com/appsignal/appsignal-nodejs/commit/c1dae1623cb2a31940f1b845c420a4f9fea071ff) patch - Print deprecation message when passing a filename to `logPath` config option.
+  This was already deprecated. Now it also prints a warning message on app start.
+- [d72d600](https://github.com/appsignal/appsignal-nodejs/commit/d72d600f1d91ed7894fb014f899d90a38a033712) patch - The AppSignal client is stored on the global object as to make
+  access easier for AppSignal developers.
+- [bf69146](https://github.com/appsignal/appsignal-nodejs/commit/bf69146e25b06d70e3d7c07450f35f2016801114) patch - Fix TypeScript compatibility for global object augmentation.
+- [df4163f](https://github.com/appsignal/appsignal-nodejs/commit/df4163fc10e972934ff62fe7a1ac6cbcd0416335) patch - Add `filterParameters` and `filterSessionData` options to filter out specific parameter keys or session data keys. Previously only the (undocumented) `filterDataKeys` config option was available to filter out all kinds of sample data.
+- [13068b7](https://github.com/appsignal/appsignal-nodejs/commit/13068b7169cfc4dc285ac91757a1e121a75e0c95) patch - Rename the `apiKey` option to `pushApiKey` to match other AppSignal integrations. If `apiKey` is set it will automatically set `pushApiKey`. The `apiKey` option will be removed in the next major version of this package.
+- [2c008ae](https://github.com/appsignal/appsignal-nodejs/commit/2c008ae269930fb4a223f4b528a89ccfd2aef95d) patch - Default log output to app STDOUT on Heroku dyno's. This makes the AppSignal logs available in the Heroku app's logs.
+- [4c11f36](https://github.com/appsignal/appsignal-nodejs/commit/4c11f36b292e090fd1dc2aa2ff7001b371bdb8cf) patch - The `requestHeaders` config option is now available. An allow list that gives the ability to define
+  which request headers you want to be shown in sample detail views. The default is a list of common
+  headers that do not include [personal identifiable information](https://docs.appsignal.com/appsignal/gdpr.html#allowed-request-headers-only).
+  Read more about [request headers](https://docs.appsignal.com/application/header-filtering.html) on our documentation website.
+- [2358c9f](https://github.com/appsignal/appsignal-nodejs/commit/2358c9f20bb203af83d7961e37a11ce65c9f1be4) patch - Fix the diagnose's `log_dir_path` path check. It now always checks the actual log file's parent directory, rather than the configured path. These two values may differ as the package does a permission check to see if the `logPath` is writable or not.
+- [3d6d23b](https://github.com/appsignal/appsignal-nodejs/commit/3d6d23bead6fd172845be2f7340a54ed5aa28542) patch - Fix writable check for paths in the diagnose report. Previously it only checked if a path was readable, not writable.
+- [a64b36f](https://github.com/appsignal/appsignal-nodejs/commit/a64b36fa181b7ac06ff5f922ebe1dbd9b2d22937) patch - Check if the fallback log directory can be written to and print a warning if no log can be written there.
+- [593d568](https://github.com/appsignal/appsignal-nodejs/commit/593d568e37180a75ac33d3e97fc02633d0c8faa5) patch - The logPath config option only allows writable paths. If the provided path is not writable,
+  it'll automatically change to the Operating System's temporary directory (`/tmp`).
+- patch - Update @appsignal/nodejs-ext dependency to 2.0.4.
+
 ## 2.2.4
 
 - [ec93e49](https://github.com/appsignal/appsignal-nodejs/commit/ec93e49a29c56b7b0d5f66a9d069cc8e82cdf76a) patch - All user-configurable options are now printed in the diagnose report.

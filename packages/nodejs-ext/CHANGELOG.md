@@ -1,5 +1,12 @@
 # AppSignal for Node.js extension Changelog
 
+## 2.0.4
+
+- [42a1255](https://github.com/appsignal/appsignal-nodejs/commit/42a1255a8dbd6a0d6b40d289d4e25dfc0b35287c) patch - Bump agent to v-5b63505
+  
+  - Only filter parameters with the `filterParameters` config option.
+  - Only filter session data with the `filterSessionData` config option.
+
 ## 2.0.3
 
 - [6ba536e](https://github.com/appsignal/appsignal-nodejs/commit/6ba536ec60d972d16969be21d46864fef843d112) patch - Bump agent to 09308fb
