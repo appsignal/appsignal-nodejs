@@ -23,6 +23,7 @@ export const ENV_TO_KEY_MAPPING: { [key: string]: string } = {
   APPSIGNAL_PUSH_API_KEY: "pushApiKey",
   APPSIGNAL_REQUEST_HEADERS: "requestHeaders",
   APPSIGNAL_RUNNING_IN_CONTAINER: "runningInContainer",
+  APPSIGNAL_SEND_ENVIRONMENT_METADATA: "sendEnvironmentMetadata",
   APPSIGNAL_SEND_PARAMS: "sendParams",
   APPSIGNAL_SKIP_SESSION_DATA: "skipSessionData",
   APPSIGNAL_TRANSACTION_DEBUG_MODE: "transactionDebugMode",
@@ -52,6 +53,7 @@ export const PRIVATE_ENV_MAPPING: { [key: string]: string } = {
   _APPSIGNAL_PUSH_API_ENDPOINT: "endpoint",
   _APPSIGNAL_PUSH_API_KEY: "pushApiKey",
   _APPSIGNAL_RUNNING_IN_CONTAINER: "runningInContainer",
+  _APPSIGNAL_SEND_ENVIRONMENT_METADATA: "sendEnvironmentMetadata",
   _APPSIGNAL_TRANSACTION_DEBUG_MODE: "debug",
   _APPSIGNAL_WORKING_DIRECTORY_PATH: "workingDirectoryPath",
   _APPSIGNAL_WORKING_DIR_PATH: "workingDirPath",
@@ -82,6 +84,7 @@ export const JS_TO_RUBY_MAPPING: { [key: string]: string } = {
   requestHeaders: "request_headers",
   revision: "revision",
   runningInContainer: "running_in_container",
+  sendEnvironmentMetadata: "send_environment_metadata",
   transactionDebugMode: "transaction_debug_mode",
   workingDirPath: "working_dir_path",
   workingDirectoryPath: "working_directory_path"

@@ -138,6 +138,7 @@ export class Configuration {
         "content-length",
         "range"
       ],
+      sendEnvironmentMetadata: true,
       transactionDebugMode: false
     }
   }
