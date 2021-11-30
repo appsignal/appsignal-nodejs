@@ -38,6 +38,7 @@ describe("Configuration", () => {
       "content-length",
       "range"
     ],
+    sendEnvironmentMetadata: true,
     transactionDebugMode: false
   }
 
@@ -341,6 +342,7 @@ describe("Configuration", () => {
         )
         expect(env("_APPSIGNAL_PUSH_API_KEY")).toEqual(pushApiKey)
         expect(env("_APPSIGNAL_RUNNING_IN_CONTAINER")).toEqual("true")
+        expect(env("_APPSIGNAL_SEND_ENVIRONMENT_METADATA")).toEqual("true")
         // Only set because `debug` is set to true
         // @TODO: https://github.com/appsignal/appsignal-nodejs/issues/379
         expect(env("_APPSIGNAL_TRANSACTION_DEBUG_MODE")).toEqual("true")
