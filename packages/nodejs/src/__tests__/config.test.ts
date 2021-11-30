@@ -28,6 +28,7 @@ describe("Configuration", () => {
     ignoreErrors: [],
     ignoreNamespaces: [],
     log: "file",
+    logLevel: "info",
     requestHeaders: [
       "accept",
       "accept-charset",
@@ -265,6 +266,7 @@ describe("Configuration", () => {
       expect(env("_APPSIGNAL_IGNORE_ERRORS")).toBeUndefined()
       expect(env("_APPSIGNAL_IGNORE_NAMESPACES")).toBeUndefined()
       expect(env("_APPSIGNAL_LOG")).toEqual("file")
+      expect(env("_APPSIGNAL_LOG_LEVEL")).toEqual("info")
       expect(env("_APPSIGNAL_LOG_FILE_PATH")).toEqual("/tmp/appsignal.log")
       expect(env("_APPSIGNAL_PUSH_API_ENDPOINT")).toEqual(
         "https://push.appsignal.com"
@@ -305,6 +307,7 @@ describe("Configuration", () => {
           ignoreActions: ["MyAction", "MyOtherAction"],
           ignoreErrors: ["MyError", "MyOtherError"],
           ignoreNamespaces: ["MyNamespace", "MyOtherNamespace"],
+          logLevel: "debug",
           logPath: "/tmp/other",
           runningInContainer: true,
           workingDirectoryPath: "/my/path",
@@ -334,6 +337,7 @@ describe("Configuration", () => {
           "MyNamespace,MyOtherNamespace"
         )
         expect(env("_APPSIGNAL_LOG")).toEqual("file")
+        expect(env("_APPSIGNAL_LOG_LEVEL")).toEqual("debug")
         expect(env("_APPSIGNAL_LOG_FILE_PATH")).toEqual(
           path.join("/tmp/other", "appsignal.log")
         )
