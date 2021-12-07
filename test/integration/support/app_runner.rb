@@ -21,8 +21,7 @@ class AppRunner
     @log_path = File.join(tmpdir, "appsignal.log")
     env = {
       "APPSIGNAL_LOG_PATH" => tmpdir,
-      "APPSIGNAL_DEBUG" => "true",
-      "APPSIGNAL_TRANSACTION_DEBUG_MODE" => "true"
+      "APPSIGNAL_LOG_LEVEL" => "trace"
     }
 
     puts "Starting app: #{@command}"

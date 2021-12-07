@@ -128,6 +128,7 @@ export class Configuration {
       ignoreErrors: [],
       ignoreNamespaces: [],
       log: "file",
+      logLevel: "info",
       requestHeaders: [
         "accept",
         "accept-charset",
