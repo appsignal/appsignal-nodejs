@@ -3,5 +3,3 @@ language: nodejs
 repo: "https://github.com/appsignal/appsignal-nodejs"
 npm_client: "npm"
 packages_dir: "packages"
-publish:
-  pre: "npm install"
