@@ -1,5 +1,29 @@
 # AppSignal for Node.js Changelog
 
+## 2.2.6
+
+### Added
+
+- [a2ee3d5](https://github.com/appsignal/appsignal-nodejs/commit/a2ee3d5919f46b51883546e32ac5d5c0f673993e) patch - Add `send_environment_metadata` config option to configure the environment metadata collection. For more information, see our [environment metadata docs](https://docs.appsignal.com/application/environment-metadata.html).
+- [158a134](https://github.com/appsignal/appsignal-nodejs/commit/158a134eca12596bc36b3a0fc61b56064da79d8d) patch - Add "logLevel" config option. This new option allows you to select the type of messages
+  AppSignal's logger will log and up. The "debug" option will log all "debug", "info", "warning"
+  and "error" log messages. The default value is: "info"
+  
+  The allowed values are:
+  - error
+  - warning
+  - info
+  - debug
+
+### Changed
+
+- patch - Update @appsignal/nodejs-ext dependency to 2.0.5.
+
+### Deprecated
+
+- [158a134](https://github.com/appsignal/appsignal-nodejs/commit/158a134eca12596bc36b3a0fc61b56064da79d8d) patch - Deprecate "debug" and "transactionDebugMode" config options in favor of the new "logLevel"
+  config option.
+
 ## 2.2.5
 
 - [c750216](https://github.com/appsignal/appsignal-nodejs/commit/c750216b4c0ce4e40f97513787516532a35b35de) patch - Send the diagnose report with correct query parameters to help link the report to the app and organization on AppSignal.com.

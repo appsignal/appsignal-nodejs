@@ -1,5 +1,12 @@
 
 
+## 1.0.19
+
+### Changed
+
+- patch - Update @appsignal/nodejs dependency to 2.2.6.
+- patch - Update @appsignal/nodejs dependency to 2.2.6.
+
 ## 1.0.18
 
 - [4c11f36](https://github.com/appsignal/appsignal-nodejs/commit/4c11f36b292e090fd1dc2aa2ff7001b371bdb8cf) patch - Collect request headers from express requests by default. See also our new `requestHeaders` config

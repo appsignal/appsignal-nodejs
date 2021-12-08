@@ -1,5 +1,14 @@
 # AppSignal for Node.js extension Changelog
 
+## 2.0.5
+
+### Changed
+
+- [3037c0d](https://github.com/appsignal/appsignal-nodejs/commit/3037c0d67db54dae82143680d1a050e632209e21) patch - Bump agent to v-0db01c2
+  
+  - Add `log_level` config option in extension.
+  - Deprecate `debug` and `transaction_debug_mode` option in extension.
+
 ## 2.0.4
 
 - [42a1255](https://github.com/appsignal/appsignal-nodejs/commit/42a1255a8dbd6a0d6b40d289d4e25dfc0b35287c) patch - Bump agent to v-5b63505
