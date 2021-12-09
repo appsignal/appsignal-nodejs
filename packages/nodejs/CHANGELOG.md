@@ -1,5 +1,11 @@
 # AppSignal for Node.js Changelog
 
+## 2.2.7
+
+### Fixed
+
+- [d175bc1](https://github.com/appsignal/appsignal-nodejs/commit/d175bc1cafb3a6cfd9cea2ad145dd8201c2e3add) patch - Fix debug and transaction_debug_mode log options. If set, previously the log_level would remain "info", since version 2.2.6.
+
 ## 2.2.6
 
 ### Added

@@ -1,12 +1,12 @@
 {
   "name": "@appsignal/koa",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "main": "dist/index",
   "types": "dist/index",
   "license": "MIT",
   "dependencies": {
     "@appsignal/types": "^2.1.5",
-    "@appsignal/nodejs": "=2.2.6",
+    "@appsignal/nodejs": "=2.2.7",
     "shimmer": "^1.2.1",
     "tslib": "^2.0.3"
   },
