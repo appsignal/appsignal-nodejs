@@ -253,7 +253,9 @@ export class DiagnoseTool {
           "  Error: Something went wrong while submitting the report to AppSignal."
         )
         console.error(`  Response code: ${responseData["status"]}`)
-        console.error(`  Response body:\n${responseData["body"]}`)
+        console.error(
+          `  Response body:\n${JSON.stringify(responseData["body"])}`
+        )
       })
   }
 }

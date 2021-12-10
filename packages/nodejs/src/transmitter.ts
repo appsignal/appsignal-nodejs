@@ -75,10 +75,22 @@ export class Transmitter {
         "Content-Type": "application/json",
         "Content-Length": this.#data.length
       },
-      cert: fs.readFileSync(
-        path.resolve(__dirname, "../cert/cacert.pem"),
-        "utf-8"
+      ca: this.certificateFile()
+    }
+  }
+
+  private certificateFile(): string {
+    const configData = this.#config.data
+    const caFilePathFromConfig = configData["caFilePath"] || ""
+
+    try {
+      fs.accessSync(caFilePathFromConfig, fs.constants.R_OK)
+      return fs.readFileSync(caFilePathFromConfig, "utf-8").toString()
+    } catch {
+      console.warn(
+        `Provided caFilePath: '${caFilePathFromConfig}' is not readable.`
       )
+      return ""
     }
   }
 }
