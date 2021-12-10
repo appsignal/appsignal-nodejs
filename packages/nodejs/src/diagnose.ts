@@ -12,6 +12,7 @@ import { AGENT_VERSION, VERSION } from "./version"
 import { JS_TO_RUBY_MAPPING } from "./config/configmap"
 import { AppsignalOptions } from "."
 import { HashMap } from "@appsignal/types"
+import { Transmitter } from "./transmitter"
 
 interface FileMetadata {
   content?: string[]
@@ -112,31 +113,27 @@ export class DiagnoseTool {
   }
 
   private async validatePushApiKey() {
-    return new Promise((resolve, reject) => {
-      const config = this.#config.data
-      const params = new URLSearchParams({
-        api_key: config["pushApiKey"] || "",
-        name: config["name"] || "",
-        environment: config["environment"] || "",
-        hostname: config["hostname"] || ""
-      })
-      const url = new URL(`/1/auth?${params.toString()}`, config["endpoint"])
-      const options = { method: "POST" }
+    const config = this.#config.data
+    const url = new URL(`/1/auth`, config["endpoint"])
+    const transmitter = new Transmitter(url.toString())
+    let statusCode = null
 
-      const requestModule = url.protocol == "http:" ? http : https
-      const request = requestModule.request(url, options, function (response) {
-        const status = response.statusCode
-        if (status === 200) {
-          resolve("valid")
-        } else if (status === 401) {
-          reject("invalid")
-        } else {
-          reject(`Failed to validate: status ${status}`)
-        }
+    await transmitter
+      .transmit()
+      .then(responseData => {
+        statusCode = responseData["status"]
       })
-      request.write("") // Send empty body
-      request.end()
-    })
+      .catch(responseData => {
+        statusCode = responseData["status"]
+      })
+
+    if (statusCode == 200) {
+      return Promise.resolve("valid")
+    } else if (statusCode == 401) {
+      return Promise.reject("invalid")
+    } else {
+      return Promise.reject(`Failed to validate: status ${statusCode}`)
+    }
   }
 
   private getPathsData() {
@@ -232,63 +229,32 @@ export class DiagnoseTool {
     )
   }
 
-  public sendReport(data: HashMap<any>) {
+  public async sendReport(data: HashMap<any>) {
     data.config.options = this.getConfigData()
     data.config.sources = this.getSources()
     const json = JSON.stringify({ diagnose: data })
 
-    const config = this.#config.data
-    const params = new URLSearchParams({
-      api_key: config["pushApiKey"] || "",
-      name: config["name"] || "",
-      environment: config["environment"] || "",
-      hostname: config["hostname"] || ""
-    })
-
     const diagnoseEndpoint =
       process.env.APPSIGNAL_DIAGNOSE_ENDPOINT || "https://appsignal.com/diag"
-    const url = new URL(diagnoseEndpoint)
 
-    const opts = {
-      method: "POST",
-      protocol: url.protocol,
-      host: url.hostname,
-      port: url.port,
-      path: `${url.pathname}?${params.toString()}`,
-      headers: {
-        "Content-Type": "application/json",
-        "Content-Length": json.length
-      },
-      cert: fs.readFileSync(
-        path.resolve(__dirname, "../cert/cacert.pem"),
-        "utf-8"
-      )
-    }
+    const transmitter = new Transmitter(diagnoseEndpoint, json)
 
-    const requestModule = url.protocol == "http:" ? http : https
-    const request = requestModule.request(opts, (response: any) => {
-      const responseStatus = response.statusCode
-      response.setEncoding("utf8")
-
-      response.on("data", (responseData: any) => {
-        if (responseStatus === 200) {
-          const { token } = JSON.parse(responseData.toString())
-          console.log(`  Your support token:`, token)
-          console.log(
-            `  View this report:   https://appsignal.com/diagnose/${token}`
-          )
-        } else {
-          console.error(
-            "  Error: Something went wrong while submitting the report to AppSignal."
-          )
-          console.error(`  Response code: ${responseStatus}`)
-          console.error(`  Response body:\n${responseData}`)
-        }
+    await transmitter
+      .transmit()
+      .then(responseData => {
+        const { token } = responseData["body"]
+        console.log(`  Your support token:`, token)
+        console.log(
+          `  View this report:   https://appsignal.com/diagnose/${token}`
+        )
       })
-    })
-
-    request.write(json)
-    request.end()
+      .catch(responseData => {
+        console.error(
+          "  Error: Something went wrong while submitting the report to AppSignal."
+        )
+        console.error(`  Response code: ${responseData["status"]}`)
+        console.error(`  Response body:\n${responseData["body"]}`)
+      })
   }
 }
 
