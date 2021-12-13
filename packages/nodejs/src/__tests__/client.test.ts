@@ -32,6 +32,14 @@ describe("BaseClient", () => {
     expect(global.__APPSIGNAL__).toEqual(client)
   })
 
+  it("returns the client from global object", () => {
+    expect(BaseClient.client).toEqual(client)
+  })
+
+  it("returns the client config from global object", () => {
+    expect(BaseClient.config).toEqual(client.config)
+  })
+
   it("does not start the client if config is not valid", () => {
     process.env["APPSIGNAL_PUSH_API_KEY"] = undefined
     client = new BaseClient({ name, enableMinutelyProbes: false })
