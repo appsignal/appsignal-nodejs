@@ -29,6 +29,17 @@ export class BaseClient implements Client {
   #metrics: Metrics = new BaseMetrics()
 
   /**
+   * Global accessors to Client and Config
+   */
+  static get client(): Client {
+    return global.__APPSIGNAL__
+  }
+
+  static get config(): Configuration {
+    return global.__APPSIGNAL__?.config
+  }
+
+  /**
    * Creates a new instance of the `Appsignal` object
    */
   constructor(options: Partial<AppsignalOptions> = {}) {
