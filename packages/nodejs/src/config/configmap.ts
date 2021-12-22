@@ -88,6 +88,7 @@ export const JS_TO_RUBY_MAPPING: { [key: string]: string } = {
   revision: "revision",
   runningInContainer: "running_in_container",
   sendEnvironmentMetadata: "send_environment_metadata",
+  sendParams: "send_params",
   transactionDebugMode: "transaction_debug_mode",
   workingDirPath: "working_dir_path",
   workingDirectoryPath: "working_directory_path"

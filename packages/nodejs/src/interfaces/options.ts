@@ -25,7 +25,7 @@ export interface AppsignalOptions {
   requestHeaders: string[]
   revision: string
   runningInContainer: boolean
-  sendParams: string[]
+  sendParams: boolean
   skipSessionData: boolean
   workingDirPath: string
   workingDirectoryPath: string
