@@ -86,10 +86,7 @@ export class DiagnoseTool {
       language_version: process.versions.node,
       heroku,
       root: process.getuid() === 0,
-      // @TODO: this is pretty much just a guess right now
-      // it assumes docker. no jails, lxc etc.
-      // we'll need to adjust this a little later
-      running_in_container: hasDockerEnv() || hasDockerCGroup() || heroku
+      running_in_container: this.#extension.runningInContainer()
     }
   }
 
@@ -325,26 +322,5 @@ function readFileOptions(path: string, bytesToRead: number) {
       readLength: bytesToRead,
       startPosition
     }
-  }
-}
-
-/**
- * the following lines are borrowed from https://github.com/sindresorhus/is-docker/
- * thanks sindre! <3
- */
-function hasDockerEnv(): boolean {
-  try {
-    fs.statSync("/.dockerenv")
-    return true
-  } catch (_) {
-    return false
-  }
-}
-
-function hasDockerCGroup(): boolean {
-  try {
-    return fs.readFileSync("/proc/self/cgroup", "utf8").includes("docker")
-  } catch (_) {
-    return false
   }
 }

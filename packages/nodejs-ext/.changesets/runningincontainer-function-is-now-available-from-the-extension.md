@@ -3,5 +3,5 @@ bump: "patch"
 type: "add"
 ---
 
-RunningInContainer function is now available from the extension. It checks if the agent is running
-in a container.
+Implement the `RunningInContainer` function available in the extension. It is
+used to check if the agent is running in a container.
