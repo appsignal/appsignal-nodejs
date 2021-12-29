@@ -49,12 +49,12 @@ export class Transmitter {
               parsedResponse = {}
             }
 
-            if (responseStatus == 200) {
-              resolve({ status: responseStatus, body: parsedResponse })
-            } else {
-              reject({ status: responseStatus, body: parsedResponse })
-            }
+            resolve({ status: responseStatus, body: parsedResponse })
           })
+      })
+
+      request.on("error", error => {
+        reject({ error: error })
       })
 
       request.write(this.#data)
