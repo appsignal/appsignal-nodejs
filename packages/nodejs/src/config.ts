@@ -139,6 +139,7 @@ export class Configuration {
         "range"
       ],
       sendEnvironmentMetadata: true,
+      skipSessionData: false,
       transactionDebugMode: false
     }
   }
