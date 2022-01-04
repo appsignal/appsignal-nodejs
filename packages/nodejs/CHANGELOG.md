@@ -1,5 +1,22 @@
 # AppSignal for Node.js Changelog
 
+## 2.2.8
+
+### Added
+
+- [e96af09](https://github.com/appsignal/appsignal-nodejs/commit/e96af09918124c34e19e0287a096ec5e2cf838a9) patch - The `caFilePath` config option now works for diagnose script external requests.
+- [0eb2eed](https://github.com/appsignal/appsignal-nodejs/commit/0eb2eed2c319d629aad3715300fbd745e681bfc2) patch - Add helper to access the globally stored AppSignal client.
+- [118ae05](https://github.com/appsignal/appsignal-nodejs/commit/118ae0505db1b411cf0dbc0688b60c6a138109ef) patch - The `sendParams` config option is now available. When set to `false`, it prevents the integration
+  from sending request params to AppSignal.
+- [e5f4a97](https://github.com/appsignal/appsignal-nodejs/commit/e5f4a9744a315881a453ba06135e11f3d2a683c8) patch - Handle request errors in the internal HTTP transmitter used by diagnose tool
+  and Push API key validator.
+
+### Changed
+
+- [7882541](https://github.com/appsignal/appsignal-nodejs/commit/7882541f8e4c03bdf36a728d50dda07568a73815) patch - The extension is now responsible of determining if the process is running in a container. This check
+  was previously made by the Node.js integration code.
+- patch - Update @appsignal/nodejs-ext dependency to 2.0.6.
+
 ## 2.2.7
 
 ### Fixed

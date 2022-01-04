@@ -1,6 +1,6 @@
 {
   "name": "@appsignal/nodejs",
-  "version": "2.2.7",
+  "version": "2.2.8",
   "main": "dist/index",
   "types": "dist/index",
   "license": "MIT",
@@ -16,7 +16,7 @@
     "tslib": "^2.0.3"
   },
   "optionalDependencies": {
-    "@appsignal/nodejs-ext": "=2.0.5"
+    "@appsignal/nodejs-ext": "=2.0.6"
   },
   "devDependencies": {
     "@types/semver": "*",

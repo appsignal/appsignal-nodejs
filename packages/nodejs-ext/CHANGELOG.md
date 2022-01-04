@@ -1,5 +1,12 @@
 # AppSignal for Node.js extension Changelog
 
+## 2.0.6
+
+### Added
+
+- [7882541](https://github.com/appsignal/appsignal-nodejs/commit/7882541f8e4c03bdf36a728d50dda07568a73815) patch - Implement the `RunningInContainer` function available in the extension. It is
+  used to check if the agent is running in a container.
+
 ## 2.0.5
 
 ### Changed
