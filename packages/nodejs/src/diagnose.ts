@@ -113,23 +113,25 @@ export class DiagnoseTool {
     const config = this.#config.data
     const url = new URL(`/1/auth`, config["endpoint"])
     const transmitter = new Transmitter(url.toString())
-    let statusCode = null
+    let response: HashMap<any> = {}
 
     await transmitter
       .transmit()
       .then(responseData => {
-        statusCode = responseData["status"]
+        response = responseData
       })
       .catch(responseData => {
-        statusCode = responseData["status"]
+        response = responseData
       })
 
-    if (statusCode == 200) {
+    if (response["status"] == 200) {
       return Promise.resolve("valid")
-    } else if (statusCode == 401) {
+    } else if (response["status"] == 401) {
       return Promise.reject("invalid")
     } else {
-      return Promise.reject(`Failed to validate: status ${statusCode}`)
+      return Promise.reject(
+        `Failed to validate: ${response["error"] || response["body"]}`
+      )
     }
   }
 
@@ -239,19 +241,25 @@ export class DiagnoseTool {
     await transmitter
       .transmit()
       .then(responseData => {
-        const { token } = responseData["body"]
-        console.log(`  Your support token:`, token)
-        console.log(
-          `  View this report:   https://appsignal.com/diagnose/${token}`
-        )
+        if (responseData["status"] == 200) {
+          const { token } = responseData["body"]
+          console.log(`  Your support token:`, token)
+          console.log(
+            `  View this report:   https://appsignal.com/diagnose/${token}`
+          )
+        } else {
+          console.error(
+            "  Error: Something went wrong while submitting the report to AppSignal."
+          )
+          console.error(`  Response code: ${responseData["status"]}`)
+          console.error(
+            `  Response body:\n${JSON.stringify(responseData["body"])}`
+          )
+        }
       })
       .catch(responseData => {
         console.error(
-          "  Error: Something went wrong while submitting the report to AppSignal."
-        )
-        console.error(`  Response code: ${responseData["status"]}`)
-        console.error(
-          `  Response body:\n${JSON.stringify(responseData["body"])}`
+          `  Error submitting the report: ${responseData["error"].message}`
         )
       })
   }
