@@ -5,6 +5,7 @@ import { Span, SpanOptions, SpanContext } from "./interfaces"
 import { span } from "./extension_wrapper"
 import { Data } from "./internal/data"
 import { getAgentTimestamps } from "./utils"
+import { BaseClient } from "./client"
 
 /**
  * The `Span` object represents a length of time in the flow of execution
@@ -125,6 +126,7 @@ export class BaseSpan implements Span {
         >
   ): this {
     if (!key || !data) return this
+    if (key == "params" && !BaseClient.config.data.sendParams) return this
 
     try {
       span.setSpanSampleData(this._ref, key, Data.generate(data))

@@ -1,4 +1,7 @@
 import { ChildSpan, RootSpan } from "../span"
+import { span } from "../extension_wrapper"
+import { BaseClient } from "../client"
+import { Data } from "../internal/data"
 
 type SpanData = {
   closed: boolean
@@ -176,5 +179,46 @@ describe("ChildSpan", () => {
     internal = JSON.parse(span.toJSON())
 
     expect(internal.closed).toBeTruthy()
+  })
+})
+
+describe(".setSampleData()", () => {
+  const name = "TEST APP"
+  const pushApiKey = "TEST_API_KEY"
+  const DEFAULT_OPTS = { name, pushApiKey, enableMinutelyProbes: false }
+  const sampleData = { foo: "bar" }
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it("calls the extension with the desired data if sendParams is active", () => {
+    new BaseClient({ ...DEFAULT_OPTS })
+
+    const rootSpan = new RootSpan()
+    const spanMock = jest
+      .spyOn(span, "setSpanSampleData")
+      .mockImplementation(() => {})
+
+    rootSpan.setSampleData("params", sampleData)
+
+    expect(spanMock).toHaveBeenCalledWith(
+      {},
+      "params",
+      Data.generate(sampleData)
+    )
+  })
+
+  it("does not call the extension with the desired data if sendParams is inactive", () => {
+    new BaseClient({ ...DEFAULT_OPTS, sendParams: false })
+
+    const rootSpan = new RootSpan()
+    const spanMock = jest
+      .spyOn(span, "setSpanSampleData")
+      .mockImplementation(() => {})
+
+    rootSpan.setSampleData("params", sampleData)
+
+    expect(spanMock).not.toHaveBeenCalled()
   })
 })

@@ -39,6 +39,7 @@ describe("Configuration", () => {
       "range"
     ],
     sendEnvironmentMetadata: true,
+    sendParams: true,
     transactionDebugMode: false
   }
 
