@@ -66,4 +66,11 @@ export class Extension {
       return {}
     }
   }
+
+  /**
+   * Determines if the app is running inside a container
+   */
+  public runningInContainer(): boolean {
+    return extension.runningInContainer()
+  }
 }

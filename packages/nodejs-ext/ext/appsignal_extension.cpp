@@ -33,6 +33,12 @@ Napi::Value DiagnoseRaw(const Napi::CallbackInfo &info) {
   return Napi::String::New(env, str.buf, str.len);
 }
 
+Napi::Value RunningInContainer(const Napi::CallbackInfo &info) {
+  bool running_in_container = !!appsignal_running_in_container();
+
+  return Napi::Value::From(info.Env(), running_in_container);
+}
+
 // Data Array encoding
 
 Napi::Value CreateDataArray(const Napi::CallbackInfo &info) {
@@ -632,6 +638,8 @@ Napi::Object CreateExtensionObject(Napi::Env env, Napi::Object exports) {
   extension.Set(Napi::String::New(env, "stop"), Napi::Function::New(env, Stop));
   extension.Set(Napi::String::New(env, "diagnoseRaw"),
                 Napi::Function::New(env, DiagnoseRaw));
+  extension.Set(Napi::String::New(env, "runningInContainer"),
+                Napi::Function::New(env, RunningInContainer));
 
   return extension;
 }
