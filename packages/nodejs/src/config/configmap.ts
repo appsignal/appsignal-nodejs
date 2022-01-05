@@ -26,7 +26,7 @@ export const ENV_TO_KEY_MAPPING: { [key: string]: string } = {
   APPSIGNAL_RUNNING_IN_CONTAINER: "runningInContainer",
   APPSIGNAL_SEND_ENVIRONMENT_METADATA: "sendEnvironmentMetadata",
   APPSIGNAL_SEND_PARAMS: "sendParams",
-  APPSIGNAL_SKIP_SESSION_DATA: "skipSessionData",
+  APPSIGNAL_SEND_SESSION_DATA: "sendSessionData",
   APPSIGNAL_TRANSACTION_DEBUG_MODE: "transactionDebugMode",
   APPSIGNAL_WORKING_DIRECTORY_PATH: "workingDirectoryPath",
   APPSIGNAL_WORKING_DIR_PATH: "workingDirPath",
@@ -89,6 +89,7 @@ export const JS_TO_RUBY_MAPPING: { [key: string]: string } = {
   runningInContainer: "running_in_container",
   sendEnvironmentMetadata: "send_environment_metadata",
   sendParams: "send_params",
+  sendSessionData: "send_session_data",
   transactionDebugMode: "transaction_debug_mode",
   workingDirPath: "working_dir_path",
   workingDirectoryPath: "working_directory_path"
