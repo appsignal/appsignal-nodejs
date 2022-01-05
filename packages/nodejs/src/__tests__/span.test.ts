@@ -192,7 +192,7 @@ describe(".setSampleData()", () => {
     jest.clearAllMocks()
   })
 
-  it("calls the extension with the desired data if sendParams is active", () => {
+  it("calls the extension with the desired params data if sendParams is active", () => {
     new BaseClient({ ...DEFAULT_OPTS })
 
     const rootSpan = new RootSpan()
@@ -209,7 +209,7 @@ describe(".setSampleData()", () => {
     )
   })
 
-  it("does not call the extension with the desired data if sendParams is inactive", () => {
+  it("does not call the extension with the desired params data if sendParams is inactive", () => {
     new BaseClient({ ...DEFAULT_OPTS, sendParams: false })
 
     const rootSpan = new RootSpan()
@@ -218,6 +218,34 @@ describe(".setSampleData()", () => {
       .mockImplementation(() => {})
 
     rootSpan.setSampleData("params", sampleData)
+
+    expect(spanMock).not.toHaveBeenCalled()
+  })
+
+  it("calls the extension with the desired session data if sendSessionData is active", () => {
+    new BaseClient({ ...DEFAULT_OPTS })
+
+    const rootSpan = new RootSpan()
+    const spanMock = jest
+      .spyOn(span, "setSpanSampleData")
+      .mockImplementation(() => {})
+
+    rootSpan.setSampleData("session_data", sampleData)
+
+    expect(spanMock).toHaveBeenCalledWith(
+      {},
+      "session_data",
+      Data.generate(sampleData)
+    )
+  })
+
+  it("does not call the extension with the desired session data if sendSessionData is inactive", () => {
+    new BaseClient({ ...DEFAULT_OPTS, sendSessionData: false })
+
+    const rootSpan = new RootSpan()
+    const spanMock = jest.spyOn(span, "setSpanSampleData")
+
+    rootSpan.setSampleData("session_data", sampleData)
 
     expect(spanMock).not.toHaveBeenCalled()
   })
