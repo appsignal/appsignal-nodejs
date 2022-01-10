@@ -1,5 +1,6 @@
-import { Metrics } from "../interfaces"
-import { BaseProbes as Probes } from "../probes"
+import { Metrics, Probes } from "../interfaces"
+import { BaseProbes } from "../probes"
+import { BaseMetrics } from "../metrics"
 import * as v8 from "../probes/v8"
 import os from "os"
 import { BaseClient } from "../client"
@@ -9,28 +10,59 @@ describe("Probes", () => {
 
   beforeEach(() => {
     jest.useFakeTimers()
-    probes = new Probes()
+    probes = new BaseProbes()
   })
 
   afterEach(() => {
     jest.clearAllTimers()
   })
 
-  it("registers a probe", () => {
+  function registerMockProbe(): jest.Mock {
     const fn = jest.fn()
     probes.register("test_metric", fn)
+    return fn
+  }
+
+  it("registers a probe", () => {
+    const fn = registerMockProbe()
     jest.runOnlyPendingTimers()
     expect(fn).toHaveBeenCalled()
     expect(probes.count).toEqual(1)
   })
 
   it("unregisters a probe", () => {
-    const fn = jest.fn()
-    probes.register("test_metric", fn)
+    const fn = registerMockProbe()
     probes.unregister("test_metric")
     jest.runOnlyPendingTimers()
     expect(fn).not.toHaveBeenCalled()
     expect(probes.count).toEqual(0)
+  })
+
+  describe("Metrics integration test", () => {
+    function initialiseMetrics(enableMinutelyProbes: boolean = true) {
+      const client = new BaseClient({
+        active: true,
+        pushApiKey: "TEST_API_KEY",
+        enableMinutelyProbes
+      })
+      expect(client.metrics()).toBeInstanceOf(BaseMetrics)
+
+      probes = client.metrics().probes()
+    }
+
+    it("calls probes when enableMinutelyProbes is true", () => {
+      initialiseMetrics(true)
+      const fn = registerMockProbe()
+      jest.runOnlyPendingTimers()
+      expect(fn).toHaveBeenCalled()
+    })
+
+    it("does not call probes when enableMinutelyProbes is false", () => {
+      initialiseMetrics(false)
+      const fn = registerMockProbe()
+      jest.runOnlyPendingTimers()
+      expect(fn).not.toHaveBeenCalled()
+    })
   })
 
   describe("v8 probe", () => {
@@ -46,7 +78,7 @@ describe("Probes", () => {
     })
 
     function registerV8Probe(hostname?: string) {
-      new BaseClient({ hostname: hostname })
+      new BaseClient({ hostname })
 
       let { PROBE_NAME, init } = v8
       probes.register(PROBE_NAME, init(meterMock))

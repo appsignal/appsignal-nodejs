@@ -41,13 +41,8 @@ describe("Bootstrap", () => {
     })
 
     it("bootstraps the core probes", () => {
-      initCoreProbes(mock, { enableMinutelyProbes: true })
+      initCoreProbes(mock)
       expect(registerMock).toHaveBeenCalledTimes(1)
-    })
-
-    it("doesn't bootstrap the core probes if enableMinutelyProbes is false", () => {
-      initCoreProbes(mock, { enableMinutelyProbes: false })
-      expect(registerMock).toHaveBeenCalledTimes(0)
     })
   })
 })
