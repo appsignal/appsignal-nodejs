@@ -1,5 +1,11 @@
 
 
+## 1.0.12
+
+### Changed
+
+- patch - Update @appsignal/nodejs dependency to 2.2.9.
+
 ## 1.0.11
 
 ### Changed

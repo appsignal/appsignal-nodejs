@@ -1,5 +1,12 @@
 # AppSignal for Node.js Changelog
 
+## 2.2.9
+
+### Added
+
+- [d2defeb](https://github.com/appsignal/appsignal-nodejs/commit/d2defeb1910999bca3d39c724e583079999d55ab) patch - The `sendSessionData` config option is now available. When set to `false`, it prevents the
+  integration from sending session data to AppSignal.
+
 ## 2.2.8
 
 ### Added
