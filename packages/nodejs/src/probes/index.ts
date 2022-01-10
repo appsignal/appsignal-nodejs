@@ -31,12 +31,25 @@ export class BaseProbes extends EventEmitter implements Probes {
     return this.on(name, fn)
   }
 
+  public unregister(name: string): this {
+    const timer = this.#timers.get(name)
+
+    if (typeof timer !== "undefined") {
+      clearInterval(timer)
+      this.#timers.delete(name)
+      this.removeAllListeners(name)
+    }
+
+    return this
+  }
+
   /**
    * Unregisters all probes and clears the timers.
    */
   public clear(): this {
     this.#timers.forEach(t => clearInterval(t))
     this.#timers = new Map()
+    this.removeAllListeners()
     return this
   }
 }

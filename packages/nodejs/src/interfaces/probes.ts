@@ -14,6 +14,11 @@ export interface Probes {
   register(name: string, fn: () => void): this
 
   /**
+   * Unregisters an existing minutely probe.
+   */
+  unregister(name: string): this
+
+  /**
    * Unregisters all probes and clears the timers.
    */
   clear(): this

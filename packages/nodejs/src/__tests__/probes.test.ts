@@ -21,6 +21,16 @@ describe("Probes", () => {
     probes.register("test_metric", fn)
     jest.runOnlyPendingTimers()
     expect(fn).toHaveBeenCalled()
+    expect(probes.count).toEqual(1)
+  })
+
+  it("unregisters a probe", () => {
+    const fn = jest.fn()
+    probes.register("test_metric", fn)
+    probes.unregister("test_metric")
+    jest.runOnlyPendingTimers()
+    expect(fn).not.toHaveBeenCalled()
+    expect(probes.count).toEqual(0)
   })
 
   describe("v8 probe", () => {
