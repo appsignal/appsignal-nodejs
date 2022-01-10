@@ -1,5 +1,11 @@
 # AppSignal for Node.js extension Changelog
 
+## 2.0.7
+
+### Changed
+
+- [5615d19](https://github.com/appsignal/appsignal-nodejs/commit/5615d19389240eaf3b327a300d908ab347880b03) patch - Bump AppSignal agent version to 15ee07b. Add internal tracking of transmission duration.
+
 ## 2.0.6
 
 ### Added

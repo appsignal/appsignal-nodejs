@@ -1,5 +1,11 @@
 # AppSignal for Node.js Changelog
 
+## 2.2.10
+
+### Changed
+
+- patch - Update @appsignal/nodejs-ext dependency to 2.0.7.
+
 ## 2.2.9
 
 ### Added
