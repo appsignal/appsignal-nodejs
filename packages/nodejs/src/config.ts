@@ -140,6 +140,7 @@ export class Configuration {
       ],
       sendEnvironmentMetadata: true,
       sendParams: true,
+      sendSessionData: true,
       transactionDebugMode: false
     }
   }

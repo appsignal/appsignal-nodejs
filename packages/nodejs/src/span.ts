@@ -125,8 +125,10 @@ export class BaseSpan implements Span {
           HashMapValue | Array<HashMapValue> | HashMap<HashMapValue> | undefined
         >
   ): this {
+    const clientConfig = BaseClient.config.data
     if (!key || !data) return this
-    if (key == "params" && !BaseClient.config.data.sendParams) return this
+    if (key == "params" && !clientConfig.sendParams) return this
+    if (key == "session_data" && !clientConfig.sendSessionData) return this
 
     try {
       span.setSpanSampleData(this._ref, key, Data.generate(data))
