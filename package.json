@@ -28,7 +28,6 @@
     "bootstrap:ci": "echo Please run 'mono bootstrap --ci' instead.",
     "build": "echo Please run 'mono build' instead.",
     "build:watch": "echo Please run 'mono run npm run build:watch --parallel' instead.",
-    "build:ext": "echo Please run 'mono run npm run build:ext --package @appsignal/nodejs-ext' instead.",
     "clean": "echo Please run 'mono clean' instead.",
     "test": "echo Please run 'mono test' instead.",
     "lint": "prettier --check **/*.{js,ts}",

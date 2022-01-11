@@ -3,7 +3,7 @@ import { ExtensionWrapper } from "./interfaces/extension_wrapper"
 let mod: ExtensionWrapper
 
 try {
-  mod = require("@appsignal/nodejs-ext") as ExtensionWrapper
+  mod = require("../build/Release/extension.node") as ExtensionWrapper
 } catch (e) {
   mod = {
     extension: {

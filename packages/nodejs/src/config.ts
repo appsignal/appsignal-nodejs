@@ -217,8 +217,7 @@ export class Configuration {
    */
   private writePrivateConstants() {
     const priv = {
-      // @TODO: is this path always correct?
-      _APPSIGNAL_AGENT_PATH: path.join(__dirname, "/../../nodejs-ext/ext"),
+      _APPSIGNAL_AGENT_PATH: path.join(__dirname, "/../ext"),
       _APPSIGNAL_PROCESS_NAME: process.title,
       _APPSIGNAL_LANGUAGE_INTEGRATION_VERSION: `nodejs-${VERSION}`,
       _APPSIGNAL_APP_PATH: process.cwd()

@@ -41,6 +41,10 @@ const appsignal = new Appsignal({
 
 > In order to auto-instrument modules, the Appsignal module must be both **required** and **initialized** before any other package.
 
+## Extension
+
+This package also contains the C++ extension, and the install script for the agent. The native extension is a bridge between the Node.js runtime and [our agent](https://docs.appsignal.com/appsignal/how-appsignal-operates.html#agent).
+
 [appsignal]: https://appsignal.com
 [appsignal-sign-up]: https://appsignal.com/users/sign_up
 [contact]: mailto:support@appsignal.com
