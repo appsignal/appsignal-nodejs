@@ -10,13 +10,12 @@
   "dependencies": {
     "@appsignal/core": "^1.1.4",
     "@appsignal/types": "^2.1.5",
+    "node-addon-api": "^3.1.0",
+    "node-gyp": "^7.1.2",
     "require-in-the-middle": "^5.1.0",
     "semver": "^7.3.4",
     "shimmer": "^1.2.1",
     "tslib": "^2.0.3"
-  },
-  "optionalDependencies": {
-    "@appsignal/nodejs-ext": "=2.0.7"
   },
   "devDependencies": {
     "@types/semver": "*",
@@ -26,17 +25,26 @@
     "redis": "*"
   },
   "scripts": {
-    "prebuild": "npm run versionfile",
     "build": "tsc -p tsconfig.json",
-    "build:watch": "npm run versionfile && tsc -p tsconfig.json -w --preserveWatchOutput",
-    "clean": "rimraf dist coverage",
+    "build:watch": "tsc -p tsconfig.json -w --preserveWatchOutput",
+    "clean": "rimraf dist coverage && rimraf ext/appsignal-agent ext/libappsignal.a ext/appsignal.* ext/*.tar.gz",
+    "install": "node scripts/extension/extension.js",
     "link:npm": "npm link",
     "link:yarn": "yarn link",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "versionfile": "node scripts/create-versionfile.js",
-    "version": "npm run versionfile"
+    "test": "jest --filter=./test/filter.js",
+    "test:ext:failure": "_TEST_APPSIGNAL_EXTENSION_FAILURE=true _APPSIGNAL_EXTENSION_INSTALL=true npm run install; _TEST_APPSIGNAL_EXTENSION_FAILURE=true jest --filter=./test/filter.js",
+    "test:watch": "jest --filter=./test/filter.js --watch"
   },
+  "os": [
+    "linux",
+    "darwin",
+    "freebsd"
+  ],
+  "cpu": [
+    "x64",
+    "x86",
+    "arm"
+  ],
   "engines": {
     "node": ">= 12"
   },

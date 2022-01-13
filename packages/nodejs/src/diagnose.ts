@@ -265,7 +265,7 @@ export class DiagnoseTool {
   }
 }
 
-// This implementation should match the `packages/nodejs-ext/scripts/report.js`
+// This implementation should match the `scripts/extension/report.js`
 // implementation to generate the same path.
 function reportPath(): string {
   // Navigate up to the app dir. Move up the src dir, package dir, @appsignal

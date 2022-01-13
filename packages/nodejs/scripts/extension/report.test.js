@@ -2,7 +2,7 @@ const originalProcess = process
 const originalProcessEnv = process.env
 const mockHelpers = { hasMusl: jest.fn() }
 
-jest.doMock("./extension/helpers", () => mockHelpers)
+jest.doMock("./support/helpers", () => mockHelpers)
 
 const { createBuildReport } = require("./report")
 

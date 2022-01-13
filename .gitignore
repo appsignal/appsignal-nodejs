@@ -81,7 +81,7 @@ build/
 /ext/libappsignal.dylib
 
 # Agent archives
-packages/nodejs-ext/ext/*.tar.gz
+packages/nodejs/ext/*.tar.gz
 
 packages/*/test/spec/examples.txt
 packages/*/test/example/package-lock.json

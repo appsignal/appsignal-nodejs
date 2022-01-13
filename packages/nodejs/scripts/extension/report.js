@@ -1,8 +1,8 @@
 const crypto = require("crypto")
 const path = require("path")
 
-const { AGENT_VERSION } = require("./extension/constants")
-const { hasMusl } = require("./extension/helpers")
+const { AGENT_VERSION } = require("./support/constants")
+const { hasMusl } = require("./support/helpers")
 
 function createReport() {
   return {

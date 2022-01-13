@@ -6,13 +6,13 @@ const fs = require("fs")
 const crypto = require("crypto")
 const childProcess = require("child_process")
 
-const { AGENT_VERSION, MIRRORS, TRIPLES } = require("./extension/constants")
+const { AGENT_VERSION, MIRRORS, TRIPLES } = require("./support/constants")
 
 const {
   hasLocalBuild,
   hasSupportedArchitecture,
   hasSupportedOs
-} = require("./extension/helpers")
+} = require("./support/helpers")
 
 const {
   createReport,
@@ -21,7 +21,7 @@ const {
   reportPath
 } = require("./report")
 
-const EXT_PATH = path.join(__dirname, "/../ext/")
+const EXT_PATH = path.join(__dirname, "/../../ext/")
 const testExtensionFailure =
   process.env._TEST_APPSIGNAL_EXTENSION_FAILURE === "true"
 const installAllowedEnv = process.env._APPSIGNAL_EXTENSION_INSTALL
@@ -140,7 +140,7 @@ function mapArchitecture(architecture) {
     support everything our customers run.`
   )
 
-  return process.exit(1)
+  return process.exit(0)
 }
 
 function getMetadataForTarget({ architecture, target }) {
@@ -180,7 +180,7 @@ function install() {
           support@appsignal.com, we aim to support everything our customers run.`
       )
 
-      return process.exit(1)
+      return process.exit(0)
     }
 
     if (!hasSupportedOs(process.platform)) {
@@ -190,7 +190,7 @@ function install() {
         our customers run.`
       )
 
-      return process.exit(1)
+      return process.exit(0)
     }
   }
 
@@ -249,7 +249,7 @@ function install() {
       }
 
       return dumpReport(report).then(() => {
-        process.exit(1)
+        process.exit(0)
       })
     })
 })()
