@@ -30,6 +30,14 @@ describe("Probes", () => {
     expect(probes.count).toEqual(1)
   })
 
+  it("does not call a probe after it has been overwritten", () => {
+    const first = registerMockProbe()
+    const second = registerMockProbe()
+    jest.runOnlyPendingTimers()
+    expect(first).not.toHaveBeenCalled()
+    expect(second).toHaveBeenCalled()
+  })
+
   it("unregisters a probe", () => {
     const fn = registerMockProbe()
     probes.unregister("test_metric")

@@ -28,6 +28,7 @@ export class BaseProbes extends EventEmitter implements Probes {
       setInterval(() => this.emit(name), 60 * 1000)
     )
 
+    this.removeAllListeners(name)
     return this.on(name, fn)
   }
 
