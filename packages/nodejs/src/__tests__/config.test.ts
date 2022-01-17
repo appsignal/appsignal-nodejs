@@ -282,7 +282,7 @@ describe("Configuration", () => {
 
     it("writes private constants to the environment", () => {
       expect(env("_APPSIGNAL_AGENT_PATH")).toMatch(/nodejs\/ext$/)
-      expect(env("_APPSIGNAL_PROCESS_NAME")).toEqual("node")
+      expect(env("_APPSIGNAL_PROCESS_NAME")).toMatch(/node$/)
       expect(env("_APPSIGNAL_LANGUAGE_INTEGRATION_VERSION")).toEqual(
         `nodejs-${VERSION}`
       )
