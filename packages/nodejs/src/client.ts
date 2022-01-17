@@ -43,12 +43,12 @@ export class BaseClient implements Client {
    * Creates a new instance of the `Appsignal` object
    */
   constructor(options: Partial<AppsignalOptions> = {}) {
-    const {
-      active = false, // Agent is not started by default
-      ignoreInstrumentation
-    } = options
+    const { ignoreInstrumentation } = options
 
     this.config = new Configuration(options)
+
+    const active = this.config.data.active!
+
     this.extension = new Extension({ active })
 
     this.storeInGlobal()
