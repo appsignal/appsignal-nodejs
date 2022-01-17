@@ -1,7 +1,9 @@
 import { Metrics, Probes } from "./interfaces"
 import { BaseProbes } from "./probes"
+import { NoopProbes } from "./noops"
 import { metrics } from "./extension_wrapper"
 import { Data } from "./internal/data"
+import { BaseClient } from "./client"
 
 /**
  * The metrics object.
@@ -9,7 +11,17 @@ import { Data } from "./internal/data"
  * @class
  */
 export class BaseMetrics implements Metrics {
-  #probes = new BaseProbes()
+  #probes: Probes
+
+  constructor() {
+    let enableMinutelyProbes = BaseClient.config.data.enableMinutelyProbes
+
+    if (enableMinutelyProbes) {
+      this.#probes = new BaseProbes()
+    } else {
+      this.#probes = new NoopProbes()
+    }
+  }
 
   /**
    * A gauge is a metric value at a specific time. If you set more

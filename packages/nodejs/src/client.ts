@@ -26,7 +26,7 @@ export class BaseClient implements Client {
   instrumentation: Instrumentation
 
   #tracer: Tracer = new BaseTracer()
-  #metrics: Metrics = new BaseMetrics()
+  #metrics: Metrics
 
   /**
    * Global accessors to Client and Config
@@ -45,19 +45,24 @@ export class BaseClient implements Client {
   constructor(options: Partial<AppsignalOptions> = {}) {
     const {
       active = false, // Agent is not started by default
-      ignoreInstrumentation,
-      enableMinutelyProbes = true
+      ignoreInstrumentation
     } = options
 
     this.config = new Configuration(options)
     this.extension = new Extension({ active })
 
+    this.storeInGlobal()
+
+    if (this.isActive) {
+      this.#metrics = new BaseMetrics()
+    } else {
+      this.#metrics = new NoopMetrics()
+    }
+
     this.instrumentation = new Instrumentation(this.tracer(), this.metrics())
 
     initCorePlugins(this.instrumentation, { ignoreInstrumentation })
-    initCoreProbes(this.metrics(), { enableMinutelyProbes })
-
-    this.storeInGlobal()
+    initCoreProbes(this.metrics())
   }
 
   /**
@@ -129,10 +134,6 @@ export class BaseClient implements Client {
    * to easily spot the differences between contexts.
    */
   public metrics(): Metrics {
-    if (!this.isActive) {
-      return new NoopMetrics()
-    }
-
     return this.#metrics
   }
 

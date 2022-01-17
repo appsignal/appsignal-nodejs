@@ -3,7 +3,6 @@ import { Instrumentation } from "./instrument"
 import { httpPlugin, httpsPlugin } from "./instrumentation/http"
 import * as pgPlugin from "./instrumentation/pg"
 import * as redisPlugin from "./instrumentation/redis"
-
 import * as gcProbe from "./probes/v8"
 
 /**
@@ -39,15 +38,8 @@ export function initCorePlugins(
 /**
  * Initialises all the available probes to attach automatically at runtime.
  */
-export function initCoreProbes(
-  meter: Metrics,
-  { enableMinutelyProbes }: { enableMinutelyProbes?: boolean }
-) {
+export function initCoreProbes(meter: Metrics) {
   let probes: any[] = [gcProbe]
-
-  if (!enableMinutelyProbes) {
-    return
-  }
 
   // load probes
   probes.forEach(({ PROBE_NAME, init }) =>

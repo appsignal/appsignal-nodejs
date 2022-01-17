@@ -1,10 +1,24 @@
+import { BaseClient } from "../client"
 import { BaseMetrics as Metrics } from "../metrics"
+import { NoopProbes } from "../noops"
+import { BaseProbes } from "../probes"
 
 describe("Metrics", () => {
   let metrics: Metrics
 
   beforeEach(() => {
+    new BaseClient()
     metrics = new Metrics()
+  })
+
+  it("has `Probes` when minutely probes are on", () => {
+    expect(metrics.probes()).toBeInstanceOf(BaseProbes)
+  })
+
+  it("has `NoopProbes` when minutely probes are off", () => {
+    new BaseClient({ enableMinutelyProbes: false })
+    metrics = new Metrics()
+    expect(metrics.probes()).toBeInstanceOf(NoopProbes)
   })
 
   it("sets a gauge", () => {
