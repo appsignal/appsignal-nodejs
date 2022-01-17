@@ -11,7 +11,7 @@ export class Diagnose {
   #diagnose: typeof DiagnoseTool
 
   constructor() {
-    this.#diagnose = new DiagnoseTool({})
+    this.#diagnose = new DiagnoseTool()
   }
 
   public async run() {
