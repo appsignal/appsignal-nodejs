@@ -30,6 +30,20 @@ describe("DiagnoseTool", () => {
     expect(output.process.uid).toEqual(process.getuid())
   })
 
+  describe("install report", () => {
+    it("fetches the install report", async () => {
+      const output = await tool.generate()
+
+      const install = output.installation
+      expect(install).not.toHaveProperty("parsing_error")
+      expect(install).toHaveProperty("build")
+      expect(install).toHaveProperty("download")
+      expect(install).toHaveProperty("host")
+      expect(install).toHaveProperty("language")
+      expect(install).toHaveProperty("result")
+    })
+  })
+
   it("returns the log_dir_path", async () => {
     const report = await tool.generate()
     expect(report.paths.log_dir_path.path).toEqual("/tmp")

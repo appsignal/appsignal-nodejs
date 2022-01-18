@@ -82,7 +82,7 @@ function createDownloadReport(report) {
 function reportPath() {
   // Navigate up to the app dir. Move up the scripts dir, package dir,
   // @appsignal dir and node_modules dir.
-  const appPath = path.join(__dirname, "../../../../")
+  const appPath = path.join(__dirname, "../../../../../")
   const hash = crypto.createHash("sha256")
   hash.update(appPath)
   const reportPathDigest = hash.digest("hex")
