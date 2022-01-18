@@ -39,7 +39,7 @@ export class DiagnoseTool {
 
   constructor() {
     this.#config = new Configuration({})
-    this.#extension = new Extension({ active: true })
+    this.#extension = new Extension()
   }
 
   /**
@@ -73,7 +73,7 @@ export class DiagnoseTool {
       language: "nodejs",
       package_version: VERSION,
       agent_version: AGENT_VERSION,
-      extension_loaded: this.#extension.isLoaded
+      extension_loaded: Extension.isLoaded
     }
   }
 
