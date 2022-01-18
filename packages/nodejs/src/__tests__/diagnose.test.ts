@@ -42,6 +42,49 @@ describe("DiagnoseTool", () => {
       expect(install).toHaveProperty("language")
       expect(install).toHaveProperty("result")
     })
+
+    it("returns an error report on failure to read the install report", async () => {
+      const fsReadSpy = jest
+        .spyOn(fs, "readFileSync")
+        .mockImplementation(() => {
+          throw new Error("uh oh")
+        })
+      const output = await tool.generate()
+
+      const install = output.installation
+      expect(install).toMatchObject({
+        parsing_error: {
+          error: expect.any(String),
+          backtrace: expect.any(Array)
+        }
+      })
+      expect(install).not.toHaveProperty("build")
+      expect(install).not.toHaveProperty("download")
+      expect(install).not.toHaveProperty("host")
+      expect(install).not.toHaveProperty("language")
+      expect(install).not.toHaveProperty("result")
+    })
+
+    it("returns an error report on failure to parse the install report", async () => {
+      const fsReadSpy = jest
+        .spyOn(fs, "readFileSync")
+        .mockImplementation(() => "not JSON")
+      const output = await tool.generate()
+
+      const install = output.installation
+      expect(install).toMatchObject({
+        parsing_error: {
+          error: expect.any(String),
+          backtrace: expect.any(Array),
+          raw: "not JSON"
+        }
+      })
+      expect(install).not.toHaveProperty("build")
+      expect(install).not.toHaveProperty("download")
+      expect(install).not.toHaveProperty("host")
+      expect(install).not.toHaveProperty("language")
+      expect(install).not.toHaveProperty("result")
+    })
   })
 
   it("returns the log_dir_path", async () => {
