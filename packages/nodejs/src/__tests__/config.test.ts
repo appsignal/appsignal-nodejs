@@ -13,6 +13,7 @@ describe("Configuration", () => {
   let initialEnv: { [key: string]: any }
 
   const expectedDefaultConfig = {
+    active: false,
     caFilePath: path.join(__dirname, "../../cert/cacert.pem"),
     debug: false,
     dnsServers: [],

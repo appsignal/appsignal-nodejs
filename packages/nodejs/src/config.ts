@@ -113,6 +113,7 @@ export class Configuration {
    */
   private _defaultValues(): { [key: string]: any } {
     return {
+      active: false,
       caFilePath: path.join(__dirname, "../cert/cacert.pem"),
       debug: false,
       dnsServers: [],

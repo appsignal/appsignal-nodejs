@@ -37,9 +37,9 @@ export class DiagnoseTool {
   #config: Configuration
   #extension: Extension
 
-  constructor({ active = true }) {
-    this.#config = new Configuration({ active })
-    this.#extension = new Extension({ active })
+  constructor() {
+    this.#config = new Configuration({})
+    this.#extension = new Extension({ active: true })
   }
 
   /**

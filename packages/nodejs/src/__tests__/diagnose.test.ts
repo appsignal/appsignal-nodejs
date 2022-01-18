@@ -8,7 +8,7 @@ describe("DiagnoseTool", () => {
   const fsAccessSpy = jest.spyOn(fs, "accessSync").mockImplementation(() => {})
 
   beforeEach(() => {
-    tool = new DiagnoseTool({})
+    tool = new DiagnoseTool()
     jest.clearAllMocks()
   })
 
@@ -64,7 +64,7 @@ describe("DiagnoseTool", () => {
   describe("when to log path is configured as a full path", () => {
     beforeEach(() => {
       process.env["APPSIGNAL_LOG_PATH"] = "/path/to/appsignal.log"
-      tool = new DiagnoseTool({})
+      tool = new DiagnoseTool()
     })
 
     it("returns the log_dir_path", async () => {
