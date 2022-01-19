@@ -12,9 +12,9 @@ try {
       start() {
         throw new Error("Extension module not loaded")
       },
-      stop() {
-        return
-      }
+      stop() {},
+      diagnoseRaw() {},
+      runningInContainer() {}
     }
   } as ExtensionWrapper
 }
