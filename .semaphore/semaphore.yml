@@ -111,6 +111,7 @@ blocks:
     - name: "@appsignal/nodejs - nodejs"
       commands:
       - mono test --package=@appsignal/nodejs
+      - mono run --package @appsignal/nodejs -- npm run test:failure
     - name: "@appsignal/nodejs - nodejs - diagnose"
       commands:
       - git submodule init
@@ -206,6 +207,7 @@ blocks:
     - name: "@appsignal/nodejs - nodejs"
       commands:
       - mono test --package=@appsignal/nodejs
+      - mono run --package @appsignal/nodejs -- npm run test:failure
     - name: "@appsignal/nodejs - nodejs - diagnose"
       commands:
       - git submodule init
@@ -299,6 +301,7 @@ blocks:
     - name: "@appsignal/nodejs - nodejs"
       commands:
       - mono test --package=@appsignal/nodejs
+      - mono run --package @appsignal/nodejs -- npm run test:failure
     - name: "@appsignal/nodejs - nodejs - diagnose"
       commands:
       - git submodule init
@@ -392,6 +395,7 @@ blocks:
     - name: "@appsignal/nodejs - nodejs"
       commands:
       - mono test --package=@appsignal/nodejs
+      - mono run --package @appsignal/nodejs -- npm run test:failure
     - name: "@appsignal/nodejs - nodejs - diagnose"
       commands:
       - git submodule init
