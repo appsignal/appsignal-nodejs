@@ -81,14 +81,12 @@ blocks:
     epilogue: &2
       on_fail:
         commands:
-        - cat /tmp/appsignal-*-install.report
+        - cat packages/nodejs/ext/install.report
     jobs:
     - name: Build
       commands:
       - mono build
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
-      - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-        /tmp/appsignal-*-install.report
 - name: Node.js 17 - Tests
   dependencies:
   - Node.js 17 - Build
@@ -104,7 +102,6 @@ blocks:
       - sem-version c 8
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-      - cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     epilogue: *2
     jobs:
@@ -184,8 +181,6 @@ blocks:
       commands:
       - mono build
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
-      - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-        /tmp/appsignal-*-install.report
 - name: Node.js 16 - Tests
   dependencies:
   - Node.js 16 - Build
@@ -200,7 +195,6 @@ blocks:
       - sem-version c 8
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-      - cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     epilogue: *2
     jobs:
@@ -279,8 +273,6 @@ blocks:
       commands:
       - mono build
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
-      - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-        /tmp/appsignal-*-install.report
 - name: Node.js 14 - Tests
   dependencies:
   - Node.js 14 - Build
@@ -294,7 +286,6 @@ blocks:
       commands:
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-      - cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     epilogue: *2
     jobs:
@@ -373,8 +364,6 @@ blocks:
       commands:
       - mono build
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
-      - cache store $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-        /tmp/appsignal-*-install.report
 - name: Node.js 12 - Tests
   dependencies:
   - Node.js 12 - Build
@@ -388,7 +377,6 @@ blocks:
       commands:
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-      - cache restore $_PACKAGES_CACHE-install-report-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
     epilogue: *2
     jobs:
