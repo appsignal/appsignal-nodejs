@@ -1,3 +1,4 @@
+import { Extension } from "../extension"
 import { BaseClient } from "../client"
 import { BaseTracer as Tracer } from "../tracer"
 import { BaseMetrics as Metrics } from "../metrics"
@@ -19,13 +20,15 @@ describe("BaseClient", () => {
   })
 
   it("starts the client", () => {
+    const startSpy = jest.spyOn(client.extension, "start")
     client.start()
-    expect(client.isActive).toBeTruthy()
+    expect(startSpy).toHaveBeenCalled()
   })
 
   it("stops the client", () => {
+    const stopSpy = jest.spyOn(client.extension, "stop")
     client.stop()
-    expect(client.isActive).toBeFalsy()
+    expect(stopSpy).toHaveBeenCalled()
   })
 
   it("stores the client on global object", () => {
@@ -42,13 +45,15 @@ describe("BaseClient", () => {
 
   it("does not start the client if config is not valid", () => {
     process.env["APPSIGNAL_PUSH_API_KEY"] = undefined
+    const startSpy = jest.spyOn(client.extension, "start")
     client = new BaseClient({ name, enableMinutelyProbes: false })
-    expect(client.isActive).toBeFalsy()
+    expect(startSpy).not.toHaveBeenCalled()
   })
 
   it("starts the client when the active option is true", () => {
+    const startSpy = jest.spyOn(client.extension, "start")
     client = new BaseClient({ ...DEFAULT_OPTS, active: true })
-    expect(client.isActive).toBeTruthy()
+    expect(startSpy).not.toHaveBeenCalled()
   })
 
   it("returns a NoopTracer if the agent isn't started", () => {

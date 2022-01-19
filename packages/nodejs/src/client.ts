@@ -46,14 +46,11 @@ export class BaseClient implements Client {
     const { ignoreInstrumentation } = options
 
     this.config = new Configuration(options)
-
-    const active = this.config.data.active!
-
-    this.extension = new Extension({ active })
-
+    this.extension = new Extension()
     this.storeInGlobal()
 
     if (this.isActive) {
+      this.extension.start()
       this.#metrics = new BaseMetrics()
     } else {
       this.#metrics = new NoopMetrics()
@@ -69,7 +66,7 @@ export class BaseClient implements Client {
    * Returns `true` if the agent is loaded and configuration is valid
    */
   get isActive(): boolean {
-    return this.extension.isLoaded && this.config.isValid
+    return Extension.isLoaded && this.config.isValid && this.config.data.active!
   }
 
   set isActive(arg) {
