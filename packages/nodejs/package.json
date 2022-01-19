@@ -36,16 +36,6 @@
     "pretest:failure": "npm run clean",
     "test:failure": "_TEST_APPSIGNAL_EXTENSION_FAILURE=true _APPSIGNAL_EXTENSION_INSTALL=true npm run install; _TEST_APPSIGNAL_EXTENSION_FAILURE=true jest --filter=./test/filter.js"
   },
-  "os": [
-    "linux",
-    "darwin",
-    "freebsd"
-  ],
-  "cpu": [
-    "x64",
-    "x86",
-    "arm"
-  ],
   "engines": {
     "node": ">= 12"
   },
