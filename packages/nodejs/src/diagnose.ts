@@ -268,13 +268,7 @@ export class DiagnoseTool {
 // This implementation should match the `scripts/extension/report.js`
 // implementation to generate the same path.
 function reportPath(): string {
-  // Navigate up to the app dir. Move up the src dir, package dir, @appsignal
-  // dir and node_modules dir.
-  const appPath = path.join(__dirname, "../../../../")
-  const hash = createHash("sha256")
-  hash.update(appPath)
-  const reportPathDigest = hash.digest("hex")
-  return path.join(`/tmp/appsignal-${reportPathDigest}-install.report`)
+  return path.join(__dirname, "../ext/install.report")
 }
 
 function getPathType(stats: fs.Stats) {

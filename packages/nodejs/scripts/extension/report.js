@@ -80,13 +80,7 @@ function createDownloadReport(report) {
 // This implementation should match the `packages/nodejs/src/diagnose.ts`
 // implementation to generate the same path.
 function reportPath() {
-  // Navigate up to the app dir. Move up the scripts dir, package dir,
-  // @appsignal dir and node_modules dir.
-  const appPath = path.join(__dirname, "../../../../")
-  const hash = crypto.createHash("sha256")
-  hash.update(appPath)
-  const reportPathDigest = hash.digest("hex")
-  return path.join(`/tmp/appsignal-${reportPathDigest}-install.report`)
+  return path.join(__dirname, "../../ext/install.report")
 }
 
 module.exports = {

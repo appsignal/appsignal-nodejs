@@ -79,3 +79,4 @@ build/
 /ext/appsignal.version
 /ext/libappsignal.a
 /ext/libappsignal.dylib
+/ext/*.report
