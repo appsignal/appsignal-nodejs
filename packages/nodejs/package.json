@@ -27,13 +27,14 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "build:watch": "tsc -p tsconfig.json -w --preserveWatchOutput",
-    "clean": "rimraf dist coverage && rimraf ext/appsignal-agent ext/libappsignal.a ext/appsignal.* ext/*.tar.gz",
+    "clean": "rimraf dist coverage build && rimraf ext/appsignal-agent ext/libappsignal.a ext/appsignal.* ext/*.tar.gz ext/*.report",
     "install": "node scripts/extension/extension.js",
     "link:npm": "npm link",
     "link:yarn": "yarn link",
     "test": "jest --filter=./test/filter.js",
-    "test:ext:failure": "_TEST_APPSIGNAL_EXTENSION_FAILURE=true _APPSIGNAL_EXTENSION_INSTALL=true npm run install; _TEST_APPSIGNAL_EXTENSION_FAILURE=true jest --filter=./test/filter.js",
-    "test:watch": "jest --filter=./test/filter.js --watch"
+    "test:watch": "jest --filter=./test/filter.js --watch",
+    "pretest:failure": "npm run clean",
+    "test:failure": "_TEST_APPSIGNAL_EXTENSION_FAILURE=true _APPSIGNAL_EXTENSION_INSTALL=true npm run install; _TEST_APPSIGNAL_EXTENSION_FAILURE=true jest --filter=./test/filter.js"
   },
   "os": [
     "linux",

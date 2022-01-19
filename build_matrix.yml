@@ -98,12 +98,8 @@ matrix:
           - git submodule init
           - git submodule update
           - LANGUAGE=nodejs test/integration/diagnose/bin/test
-    - package: "@appsignal/nodejs-ext"
-      path: "packages/nodejs-ext"
-      variations:
-        - name: "nodejs-ext"
       extra_commands:
-        - mono run --package @appsignal/nodejs-ext -- npm run test:failure
+        - mono run --package @appsignal/nodejs -- npm run test:failure
     # Library integrations
     - package: "@appsignal/apollo-server"
       path: "packages/apollo-server"
