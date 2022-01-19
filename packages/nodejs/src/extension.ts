@@ -48,7 +48,7 @@ export class Extension {
     } catch (error) {
       return {
         error: error,
-        output: diagnostics_report_string.split("\n")
+        output: (diagnostics_report_string || "").split("\n")
       }
     }
   }

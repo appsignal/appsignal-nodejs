@@ -30,4 +30,15 @@ describe("Extension", () => {
       ext.stop()
     }).not.toThrow()
   })
+
+  it("does not error on diagnoseRaw", () => {
+    expect(ext.diagnose()).toMatchObject({
+      error: expect.any(Error),
+      output: [""]
+    })
+  })
+
+  it("does not error on runningInContainer", () => {
+    expect(ext.runningInContainer()).toBeUndefined()
+  })
 })
