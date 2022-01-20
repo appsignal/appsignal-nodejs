@@ -4,6 +4,11 @@
   "main": "dist/index",
   "types": "dist/index",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/appsignal/appsignal-nodejs.git",
+    "directory": "packages/apollo-server"
+  },
   "dependencies": {
     "@appsignal/nodejs": "=2.2.10",
     "apollo-server-plugin-base": "^0.10.3",

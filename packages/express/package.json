@@ -4,6 +4,11 @@
   "main": "dist/index",
   "types": "dist/index",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/appsignal/appsignal-nodejs.git",
+    "directory": "packages/express"
+  },
   "dependencies": {
     "@appsignal/nodejs": "=2.2.10",
     "tslib": "^2.0.3"
