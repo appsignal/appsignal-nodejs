@@ -1,5 +1,45 @@
 # AppSignal for Node.js Changelog
 
+## 2.3.0
+
+### Added
+
+- [6d1cfec](https://github.com/appsignal/appsignal-nodejs/commit/6d1cfec83e8ca19331aa114fe7f85b4ea5a179f0) patch - Implement unregister method for probes. You can now call the
+  `probes.unregister(name)` method to unregister a probe by name.
+
+### Changed
+
+- [4c453cc](https://github.com/appsignal/appsignal-nodejs/commit/4c453ccf140c59090197a8ebfb79d39c77f31a91) minor - The extension package (@appsignal/nodejs-ext) is no longer a separated dependency.
+  The extension is part of the @appsignal/nodejs package now.
+- [675fa15](https://github.com/appsignal/appsignal-nodejs/commit/675fa1510dcc162adf87488fff07f237e2d3c8f0) patch - Update install report path location. The "nodejs" package now stores the install report in its own package path, with the rest of the extension files. This makes it easier to access by the diagnose report.
+- [56fb794](https://github.com/appsignal/appsignal-nodejs/commit/56fb794a72e99d77f787000bf2a5bf95efc44565) patch - Improve the reporting of extension loading state in the diagnose report. Previously it would only report it as loaded when it was also running.
+- [56fb794](https://github.com/appsignal/appsignal-nodejs/commit/56fb794a72e99d77f787000bf2a5bf95efc44565) patch - Change the way the extension is started. Previously it was started on initialization of the extension class (if the config was active), but now it's started by the client class.
+- [733ee15](https://github.com/appsignal/appsignal-nodejs/commit/733ee15be5c548f8098a758307b70e58ae0b294f) patch - Remove the `os` and `cpu` fields from the `package.json`. This will prevent installations from failing on unlisted CPU architectures and Operating Systems. Our extension installer script will do this check instead. The package should not fail to install when it encounters an unsupported CPU architecture or Operating System.
+- [ddc7e19](https://github.com/appsignal/appsignal-nodejs/commit/ddc7e19277409552db671e68bdfd88fea95e8f57) patch - Update package metadata to specify the package repository.
+
+### Fixed
+
+- [fa955af](https://github.com/appsignal/appsignal-nodejs/commit/fa955af0a6f4378b0ec06aec3305095334eb81ad) patch - Add a hostname tag to V8 probe metrics. This fixes an issue where metrics' values
+  would be overriden between different hosts.
+- [72c54a4](https://github.com/appsignal/appsignal-nodejs/commit/72c54a4e3cc04b6e0fb1bb1a8c87b657e4bc7a37) patch - Setting `enableMinutelyProbes` to `false` now disables the minutely probes
+  system. Custom probes will not be called when the minutely probes are
+  disabled. In addition, the `APPSIGNAL_ENABLE_MINUTELY_PROBES` environment
+  variable can now be used to enable or disable the minutely probes.
+  
+  Before this change, setting `enableMinutelyProbes` to `false` would not
+  register the default Node.js heap statistics minutely probe, but custom
+  probes would still be called. To opt in for the previous behaviour,
+  disabling only the Node.js heap statistics minutely probe without disabling
+  custom probes, you can use the `probes.unregister()` method to unregister
+  the default probe:
+  
+  ```js
+  const probes = appsignal.metrics().probes();
+  probes.unregister("v8_stats");
+  ```
+- [bb62525](https://github.com/appsignal/appsignal-nodejs/commit/bb62525f64530ba451a2f55a6ac1807e082b1d92) patch - Use the APPSIGNAL_ACTIVE environment variable to determine whether AppSignal is active.
+- [f52a824](https://github.com/appsignal/appsignal-nodejs/commit/f52a824ea40625c60c136c705e0da74e195e6050) patch - Fix the extension function fallbacks on installation failure. When the extension fails to install and calls are made to the not loaded functions, it will no longer throw an error.
+
 ## 2.2.10
 
 ### Changed

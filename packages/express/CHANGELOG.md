@@ -1,5 +1,12 @@
 
 
+## 1.0.24
+
+### Changed
+
+- [ddc7e19](https://github.com/appsignal/appsignal-nodejs/commit/ddc7e19277409552db671e68bdfd88fea95e8f57) patch - Update package metadata to specify the package repository.
+- patch - Update @appsignal/nodejs dependency to 2.3.0.
+
 ## 1.0.23
 
 ### Changed
