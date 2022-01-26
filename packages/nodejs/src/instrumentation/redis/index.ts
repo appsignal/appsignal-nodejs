@@ -82,7 +82,7 @@ export const instrument = (
   mod: RedisModule,
   tracer: Tracer
 ): Plugin<RedisModule> => ({
-  version: ">= 3.0.0",
+  version: "~3",
   install(): RedisModule {
     shimmer.wrap(
       mod.RedisClient.prototype,
