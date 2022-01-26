@@ -1,5 +1,12 @@
 # AppSignal for Node.js Changelog
 
+## 2.3.1
+
+### Fixed
+
+- [531e5bf](https://github.com/appsignal/appsignal-nodejs/commit/531e5bf14b078c9294d61c71cd62948bb3f3608c) patch - The supported Redis version is now locked to 3.x.x. This will prevent app startup failures for users
+  with Redis 4.x.x.
+
 ## 2.3.0
 
 ### Added
