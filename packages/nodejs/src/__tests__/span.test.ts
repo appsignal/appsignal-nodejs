@@ -52,14 +52,6 @@ describe("RootSpan", () => {
     expect(traceId).toEqual(internal.trace_id)
   })
 
-  it("exposes a start time", () => {
-    const { traceId } = span
-
-    expect(traceId).toBeDefined()
-    expect(internal.trace_id).toBeDefined()
-    expect(traceId).toEqual(internal.trace_id)
-  })
-
   it("creates a new ChildSpan", () => {
     const child = span.child()
 
@@ -135,14 +127,6 @@ describe("ChildSpan", () => {
   })
 
   it("exposes a traceId", () => {
-    const { traceId } = span
-
-    expect(traceId).toBeDefined()
-    expect(internal.trace_id).toBeDefined()
-    expect(traceId).toEqual(internal.trace_id)
-  })
-
-  it("exposes a start time", () => {
     const { traceId } = span
 
     expect(traceId).toBeDefined()
