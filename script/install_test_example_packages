@@ -14,15 +14,17 @@ fi
 
 example_path="packages/$package/test/example"
 
-if [ ! -d $example_path ]; then
-  echo "No test example directory for package $package in $package_path"
+if [ ! -d "$example_path" ]; then
+  echo "No test example directory for package $package in $example_path"
   echo "Please check if the directory exists in the packages/ directory"
   exit 1
 fi
 
-cd $example_path
+echo "Navigate to test app directory"
+cd "$example_path"
+
 echo "$ npm install"
-npm install $@
+npm install "$@"
 
 echo "$ npm list"
 npm list
