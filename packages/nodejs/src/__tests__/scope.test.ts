@@ -98,12 +98,12 @@ describe("ScopeManager", () => {
         const span = scopeManager.active()
 
         expect(span).toBeDefined()
-        expect(span?.toJSON()).toMatch(/modified/)
+        expect(span?.toObject().name).toEqual("modified")
       }
 
       scopeManager.withContext(test, span => {
         span.setName("default")
-        expect(span.toJSON()).toMatch(/default/)
+        expect(span.toObject().name).toEqual("default")
       })
 
       scopeManager.withContext(test, span => {
@@ -115,5 +115,6 @@ describe("ScopeManager", () => {
     })
   })
 
+  // TODO: Add tests
   describe(".emitWithContext()", () => {})
 })

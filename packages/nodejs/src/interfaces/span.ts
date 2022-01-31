@@ -116,7 +116,24 @@ export interface Span {
   close(endTime?: number): this
 
   /**
-   * Returns a JSON string representing the internal Span in the agent.
+   * Returns a SpanData object representing the internal Span in the extension.
+   *
+   * @private
    */
-  toJSON(): string
+  toObject(): SpanData
+}
+
+/**
+ * The internal data structure of a `Span` inside the AppSignal Extension.
+ */
+export type SpanData = {
+  closed?: boolean
+  name?: string
+  namespace?: string
+  parent_span_id?: string
+  span_id?: string
+  start_time?: number
+  trace_id?: string
+  error?: { name: string; message: string; backtrace: Array<String> }
+  attributes?: { [key: string]: string }
 }

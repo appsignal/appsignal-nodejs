@@ -2,28 +2,13 @@ import { ChildSpan, RootSpan } from "../span"
 import { span } from "../extension_wrapper"
 import { BaseClient } from "../client"
 import { Data } from "../internal/data"
-
-type SpanData = {
-  closed: boolean
-  name?: string
-  namespace?: string
-  parent_span_id?: string
-  span_id?: string
-  start_time?: number
-  trace_id?: string
-  attributes?: { [key: string]: string }
-}
+import { SpanData } from "../interfaces/span"
 
 describe("RootSpan", () => {
-  let span: RootSpan
-  let internal: SpanData
-
-  beforeEach(() => {
-    span = new RootSpan()
-    internal = JSON.parse(span.toJSON())
-  })
-
   it("creates a RootSpan", () => {
+    const span = new RootSpan()
+    const internal = span.toObject()
+
     expect(span).toBeInstanceOf(RootSpan)
     expect(internal.closed).toBeFalsy()
   })
@@ -31,14 +16,16 @@ describe("RootSpan", () => {
   it("creates a RootSpan with a timestamp", () => {
     const startTime = 1607022684531
 
-    span = new RootSpan({ startTime })
-    internal = JSON.parse(span.toJSON())
+    const span = new RootSpan({ startTime })
+    const internal = span.toObject()
 
     expect(internal.start_time).toEqual(1607022685)
   })
 
   it("exposes a spanId", () => {
+    const span = new RootSpan()
     const { spanId } = span
+    const internal = span.toObject()
 
     expect(spanId).toBeDefined()
     expect(internal.span_id).toBeDefined()
@@ -46,6 +33,8 @@ describe("RootSpan", () => {
   })
 
   it("exposes a traceId", () => {
+    const span = new RootSpan()
+    const internal = span.toObject()
     const { traceId } = span
 
     expect(traceId).toBeDefined()
@@ -54,6 +43,8 @@ describe("RootSpan", () => {
   })
 
   it("creates a new ChildSpan", () => {
+    const span = new RootSpan()
+    const internal = span.toObject()
     const child = span.child()
 
     expect(child).toBeDefined()
@@ -63,8 +54,8 @@ describe("RootSpan", () => {
   it("belongs to a given namespace", () => {
     const namespace = "test_namespace"
 
-    span = new RootSpan({ namespace })
-    internal = JSON.parse(span.toJSON())
+    const span = new RootSpan({ namespace })
+    const internal = span.toObject()
 
     expect(internal.namespace).toEqual(namespace)
   })
@@ -72,8 +63,8 @@ describe("RootSpan", () => {
   it("sets the name", () => {
     const name = "test_span"
 
-    span = new RootSpan().setName(name)
-    internal = JSON.parse(span.toJSON())
+    const span = new RootSpan().setName(name)
+    const internal = span.toObject()
 
     expect(internal.name).toEqual(name)
   })
@@ -82,9 +73,9 @@ describe("RootSpan", () => {
     const category = "test_category"
 
     const span = new RootSpan().setCategory(category)
-    const internal = JSON.parse(span.toJSON())
+    const internal = span.toObject()
 
-    expect(internal.attributes["appsignal:category"]).toEqual(category)
+    expect(internal.attributes!["appsignal:category"]).toEqual(category)
   })
 
   it("sets attributes", () => {
@@ -94,7 +85,7 @@ describe("RootSpan", () => {
     span.set("boolean_false", false)
     span.set("int", 123)
     span.set("float", 123.45)
-    const internal = JSON.parse(span.toJSON())
+    const internal = span.toObject()
 
     expect(internal.attributes).toMatchObject({
       boolean_false: false,
@@ -110,30 +101,30 @@ describe("RootSpan", () => {
     const sanitizedQuery = "SELECT * FROM users WHERE email = ?"
 
     const span = new RootSpan().setSQL(query)
-    const internal = JSON.parse(span.toJSON())
+    const internal = span.toObject()
 
-    expect(internal.attributes["appsignal:body"]).toEqual(sanitizedQuery)
+    expect(internal.attributes!["appsignal:body"]).toEqual(sanitizedQuery)
   })
 
   it("sets an error with backtrace", () => {
     const error = new Error("uh oh")
     const span = new RootSpan().setError(error)
-    const internal = JSON.parse(span.toJSON())
+    const internal = span.toObject()
 
     expect(internal.error).toEqual({
       name: "Error",
       message: "uh oh",
       backtrace: expect.any(String)
     })
-    expect(internal.error.backtrace).toMatch(/^\["Error: uh oh"/)
-    expect(internal.error.backtrace).toMatch(/span\.test\.ts/)
+    expect(internal.error!.backtrace).toMatch(/^\["Error: uh oh"/)
+    expect(internal.error!.backtrace).toMatch(/span\.test\.ts/)
   })
 
   it("sets an error without backtrace", () => {
     const error = new Error("uh oh")
     error.stack = undefined
     const span = new RootSpan().setError(error)
-    const internal = JSON.parse(span.toJSON())
+    const internal = span.toObject()
 
     expect(internal.error).toEqual({
       name: "Error",
@@ -143,8 +134,8 @@ describe("RootSpan", () => {
   })
 
   it("closes a span", () => {
-    span = new RootSpan().close()
-    internal = JSON.parse(span.toJSON())
+    const span = new RootSpan().close()
+    const internal = span.toObject()
 
     expect(internal.closed).toBeTruthy()
   })
@@ -156,10 +147,10 @@ describe("ChildSpan", () => {
 
   beforeEach(() => {
     span = new ChildSpan({ traceId: "aaaaaaaaaaaaaaaa", spanId: "bbbbbbbb" })
-    internal = JSON.parse(span.toJSON())
+    internal = span.toObject()
   })
 
-  it("creates a ChildSpan", () => {
+  it("creates a ChildSpan without a timestamp", () => {
     expect(span).toBeInstanceOf(ChildSpan)
 
     expect(internal.trace_id).toEqual("aaaaaaaaaaaaaaaa")
@@ -174,11 +165,11 @@ describe("ChildSpan", () => {
       { traceId: "aaaaaaaaaaaaaaaa", spanId: "bbbbbbbb" },
       { startTime }
     )
-
-    internal = JSON.parse(span.toJSON())
+    internal = span.toObject()
 
     expect(internal.trace_id).toEqual("aaaaaaaaaaaaaaaa")
     expect(internal.parent_span_id).toEqual("bbbbbbbb")
+    // TODO: Fix
     // expect(internal.start_time).toEqual(1607022685)
     expect(internal.closed).toBeFalsy()
   })
@@ -213,7 +204,7 @@ describe("ChildSpan", () => {
       traceId: "test_trace_id",
       spanId: "parent_span_id"
     }).setCategory(category)
-    internal = JSON.parse(span.toJSON())
+    internal = span.toObject()
 
     expect(internal.attributes!["appsignal:category"]).toEqual(category)
   })
@@ -223,8 +214,7 @@ describe("ChildSpan", () => {
       traceId: "test_trace_id",
       spanId: "parent_span_id"
     }).close()
-
-    internal = JSON.parse(span.toJSON())
+    internal = span.toObject()
 
     expect(internal.closed).toBeTruthy()
   })
