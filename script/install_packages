@@ -2,27 +2,6 @@
 
 set -eu
 
-package=$1
-shift
-
-if [ "$package" == "" ]; then
-  echo "No package specified!"
-  echo "Usage: install_test_example_packages <package dir> <dependencies>"
-  echo "Example: install_test_example_packages koa koa@1.2.3"
-  exit 1
-fi
-
-example_path="packages/$package/test/example"
-
-if [ ! -d "$example_path" ]; then
-  echo "No test example directory for package $package in $example_path"
-  echo "Please check if the directory exists in the packages/ directory"
-  exit 1
-fi
-
-echo "Navigate to test app directory"
-cd "$example_path"
-
 echo "$ npm install"
 npm install "$@"
 
