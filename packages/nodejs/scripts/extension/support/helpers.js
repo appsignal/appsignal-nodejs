@@ -11,7 +11,7 @@ function hasLocalBuild() {
   const filenames = ["appsignal-agent", "libappsignal.a", "appsignal.h"]
 
   return filenames.every(file =>
-    fs.existsSync(path.join(__dirname, "/../../ext/", file))
+    fs.existsSync(path.join(__dirname, "/../../../ext/", file))
   )
 }
 
