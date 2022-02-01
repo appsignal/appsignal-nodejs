@@ -27,7 +27,7 @@ echo "$ npm install"
 npm install "$@"
 
 echo "Check installed packages"
-installed_packages=$(npm list)
+installed_packages=$(npm list --long --parseable | cut -d ':' -f 2)
 successfully_installed=true
 for package_item in "$@"; do
   if echo "$package_item" | grep "@latest"; then
