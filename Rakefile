@@ -66,7 +66,7 @@ namespace :build_matrix do
                   "#{name}@#{version}"
                 end.join(" ")
                 [
-                  "cd #{package["path"]} && npm install #{packages} --save-dev",
+                  "script/install_packages #{packages}",
                   "script/install_test_example_packages " \
                     "#{File.basename package["path"]} #{packages}"
                 ]
