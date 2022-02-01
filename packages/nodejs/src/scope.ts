@@ -8,7 +8,8 @@
  * Copyright 2018, Google LLC
  */
 
-import { NodeSpan, Func } from "@appsignal/types"
+import { Func } from "@appsignal/types"
+import { Span } from "./interfaces/span"
 import * as asyncHooks from "async_hooks"
 import { EventEmitter } from "events"
 import shimmer from "shimmer"
@@ -32,8 +33,8 @@ type ContextWrapped<T> = T & { [WRAPPED]?: boolean }
  * @class
  */
 export class ScopeManager {
-  #roots: Map<number, NodeSpan | undefined>
-  #scopes: Map<number, NodeSpan | undefined>
+  #roots: Map<number, Span | undefined>
+  #scopes: Map<number, Span | undefined>
   #asyncHook: asyncHooks.AsyncHook
 
   constructor() {
@@ -105,7 +106,7 @@ export class ScopeManager {
   /**
    * Returns the current active `Span`.
    */
-  public active(): NodeSpan | undefined {
+  public active(): Span | undefined {
     const uid = asyncHooks.executionAsyncId()
     return this.#scopes.get(uid)
   }
@@ -113,7 +114,7 @@ export class ScopeManager {
   /**
    * Sets the root `Span`
    */
-  public setRoot(rootSpan: NodeSpan) {
+  public setRoot(rootSpan: Span) {
     const uid = asyncHooks.executionAsyncId()
     this.#roots.set(uid, rootSpan)
   }
@@ -121,7 +122,7 @@ export class ScopeManager {
   /*
    * Returns the current root `Span`.
    */
-  public root(): NodeSpan | undefined {
+  public root(): Span | undefined {
     const uid = asyncHooks.executionAsyncId()
     return this.#roots.get(uid)
   }
@@ -129,7 +130,7 @@ export class ScopeManager {
   /**
    * Executes a given function within the context of a given `Span`.
    */
-  public withContext<T>(span: NodeSpan, fn: (s: NodeSpan) => T): T {
+  public withContext<T>(span: Span, fn: (s: Span) => T): T {
     const uid = asyncHooks.executionAsyncId()
     const oldScope = this.#scopes.get(uid)
     const rootSpan = this.#roots.get(uid)
