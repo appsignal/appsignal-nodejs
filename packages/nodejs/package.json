@@ -23,10 +23,11 @@
     "tslib": "^2.0.3"
   },
   "devDependencies": {
-    "@types/semver": "*",
     "@types/pg": "*",
-    "pg": "*",
     "@types/redis": "*",
+    "@types/semver": "*",
+    "nock": "^13.2.2",
+    "pg": "*",
     "redis": "*"
   },
   "scripts": {

@@ -1,5 +1,4 @@
 import fs from "fs"
-import path from "path"
 import https from "https"
 import http from "http"
 
@@ -12,8 +11,8 @@ export class Transmitter {
   #url: string
   #data: string
 
-  constructor(url: string, data = "", active = true) {
-    this.#config = new Configuration({ active })
+  constructor(url: string, data = "") {
+    this.#config = new Configuration({})
     this.#url = url
     this.#data = data
   }
@@ -63,34 +62,34 @@ export class Transmitter {
   }
 
   private requestOptions(requestUrl: URL): HashMap<any> {
-    const configData = this.#config.data
-
     return {
       method: "POST",
       protocol: requestUrl.protocol,
       host: requestUrl.hostname,
       port: requestUrl.port,
-      path: requestUrl.toString(),
+      path: requestUrl.pathname + requestUrl.search,
       headers: {
         "Content-Type": "application/json",
         "Content-Length": this.#data.length
       },
-      ca: this.certificateFile()
+      ...this.certificateFile()
     }
   }
 
-  private certificateFile(): string {
+  private certificateFile(): { ca?: string } {
     const configData = this.#config.data
     const caFilePathFromConfig = configData["caFilePath"] || ""
 
     try {
       fs.accessSync(caFilePathFromConfig, fs.constants.R_OK)
-      return fs.readFileSync(caFilePathFromConfig, "utf-8").toString()
+      return {
+        ca: fs.readFileSync(caFilePathFromConfig, "utf-8").toString()
+      }
     } catch {
       console.warn(
         `Provided caFilePath: '${caFilePathFromConfig}' is not readable.`
       )
-      return ""
+      return {}
     }
   }
 }
