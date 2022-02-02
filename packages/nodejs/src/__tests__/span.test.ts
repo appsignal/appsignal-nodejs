@@ -11,6 +11,7 @@ type SpanData = {
   span_id?: string
   start_time?: number
   trace_id?: string
+  attributes?: { [key: string]: string }
 }
 
 describe("RootSpan", () => {
@@ -52,14 +53,6 @@ describe("RootSpan", () => {
     expect(traceId).toEqual(internal.trace_id)
   })
 
-  it("exposes a start time", () => {
-    const { traceId } = span
-
-    expect(traceId).toBeDefined()
-    expect(internal.trace_id).toBeDefined()
-    expect(traceId).toEqual(internal.trace_id)
-  })
-
   it("creates a new ChildSpan", () => {
     const child = span.child()
 
@@ -83,6 +76,15 @@ describe("RootSpan", () => {
     internal = JSON.parse(span.toJSON())
 
     expect(internal.name).toEqual(name)
+  })
+
+  it("sets the category", () => {
+    const category = "test_category"
+
+    const span = new RootSpan().setCategory(category)
+    const internal = JSON.parse(span.toJSON())
+
+    expect(internal.attributes["appsignal:category"]).toEqual(category)
   })
 
   it("closes a span", () => {
@@ -142,14 +144,6 @@ describe("ChildSpan", () => {
     expect(traceId).toEqual(internal.trace_id)
   })
 
-  it("exposes a start time", () => {
-    const { traceId } = span
-
-    expect(traceId).toBeDefined()
-    expect(internal.trace_id).toBeDefined()
-    expect(traceId).toEqual(internal.trace_id)
-  })
-
   it("creates a new ChildSpan", () => {
     const child = span.child()
 
@@ -157,17 +151,16 @@ describe("ChildSpan", () => {
     expect(child).toBeInstanceOf(ChildSpan)
   })
 
-  it("sets the name", () => {
-    const name = "test_span"
+  it("sets the category", () => {
+    const category = "test_category"
 
     span = new ChildSpan({
       traceId: "test_trace_id",
       spanId: "parent_span_id"
-    }).setName(name)
-
+    }).setCategory(category)
     internal = JSON.parse(span.toJSON())
 
-    expect(internal.name).toEqual(name)
+    expect(internal.attributes!["appsignal:category"]).toEqual(category)
   })
 
   it("closes a span", () => {
