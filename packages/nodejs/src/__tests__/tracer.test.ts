@@ -13,14 +13,14 @@ describe("Tracer", () => {
   describe(".createSpan()", () => {
     it("assigns the spans properly", () => {
       const rootSpan = tracer.createSpan().setName("rootSpan")
-      const rootSpanData = JSON.parse(rootSpan.toJSON())
+      const rootSpanData = rootSpan.toObject()
 
       expect(rootSpan).toBeInstanceOf(RootSpan)
       expect(rootSpanData.parent_span_id).toEqual("")
       expect(rootSpanData.name).toEqual("rootSpan")
 
       const childSpan = tracer.createSpan().setName("childSpan")
-      const childSpanData = JSON.parse(childSpan.toJSON())
+      const childSpanData = childSpan.toObject()
 
       expect(childSpan).toBeInstanceOf(ChildSpan)
       expect(childSpanData.parent_span_id).toEqual(rootSpanData.span_id)
@@ -29,7 +29,7 @@ describe("Tracer", () => {
       const spanFromSpan = tracer
         .createSpan(undefined, childSpan)
         .setName("spanFromSpan")
-      const spanFromSpanData = JSON.parse(spanFromSpan.toJSON())
+      const spanFromSpanData = spanFromSpan.toObject()
 
       expect(spanFromSpan).toBeInstanceOf(ChildSpan)
       expect(spanFromSpanData.parent_span_id).toEqual(childSpanData.span_id)
@@ -58,11 +58,11 @@ describe("Tracer", () => {
         rootSpan.setCategory("bar")
         rootSpan.set("pod", 42)
 
-        const rootSpanData = JSON.parse(rootSpan.toJSON())
+        const rootSpanData = rootSpan.toObject()
 
         expect(rootSpanData.name).toEqual("foo")
-        expect(rootSpanData.attributes["appsignal:category"]).toEqual("bar")
-        expect(rootSpanData.attributes.pod).toEqual(42)
+        expect(rootSpanData.attributes!["appsignal:category"]).toEqual("bar")
+        expect(rootSpanData.attributes!.pod).toEqual(42)
 
         return done()
       })
@@ -70,9 +70,9 @@ describe("Tracer", () => {
 
     it("adds the given error to the span", done => {
       tracer.sendError(err, rootSpan => {
-        const rootSpanData = JSON.parse(rootSpan.toJSON())
+        const rootSpanData = rootSpan.toObject()
 
-        expect(rootSpanData.error.message).toEqual("FooBarError")
+        expect(rootSpanData.error!.message).toEqual("FooBarError")
 
         return done()
       })
@@ -84,7 +84,7 @@ describe("Tracer", () => {
       const rootSpan = tracer.createSpan().setName(name)
 
       await tracer.withSpan(rootSpan, async span => {
-        const internal = JSON.parse(span.toJSON())
+        const internal = span.toObject()
         expect(internal.name).toEqual(name)
 
         span.close()

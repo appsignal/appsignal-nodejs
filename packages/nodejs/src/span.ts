@@ -1,6 +1,5 @@
 import { HashMap, HashMapValue } from "@appsignal/types"
-
-import { Span, SpanOptions, SpanContext } from "./interfaces"
+import { Span, SpanOptions, SpanContext, SpanData } from "./interfaces"
 
 import { span } from "./extension_wrapper"
 import { Data } from "./internal/data"
@@ -190,19 +189,21 @@ export class BaseSpan implements Span {
   }
 
   /**
-   * Returns a JSON string representing the internal Span in the agent.
+   * Returns a SpanData object representing the internal Span in the extension.
+   *
+   * @private
    */
-  public toJSON(): string {
+  public toObject(): SpanData {
     const json = span.spanToJSON(this._ref)
 
     // if this is true, then the span has been garbage collected
     // @TODO: i feel that this could have better ergonomics on the agent
     // side. come up with something better here later.
     if (json.trim() === "") {
-      return JSON.stringify({ closed: true })
+      return { closed: true }
     }
 
-    return json
+    return JSON.parse(json)
   }
 }
 

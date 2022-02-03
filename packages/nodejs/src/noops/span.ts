@@ -1,5 +1,5 @@
 import { HashMap } from "@appsignal/types"
-import { Span } from "../interfaces"
+import { Span, SpanData } from "../interfaces"
 
 export class NoopSpan implements Span {
   public get traceId(): string {
@@ -52,7 +52,7 @@ export class NoopSpan implements Span {
     return this
   }
 
-  public toJSON(): string {
-    return "{}"
+  public toObject(): SpanData {
+    return {}
   }
 }
