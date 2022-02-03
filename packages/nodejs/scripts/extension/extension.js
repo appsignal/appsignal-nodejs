@@ -200,7 +200,6 @@ function install() {
 
   let result
   if (isLocalBuild) {
-    console.warn(`Using local build for agent. Skipping download.`)
     result = Promise.resolve().then(() => failOnPurposeIfConfigured())
     report.build.source = "local"
   } else {
@@ -223,7 +222,13 @@ function install() {
   return result
     .then(() => {
       // @TODO: add cleanup step
-      console.log("The agent has downloaded successfully! Building...")
+      if (isLocalBuild) {
+        console.log(
+          "Installing local agent and extension. Download was skipped."
+        )
+      } else {
+        console.log("Installing downloaded agent and extension.")
+      }
 
       report.result.status = "unknown"
       return install().then(() => {
