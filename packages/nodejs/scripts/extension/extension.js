@@ -5,6 +5,7 @@ const https = require("https")
 const fs = require("fs")
 const crypto = require("crypto")
 const childProcess = require("child_process")
+const { Transmitter } = require("../../dist/transmitter")
 
 const { AGENT_VERSION, MIRRORS, TRIPLES } = require("./support/constants")
 
@@ -47,36 +48,38 @@ function downloadFromMirror(mirror, filename, outputPath) {
 
     const url = [mirror, AGENT_VERSION, filename].join("/")
 
-    https
-      .get(url, response => {
-        const { statusCode } = response
+    const transmitter = new Transmitter(url)
 
-        if (statusCode >= 400) {
-          reject(
-            new DownloadError(
-              `Request to CDN failed with code HTTP ${statusCode}`,
-              url
-            )
-          )
-        } else {
-          const file = fs
-            .createWriteStream(outputPath)
-            .on("error", () => {
-              reject(
-                new DownloadError(
-                  `Could not download to output path ${outputPath}`,
-                  undefined
-                )
+    transmitter.downloadStream().then(
+      stream => {
+        const file = fs
+          .createWriteStream(outputPath)
+          .on("error", () => {
+            reject(
+              new DownloadError(
+                `Could not download to output path ${outputPath}`,
+                undefined
               )
-            })
-            .on("ready", () => {
-              response.pipe(file).on("finish", () => resolve(url))
-            })
+            )
+          })
+          .on("ready", () => {
+            stream.pipe(file).on("finish", () => resolve(url))
+          })
+      },
+      failure => {
+        switch (failure.kind) {
+          case "statusCode":
+            return reject(
+              new DownloadError(
+                `Request to CDN failed with code HTTP ${failure.statusCode}`,
+                url
+              )
+            )
+          case "requestError":
+            return reject(new DownloadError("Could not connect to CDN", url))
         }
-      })
-      .on("error", () => {
-        reject(new DownloadError("Could not connect to CDN", url))
-      })
+      }
+    )
   })
 }
 

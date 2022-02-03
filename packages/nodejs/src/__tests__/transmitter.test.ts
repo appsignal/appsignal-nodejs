@@ -2,7 +2,10 @@ import { Transmitter } from "../transmitter"
 import nock from "nock"
 import https from "https"
 import fs from "fs"
-import { ClientRequest, IncomingMessage } from "http"
+import http, { ClientRequest } from "http"
+import { HashMap } from "@appsignal/types"
+import { URLSearchParams } from "url"
+import { EventEmitter } from "events"
 
 describe("Transmitter", () => {
   let originalEnv: any = undefined
@@ -18,7 +21,7 @@ describe("Transmitter", () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    jest.restoreAllMocks()
 
     process.env = originalEnv
   })
@@ -52,18 +55,6 @@ describe("Transmitter", () => {
       await expect(response).resolves.toEqual({
         status: 200,
         body: expectedBody
-      })
-    }
-
-    function mockHTTPSRequest() {
-      return jest.spyOn(https, "request").mockImplementation(() => {
-        const clientRequestMock = {
-          on: () => {},
-          write: () => {},
-          end: () => {}
-        }
-
-        return (clientRequestMock as unknown) as ClientRequest
       })
     }
 
@@ -114,6 +105,165 @@ describe("Transmitter", () => {
 
       await expectResponse(transmitter.transmit(), {})
     })
+  })
+
+  describe(".downloadStream", () => {
+    const transmitter = new Transmitter("http://example.com/foo")
+
+    it("resolves to a response stream on success", async () => {
+      nock("http://example.com").get("/foo").reply(200, "response body")
+
+      const stream = await transmitter.downloadStream()
+
+      await expect(
+        new Promise(resolve => {
+          stream.on("data", resolve)
+        })
+      ).resolves.toEqual(Buffer.from("response body"))
+    })
+
+    it("rejects if the status code is not successful", async () => {
+      nock("http://example.com").get("/foo").reply(404, "not found")
+
+      await expect(transmitter.downloadStream()).rejects.toMatchObject({
+        kind: "statusCode",
+        statusCode: 404
+      })
+    })
+
+    it("rejects if there's a request error", async () => {
+      // do not mock the request -- beforeEach uses nock to disable network
+      // requests, so any request to a non-mocked host will throw an error
+
+      await expect(transmitter.downloadStream()).rejects.toMatchObject({
+        kind: "requestError",
+        error: expect.any(Error)
+      })
+    })
+  })
+
+  describe(".request", () => {
+    function mockRequest(module: typeof http | typeof https) {
+      const requestCallbacks = {
+        on: jest.fn(),
+        write: jest.fn(),
+        end: jest.fn()
+      }
+
+      // casting the spy to `any` because the type system gets
+      // confused about the expected `mockImplementation` signature
+      const spy: any = jest.spyOn(module, "request")
+
+      const mock = spy.mockImplementation(
+        (_options: any, callback: (stream: any) => void) => {
+          const stream = new EventEmitter()
+          callback(stream)
+          stream.emit("end")
+
+          return (requestCallbacks as unknown) as ClientRequest
+        }
+      )
+
+      return mock
+    }
+
+    function transmitterRequest(
+      method: string,
+      url: string,
+      body?: string,
+      params = new URLSearchParams()
+    ) {
+      return new Promise<HashMap<jest.Mock>>(resolve => {
+        const callbacks: HashMap<jest.Mock> = {
+          callback: jest.fn(stream => {
+            stream.on("data", callbacks.onData)
+            stream.on("end", () => resolve(callbacks))
+          }),
+
+          onData: jest.fn(),
+          onError: jest.fn(() => resolve(callbacks))
+        }
+
+        const transmitter = new Transmitter(url, body)
+
+        transmitter.request({
+          method,
+          params,
+          callback: callbacks.callback,
+          onError: callbacks.onError
+        })
+      })
+    }
+
+    it("performs an HTTP GET request", async () => {
+      nock("http://example.invalid").get("/foo").reply(200, "response body")
+
+      const { callback, onData, onError } = await transmitterRequest(
+        "GET",
+        "http://example.invalid/foo"
+      )
+
+      expect(callback).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 200 })
+      )
+
+      expect(onData).toHaveBeenCalledWith(Buffer.from("response body"))
+      expect(onError).not.toHaveBeenCalled()
+    })
+
+    it("performs an HTTP POST request", async () => {
+      nock("http://example.invalid")
+        .post("/foo", "request body")
+        .reply(200, "response body")
+
+      const { callback, onData, onError } = await transmitterRequest(
+        "POST",
+        "http://example.invalid/foo",
+        "request body"
+      )
+
+      expect(callback).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 200 })
+      )
+
+      expect(onData).toHaveBeenCalledWith(Buffer.from("response body"))
+      expect(onError).not.toHaveBeenCalled()
+    })
+
+    it("performs an HTTP request with query parameters", async () => {
+      nock("http://example.invalid")
+        .get("/foo")
+        .query({ bar: "baz" })
+        .reply(200, "response body")
+
+      const { callback, onData, onError } = await transmitterRequest(
+        "GET",
+        "http://example.invalid/foo",
+        undefined,
+        new URLSearchParams({ bar: "baz" })
+      )
+
+      expect(callback).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 200 })
+      )
+
+      expect(onData).toHaveBeenCalledWith(Buffer.from("response body"))
+      expect(onError).not.toHaveBeenCalled()
+    })
+
+    it("listens to errors on the request", async () => {
+      // do not mock the request -- beforeEach uses nock to disable network
+      // requests, so any request to a non-mocked host will throw an error
+
+      const { callback, onData, onError } = await transmitterRequest(
+        "GET",
+        "http://example.invalid/foo"
+      )
+
+      expect(onError).toHaveBeenCalledWith(expect.any(Error))
+      expect(onData).not.toHaveBeenCalled()
+      expect(callback).not.toHaveBeenCalled()
+    })
 
     it("uses the CA file from the config", async () => {
       // disable nock, so we can mock the https library ourselves
@@ -127,19 +277,22 @@ describe("Transmitter", () => {
         .spyOn(fs, "readFileSync")
         .mockImplementation(() => "ca file contents")
 
-      const httpsRequestMock = mockHTTPSRequest()
+      const mock = mockRequest(https)
 
-      sampleTransmitter().transmit()
+      const { callback } = await transmitterRequest(
+        "GET",
+        "https://example.invalid"
+      )
 
       expect(fsReadFileSyncMock).toHaveBeenCalledWith("/foo/bar", "utf-8")
 
-      expect(httpsRequestMock).toHaveBeenCalledWith(
+      expect(mock).toHaveBeenCalledWith(
         expect.objectContaining({ ca: "ca file contents" }),
-        expect.anything()
+        callback
       )
     })
 
-    it("doesn't configure the CA if the CA file is not readable", () => {
+    it("doesn't configure the CA if the CA file is not readable", async () => {
       // disable nock, so we can mock the https library ourselves
       nock.restore()
 
@@ -151,19 +304,44 @@ describe("Transmitter", () => {
         }
       })
 
-      const consoleWarnSpy = jest.spyOn(console, "warn")
+      const consoleWarnMock = jest
+        .spyOn(console, "warn")
+        .mockImplementationOnce(() => {})
 
-      const httpsRequestMock = mockHTTPSRequest()
+      const mock = mockRequest(https)
 
-      sampleTransmitter().transmit()
-
-      expect(httpsRequestMock).toHaveBeenCalledWith(
-        expect.not.objectContaining({ ca: expect.anything() }),
-        expect.anything()
+      const { callback } = await transmitterRequest(
+        "GET",
+        "https://example.invalid"
       )
 
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect(mock).toHaveBeenCalledWith(
+        expect.not.objectContaining({ ca: expect.anything() }),
+        callback
+      )
+
+      expect(consoleWarnMock).toHaveBeenCalledTimes(1)
+      expect(consoleWarnMock).toHaveBeenCalledWith(
         "Provided caFilePath: '/foo/bar' is not readable."
+      )
+    })
+
+    it("doesn't configure the CA if the request is not HTTPS", async () => {
+      // disable nock, so we can mock the https library ourselves
+      nock.restore()
+
+      const httpMock = mockRequest(http)
+      const httpsMock = mockRequest(https)
+
+      const { callback } = await transmitterRequest(
+        "GET",
+        "http://example.invalid"
+      )
+
+      expect(httpsMock).not.toHaveBeenCalled()
+      expect(httpMock).toHaveBeenCalledWith(
+        expect.not.objectContaining({ ca: expect.anything() }),
+        callback
       )
     })
   })
