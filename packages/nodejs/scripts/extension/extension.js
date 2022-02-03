@@ -45,23 +45,38 @@ function downloadFromMirror(mirror, filename, outputPath) {
   return new Promise((resolve, reject) => {
     failOnPurposeIfConfigured()
 
-    const url = path.join(mirror, AGENT_VERSION, filename)
-    const file = fs.createWriteStream(outputPath)
+    const url = [mirror, AGENT_VERSION, filename].join("/")
 
-    https.get(url, response => {
-      const { statusCode } = response
+    https
+      .get(url, response => {
+        const { statusCode } = response
 
-      if (statusCode >= 400) {
-        return reject(
-          new DownloadError(
-            `Request to CDN failed with code HTTP ${statusCode}`,
-            url
+        if (statusCode >= 400) {
+          reject(
+            new DownloadError(
+              `Request to CDN failed with code HTTP ${statusCode}`,
+              url
+            )
           )
-        )
-      } else {
-        response.pipe(file).on("finish", () => resolve(url))
-      }
-    })
+        } else {
+          const file = fs
+            .createWriteStream(outputPath)
+            .on("error", () => {
+              reject(
+                new DownloadError(
+                  `Could not download to output path ${outputPath}`,
+                  undefined
+                )
+              )
+            })
+            .on("ready", () => {
+              response.pipe(file).on("finish", () => resolve(url))
+            })
+        }
+      })
+      .on("error", () => {
+        reject(new DownloadError("Could not connect to CDN", url))
+      })
   })
 }
 
@@ -161,8 +176,7 @@ function install() {
   })
 }
 
-// Script logic begins here
-;(function () {
+function run() {
   if (!installAllowed) {
     console.warn(
       `_APPSIGNAL_EXTENSION_INSTALL is set to "${installAllowedEnv}". Skipping install.`
@@ -257,4 +271,10 @@ function install() {
         process.exit(0)
       })
     })
-})()
+}
+
+if (require.main === module) run()
+
+module.exports = {
+  downloadFromMirror
+}
