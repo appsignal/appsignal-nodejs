@@ -100,6 +100,24 @@ export class BaseSpan implements Span {
   }
 
   /**
+   * Sets the Span ID for a given Span.
+   */
+  public setSpanId(id: string): this {
+    if (!id) return this
+    span.setSpanSpanId(this._ref, id)
+    return this
+  }
+
+  /**
+   * Sets the Trace ID for a given Span.
+   */
+  public setTraceId(id: string): this {
+    if (!id) return this
+    span.setSpanTraceId(this._ref, id)
+    return this
+  }
+
+  /**
    * Sets the category for a given Span. The category groups Spans together
    * in the "Slow Events" feature, and in the "Sample breakdown".
    */
