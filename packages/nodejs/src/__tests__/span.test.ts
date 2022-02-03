@@ -87,6 +87,61 @@ describe("RootSpan", () => {
     expect(internal.attributes["appsignal:category"]).toEqual(category)
   })
 
+  it("sets attributes", () => {
+    const span = new RootSpan()
+    span.set("string", "hello world")
+    span.set("boolean_true", true)
+    span.set("boolean_false", false)
+    span.set("int", 123)
+    span.set("float", 123.45)
+    const internal = JSON.parse(span.toJSON())
+
+    expect(internal.attributes).toMatchObject({
+      boolean_false: false,
+      boolean_true: true,
+      float: 123.45,
+      int: 123,
+      string: "hello world"
+    })
+  })
+
+  it("sets an SQL query", () => {
+    const query = "SELECT * FROM users WHERE email = 'test@test.com'"
+    const sanitizedQuery = "SELECT * FROM users WHERE email = ?"
+
+    const span = new RootSpan().setSQL(query)
+    const internal = JSON.parse(span.toJSON())
+
+    expect(internal.attributes["appsignal:body"]).toEqual(sanitizedQuery)
+  })
+
+  it("sets an error with backtrace", () => {
+    const error = new Error("uh oh")
+    const span = new RootSpan().setError(error)
+    const internal = JSON.parse(span.toJSON())
+
+    expect(internal.error).toEqual({
+      name: "Error",
+      message: "uh oh",
+      backtrace: expect.any(String)
+    })
+    expect(internal.error.backtrace).toMatch(/^\["Error: uh oh"/)
+    expect(internal.error.backtrace).toMatch(/span\.test\.ts/)
+  })
+
+  it("sets an error without backtrace", () => {
+    const error = new Error("uh oh")
+    error.stack = undefined
+    const span = new RootSpan().setError(error)
+    const internal = JSON.parse(span.toJSON())
+
+    expect(internal.error).toEqual({
+      name: "Error",
+      message: "uh oh",
+      backtrace: '["No stacktrace available."]'
+    })
+  })
+
   it("closes a span", () => {
     span = new RootSpan().close()
     internal = JSON.parse(span.toJSON())
