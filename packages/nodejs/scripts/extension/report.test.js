@@ -111,7 +111,7 @@ describe("muslOverride", () => {
       setEnv("APPSIGNAL_BUILD_FOR_LINUX_ARM", "")
 
       expect(createBuildReport({})).toMatchObject({
-        architecture: "x64",
+        architecture: process.arch, // Defaults to the host architecture
         target: "linux",
         linux_arm_override: false
       })
