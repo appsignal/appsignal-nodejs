@@ -25,7 +25,7 @@ export class BaseClient implements Client {
   extension: Extension
   instrumentation: Instrumentation
 
-  #tracer: Tracer = new BaseTracer()
+  #tracer: Tracer
   #metrics: Metrics
 
   /**
@@ -52,8 +52,10 @@ export class BaseClient implements Client {
     if (this.isActive) {
       this.extension.start()
       this.#metrics = new BaseMetrics()
+      this.#tracer = new BaseTracer()
     } else {
       this.#metrics = new NoopMetrics()
+      this.#tracer = new NoopTracer()
     }
 
     this.instrumentation = new Instrumentation(this.tracer(), this.metrics())
@@ -110,10 +112,6 @@ export class BaseClient implements Client {
    * returns a `NoopTracer`, which will do nothing.
    */
   public tracer(): Tracer {
-    if (!this.isActive) {
-      return new NoopTracer()
-    }
-
     return this.#tracer
   }
 
