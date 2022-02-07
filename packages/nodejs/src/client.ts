@@ -29,14 +29,17 @@ export class BaseClient implements Client {
   #metrics: Metrics
 
   /**
-   * Global accessors to Client and Config
+   * Global accessors for the AppSignal client
    */
   static get client(): Client {
     return global.__APPSIGNAL__
   }
 
+  /**
+   * Global accessors for the AppSignal Config
+   */
   static get config(): Configuration {
-    return global.__APPSIGNAL__?.config
+    return this.client.config
   }
 
   /**
