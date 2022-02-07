@@ -106,7 +106,7 @@ describe("muslOverride", () => {
   })
 
   describe("with APPSIGNAL_BUILD_FOR_LINUX_ARM empty", () => {
-    test("returns linux-musl platform with musl_override === false", () => {
+    test("returns host's platform and linux_arm_override === false", () => {
       setPlatform("linux")
       setEnv("APPSIGNAL_BUILD_FOR_LINUX_ARM", "")
 
@@ -119,7 +119,7 @@ describe("muslOverride", () => {
   })
 
   describe("with APPSIGNAL_BUILD_FOR_LINUX_ARM=1", () => {
-    test("returns linux-musl platform with musl_override === true", () => {
+    test("returns arm64 linux platform and linux_arm_override === true", () => {
       setEnv("APPSIGNAL_BUILD_FOR_LINUX_ARM", "1")
 
       expect(createBuildReport({})).toMatchObject({
@@ -131,7 +131,7 @@ describe("muslOverride", () => {
   })
 
   describe("with APPSIGNAL_BUILD_FOR_LINUX_ARM=true", () => {
-    test("returns linux-musl platform with musl_override === true", () => {
+    test("returns arm64 linux platform with linux_arm_override === true", () => {
       setEnv("APPSIGNAL_BUILD_FOR_LINUX_ARM", "true")
 
       expect(createBuildReport({})).toMatchObject({
