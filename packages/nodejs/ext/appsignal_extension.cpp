@@ -455,6 +455,20 @@ Napi::Value SetSpanTraceId(const Napi::CallbackInfo &info) {
   return env.Null();
 }
 
+Napi::Value SetSpanParentSpanId(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  Napi::External<appsignal_span_t> span =
+      info[0].As<Napi::External<appsignal_span_t>>();
+
+  Napi::String id = info[1].As<Napi::String>();
+  const std::string id_utf8 = id.Utf8Value();
+
+  appsignal_set_span_parent_span_id(span.Data(), MakeAppsignalString(id_utf8));
+
+  return env.Null();
+}
+
 Napi::Value SetSpanSampleData(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
 
@@ -714,6 +728,8 @@ Napi::Object CreateSpanObject(Napi::Env env, Napi::Object exports) {
            Napi::Function::New(env, SetSpanSpanId));
   span.Set(Napi::String::New(env, "setSpanTraceId"),
            Napi::Function::New(env, SetSpanTraceId));
+  span.Set(Napi::String::New(env, "setSpanParentSpanId"),
+           Napi::Function::New(env, SetSpanParentSpanId));
   span.Set(Napi::String::New(env, "setSpanSampleData"),
            Napi::Function::New(env, SetSpanSampleData));
   span.Set(Napi::String::New(env, "setSpanAttributeString"),
