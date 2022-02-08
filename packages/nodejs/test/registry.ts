@@ -3,14 +3,9 @@ import { RootSpan, ChildSpan } from "../src/span"
 
 export class SpanTestRegistry {
   static spans: Span[] = []
-  static closedSpans: Span[] = []
 
   static addSpan(span: Span) {
     this.spans.push(span)
-  }
-
-  static addClosedSpan(span: Span) {
-    this.closedSpans.push(span)
   }
 
   static lastSpan(): Span {
@@ -20,7 +15,6 @@ export class SpanTestRegistry {
 
   static clear() {
     this.spans = []
-    this.closedSpans = []
   }
 }
 
@@ -30,22 +24,28 @@ jest.mock("../src/span", () => {
   // Wrapper classes that registers each created Span classes on the
   // SpanTestRegistry so we can access the created spans later in the test.
   class TrackedRootSpan extends originalModule.RootSpan {
+    protected _toObject: any = {}
+
     constructor(spanOptions: Partial<SpanOptions> = {}) {
       super(spanOptions)
       SpanTestRegistry.addSpan((this as unknown) as Span)
     }
 
-    // Mock out the `close` functions so that `Span.toObject` will return the
-    // Span object from the extension. If `close` is called it will return an
-    // empty object.
-    // A list of closed Spans can be accessed with
-    // `SpanTestRegistry.closedSpans`
+    // Mock the `close` functions so that `Span.toObject` will return the
+    // Span object from the extension as it was before it was closed.
     close() {
-      SpanTestRegistry.addClosedSpan((this as unknown) as Span)
+      this._toObject = super.toObject()
+      return super.close()
+    }
+
+    toObject() {
+      return { ...this._toObject, ...super.toObject() }
     }
   }
 
   class TrackedChildSpan extends originalModule.ChildSpan {
+    protected _toObject: any = {}
+
     constructor(
       spanOrContext: Span | SpanContext,
       spanOptions: Partial<SpanOptions> = {}
@@ -54,13 +54,15 @@ jest.mock("../src/span", () => {
       SpanTestRegistry.addSpan((this as unknown) as Span)
     }
 
-    // Mock out the `close` functions so that `Span.toObject` will return the
-    // Span object from the extension. If `close` is called it will return an
-    // empty object.
-    // A list of closed Spans can be accessed with
-    // `SpanTestRegistry.closedSpans`
+    // Mock the `close` functions so that `Span.toObject` will return the
+    // Span object from the extension as it was before it was closed.
     close() {
-      SpanTestRegistry.addClosedSpan((this as unknown) as Span)
+      this._toObject = super.toObject()
+      return super.close()
+    }
+
+    toObject() {
+      return { ...this._toObject, ...super.toObject() }
     }
   }
 

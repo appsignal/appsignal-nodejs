@@ -61,8 +61,8 @@ describe("HTTP outgoing requests", () => {
       attributes: { "appsignal:category": "request.http", method: "GET" },
       error: null,
       name: "GET http://localhost",
-      sample_data: {}
+      sample_data: {},
+      closed: true
     })
-    expect(SpanTestRegistry.closedSpans).toContain(lastSpan)
   })
 })
