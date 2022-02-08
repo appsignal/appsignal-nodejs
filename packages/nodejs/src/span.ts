@@ -127,6 +127,24 @@ export class BaseSpan implements Span {
   }
 
   /**
+   * Sets the start time for a given Span.
+   */
+  public setStartTime(sec: number, nsec: number): this {
+    if (!sec) return this
+    span.setSpanStartTime(this._ref, sec, nsec)
+    return this
+  }
+
+  /**
+   * Sets the end time for a given Span.
+   */
+  public setEndTime(sec: number, nsec: number): this {
+    if (!sec) return this
+    span.setSpanEndTime(this._ref, sec, nsec)
+    return this
+  }
+
+  /**
    * Sets the category for a given Span. The category groups Spans together
    * in the "Slow Events" feature, and in the "Sample breakdown".
    */

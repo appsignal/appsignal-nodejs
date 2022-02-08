@@ -469,6 +469,34 @@ Napi::Value SetSpanParentSpanId(const Napi::CallbackInfo &info) {
   return env.Null();
 }
 
+Napi::Value SetSpanStartTime(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  Napi::External<appsignal_span_t> span =
+      info[0].As<Napi::External<appsignal_span_t>>();
+
+  Napi::Number sec = info[1].As<Napi::Number>();
+  Napi::Number nsec = info[2].As<Napi::Number>();
+
+  appsignal_set_span_start_time(span.Data(), (long)sec.DoubleValue(), (long)nsec.DoubleValue());
+
+  return env.Null();
+}
+
+Napi::Value SetSpanEndTime(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  Napi::External<appsignal_span_t> span =
+      info[0].As<Napi::External<appsignal_span_t>>();
+
+  Napi::Number sec = info[1].As<Napi::Number>();
+  Napi::Number nsec = info[2].As<Napi::Number>();
+
+  appsignal_set_span_end_time(span.Data(), (long)sec.DoubleValue(), (long)nsec.DoubleValue());
+
+  return env.Null();
+}
+
 Napi::Value SetSpanSampleData(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
 
@@ -730,6 +758,10 @@ Napi::Object CreateSpanObject(Napi::Env env, Napi::Object exports) {
            Napi::Function::New(env, SetSpanTraceId));
   span.Set(Napi::String::New(env, "setSpanParentSpanId"),
            Napi::Function::New(env, SetSpanParentSpanId));
+  span.Set(Napi::String::New(env, "setSpanStartTime"),
+           Napi::Function::New(env, SetSpanStartTime));
+  span.Set(Napi::String::New(env, "setSpanEndTime"),
+           Napi::Function::New(env, SetSpanEndTime));
   span.Set(Napi::String::New(env, "setSpanSampleData"),
            Napi::Function::New(env, SetSpanSampleData));
   span.Set(Napi::String::New(env, "setSpanAttributeString"),
