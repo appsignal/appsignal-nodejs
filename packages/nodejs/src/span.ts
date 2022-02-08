@@ -118,6 +118,15 @@ export class BaseSpan implements Span {
   }
 
   /**
+   * Sets the parent Span ID for a given Span.
+   */
+  public setParentSpanId(id: string): this {
+    if (!id) return this
+    span.setSpanParentSpanId(this._ref, id)
+    return this
+  }
+
+  /**
    * Sets the category for a given Span. The category groups Spans together
    * in the "Slow Events" feature, and in the "Sample breakdown".
    */
