@@ -1,6 +1,7 @@
 *
 !/dist/**/*
 !/scripts/**/*
+scripts/**/*.test.js
 !/ext/appsignal_extension.cpp
 !/cert/**/*
 !binding.gyp
