@@ -7,4 +7,3 @@
 
 export { BaseClient as Appsignal } from "./client"
 export * from "./interfaces"
-export { EXPERIMENTAL } from "./experimental"
