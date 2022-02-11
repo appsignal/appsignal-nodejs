@@ -4,7 +4,54 @@ import { Probes } from "../interfaces"
 /**
  * The Minutely probes object.
  */
-export class BaseProbes extends EventEmitter implements Probes {
+export class BaseProbes implements Probes {
+  #probes: ProbeRunner
+  #running = true
+
+  constructor({ run = true } = {}) {
+    this.#probes = new BaseProbeRunner()
+    if (!run) this.stop()
+  }
+
+  public stop(): this {
+    this.#probes.clear()
+    this.#probes = new NoopProbeRunner()
+    this.#running = false
+    return this
+  }
+
+  get isRunning(): boolean {
+    return this.#running
+  }
+
+  get count(): number {
+    return this.#probes.count
+  }
+
+  public register(name: string, fn: () => void): this {
+    this.#probes.register(name, fn)
+    return this
+  }
+
+  public unregister(name: string): this {
+    this.#probes.unregister(name)
+    return this
+  }
+
+  public clear(): this {
+    this.#probes.clear()
+    return this
+  }
+}
+
+type ProbeRunner = {
+  readonly count: number
+  register(name: string, fn: () => void): void
+  unregister(name: string): void
+  clear(): void
+}
+
+class BaseProbeRunner extends EventEmitter implements ProbeRunner {
   #timers = new Map<string, NodeJS.Timeout>()
 
   constructor() {
@@ -22,17 +69,17 @@ export class BaseProbes extends EventEmitter implements Probes {
    * Registers a new minutely probe. Using a probe `name` that has already been set
    * will overwrite the current probe.
    */
-  public register(name: string, fn: () => void): this {
+  public register(name: string, fn: () => void): void {
     this.#timers.set(
       name,
       setInterval(() => this.emit(name), 60 * 1000)
     )
 
     this.removeAllListeners(name)
-    return this.on(name, fn)
+    this.on(name, fn)
   }
 
-  public unregister(name: string): this {
+  public unregister(name: string): void {
     const timer = this.#timers.get(name)
 
     if (typeof timer !== "undefined") {
@@ -40,17 +87,21 @@ export class BaseProbes extends EventEmitter implements Probes {
       this.#timers.delete(name)
       this.removeAllListeners(name)
     }
-
-    return this
   }
 
   /**
    * Unregisters all probes and clears the timers.
    */
-  public clear(): this {
+  public clear(): void {
     this.#timers.forEach(t => clearInterval(t))
     this.#timers = new Map()
     this.removeAllListeners()
-    return this
   }
+}
+
+class NoopProbeRunner implements ProbeRunner {
+  readonly count: number = 0
+  public register(_name: string, _fn: () => void): void {}
+  public unregister(_name: string): void {}
+  public clear(): void {}
 }

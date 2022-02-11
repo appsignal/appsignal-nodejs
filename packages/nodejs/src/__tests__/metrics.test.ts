@@ -1,7 +1,5 @@
 import { BaseClient } from "../client"
 import { BaseMetrics as Metrics } from "../metrics"
-import { NoopProbes } from "../noops"
-import { BaseProbes } from "../probes"
 
 describe("Metrics", () => {
   let metrics: Metrics
@@ -11,14 +9,14 @@ describe("Metrics", () => {
     metrics = new Metrics()
   })
 
-  it("has `Probes` when minutely probes are on", () => {
-    expect(metrics.probes()).toBeInstanceOf(BaseProbes)
+  it("runs the probes when minutely probes are on", () => {
+    expect(metrics.probes().isRunning).toEqual(true)
   })
 
-  it("has `NoopProbes` when minutely probes are off", () => {
+  it("does not run the probes when minutely probes are off", () => {
     new BaseClient({ enableMinutelyProbes: false })
     metrics = new Metrics()
-    expect(metrics.probes()).toBeInstanceOf(NoopProbes)
+    expect(metrics.probes().isRunning).toEqual(false)
   })
 
   it("sets a gauge", () => {

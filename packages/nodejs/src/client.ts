@@ -105,6 +105,7 @@ export class BaseClient implements Client {
       console.log("Stopping AppSignal")
     }
 
+    this.metrics().probes().stop()
     this.extension.stop()
   }
 
