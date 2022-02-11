@@ -1,9 +1,9 @@
 const fs = require("fs")
-const { reportPath } = require("./report")
-const { downloadFromMirror } = require("./extension")
+const { reportPath } = require("../report")
+const { downloadFromMirror } = require("../extension")
 const nock = require("nock")
 const { Writable, EventEmitter } = require("stream")
-const { AGENT_VERSION } = require("./support/constants")
+const { AGENT_VERSION } = require("../support/constants")
 
 describe("Extension install success", () => {
   test("writes success result to diagnose installation report", () => {

@@ -2,9 +2,9 @@ const originalProcess = process
 const originalProcessEnv = process.env
 const mockHelpers = { hasMusl: jest.fn() }
 
-jest.doMock("./support/helpers", () => mockHelpers)
+jest.doMock("../support/helpers", () => mockHelpers)
 
-const { createBuildReport } = require("./report")
+const { createBuildReport } = require("../report")
 
 describe("muslOverride", () => {
   beforeEach(() => {
