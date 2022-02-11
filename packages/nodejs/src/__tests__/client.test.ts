@@ -43,17 +43,23 @@ describe("BaseClient", () => {
     expect(BaseClient.config).toEqual(client.config)
   })
 
-  it("does not start the client if config is not valid", () => {
-    process.env["APPSIGNAL_PUSH_API_KEY"] = undefined
-    const startSpy = jest.spyOn(client.extension, "start")
-    client = new BaseClient({ name, enableMinutelyProbes: false })
+  it("does not start the client if the config is not valid", () => {
+    const startSpy = jest.spyOn(Extension.prototype, "start")
+    // config does not include a push API key
+    client = new BaseClient({ name, active: true })
+    expect(startSpy).not.toHaveBeenCalled()
+  })
+
+  it("does not start the client if the active option is false", () => {
+    const startSpy = jest.spyOn(Extension.prototype, "start")
+    client = new BaseClient(DEFAULT_OPTS)
     expect(startSpy).not.toHaveBeenCalled()
   })
 
   it("starts the client when the active option is true", () => {
-    const startSpy = jest.spyOn(client.extension, "start")
+    const startSpy = jest.spyOn(Extension.prototype, "start")
     client = new BaseClient({ ...DEFAULT_OPTS, active: true })
-    expect(startSpy).not.toHaveBeenCalled()
+    expect(startSpy).toHaveBeenCalled()
   })
 
   it("returns a NoopTracer if the agent isn't started", () => {
