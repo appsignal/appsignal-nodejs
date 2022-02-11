@@ -10,7 +10,7 @@
     "directory": "packages/koa"
   },
   "dependencies": {
-    "@appsignal/types": "^2.1.5",
+    "@appsignal/types": "^3.0.0",
     "@appsignal/nodejs": "=2.3.1",
     "shimmer": "^1.2.1",
     "tslib": "^2.0.3"
