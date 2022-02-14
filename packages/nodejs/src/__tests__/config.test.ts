@@ -59,7 +59,6 @@ describe("Configuration", () => {
 
   beforeAll(() => {
     initialEnv = Object.assign({}, process.env)
-    jest.clearAllMocks()
   })
 
   afterAll(() => {
@@ -292,6 +291,8 @@ describe("Configuration", () => {
 
     describe("with config options set to non-default values", () => {
       beforeEach(() => {
+        jest.spyOn(fs, "accessSync").mockImplementation(() => {})
+
         new Configuration({
           name,
           active: true,

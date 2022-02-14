@@ -8,10 +8,6 @@ describe("Bootstrap", () => {
       load: jest.fn()
     } as unknown) as Instrumentation
 
-    beforeEach(() => {
-      jest.clearAllMocks()
-    })
-
     it("bootstraps the core instumentation plugins", () => {
       initCorePlugins(mock, { ignoreInstrumentation: undefined })
       expect(mock.load).toHaveBeenCalledTimes(4)
@@ -29,15 +25,14 @@ describe("Bootstrap", () => {
 
   describe("Probes", () => {
     const registerMock = jest.fn()
-
-    const mock = ({
-      probes: jest.fn().mockImplementation(() => ({
-        register: registerMock
-      }))
-    } as unknown) as Metrics
+    let mock: Metrics
 
     beforeEach(() => {
-      jest.clearAllMocks()
+      mock = ({
+        probes: jest.fn().mockImplementation(() => ({
+          register: registerMock
+        }))
+      } as unknown) as Metrics
     })
 
     it("bootstraps the core probes", () => {

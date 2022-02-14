@@ -4,5 +4,8 @@ module.exports = {
   roots: ["<rootDir>/src", "<rootDir>/scripts"],
   transform: {
     "^.+\\.tsx?$": "ts-jest"
-  }
+  },
+  restoreMocks: true,
+  resetMocks: true,
+  clearMocks: true
 }
