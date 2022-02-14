@@ -3,6 +3,17 @@
  */
 export interface Probes {
   /**
+   * Permanently stops the probes system, unregistering all probes
+   * and clearing the timers.
+   */
+  stop(): this
+
+  /**
+   * Whether the probes system is running.
+   */
+  readonly isRunning: boolean
+
+  /**
    * Number of probes that are registered.
    */
   readonly count: number

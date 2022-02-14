@@ -14,12 +14,10 @@ describe("HTTP outgoing requests", () => {
   let client: Client
   let tracer: Tracer
 
-  // enableMinutelyProbes is set to false so we don't leak timers
   const DEFAULT_OPTS = {
     active: true,
     name,
-    pushApiKey,
-    enableMinutelyProbes: false
+    pushApiKey
   }
 
   beforeEach(() => {
@@ -28,6 +26,10 @@ describe("HTTP outgoing requests", () => {
     tracer = new Tracer()
     http = require("http")
     instrument(http, tracer).install()
+  })
+
+  afterEach(() => {
+    client.stop()
   })
 
   async function performRequest() {

@@ -12,23 +12,36 @@ describe("BaseClient", () => {
 
   let client: BaseClient
 
-  // enableMinutelyProbes is set to false so we don't leak timers
-  const DEFAULT_OPTS = { name, pushApiKey, enableMinutelyProbes: false }
+  const DEFAULT_OPTS = { name, pushApiKey }
 
   beforeEach(() => {
     client = new BaseClient({ ...DEFAULT_OPTS })
   })
 
+  afterEach(() => {
+    client.stop()
+    jest.restoreAllMocks()
+  })
+
   it("starts the client", () => {
-    const startSpy = jest.spyOn(client.extension, "start")
+    const startSpy = jest.spyOn(Extension.prototype, "start")
     client.start()
     expect(startSpy).toHaveBeenCalled()
   })
 
   it("stops the client", () => {
-    const stopSpy = jest.spyOn(client.extension, "stop")
+    const extensionStopSpy = jest.spyOn(Extension.prototype, "stop")
     client.stop()
-    expect(stopSpy).toHaveBeenCalled()
+    expect(extensionStopSpy).toHaveBeenCalled()
+  })
+
+  it("stops the probes when the client is active", () => {
+    client = new BaseClient({ ...DEFAULT_OPTS, active: true })
+    const probes = client.metrics().probes()
+    expect(probes.isRunning).toEqual(true)
+
+    client.stop()
+    expect(probes.isRunning).toEqual(false)
   })
 
   it("stores the client on global object", () => {

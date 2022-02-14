@@ -23,6 +23,30 @@ describe("Probes", () => {
     return fn
   }
 
+  describe("when stopped", () => {
+    it("is not running", () => {
+      expect(probes.isRunning).toEqual(true)
+      probes.stop()
+      expect(probes.isRunning).toEqual(false)
+    })
+
+    it("does not register or call an already registered probe", () => {
+      const fn = registerMockProbe()
+      probes.stop()
+      jest.runOnlyPendingTimers()
+      expect(fn).not.toHaveBeenCalled()
+      expect(probes.count).toEqual(0)
+    })
+
+    it("does not register or call a newly registered probe", () => {
+      probes.stop()
+      const fn = registerMockProbe()
+      jest.runOnlyPendingTimers()
+      expect(fn).not.toHaveBeenCalled()
+      expect(probes.count).toEqual(0)
+    })
+  })
+
   it("registers a probe", () => {
     const fn = registerMockProbe()
     jest.runOnlyPendingTimers()

@@ -1,8 +1,8 @@
 import { Metrics, Probes } from "../interfaces"
-import { NoopProbes } from "../noops"
+import { BaseProbes } from "../probes"
 
 export class NoopMetrics implements Metrics {
-  #probes = new NoopProbes()
+  #probes = new BaseProbes({ run: false })
 
   public setGauge(
     key: string,

@@ -1,6 +1,5 @@
 import { Metrics, Probes } from "./interfaces"
 import { BaseProbes } from "./probes"
-import { NoopProbes } from "./noops"
 import { metrics } from "./extension_wrapper"
 import { Data } from "./internal/data"
 import { BaseClient } from "./client"
@@ -16,11 +15,7 @@ export class BaseMetrics implements Metrics {
   constructor() {
     let enableMinutelyProbes = BaseClient.config.data.enableMinutelyProbes
 
-    if (enableMinutelyProbes) {
-      this.#probes = new BaseProbes()
-    } else {
-      this.#probes = new NoopProbes()
-    }
+    this.#probes = new BaseProbes({ run: enableMinutelyProbes })
   }
 
   /**
