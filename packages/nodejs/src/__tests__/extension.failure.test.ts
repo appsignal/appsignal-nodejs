@@ -11,18 +11,26 @@ describe("Extension", () => {
     ext.stop()
   })
 
+  it("logs a warning when the module is required", () => {
+    const errorSpy = jest.spyOn(console, "error")
+
+    jest.resetModules()
+    require("../extension")
+
+    expect(errorSpy).toHaveBeenLastCalledWith(
+      "AppSignal extension not loaded. This could mean that your current " +
+        "environment isn't supported, or that another error has occurred."
+    )
+  })
+
   it("is not loaded", () => {
     expect(Extension.isLoaded).toEqual(false)
   })
 
   it("does not start the client", () => {
-    const warnSpy = jest.spyOn(console, "warn")
     expect(() => {
       ext.start()
     }).not.toThrow()
-    expect(warnSpy).toHaveBeenLastCalledWith(
-      "AppSignal extension not loaded. This could mean that your current environment isn't supported, or that another error has occurred."
-    )
   })
 
   it("does not error on stopping the client", () => {

@@ -16,19 +16,7 @@ export class Extension {
    * Starts the extension.
    */
   public start() {
-    try {
-      extension.start()
-    } catch (e) {
-      if (e.message === "Extension module not loaded") {
-        console.warn(
-          "AppSignal extension not loaded. This could mean that your current environment isn't supported, or that another error has occurred."
-        )
-      } else {
-        console.error(
-          `Failed to load AppSignal extension with error: ${e.message}. Please email us at support@appsignal.com for support.`
-        )
-      }
-    }
+    extension.start()
   }
 
   /**
