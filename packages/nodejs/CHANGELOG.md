@@ -1,5 +1,24 @@
 # AppSignal for Node.js Changelog
 
+## 2.3.2
+
+### Changed
+
+- [7a7e5c5](https://github.com/appsignal/appsignal-nodejs/commit/7a7e5c5b494922084e15d8cb84dc9de8673c3d33) patch - Update the expected Span type in ScopeManager to `Span` from the `@appsignal/nodejs` package, rather than the `NodeSpan` from the `@appsignal/types` package. The type definition is the same, but now all Span types used by the Node.js integration are defined in the `@appsigna/nodejs` package.
+- [7fc5e40](https://github.com/appsignal/appsignal-nodejs/commit/7fc5e40befca0cde2edb6d56ee3a12ad58fec06d) patch - Improve memory usage when extension is not initialized. It will no longer initialize a new empty Tracer object when the extension is not loaded or AppSignal is not active.
+- [47a851b](https://github.com/appsignal/appsignal-nodejs/commit/47a851b380516b7ac2129ec294cf65ac6329c1bd) patch - Update @appsignal/types dependency to 3.0.0.
+
+### Removed
+
+- [32d8054](https://github.com/appsignal/appsignal-nodejs/commit/32d8054e5613e11a77fa3d98f246c72d3f98efa0) patch - Remove the private function `Span.toJSON`. This wasn't previously marked as private, but it was.
+- [178b49a](https://github.com/appsignal/appsignal-nodejs/commit/178b49ac0bef06cbf8915e7727a82c69a142372d) patch - Do not ship the extension install script test files in the published package. Reduces the package size a tiny bit.
+- [0af54b7](https://github.com/appsignal/appsignal-nodejs/commit/0af54b735e9ad4f7ceb22352008d07ebadcba1a9) patch - Remove the unused experimental module.
+
+### Fixed
+
+- [083a39a](https://github.com/appsignal/appsignal-nodejs/commit/083a39a159ed60fbbd615486b3e596e27b700b4e) patch - Show errors in loading the extension when the `@appsignal/nodejs` module is required.
+- [afe221e](https://github.com/appsignal/appsignal-nodejs/commit/afe221e2a892d4dda068637a3f60ac31447ac33f) patch - The minutely probes are now stopped when `Appsignal.stop()` is called. This fixes an issue where Jest tests would warn about asynchronous operations that remain pending after the tests.
+
 ## 2.3.1
 
 ### Fixed

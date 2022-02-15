@@ -1,5 +1,12 @@
 
 
+## 1.0.16
+
+### Changed
+
+- [47a851b](https://github.com/appsignal/appsignal-nodejs/commit/47a851b380516b7ac2129ec294cf65ac6329c1bd) patch - Update @appsignal/types dependency to 3.0.0.
+- patch - Update @appsignal/nodejs dependency to 2.3.2.
+
 ## 1.0.15
 
 ### Changed
