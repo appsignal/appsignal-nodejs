@@ -20,7 +20,6 @@ describe("BaseClient", () => {
 
   afterEach(() => {
     client.stop()
-    jest.restoreAllMocks()
   })
 
   it("starts the client", () => {

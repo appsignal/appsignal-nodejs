@@ -21,8 +21,6 @@ describe("Transmitter", () => {
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
-
     process.env = originalEnv
   })
 

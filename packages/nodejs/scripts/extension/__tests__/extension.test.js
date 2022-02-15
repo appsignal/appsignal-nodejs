@@ -22,10 +22,6 @@ describe(".downloadFromMirror", () => {
     nock.disableNetConnect()
   })
 
-  afterEach(() => {
-    jest.restoreAllMocks()
-  })
-
   afterAll(() => {
     nock.restore()
   })

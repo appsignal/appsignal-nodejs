@@ -5,11 +5,9 @@ import { VERSION, AGENT_VERSION } from "../version"
 describe("DiagnoseTool", () => {
   let tool: DiagnoseTool
 
-  const fsAccessSpy = jest.spyOn(fs, "accessSync").mockImplementation(() => {})
-
   beforeEach(() => {
     tool = new DiagnoseTool()
-    jest.clearAllMocks()
+    jest.spyOn(fs, "accessSync").mockImplementation(() => {})
   })
 
   it("generates a configuration", async () => {

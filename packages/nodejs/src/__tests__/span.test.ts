@@ -226,10 +226,6 @@ describe(".setSampleData()", () => {
   const DEFAULT_OPTS = { name, pushApiKey, enableMinutelyProbes: false }
   const sampleData = { foo: "bar" }
 
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-
   it("calls the extension with the desired params data if sendParams is active", () => {
     new BaseClient({ ...DEFAULT_OPTS })
 
