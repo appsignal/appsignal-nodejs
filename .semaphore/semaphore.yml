@@ -154,9 +154,9 @@ blocks:
       commands:
       - script/install_test_example_packages nextjs next@latest react@latest react-dom@latest
       - script/test_package_integration nextjs
-    - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
+    - name: "@appsignal/nextjs - next.js@11.1.4 - integrations"
       commands:
-      - script/install_test_example_packages nextjs next@11.0.1 react@17.0.2 react-dom@17.0.2
+      - script/install_test_example_packages nextjs next@11.1.4 react@17.0.2 react-dom@17.0.2
       - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
       commands:
@@ -247,9 +247,9 @@ blocks:
       commands:
       - script/install_test_example_packages nextjs next@latest react@latest react-dom@latest
       - script/test_package_integration nextjs
-    - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
+    - name: "@appsignal/nextjs - next.js@11.1.4 - integrations"
       commands:
-      - script/install_test_example_packages nextjs next@11.0.1 react@17.0.2 react-dom@17.0.2
+      - script/install_test_example_packages nextjs next@11.1.4 react@17.0.2 react-dom@17.0.2
       - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
       commands:
@@ -338,9 +338,9 @@ blocks:
       commands:
       - script/install_test_example_packages nextjs next@latest react@latest react-dom@latest
       - script/test_package_integration nextjs
-    - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
+    - name: "@appsignal/nextjs - next.js@11.1.4 - integrations"
       commands:
-      - script/install_test_example_packages nextjs next@11.0.1 react@17.0.2 react-dom@17.0.2
+      - script/install_test_example_packages nextjs next@11.1.4 react@17.0.2 react-dom@17.0.2
       - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
       commands:
@@ -429,9 +429,9 @@ blocks:
       commands:
       - script/install_test_example_packages nextjs next@latest react@latest react-dom@latest
       - script/test_package_integration nextjs
-    - name: "@appsignal/nextjs - next.js@11.0.1 - integrations"
+    - name: "@appsignal/nextjs - next.js@11.1.4 - integrations"
       commands:
-      - script/install_test_example_packages nextjs next@11.0.1 react@17.0.2 react-dom@17.0.2
+      - script/install_test_example_packages nextjs next@11.1.4 react@17.0.2 react-dom@17.0.2
       - script/test_package_integration nextjs
     - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
       commands:

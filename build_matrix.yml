@@ -154,9 +154,9 @@ matrix:
             next: "latest"
             react: "latest"
             react-dom: "latest"
-        - name: "next.js@11.0.1"
+        - name: "next.js@11.1.4"
           packages:
-            next: "11.0.1"
+            next: "11.1.4"
             react: "17.0.2"
             react-dom: "17.0.2"
         - name: "next.js@10.2.3"
