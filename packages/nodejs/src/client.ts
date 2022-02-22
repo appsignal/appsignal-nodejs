@@ -23,7 +23,7 @@ export class BaseClient implements Client {
   readonly VERSION = VERSION
 
   config: Configuration
-  logger: Logger
+  readonly logger: Logger
   extension: Extension
   instrumentation: Instrumentation
 

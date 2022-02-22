@@ -19,7 +19,11 @@ export class Logger {
     }
 
     const logFormat = printf(({ level, message, timestamp }) => {
-      return `[${timestamp} (process) #${process.pid}][appsignal][${level}] ${message}`
+      if (type == "file") {
+        return `[${timestamp} (process) #${process.pid}][${level}] ${message}`
+      } else {
+        return `[${timestamp} (process) #${process.pid}][appsignal][${level}] ${message}`
+      }
     })
 
     this.logger = winston.createLogger({
