@@ -20,7 +20,8 @@
     "require-in-the-middle": "^5.1.0",
     "semver": "^7.3.4",
     "shimmer": "^1.2.1",
-    "tslib": "^2.0.3"
+    "tslib": "^2.0.3",
+    "winston": "^3.6.0"
   },
   "devDependencies": {
     "@types/pg": "*",

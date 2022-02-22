@@ -4,6 +4,7 @@ import { Extension } from "./extension"
 import { Configuration } from "./config"
 import { BaseTracer } from "./tracer"
 import { BaseMetrics } from "./metrics"
+import { Logger } from "./logger"
 import { NoopTracer, NoopMetrics } from "./noops"
 import { Instrumentation } from "./instrument"
 import { initCorePlugins, initCoreProbes } from "./bootstrap"
@@ -22,6 +23,7 @@ export class BaseClient implements Client {
   readonly VERSION = VERSION
 
   config: Configuration
+  logger: Logger
   extension: Extension
   instrumentation: Instrumentation
 
@@ -43,6 +45,13 @@ export class BaseClient implements Client {
   }
 
   /**
+   * Global accessors for the AppSignal Logger
+   */
+  static get logger(): Logger {
+    return this.client.logger
+  }
+
+  /**
    * Creates a new instance of the `Appsignal` object
    */
   constructor(options: Partial<AppsignalOptions> = {}) {
@@ -50,6 +59,7 @@ export class BaseClient implements Client {
 
     this.config = new Configuration(options)
     this.extension = new Extension()
+    this.logger = this.setUpLogger()
     this.storeInGlobal()
 
     if (this.isActive) {
@@ -157,6 +167,25 @@ export class BaseClient implements Client {
    */
   public demo() {
     return demo(this.tracer())
+  }
+
+  /**
+   * Sets up the AppSignal logger with the output based on the `log` config option. If
+   * the log file is not accessible, stdout will be the output.
+   */
+  private setUpLogger(): Logger {
+    const logFilePath = this.config.logFilePath
+    const logLevel = String(this.config.data["logLevel"])
+    const logType = String(this.config.data["log"])
+    let logger
+
+    if (logType == "file" && logFilePath) {
+      logger = new Logger(logType, logLevel, logFilePath)
+    } else {
+      logger = new Logger(logType, logLevel)
+    }
+
+    return logger
   }
 
   /**
