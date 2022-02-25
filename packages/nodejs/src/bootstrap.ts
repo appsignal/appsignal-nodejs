@@ -1,6 +1,7 @@
 import { Metrics } from "./interfaces"
 import { Instrumentation } from "./instrument"
 import { httpPlugin, httpsPlugin } from "./instrumentation/http"
+import { BaseClient } from "./client"
 import * as pgPlugin from "./instrumentation/pg"
 import * as redisPlugin from "./instrumentation/redis"
 import * as gcProbe from "./probes/v8"
@@ -30,7 +31,9 @@ export function initCorePlugins(
     try {
       instrumentation.load(PLUGIN_NAME, instrument)
     } catch (e) {
-      console.warn(`Failed to instrument "${PLUGIN_NAME}": ${e.message}`)
+      BaseClient.logger.warn(
+        `Failed to instrument "${PLUGIN_NAME}": ${e.message}`
+      )
     }
   })
 }

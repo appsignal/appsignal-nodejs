@@ -1,4 +1,5 @@
 import { Plugin, Tracer, Metrics } from "./interfaces"
+import { BaseClient } from "./client"
 
 import Hook from "require-in-the-middle"
 import semver from "semver"
@@ -46,7 +47,7 @@ export class Instrumentation {
       if (semver.satisfies(version, plugin.version)) {
         return plugin.install()
       } else {
-        console.warn(
+        BaseClient.logger.warn(
           `Unable to instrument module ${name}, module version needs to satisfy version range ${plugin.version}`
         )
 

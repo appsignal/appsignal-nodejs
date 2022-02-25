@@ -132,7 +132,7 @@ export class BaseSpan implements Span {
     try {
       span.setSpanSampleData(this._ref, key, Data.generate(data))
     } catch (e) {
-      console.error(
+      BaseClient.logger.error(
         `Error generating data (${e.name}: ${e.message}) for '${JSON.stringify(
           data
         )}'`

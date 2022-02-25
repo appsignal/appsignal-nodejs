@@ -55,6 +55,27 @@ describe("BaseClient", () => {
     expect(BaseClient.config).toEqual(client.config)
   })
 
+  it("returns the logger from global object", () => {
+    expect(BaseClient.logger).toEqual(client.logger)
+  })
+
+  it("sets the logger level to info by default and uses a file transport", () => {
+    expect(BaseClient.logger.type).toEqual("file")
+    expect(BaseClient.logger.level).toEqual("info")
+  })
+
+  it("sets the logger level to the translated one", () => {
+    client = new BaseClient({ ...DEFAULT_OPTS, logLevel: "trace" })
+
+    expect(BaseClient.logger.level).toEqual("silly")
+  })
+
+  it("uses a console transport for logging if specified", () => {
+    client = new BaseClient({ ...DEFAULT_OPTS, log: "stdout" })
+
+    expect(BaseClient.logger.type).toEqual("stdout")
+  })
+
   it("does not start the client if the config is not valid", () => {
     const startSpy = jest.spyOn(Extension.prototype, "start")
     // config does not include a push API key

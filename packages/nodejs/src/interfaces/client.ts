@@ -2,6 +2,7 @@ import { Tracer } from "./tracer"
 import { Metrics } from "./metrics"
 import { Plugin } from "./plugin"
 import { Configuration } from "../config"
+import { Logger } from "../logger"
 
 /**
  * AppSignal for Node.js's main class.
@@ -21,6 +22,8 @@ export interface Client {
   readonly isActive: boolean
 
   config: Configuration
+
+  logger: Logger
 
   /**
    * Starts AppSignal with the given configuration. If no configuration is set
