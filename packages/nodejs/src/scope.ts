@@ -173,7 +173,7 @@ export class ScopeManager {
     // wrap `fn` so that any AsyncResource objects that are created in `fn` will
     // share context with that of the `AsyncResource` with the given ID.
     const contextWrapper: ContextWrapped<Func<T>> = function (
-      this: {},
+      this: unknown,
       ...args: unknown[]
     ) {
       return self.withContext(boundContext, () => fn.apply(this, args))
@@ -200,7 +200,7 @@ export class ScopeManager {
     EVENT_EMITTER_METHODS.forEach(method => {
       if (ee[method]) {
         shimmer.wrap(ee, method, (oldFn: Func<any>) => {
-          return function (this: {}, event: string, cb: Func<void>) {
+          return function (this: unknown, event: string, cb: Func<void>) {
             return oldFn.call(this, event, that.bindContext(cb))
           }
         })

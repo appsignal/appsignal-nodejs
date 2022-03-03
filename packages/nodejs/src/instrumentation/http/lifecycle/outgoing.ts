@@ -68,7 +68,7 @@ function outgoingRequestFunction(
   tracer: Tracer
 ): (...args: any[]) => ClientRequest {
   return function outgoingRequest(
-    this: {},
+    this: unknown,
     urlOrOptions: string | url.URL | RequestOptions,
     ...args: unknown[]
   ): ClientRequest {

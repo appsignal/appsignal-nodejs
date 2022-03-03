@@ -17,7 +17,14 @@ module.exports = {
   },
   plugins: ["@typescript-eslint", "prettier", "jest"],
   rules: {
-    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        types: {
+          Function: false
+        }
+      }
+    ],
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-explicit-any": "off",

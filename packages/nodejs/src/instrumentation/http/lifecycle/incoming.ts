@@ -27,7 +27,7 @@ function incomingRequest(
   original: (event: string, ...args: unknown[]) => boolean,
   tracer: Tracer
 ) {
-  return function (this: {}, event: string, ...args: unknown[]): boolean {
+  return function (this: unknown, event: string, ...args: unknown[]): boolean {
     if (event !== "request") {
       return original.apply(this, [event, ...args])
     }
