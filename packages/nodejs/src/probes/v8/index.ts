@@ -7,7 +7,7 @@ export const PROBE_NAME = "v8_stats"
 
 export function init(meter: Metrics) {
   function setGauge(key: string, value: number) {
-    let hostname = BaseClient.config.data.hostname || os.hostname()
+    const hostname = BaseClient.config.data.hostname || os.hostname()
     meter.setGauge(key, value, { hostname })
   }
 

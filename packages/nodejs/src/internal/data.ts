@@ -19,7 +19,7 @@ export class Data {
   }
 
   private static mapObject(hash_value: HashMap<any>): any {
-    let map = datamap.create()
+    const map = datamap.create()
 
     Object.entries(hash_value).forEach(([key, value]) => {
       switch (typeof value) {
@@ -63,7 +63,7 @@ export class Data {
   }
 
   private static mapArray(array_value: Array<any>) {
-    let array = dataarray.create()
+    const array = dataarray.create()
 
     array_value.forEach(value => {
       switch (typeof value) {

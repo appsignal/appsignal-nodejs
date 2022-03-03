@@ -88,7 +88,7 @@ function filterHeaders(
   headers: IncomingHttpHeaders,
   appsignal: Client
 ): HashMap<any> {
-  let filtered: HashMap<any> = {}
+  const filtered: HashMap<any> = {}
   const headersAllowList = appsignal.config.data.requestHeaders || []
 
   headersAllowList.forEach(key => {

@@ -42,7 +42,7 @@ export function initCorePlugins(
  * Initialises all the available probes to attach automatically at runtime.
  */
 export function initCoreProbes(meter: Metrics) {
-  let probes: any[] = [gcProbe]
+  const probes: any[] = [gcProbe]
 
   // load probes
   probes.forEach(({ PROBE_NAME, init }) =>

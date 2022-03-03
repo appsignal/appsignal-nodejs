@@ -21,7 +21,6 @@ module.exports = {
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-inferrable-types": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-this-alias": "off",
     "@typescript-eslint/no-unused-vars": "off",
@@ -37,7 +36,6 @@ module.exports = {
     "no-unreachable": "off",
     "no-useless-escape": "off",
     "no-var": "off",
-    "prefer-const": "off",
     "prefer-rest-params": "off"
   }
 }

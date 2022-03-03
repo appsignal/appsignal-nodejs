@@ -160,7 +160,7 @@ export class DiagnoseTool {
 
       if (fs.existsSync(path)) {
         try {
-          let stats = fs.statSync(path)
+          const stats = fs.statSync(path)
           const { mode, gid, uid } = stats
 
           paths[key] = {

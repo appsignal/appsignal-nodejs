@@ -170,7 +170,7 @@ export class Diagnose {
 
     console.log(`Paths`)
 
-    var contents = data["paths"]["appsignal.log"]["content"]
+    const contents = data["paths"]["appsignal.log"]["content"]
 
     console.log(`  Current working directory`)
     console.log(
@@ -216,10 +216,10 @@ export class Diagnose {
         output: process.stdout
       })
 
-      let self = this
+      const self = this
       rl.question(
         `  Send diagnostics report to AppSignal? (Y/n): `,
-        async function (answer: String) {
+        async function (answer: string) {
           switch (answer || "y") {
             case "y":
               await self.sendReport(data)
@@ -356,7 +356,7 @@ export class Diagnose {
     Object.keys(options)
       .sort()
       .forEach(key => {
-        let keySources = this.configurationKeySources(key, sources)
+        const keySources = this.configurationKeySources(key, sources)
 
         if (Object.keys(keySources).length == 1) {
           const source = Object.keys(keySources)[0]

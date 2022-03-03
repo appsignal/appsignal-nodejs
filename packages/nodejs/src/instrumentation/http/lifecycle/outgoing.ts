@@ -30,8 +30,8 @@ const DEFAULT_IGNORED_URLS = [
 function optionsToOriginString(
   options: url.URL | RequestOptions | string
 ): string {
-  let protocol: string = "http:"
-  let hostname: string = "localhost"
+  let protocol = "http:"
+  let hostname = "localhost"
 
   if (options instanceof url.URL) {
     return options.origin ?? `${protocol}//${hostname}`
