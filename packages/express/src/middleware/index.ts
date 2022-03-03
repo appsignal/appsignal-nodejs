@@ -31,7 +31,7 @@ export function expressMiddleware(appsignal: Client): RequestHandler {
       // identifies the span in the stacked graphs
       span.setCategory("process_request.express")
 
-      res.end = function (this: Response) {
+      res.end = function (this: Response, ...args: any) {
         res.end = originalEnd
 
         const { method = "GET", params = {}, query = {}, headers } = req
@@ -52,7 +52,7 @@ export function expressMiddleware(appsignal: Client): RequestHandler {
         span.setSampleData("params", { ...params, ...query })
         span.setSampleData("environment", filteredHeaders)
 
-        return res.end.apply(this, arguments as any)
+        return res.end.apply(this, args)
       }
 
       return next()

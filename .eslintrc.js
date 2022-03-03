@@ -36,11 +36,6 @@ module.exports = {
       {
         assertFunctionNames: ["expect*"]
       }
-    ],
-    "no-prototype-builtins": "off",
-    "no-unreachable": "off",
-    "no-useless-escape": "off",
-    "no-var": "off",
-    "prefer-rest-params": "off"
+    ]
   }
 }

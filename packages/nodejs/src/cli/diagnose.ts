@@ -186,7 +186,7 @@ export class Diagnose {
     console.log(
       `    Path: ${format_value(data["paths"]["appsignal.log"]["path"])}`
     )
-    console.log(`    Contents \(last 10 lines\):`)
+    console.log(`    Contents (last 10 lines):`)
     console.log(contents.slice(contents.length - 10).join("\n"))
 
     this.print_newline()
@@ -385,7 +385,7 @@ export class Diagnose {
   ): { [source: string]: any } {
     return Object.entries(sources).reduce(
       (keySources, [source, sourceOptions]) => {
-        if (sourceOptions.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(sourceOptions, key)) {
           return { ...keySources, [source]: sourceOptions[key] }
         } else {
           return keySources

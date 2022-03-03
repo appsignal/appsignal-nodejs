@@ -46,7 +46,7 @@ describe("Configuration", () => {
 
   function resetEnv() {
     Object.keys(process.env).forEach(key => {
-      if (!initialEnv.hasOwnProperty(key)) {
+      if (!Object.prototype.hasOwnProperty.call(initialEnv, key)) {
         delete process.env[key]
       }
     })

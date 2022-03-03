@@ -1,7 +1,9 @@
-export {}
-
 import { Client } from "./src/interfaces"
 
 declare global {
-  var __APPSIGNAL__: Client
+  namespace NodeJS {
+    interface Global {
+      __APPSIGNAL__: Client
+    }
+  }
 }

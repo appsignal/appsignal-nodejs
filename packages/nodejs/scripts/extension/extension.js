@@ -142,13 +142,10 @@ function mapArchitecture(architecture) {
   switch (architecture) {
     case "x64":
       return "x86_64"
-      break
     case "x86":
       return "i686"
-      break
     case "arm64":
       return "aarch64"
-      break
   }
 
   console.error(
