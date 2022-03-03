@@ -10,7 +10,7 @@ export class NoopSpan implements Span {
     return "0"
   }
 
-  public set(key: string, value: string | number | boolean): this {
+  public set(_key: string, _value: string | number | boolean): this {
     return this
   }
 
@@ -18,37 +18,37 @@ export class NoopSpan implements Span {
     return new NoopSpan()
   }
 
-  public addError(error: Error): this {
+  public addError(_error: Error): this {
     console.warn(
       "DEPRECATED: Please use the `tracer.setError` helper instead to set the error on the root span."
     )
     return this
   }
 
-  public setError(error: Error): this {
+  public setError(_error: Error): this {
     return this
   }
 
-  public setName(name: string): this {
+  public setName(_name: string): this {
     return this
   }
 
-  public setSQL(keyOrValue: string, value?: string): this {
+  public setSQL(_keyOrValue: string, _value?: string): this {
     return this
   }
 
-  public setCategory(category: string): this {
+  public setCategory(_category: string): this {
     return this
   }
 
   public setSampleData(
-    key: string,
-    data: Array<string | number | boolean> | HashMap<string | number | boolean>
+    _key: string,
+    _data: Array<string | number | boolean> | HashMap<string | number | boolean>
   ): this {
     return this
   }
 
-  public close(endTime?: number): this {
+  public close(_endTime?: number): this {
     return this
   }
 

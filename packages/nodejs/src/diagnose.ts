@@ -1,9 +1,6 @@
 import fs from "fs"
 import path from "path"
-import https from "https"
-import http from "http"
-import { URL, URLSearchParams } from "url"
-import { createHash } from "crypto"
+import { URL } from "url"
 
 import { isWritable } from "./utils"
 import { Extension } from "./extension"

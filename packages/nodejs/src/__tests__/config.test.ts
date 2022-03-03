@@ -1,4 +1,3 @@
-import os from "os"
 import path from "path"
 import fs from "fs"
 
@@ -163,9 +162,7 @@ describe("Configuration", () => {
 
   describe("logFilePath", () => {
     it("uses the default log file path", () => {
-      const fsAccessSpy = jest
-        .spyOn(fs, "accessSync")
-        .mockImplementation(() => {})
+      jest.spyOn(fs, "accessSync").mockImplementation(() => {})
       config = new Configuration({ name, pushApiKey })
 
       expect(config.logFilePath).toEqual("/tmp/appsignal.log")
@@ -174,9 +171,7 @@ describe("Configuration", () => {
     describe("with logPath option", () => {
       it("uses the configured path", () => {
         config = new Configuration({ logPath: "/other_path" })
-        const fsAccessSpy = jest
-          .spyOn(fs, "accessSync")
-          .mockImplementation(() => {})
+        jest.spyOn(fs, "accessSync").mockImplementation(() => {})
 
         jest.spyOn(fs, "accessSync").mockImplementation(() => {})
         expect(config.logFilePath).toEqual("/other_path/appsignal.log")
@@ -184,15 +179,13 @@ describe("Configuration", () => {
 
       describe("when the logPath directory can't be written to", () => {
         it("uses the system tmp dir", () => {
-          const fsAccessSpy = jest
-            .spyOn(fs, "accessSync")
-            .mockImplementation(path => {
-              if (path === "/foo_dir") {
-                throw "Error"
-              } else {
-                return true
-              }
-            })
+          jest.spyOn(fs, "accessSync").mockImplementation(path => {
+            if (path === "/foo_dir") {
+              throw "Error"
+            } else {
+              return true
+            }
+          })
           const warnMock = jest
             .spyOn(console, "warn")
             .mockImplementation(() => {})
@@ -206,11 +199,9 @@ describe("Configuration", () => {
         })
 
         it("return undefined if the system tmp dir can't be written to", () => {
-          const fsAccessSpy = jest
-            .spyOn(fs, "accessSync")
-            .mockImplementation(() => {
-              throw "Error"
-            })
+          jest.spyOn(fs, "accessSync").mockImplementation(() => {
+            throw "Error"
+          })
           const warnMock = jest
             .spyOn(console, "warn")
             .mockImplementation(() => {})
@@ -227,9 +218,7 @@ describe("Configuration", () => {
 
     describe("with logPath option with file specified", () => {
       it("uses the overwritten path but changes the file name", () => {
-        const fsAccessSpy = jest
-          .spyOn(fs, "accessSync")
-          .mockImplementation(() => {})
+        jest.spyOn(fs, "accessSync").mockImplementation(() => {})
 
         const warnMock = jest
           .spyOn(console, "warn")

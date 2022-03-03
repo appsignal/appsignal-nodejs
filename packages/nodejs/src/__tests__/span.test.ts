@@ -44,7 +44,6 @@ describe("RootSpan", () => {
 
   it("creates a new ChildSpan", () => {
     const span = new RootSpan()
-    const internal = span.toObject()
     const child = span.child()
 
     expect(child).toBeDefined()

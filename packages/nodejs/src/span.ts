@@ -148,7 +148,7 @@ export class BaseSpan implements Span {
    *
    * @deprecated since Node.js version 2.1.0
    */
-  public addError(error: Error): this {
+  public addError(_error: Error): this {
     console.warn(
       "DEPRECATED: Please use the `tracer.setError` helper instead to set the error on the root span."
     )
@@ -162,7 +162,7 @@ export class BaseSpan implements Span {
    *
    * @deprecated since Node.js version 2.1.0
    */
-  public setError(error: Error): this {
+  public setError(_error: Error): this {
     console.warn(
       "DEPRECATED: Please use the `tracer.setError` helper instead to set the error on the root span."
     )

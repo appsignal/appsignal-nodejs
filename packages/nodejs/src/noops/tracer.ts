@@ -8,8 +8,8 @@ import { NoopSpan } from "./span"
 
 export class NoopTracer implements Tracer {
   public createSpan(
-    options?: Partial<SpanOptions>,
-    spanOrContext?: Span | SpanContext
+    _options?: Partial<SpanOptions>,
+    _spanOrContext?: Span | SpanContext
   ): Span {
     return new NoopSpan()
   }
@@ -22,11 +22,11 @@ export class NoopTracer implements Tracer {
     return new NoopSpan()
   }
 
-  public setError(error: Error): Span {
+  public setError(_error: Error): Span {
     return new NoopSpan()
   }
 
-  public sendError<T>(error: Error, fn: (s: Span) => T): void {
+  public sendError<T>(_error: Error, _fn: (s: Span) => T): void {
     return
   }
 
@@ -38,7 +38,7 @@ export class NoopTracer implements Tracer {
     return fn
   }
 
-  public wrapEmitter(emitter: EventEmitter): void {
+  public wrapEmitter(_emitter: EventEmitter): void {
     return
   }
 }

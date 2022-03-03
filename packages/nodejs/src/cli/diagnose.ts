@@ -1,11 +1,7 @@
 const { DiagnoseTool } = require("../diagnose")
-const fs = require("fs")
-const https = require("https")
-const path = require("path")
 const util = require("util")
 const readline = require("readline")
 import { HashMap } from "@appsignal/types"
-import { AppsignalOptions } from ".."
 
 export class Diagnose {
   #diagnose: typeof DiagnoseTool

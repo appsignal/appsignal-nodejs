@@ -51,7 +51,7 @@ describe("HTTP outgoing requests", () => {
 
   it("creates a span for the outgoing HTTP request", async () => {
     nock("http://example.com").get("/foo").reply(200, "response body")
-    const span = tracer.createSpan() // Create any root span
+    tracer.createSpan() // Create any root span
     expect(SpanTestRegistry.spans).toHaveLength(1)
 
     await performRequest()

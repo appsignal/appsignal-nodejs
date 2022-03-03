@@ -1,4 +1,3 @@
-const crypto = require("crypto")
 const path = require("path")
 
 const { AGENT_VERSION } = require("./support/constants")

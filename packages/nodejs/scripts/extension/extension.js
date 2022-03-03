@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const path = require("path")
-const https = require("https")
 const fs = require("fs")
 const crypto = require("crypto")
 const childProcess = require("child_process")
