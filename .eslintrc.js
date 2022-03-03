@@ -27,9 +27,12 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/triple-slash-reference": "off",
-    "jest/expect-expect": "off",
-    "jest/no-done-callback": "off",
-    "jest/no-identical-title": "off",
+    "jest/expect-expect": [
+      "warn",
+      {
+        assertFunctionNames: ["expect*"]
+      }
+    ],
     "no-prototype-builtins": "off",
     "no-unreachable": "off",
     "no-useless-escape": "off",

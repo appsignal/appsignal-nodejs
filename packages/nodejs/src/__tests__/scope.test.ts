@@ -33,31 +33,28 @@ describe("ScopeManager", () => {
   })
 
   describe(".withContext()", () => {
-    it("should run the callback (null as target)", done => {
-      scopeManager.withContext(null!, done)
+    it("should run the callback (null as target)", () => {
+      const fn = jest.fn()
+      scopeManager.withContext(null!, fn)
+      expect(fn).toBeCalled()
     })
 
-    it("should run the callback (object as target)", done => {
+    it("should run the callback (object as target)", () => {
       const test = new RootSpan({ namespace: "test" })
 
       scopeManager.withContext(test, () => {
         expect(scopeManager.active()).toStrictEqual(test)
       })
-
-      return done()
     })
 
-    it("should run the callback (when disabled)", done => {
+    it("should run the callback (when disabled)", () => {
+      const fn = jest.fn()
       scopeManager.disable()
-
-      scopeManager.withContext(null!, () => {
-        scopeManager.enable()
-      })
-
-      return done()
+      scopeManager.withContext(null!, fn)
+      expect(fn).toBeCalled()
     })
 
-    it("should rethrow errors", done => {
+    it("should rethrow errors", () => {
       const err = new Error("This should be rethrown")
 
       expect(() =>
@@ -65,11 +62,9 @@ describe("ScopeManager", () => {
           throw err
         })
       ).toThrow(err)
-
-      return done()
     })
 
-    it("should finally restore an old scope", done => {
+    it("should finally restore an old scope", () => {
       const rootSpan = new RootSpan()
       const scope1 = new ChildSpan(rootSpan)
       const scope2 = new ChildSpan(rootSpan)
@@ -82,8 +77,6 @@ describe("ScopeManager", () => {
         })
 
         expect(scopeManager.active()).toStrictEqual(scope1)
-
-        return done()
       })
 
       expect(scopeManager.active()).toStrictEqual(scopeManager.root())

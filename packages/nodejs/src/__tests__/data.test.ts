@@ -45,7 +45,7 @@ describe("Data", () => {
     expect(Data.toJson(map)).toEqual({ key: "undefined" })
   })
 
-  it("creates an array with a big int type in it", () => {
+  it("creates a map with a big int type in it", () => {
     let array = Data.generate({ key: BigInt(9007199254740991) })
 
     expect(Data.toJson(array)).toEqual({ key: "bigint:9007199254740991" })

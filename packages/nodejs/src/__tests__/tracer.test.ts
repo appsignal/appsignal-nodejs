@@ -41,19 +41,19 @@ describe("Tracer", () => {
     const err = new Error("FooBarError")
 
     it("works without metadata callback", () => {
-      tracer.sendError(err)
+      expect(() => tracer.sendError(err)).not.toThrow()
     })
 
-    it("uses a RootSpan", done => {
-      tracer.sendError(err, rootSpan => {
-        expect(rootSpan).toBeInstanceOf(RootSpan)
+    it("uses a RootSpan", () => {
+      const fn = jest.fn()
 
-        return done()
-      })
+      tracer.sendError(err, fn)
+
+      expect(fn).toBeCalledWith(expect.any(RootSpan))
     })
 
-    it("assigns metadata to the span if needed", done => {
-      tracer.sendError(err, rootSpan => {
+    it("assigns metadata to the span if needed", () => {
+      const fn = jest.fn(rootSpan => {
         rootSpan.setName("foo")
         rootSpan.setCategory("bar")
         rootSpan.set("pod", 42)
@@ -63,24 +63,28 @@ describe("Tracer", () => {
         expect(rootSpanData.name).toEqual("foo")
         expect(rootSpanData.attributes!["appsignal:category"]).toEqual("bar")
         expect(rootSpanData.attributes!.pod).toEqual(42)
-
-        return done()
       })
+
+      tracer.sendError(err, fn)
+
+      expect(fn).toBeCalled()
     })
 
-    it("adds the given error to the span", done => {
-      tracer.sendError(err, rootSpan => {
+    it("adds the given error to the span", () => {
+      const fn = jest.fn(rootSpan => {
         const rootSpanData = rootSpan.toObject()
 
         expect(rootSpanData.error!.message).toEqual("FooBarError")
-
-        return done()
       })
+
+      tracer.sendError(err, fn)
+
+      expect(fn).toBeCalled()
     })
   })
 
   describe("Span instrumentation", () => {
-    it("can instrument a function (async)", async done => {
+    it("can instrument a function (async)", async () => {
       const rootSpan = tracer.createSpan().setName(name)
 
       await tracer.withSpan(rootSpan, async span => {
@@ -89,8 +93,6 @@ describe("Tracer", () => {
 
         span.close()
       })
-
-      return done()
     })
   })
 })
