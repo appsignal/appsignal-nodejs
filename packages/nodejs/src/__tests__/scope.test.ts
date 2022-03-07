@@ -33,24 +33,19 @@ describe("ScopeManager", () => {
   })
 
   describe(".withContext()", () => {
-    it("should run the callback (null as target)", () => {
-      const fn = jest.fn()
-      scopeManager.withContext(null!, fn)
-      expect(fn).toBeCalled()
-    })
-
     it("should run the callback (object as target)", () => {
-      const test = new RootSpan({ namespace: "test" })
-
-      scopeManager.withContext(test, () => {
+      const fn = jest.fn(() => {
         expect(scopeManager.active()).toStrictEqual(test)
       })
+      const test = new RootSpan({ namespace: "test" })
+      scopeManager.withContext(test, fn)
+      expect(fn).toBeCalled()
     })
 
     it("should run the callback (when disabled)", () => {
       const fn = jest.fn()
       scopeManager.disable()
-      scopeManager.withContext(null!, fn)
+      scopeManager.withContext(new RootSpan(), fn)
       expect(fn).toBeCalled()
     })
 
@@ -58,7 +53,7 @@ describe("ScopeManager", () => {
       const err = new Error("This should be rethrown")
 
       expect(() =>
-        scopeManager.withContext(null!, () => {
+        scopeManager.withContext(new RootSpan(), () => {
           throw err
         })
       ).toThrow(err)

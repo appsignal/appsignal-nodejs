@@ -29,7 +29,7 @@ export class Transmitter {
         method: "GET",
 
         callback(stream) {
-          const statusCode = stream.statusCode!
+          const statusCode = stream.statusCode ?? 999
 
           if (statusCode >= 400) {
             reject({ kind: "statusCode", statusCode })
@@ -52,7 +52,7 @@ export class Transmitter {
         params: this.configParams(),
 
         callback(stream) {
-          const responseStatus = stream.statusCode!
+          const responseStatus = stream.statusCode ?? 999
           stream.setEncoding("utf8")
           let responseBody = ""
 
@@ -94,12 +94,12 @@ export class Transmitter {
 
     const options = {
       ...initialOptions,
-      ...this.paramsRequestOptions(path!, params),
+      ...this.paramsRequestOptions(path ?? "", params),
       ...this.bodyRequestOptions(method),
-      ...this.caRequestOptions(protocol!)
+      ...this.caRequestOptions(protocol ?? "")
     }
 
-    const module = this.requestModule(protocol!)
+    const module = this.requestModule(protocol ?? "")
 
     const request = module.request(options, callback)
 

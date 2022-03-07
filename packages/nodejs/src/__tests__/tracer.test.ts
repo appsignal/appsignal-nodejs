@@ -61,8 +61,8 @@ describe("Tracer", () => {
         const rootSpanData = rootSpan.toObject()
 
         expect(rootSpanData.name).toEqual("foo")
-        expect(rootSpanData.attributes!["appsignal:category"]).toEqual("bar")
-        expect(rootSpanData.attributes!.pod).toEqual(42)
+        expect(rootSpanData.attributes?.["appsignal:category"]).toEqual("bar")
+        expect(rootSpanData.attributes?.pod).toEqual(42)
       })
 
       tracer.sendError(err, fn)
@@ -74,7 +74,7 @@ describe("Tracer", () => {
       const fn = jest.fn(rootSpan => {
         const rootSpanData = rootSpan.toObject()
 
-        expect(rootSpanData.error!.message).toEqual("FooBarError")
+        expect(rootSpanData.error?.message).toEqual("FooBarError")
       })
 
       tracer.sendError(err, fn)
