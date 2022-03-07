@@ -14,10 +14,18 @@ try {
   mod = {
     isLoaded: false,
     extension: {
-      start() {},
-      stop() {},
-      diagnoseRaw() {},
-      runningInContainer() {}
+      start() {
+        return
+      },
+      stop() {
+        return
+      },
+      diagnoseRaw() {
+        return
+      },
+      runningInContainer() {
+        return
+      }
     }
   } as ExtensionWrapper
 }

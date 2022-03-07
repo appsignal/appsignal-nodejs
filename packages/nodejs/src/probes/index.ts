@@ -101,7 +101,16 @@ class BaseProbeRunner extends EventEmitter implements ProbeRunner {
 
 class NoopProbeRunner implements ProbeRunner {
   readonly count: number = 0
-  public register(_name: string, _fn: () => void): void {}
-  public unregister(_name: string): void {}
-  public clear(): void {}
+
+  public register(_name: string, _fn: () => void): void {
+    return
+  }
+
+  public unregister(_name: string): void {
+    return
+  }
+
+  public clear(): void {
+    return
+  }
 }
