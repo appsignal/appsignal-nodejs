@@ -134,6 +134,6 @@ export type SpanData = {
   span_id?: string
   start_time?: number
   trace_id?: string
-  error?: { name: string; message: string; backtrace: Array<String> }
+  error?: { name: string; message: string; backtrace: Array<string> }
   attributes?: { [key: string]: string }
 }

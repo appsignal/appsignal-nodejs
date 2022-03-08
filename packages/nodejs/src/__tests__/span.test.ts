@@ -44,7 +44,6 @@ describe("RootSpan", () => {
 
   it("creates a new ChildSpan", () => {
     const span = new RootSpan()
-    const internal = span.toObject()
     const child = span.child()
 
     expect(child).toBeDefined()
@@ -75,7 +74,7 @@ describe("RootSpan", () => {
     const span = new RootSpan().setCategory(category)
     const internal = span.toObject()
 
-    expect(internal.attributes!["appsignal:category"]).toEqual(category)
+    expect(internal.attributes?.["appsignal:category"]).toEqual(category)
   })
 
   it("sets attributes", () => {
@@ -103,7 +102,7 @@ describe("RootSpan", () => {
     const span = new RootSpan().setSQL(query)
     const internal = span.toObject()
 
-    expect(internal.attributes!["appsignal:body"]).toEqual(sanitizedQuery)
+    expect(internal.attributes?.["appsignal:body"]).toEqual(sanitizedQuery)
   })
 
   it("sets an error with backtrace", () => {
@@ -116,8 +115,8 @@ describe("RootSpan", () => {
       message: "uh oh",
       backtrace: expect.any(String)
     })
-    expect(internal.error!.backtrace).toMatch(/^\["Error: uh oh"/)
-    expect(internal.error!.backtrace).toMatch(/span\.test\.ts/)
+    expect(internal.error?.backtrace).toMatch(/^\["Error: uh oh"/)
+    expect(internal.error?.backtrace).toMatch(/span\.test\.ts/)
   })
 
   it("sets an error without backtrace", () => {
@@ -206,7 +205,7 @@ describe("ChildSpan", () => {
     }).setCategory(category)
     internal = span.toObject()
 
-    expect(internal.attributes!["appsignal:category"]).toEqual(category)
+    expect(internal.attributes?.["appsignal:category"]).toEqual(category)
   })
 
   it("closes a span", () => {

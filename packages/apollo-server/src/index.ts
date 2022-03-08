@@ -14,7 +14,7 @@ export const createApolloPlugin = (appsignal: Client, _options = {}) => {
           // (that's what this lifecycle hook is for, after all), so
           // we use the bang here. if it's undefined due to no operation name
           // being defined, the default is used anyway
-          rootSpan.setName(operationName!)
+          rootSpan.setName(operationName ?? `[unknown graphql query]`)
         },
         executionDidStart: ({ request }) => {
           const execSpan = rootSpan

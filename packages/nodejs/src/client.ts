@@ -81,7 +81,11 @@ export class BaseClient implements Client {
    * Returns `true` if the agent is loaded and configuration is valid
    */
   get isActive(): boolean {
-    return Extension.isLoaded && this.config.isValid && this.config.data.active!
+    return (
+      Extension.isLoaded &&
+      this.config.isValid &&
+      (this.config.data.active ?? false)
+    )
   }
 
   set isActive(arg) {

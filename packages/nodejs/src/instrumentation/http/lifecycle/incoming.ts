@@ -14,7 +14,7 @@ import { IncomingMessage, ServerResponse, IncomingHttpHeaders } from "http"
 // submit a pull request if you have any potential candidates for this array!
 const DEFAULT_IGNORED_URLS = [
   // common static asset paths (with any query string)
-  /\.(css|js|jpg|jpeg|gif|png|svg|webp|json|ico|webmanifest|jsx|less|swf|eot|ttf|otf|woff|woff2)((\?|\&)([^=]+)\=([^&]+))*$/i,
+  /\.(css|js|jpg|jpeg|gif|png|svg|webp|json|ico|webmanifest|jsx|less|swf|eot|ttf|otf|woff|woff2)((\?|&)([^=]+)=([^&]+))*$/i,
   // next.js related routes
   /(\/_next)/i,
   // gatsby hot reloading
@@ -27,7 +27,7 @@ function incomingRequest(
   original: (event: string, ...args: unknown[]) => boolean,
   tracer: Tracer
 ) {
-  return function (this: {}, event: string, ...args: unknown[]): boolean {
+  return function (this: unknown, event: string, ...args: unknown[]): boolean {
     if (event !== "request") {
       return original.apply(this, [event, ...args])
     }
@@ -87,7 +87,7 @@ function incomingRequest(
 }
 
 function filterHeaders(headers: IncomingHttpHeaders): HashMap<any> {
-  let filtered: HashMap<any> = {}
+  const filtered: HashMap<any> = {}
   const headersAllowList = global.__APPSIGNAL__.config.data.requestHeaders || []
 
   headersAllowList.forEach(key => {

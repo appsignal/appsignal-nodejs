@@ -31,7 +31,7 @@ export function expressMiddleware(appsignal: Client): RequestHandler {
       // identifies the span in the stacked graphs
       span.setCategory("process_request.express")
 
-      res.end = function (this: Response) {
+      res.end = function (this: Response, ...args: any) {
         res.end = originalEnd
 
         const { method = "GET", params = {}, query = {}, headers } = req
@@ -48,11 +48,12 @@ export function expressMiddleware(appsignal: Client): RequestHandler {
         // defeated the type checker here because i'm pretty sure the error
         // `tsc` returns is actually a parse error
         // @TODO: keep an eye on this
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         span.setSampleData("params", { ...params, ...query })
         span.setSampleData("environment", filteredHeaders)
 
-        return res.end.apply(this, arguments as any)
+        return res.end.apply(this, args)
       }
 
       return next()
@@ -88,7 +89,7 @@ function filterHeaders(
   headers: IncomingHttpHeaders,
   appsignal: Client
 ): HashMap<any> {
-  let filtered: HashMap<any> = {}
+  const filtered: HashMap<any> = {}
   const headersAllowList = appsignal.config.data.requestHeaders || []
 
   headersAllowList.forEach(key => {

@@ -1,11 +1,7 @@
 const { DiagnoseTool } = require("../diagnose")
-const fs = require("fs")
-const https = require("https")
-const path = require("path")
 const util = require("util")
 const readline = require("readline")
 import { HashMap } from "@appsignal/types"
-import { AppsignalOptions } from ".."
 
 export class Diagnose {
   #diagnose: typeof DiagnoseTool
@@ -170,7 +166,7 @@ export class Diagnose {
 
     console.log(`Paths`)
 
-    var contents = data["paths"]["appsignal.log"]["content"]
+    const contents = data["paths"]["appsignal.log"]["content"]
 
     console.log(`  Current working directory`)
     console.log(
@@ -190,7 +186,7 @@ export class Diagnose {
     console.log(
       `    Path: ${format_value(data["paths"]["appsignal.log"]["path"])}`
     )
-    console.log(`    Contents \(last 10 lines\):`)
+    console.log(`    Contents (last 10 lines):`)
     console.log(contents.slice(contents.length - 10).join("\n"))
 
     this.print_newline()
@@ -216,10 +212,11 @@ export class Diagnose {
         output: process.stdout
       })
 
-      let self = this
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
+      const self = this
       rl.question(
         `  Send diagnostics report to AppSignal? (Y/n): `,
-        async function (answer: String) {
+        async function (answer: string) {
           switch (answer || "y") {
             case "y":
               await self.sendReport(data)
@@ -356,7 +353,7 @@ export class Diagnose {
     Object.keys(options)
       .sort()
       .forEach(key => {
-        let keySources = this.configurationKeySources(key, sources)
+        const keySources = this.configurationKeySources(key, sources)
 
         if (Object.keys(keySources).length == 1) {
           const source = Object.keys(keySources)[0]
@@ -389,7 +386,7 @@ export class Diagnose {
   ): { [source: string]: any } {
     return Object.entries(sources).reduce(
       (keySources, [source, sourceOptions]) => {
-        if (sourceOptions.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(sourceOptions, key)) {
           return { ...keySources, [source]: sourceOptions[key] }
         } else {
           return keySources

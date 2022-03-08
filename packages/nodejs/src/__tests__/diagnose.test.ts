@@ -42,11 +42,9 @@ describe("DiagnoseTool", () => {
     })
 
     it("returns an error report on failure to read the install report", async () => {
-      const fsReadSpy = jest
-        .spyOn(fs, "readFileSync")
-        .mockImplementation(() => {
-          throw new Error("uh oh")
-        })
+      jest.spyOn(fs, "readFileSync").mockImplementation(() => {
+        throw new Error("uh oh")
+      })
       const output = await tool.generate()
 
       const install = output.installation
@@ -64,9 +62,7 @@ describe("DiagnoseTool", () => {
     })
 
     it("returns an error report on failure to parse the install report", async () => {
-      const fsReadSpy = jest
-        .spyOn(fs, "readFileSync")
-        .mockImplementation(() => "not JSON")
+      jest.spyOn(fs, "readFileSync").mockImplementation(() => "not JSON")
       const output = await tool.generate()
 
       const install = output.installation

@@ -71,7 +71,7 @@ describe("Probes", () => {
   })
 
   describe("Metrics integration test", () => {
-    function initialiseMetrics(enableMinutelyProbes: boolean = true) {
+    function initialiseMetrics(enableMinutelyProbes = true) {
       const client = new BaseClient({
         active: true,
         pushApiKey: "TEST_API_KEY",
@@ -112,7 +112,7 @@ describe("Probes", () => {
     function registerV8Probe(hostname?: string) {
       new BaseClient({ hostname })
 
-      let { PROBE_NAME, init } = v8
+      const { PROBE_NAME, init } = v8
       probes.register(PROBE_NAME, init(meterMock))
     }
 
@@ -121,7 +121,7 @@ describe("Probes", () => {
 
       jest.runOnlyPendingTimers()
 
-      let gaugeNames = [
+      const gaugeNames = [
         "nodejs_total_heap_size",
         "nodejs_total_heap_size_executable",
         "nodejs_total_physical_size",

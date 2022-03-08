@@ -1,5 +1,4 @@
 import { Span, SpanOptions, SpanContext } from "../src/interfaces"
-import { RootSpan, ChildSpan } from "../src/span"
 
 export class SpanTestRegistry {
   static spans: Span[] = []

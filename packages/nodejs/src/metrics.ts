@@ -13,7 +13,7 @@ export class BaseMetrics implements Metrics {
   #probes: Probes
 
   constructor() {
-    let enableMinutelyProbes = BaseClient.config.data.enableMinutelyProbes
+    const enableMinutelyProbes = BaseClient.config.data.enableMinutelyProbes
 
     this.#probes = new BaseProbes({ run: enableMinutelyProbes })
   }

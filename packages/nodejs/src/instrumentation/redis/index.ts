@@ -9,7 +9,7 @@ type RedisModule = typeof redis
 
 type RedisCallback = <T>(err: Error | null, reply: T) => void
 
-function wrapCallback(tracer: Tracer, span: Span, done: RedisCallback) {
+function wrapCallback(tracer: Tracer, span: Span, done?: RedisCallback) {
   // @TODO: add results to span here?
   const fn = function <T>(err: Error | null, res: T) {
     if (err) tracer.setError(err)
@@ -72,8 +72,7 @@ function createRedisSendCommandWrapper(tracer: Tracer) {
         }
       }
 
-      // it's ok to pass `undefined` here, so we override the typecheck for `cb`
-      return original.apply(this, [cmd, args, wrapCallback(tracer, span, cb!)])
+      return original.apply(this, [cmd, args, wrapCallback(tracer, span, cb)])
     }
   }
 }

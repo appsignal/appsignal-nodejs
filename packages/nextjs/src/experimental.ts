@@ -54,7 +54,7 @@ export function getWebVitalsHandler(appsignal: Client) {
     const meter = appsignal.metrics()
 
     // we always expect this to be obtained from `http.Server`
-    const { pathname } = url.parse(req.url!, true)
+    const { pathname } = url.parse(req.url ?? "", true)
 
     // this pathname is ignored by our http instrumentation
     if (pathname !== "/__appsignal-web-vitals") {

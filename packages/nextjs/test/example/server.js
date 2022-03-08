@@ -25,7 +25,6 @@ app.prepare().then(() => {
     // Be sure to pass `true` as the second argument to `url.parse`.
     // This tells it to parse the query portion of the URL.
     const parsedUrl = url.parse(req.url, true)
-    const { pathname, query } = parsedUrl
 
     // You might want to handle other routes here too, see
     // https://nextjs.org/docs/advanced-features/custom-server

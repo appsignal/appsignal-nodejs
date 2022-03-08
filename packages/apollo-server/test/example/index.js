@@ -1,7 +1,6 @@
 const { Appsignal } = require("../../../nodejs")
-const { createApolloPlugin } = require("../../../apollo-server")
 
-const appsignal = new Appsignal({
+new Appsignal({
   active: true,
   name: "<YOUR APPLICATION NAME>",
   pushApiKey: "<YOUR API KEY>"
