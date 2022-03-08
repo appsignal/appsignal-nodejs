@@ -168,6 +168,7 @@ export class ScopeManager {
       return fn
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this
 
     // wrap `fn` so that any AsyncResource objects that are created in `fn` will
@@ -195,6 +196,7 @@ export class ScopeManager {
   }
 
   public emitWithContext(ee: EventEmitter): void {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this
 
     EVENT_EMITTER_METHODS.forEach(method => {

@@ -212,6 +212,7 @@ export class Diagnose {
         output: process.stdout
       })
 
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       const self = this
       rl.question(
         `  Send diagnostics report to AppSignal? (Y/n): `,
