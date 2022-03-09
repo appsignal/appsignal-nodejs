@@ -1,4 +1,4 @@
-import { HashMap, HashMapValue } from "@appsignal/types"
+import { HashMap } from "@appsignal/types"
 import { Span, SpanOptions, SpanContext, SpanData } from "./interfaces"
 
 import { span } from "./extension_wrapper"
@@ -114,16 +114,7 @@ export class BaseSpan implements Span {
   /**
    * Sets a data collection as sample data on the current `Span`.
    */
-  public setSampleData(
-    key: string,
-    data:
-      | Array<
-          HashMapValue | Array<HashMapValue> | HashMap<HashMapValue> | undefined
-        >
-      | HashMap<
-          HashMapValue | Array<HashMapValue> | HashMap<HashMapValue> | undefined
-        >
-  ): this {
+  public setSampleData(key: string, data: Array<any> | HashMap<any>): this {
     const clientConfig = BaseClient.config.data
     if (!key || !data) return this
     if (key == "params" && !clientConfig.sendParams) return this

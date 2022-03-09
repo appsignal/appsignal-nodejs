@@ -1,4 +1,4 @@
-import { HashMap, HashMapValue } from "@appsignal/types"
+import { HashMap } from "@appsignal/types"
 
 /**
  * The state of a `Span` at initialization time.
@@ -87,16 +87,7 @@ export interface Span {
   /**
    * Sets a data collection as sample data on the current `Span`.
    */
-  setSampleData(
-    key: string,
-    data:
-      | Array<
-          HashMapValue | Array<HashMapValue> | HashMap<HashMapValue> | undefined
-        >
-      | HashMap<
-          HashMapValue | Array<HashMapValue> | HashMap<HashMapValue> | undefined
-        >
-  ): this
+  setSampleData(key: string, data: Array<any> | HashMap<any>): this
 
   /**
    * Adds sanitized SQL data as a string to a Span.
