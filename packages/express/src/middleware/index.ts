@@ -45,11 +45,6 @@ export function expressMiddleware(appsignal: Client): RequestHandler {
           span.setName(`${method} ${baseUrl}${req.route.path}`)
         }
 
-        // defeated the type checker here because i'm pretty sure the error
-        // `tsc` returns is actually a parse error
-        // @TODO: keep an eye on this
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         span.setSampleData("params", { ...params, ...query })
         span.setSampleData("environment", filteredHeaders)
 
