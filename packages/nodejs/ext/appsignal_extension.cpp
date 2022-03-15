@@ -252,6 +252,45 @@ Napi::Value GetDataToJson(const Napi::CallbackInfo &info) {
 
 // SPAN API
 
+Napi::Value ImportOpentelemetrySpan(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  // Span and trace ids
+  Napi::String spanId = info[0].As<Napi::String>();
+  Napi::String parentSpanId = info[1].As<Napi::String>();
+  Napi::String traceId = info[2].As<Napi::String>();
+
+  // Timestamps
+  Napi::Number startTimeSec = info[3].As<Napi::Number>();
+  Napi::Number startTimeNsec = info[4].As<Napi::Number>();
+  Napi::Number endTimeSec = info[5].As<Napi::Number>();
+  Napi::Number endTimeNsec = info[6].As<Napi::Number>();
+
+  // Name and attributes
+  Napi::String name = info[7].As<Napi::String>();
+  Napi::External<appsignal_data_t> attributes =
+      info[8].As<Napi::External<appsignal_data_t>>();
+
+  // Name and attributes
+  Napi::String instrumentationLibraryName = info[9].As<Napi::String>();
+
+  // Import this data as a span
+  appsignal_import_opentelemetry_span(
+      MakeAppsignalString(spanId),
+      MakeAppsignalString(parentSpanId),
+      MakeAppsignalString(traceId),
+      startTimeSec.Int64Value(),
+      startTimeNsec.Int32Value(),
+      endTimeSec.Int64Value(),
+      endTimeNsec.Int32Value(),
+      MakeAppsignalString(name),
+      attributes.Data(),
+      MakeAppsignalString(instrumentationLibraryName)
+  );
+
+  return env.Null();
+}
+
 Napi::Value CreateRootSpan(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
 
@@ -629,6 +668,8 @@ Napi::Object CreateExtensionObject(Napi::Env env, Napi::Object exports) {
                 Napi::Function::New(env, DiagnoseRaw));
   extension.Set(Napi::String::New(env, "runningInContainer"),
                 Napi::Function::New(env, RunningInContainer));
+  extension.Set(Napi::String::New(env, "importOpentelemetrySpan"),
+                Napi::Function::New(env, ImportOpentelemetrySpan));
 
   return extension;
 }
