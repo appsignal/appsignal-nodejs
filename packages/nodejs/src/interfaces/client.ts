@@ -1,3 +1,4 @@
+import { HashMap } from "@appsignal/types"
 import { Tracer } from "./tracer"
 import { Metrics } from "./metrics"
 import { Plugin } from "./plugin"
@@ -48,6 +49,19 @@ export interface Client {
    * returns a `NoopTracer`, which will do nothing.
    */
   tracer(): Tracer
+
+  importOpenTelemetrySpan(
+    spanId: string,
+    parentSpanId: string,
+    traceId: string,
+    startTimeSec: number,
+    startTimeNsec: number,
+    endTimeSec: number,
+    endTimeNsec: number,
+    name: string,
+    attributes: HashMap<any>,
+    instrumentationLibraryName: string
+  ): null
 
   /**
    * Returns the current `Metrics` object.
