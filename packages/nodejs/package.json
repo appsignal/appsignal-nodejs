@@ -34,7 +34,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "build:watch": "tsc -p tsconfig.json -w --preserveWatchOutput",
-    "clean": "rimraf dist coverage build && rimraf ext/appsignal-agent ext/libappsignal.a ext/appsignal.* ext/*.tar.gz ext/*.report",
+    "postclean": "npm run clean:ext",
+    "clean": "rimraf dist coverage build",
+    "clean:ext": "rimraf ext/appsignal-agent ext/libappsignal.a ext/appsignal.* ext/*.tar.gz ext/*.report",
     "preinstall": "if test -d src; then npm run build; fi",
     "install": "node scripts/extension/extension.js",
     "link:npm": "npm link",
