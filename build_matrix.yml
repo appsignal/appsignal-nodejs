@@ -87,7 +87,13 @@ matrix:
     - nodejs: "16"
       setup: *gcc8
     - nodejs: "14"
+      setup: &npm7
+        # Use NPM version 7 to work around a bug when using NPM 8 and Node 14
+        # or lower, where commands that are ran at the root of the workspace
+        # do not trigger lifecycle hooks for the workspace packages.
+        - npm i -g npm@7
     - nodejs: "12"
+      setup: *npm7
   packages:
     - package: "@appsignal/nodejs"
       path: "packages/nodejs"
