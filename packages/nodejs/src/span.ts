@@ -171,15 +171,18 @@ export class BaseSpan implements Span {
   public close(endTime?: number): this {
     if (endTime && typeof endTime === "number") {
       const { sec, nsec } = getAgentTimestamps(endTime)
+      console.log("!!! close toObject1:", this.toObject())
       span.closeSpanWithTimestamp(this._ref, sec, nsec)
       return this
     } else {
+      console.log("!!! close toObject2:", this.toObject())
       span.closeSpan(this._ref)
       return this
     }
   }
 
   public closeWithTimestamp(seconds: number, nanos: number): this {
+    console.log("!!! closeWithTimestamp toObject:", this.toObject())
     span.closeSpanWithTimestamp(this._ref, seconds, nanos)
     return this
   }
