@@ -179,6 +179,11 @@ export class BaseSpan implements Span {
     }
   }
 
+  public closeWithTimestamp(seconds: number, nanos: number): this {
+    span.closeSpanWithTimestamp(this._ref, seconds, nanos)
+    return this
+  }
+
   /**
    * Returns a SpanData object representing the internal Span in the extension.
    *
