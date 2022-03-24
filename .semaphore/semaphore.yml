@@ -274,6 +274,7 @@ blocks:
       value: '14'
     prologue:
       commands:
+      - npm i -g npm@7
       - cache restore
       - mono bootstrap --ci
       - cache store
@@ -295,6 +296,7 @@ blocks:
       value: 'false'
     prologue:
       commands:
+      - npm i -g npm@7
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
@@ -370,6 +372,7 @@ blocks:
       value: '12'
     prologue:
       commands:
+      - npm i -g npm@7
       - cache restore
       - mono bootstrap --ci
       - cache store
@@ -391,6 +394,7 @@ blocks:
       value: 'false'
     prologue:
       commands:
+      - npm i -g npm@7
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
