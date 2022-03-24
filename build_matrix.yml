@@ -65,9 +65,9 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
 
 matrix:
   epilogue: # Shared for all jobs in the build matrix
-    on_fail:
+    always:
       commands:
-        - "cat packages/nodejs/ext/install.report"
+        - ""
 
   nodejs:
     - nodejs: "17"

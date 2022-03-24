@@ -41,7 +41,8 @@ namespace :build_matrix do
                 "commands" => [
                   "mono build",
                   "cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION " \
-                    "packages"
+                    "packages",
+                  "cat packages/nodejs/ext/install.report"
                 ]
               )
             ]

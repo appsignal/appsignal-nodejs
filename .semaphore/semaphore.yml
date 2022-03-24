@@ -79,14 +79,15 @@ blocks:
       - mono bootstrap --ci
       - cache store
     epilogue: &2
-      on_fail:
+      always:
         commands:
-        - cat packages/nodejs/ext/install.report
+        - ''
     jobs:
     - name: Build
       commands:
       - mono build
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+      - cat packages/nodejs/ext/install.report
 - name: Node.js 17 - Tests
   dependencies:
   - Node.js 17 - Build
@@ -185,6 +186,7 @@ blocks:
       commands:
       - mono build
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+      - cat packages/nodejs/ext/install.report
 - name: Node.js 16 - Tests
   dependencies:
   - Node.js 16 - Build
@@ -281,6 +283,7 @@ blocks:
       commands:
       - mono build
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+      - cat packages/nodejs/ext/install.report
 - name: Node.js 14 - Tests
   dependencies:
   - Node.js 14 - Build
@@ -376,6 +379,7 @@ blocks:
       commands:
       - mono build
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+      - cat packages/nodejs/ext/install.report
 - name: Node.js 12 - Tests
   dependencies:
   - Node.js 12 - Build
