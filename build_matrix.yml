@@ -71,11 +71,16 @@ matrix:
 
   nodejs:
     - nodejs: "17"
-      setup: &gcc8
+      setup: 
         # Configure the host to use GCC 8.3 for Node.js 16 and above. This
         # is the minimal required version for Node.js 16 and above, and the
         # extension won't compile without it.
-        - sem-version c 8
+        - &gcc8 sem-version c 8
+        # Use NPM version 8.5.3 to work around a bug when using NPM 8.5.4 or
+        # higher, where commands that are ran at the root of the workspace
+        # do not trigger lifecycle hooks for the workspace packages.
+        # https://github.com/npm/cli/issues/4552
+        - &npm853 npm i -g npm@8.5.3
       env_vars:
         # Set `NODE_OPTIONS` to `--openssl-legacy-provider`, as a workaround
         # for this `webpack` bug affecting the `@appsignal/nextjs` tests
@@ -85,15 +90,15 @@ matrix:
         - name: NODE_OPTIONS
           value: "--openssl-legacy-provider"
     - nodejs: "16"
-      setup: *gcc8
+      setup:
+        - *gcc8
+        - *npm853
     - nodejs: "14"
-      setup: &npm7
-        # Use NPM version 7 to work around a bug when using NPM 8 and Node 14
-        # or lower, where commands that are ran at the root of the workspace
-        # do not trigger lifecycle hooks for the workspace packages.
-        - npm i -g npm@7
+      setup:
+        - *npm853
     - nodejs: "12"
-      setup: *npm7
+      setup:
+        - *npm853
   packages:
     - package: "@appsignal/nodejs"
       path: "packages/nodejs"

@@ -75,6 +75,7 @@ blocks:
     prologue:
       commands:
       - sem-version c 8
+      - npm i -g npm@8.5.3
       - cache restore
       - mono bootstrap --ci
       - cache store
@@ -101,6 +102,7 @@ blocks:
     prologue:
       commands:
       - sem-version c 8
+      - npm i -g npm@8.5.3
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
@@ -177,6 +179,7 @@ blocks:
     prologue:
       commands:
       - sem-version c 8
+      - npm i -g npm@8.5.3
       - cache restore
       - mono bootstrap --ci
       - cache store
@@ -199,6 +202,7 @@ blocks:
     prologue:
       commands:
       - sem-version c 8
+      - npm i -g npm@8.5.3
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
@@ -274,7 +278,7 @@ blocks:
       value: '14'
     prologue:
       commands:
-      - npm i -g npm@7
+      - npm i -g npm@8.5.3
       - cache restore
       - mono bootstrap --ci
       - cache store
@@ -296,7 +300,7 @@ blocks:
       value: 'false'
     prologue:
       commands:
-      - npm i -g npm@7
+      - npm i -g npm@8.5.3
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
@@ -372,7 +376,7 @@ blocks:
       value: '12'
     prologue:
       commands:
-      - npm i -g npm@7
+      - npm i -g npm@8.5.3
       - cache restore
       - mono bootstrap --ci
       - cache store
@@ -394,7 +398,7 @@ blocks:
       value: 'false'
     prologue:
       commands:
-      - npm i -g npm@7
+      - npm i -g npm@8.5.3
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
