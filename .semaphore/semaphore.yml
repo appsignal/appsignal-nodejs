@@ -87,6 +87,7 @@ blocks:
     - name: Build
       commands:
       - mono build
+      - cache delete $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
       - cat packages/nodejs/ext/install.report
 - name: Node.js 17 - Tests
@@ -188,6 +189,7 @@ blocks:
     - name: Build
       commands:
       - mono build
+      - cache delete $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
       - cat packages/nodejs/ext/install.report
 - name: Node.js 16 - Tests
@@ -287,6 +289,7 @@ blocks:
     - name: Build
       commands:
       - mono build
+      - cache delete $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
       - cat packages/nodejs/ext/install.report
 - name: Node.js 14 - Tests
@@ -385,6 +388,7 @@ blocks:
     - name: Build
       commands:
       - mono build
+      - cache delete $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
       - cat packages/nodejs/ext/install.report
 - name: Node.js 12 - Tests
