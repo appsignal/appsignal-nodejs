@@ -19,6 +19,7 @@ RSpec.describe "Next.js" do
     end
 
     it "renders the index page" do
+      skip("https://github.com/appsignal/appsignal-nodejs/issues/632")
       expect(@result).to match(/Welcome to .+Next\.js!/)
     end
 
