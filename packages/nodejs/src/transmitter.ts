@@ -5,11 +5,31 @@ import http from "http"
 import { Configuration } from "./config"
 import { URL, URLSearchParams } from "url"
 
+const REDIRECT_COUNT = Symbol("redirect-count")
+
 type TransmitterRequestOptions = {
   method: string
   params?: URLSearchParams
-  callback: (stream: http.IncomingMessage) => void
+  callback: ((stream: http.IncomingMessage) => void) & {
+    [REDIRECT_COUNT]?: number
+  }
   onError: (error: Error) => void
+}
+
+const REDIRECT_STATUS_CODES = [301, 302, 303, 307, 308]
+const REDIRECT_GET_STATUS_CODES = [301, 302, 303]
+const MAX_REDIRECTS = 20
+
+class MaxRedirectsError extends Error {
+  constructor() {
+    super("Maximum number of redirects reached")
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, MaxRedirectsError)
+    }
+
+    this.name = "MaxRedirectsError"
+  }
 }
 
 export class Transmitter {
@@ -79,12 +99,9 @@ export class Transmitter {
     })
   }
 
-  public request({
-    method,
-    params = new URLSearchParams(),
-    callback,
-    onError
-  }: TransmitterRequestOptions) {
+  public request(requestOptions: TransmitterRequestOptions) {
+    const { method, params = new URLSearchParams(), onError } = requestOptions
+
     const initialOptions = {
       method,
       ...this.urlRequestOptions()
@@ -101,12 +118,55 @@ export class Transmitter {
 
     const module = this.requestModule(protocol ?? "")
 
+    const callback = this.handleRedirectsCallback(requestOptions)
+
     const request = module.request(options, callback)
 
     request.on("error", onError)
 
     this.writeRequest(method, request)
     request.end()
+  }
+
+  private handleRedirectsCallback({
+    method,
+    params,
+    callback,
+    onError
+  }: TransmitterRequestOptions): (stream: http.IncomingMessage) => void {
+    return stream => {
+      const responseStatus = stream.statusCode ?? 999
+      const isRedirect = REDIRECT_STATUS_CODES.indexOf(responseStatus) !== -1
+      const newURL = stream.headers?.location
+
+      if (isRedirect && typeof newURL !== "undefined") {
+        const redirectCount = callback[REDIRECT_COUNT] ?? 0
+
+        if (redirectCount >= MAX_REDIRECTS) {
+          onError(new MaxRedirectsError())
+        } else {
+          callback[REDIRECT_COUNT] = redirectCount + 1
+
+          let newMethod = method
+          const isGetRedirect =
+            REDIRECT_GET_STATUS_CODES.indexOf(responseStatus) !== -1
+
+          if (isGetRedirect) {
+            newMethod = "GET"
+          }
+
+          const newTransmitter = new Transmitter(newURL, this.#body)
+          newTransmitter.request({
+            method: newMethod,
+            params,
+            callback,
+            onError
+          })
+        }
+      } else {
+        callback(stream)
+      }
+    }
   }
 
   private configParams(): URLSearchParams {
