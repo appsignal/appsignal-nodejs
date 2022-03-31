@@ -1,5 +1,9 @@
 import fs from "fs"
 import path from "path"
+import perf_hooks from "perf_hooks"
+
+const NANOSECOND_DIGITS = 9
+const SECOND_TO_NANOSECONDS = Math.pow(10, NANOSECOND_DIGITS)
 
 /**
  * Retrieve a valid version number from a `package.json` in a given
@@ -41,4 +45,28 @@ export function isWritable(path: string) {
   } catch (e) {
     return false
   }
+}
+
+/**
+ * Returns a high-resolution time tuple.
+ *
+ * @function
+ */
+export function hrTime(
+  performance = perf_hooks.performance
+): { sec: number; nsec: number } {
+  const origin = numberToHrtime(performance.timeOrigin)
+  const now = numberToHrtime(performance.now())
+
+  return { sec: origin[0] + now[0], nsec: origin[1] + now[1] }
+}
+
+function numberToHrtime(epochMillis: number) {
+  const epochSeconds = epochMillis / 1000
+  const seconds = Math.trunc(epochSeconds)
+  const nanoseconds =
+    Number((epochSeconds - seconds).toFixed(NANOSECOND_DIGITS)) *
+    SECOND_TO_NANOSECONDS
+
+  return [seconds, nanoseconds]
 }
