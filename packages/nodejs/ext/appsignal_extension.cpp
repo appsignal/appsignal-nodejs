@@ -182,7 +182,7 @@ Napi::Value SetFloatToDataMap(const Napi::CallbackInfo &info) {
   Napi::Number num = info[1].As<Napi::Number>();
 
   Napi::External<appsignal_data_t> map =
-      info[1].As<Napi::External<appsignal_data_t>>();
+      info[2].As<Napi::External<appsignal_data_t>>();
 
   appsignal_data_map_set_float(map.Data(), MakeAppsignalString(key_utf8),
                                num.DoubleValue());
