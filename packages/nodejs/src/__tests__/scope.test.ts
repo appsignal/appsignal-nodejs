@@ -1,5 +1,6 @@
 import { ScopeManager } from "../scope"
 import { RootSpan, ChildSpan } from "../span"
+import { Span } from "../interfaces/span"
 
 describe("ScopeManager", () => {
   let scopeManager: ScopeManager
@@ -13,22 +14,73 @@ describe("ScopeManager", () => {
     scopeManager.disable()
   })
 
+  // Returns a promise for the return value of a function, to be
+  // ran in a process spawned with `process.nextTick`
+  function asyncTask<T>(fn: () => T): Promise<T> {
+    return new Promise(resolve => process.nextTick(() => resolve(fn())))
+  }
+
+  function asyncTaskWithContext<T>(
+    scopeManager: ScopeManager,
+    span: Span,
+    fn: () => T
+  ): Promise<T> {
+    let asyncTaskPromise
+
+    scopeManager.withContext(span, () => {
+      asyncTaskPromise = asyncTask(fn)
+    })
+
+    // `scopeManager.withContext` executes the function given to it
+    // immediately, so `asyncTaskPromise` is always assigned -- but
+    // the TypeScript compiler doesn't know that, so we ask it to
+    // trust us that it's not `undefined`.
+    return (asyncTaskPromise as unknown) as Promise<T>
+  }
+
+  describe("new ScopeManager()", () => {
+    it("has a disabled async hook", async () => {
+      scopeManager = new ScopeManager()
+      const span = new RootSpan()
+
+      await expect(
+        asyncTaskWithContext(scopeManager, span, () => scopeManager.active())
+      ).resolves.toBe(undefined)
+    })
+  })
+
   describe(".enable()", () => {
-    it("should work", () => {
-      expect(() => {
-        scopeManager = new ScopeManager()
-        expect(scopeManager.enable()).toEqual(scopeManager)
-      }).not.toThrow()
+    it("enables the async hook", async () => {
+      scopeManager = new ScopeManager()
+      const span = new RootSpan()
+
+      scopeManager.enable()
+
+      await expect(
+        asyncTaskWithContext(scopeManager, span, () => scopeManager.active())
+      ).resolves.toBe(span)
     })
   })
 
   describe(".disable()", () => {
-    it("should work", () => {
-      expect(() => {
-        expect(scopeManager.disable()).toEqual(scopeManager)
-      }).not.toThrow()
+    it("disables the async hook", async () => {
+      const span = new RootSpan()
 
-      scopeManager.enable()
+      scopeManager.disable()
+
+      await expect(
+        asyncTaskWithContext(scopeManager, span, () => scopeManager.active())
+      ).resolves.toBe(undefined)
+    })
+
+    it("forgets all active spans", () => {
+      const span = new RootSpan()
+
+      scopeManager.withContext(span, () => {
+        expect(scopeManager.active()).toBe(span)
+        scopeManager.disable()
+        expect(scopeManager.active()).toBe(undefined)
+      })
     })
   })
 
@@ -38,8 +90,8 @@ describe("ScopeManager", () => {
 
       scopeManager.setRoot(span)
 
-      expect(scopeManager.root()).toStrictEqual(span)
-      expect(scopeManager.active()).toStrictEqual(span)
+      expect(scopeManager.root()).toBe(span)
+      expect(scopeManager.active()).toBe(span)
     })
 
     describe("when there is an active span", () => {
@@ -49,30 +101,27 @@ describe("ScopeManager", () => {
 
         scopeManager.withContext(childSpan, () => {
           scopeManager.setRoot(rootSpan)
-          expect(scopeManager.active()).toStrictEqual(childSpan)
+          expect(scopeManager.active()).toBe(childSpan)
         })
       })
     })
   })
 
   describe(".withContext()", () => {
-    it("should run the callback (object as target)", () => {
-      const fn = jest.fn(() => {
-        expect(scopeManager.active()).toStrictEqual(test)
-      })
-      const test = new RootSpan({ namespace: "test" })
-      scopeManager.withContext(test, fn)
+    it("runs the callback", () => {
+      const fn = jest.fn()
+      scopeManager.withContext(new RootSpan(), fn)
       expect(fn).toBeCalled()
     })
 
-    it("should run the callback (when disabled)", () => {
+    it("runs the callback when disabled", () => {
       const fn = jest.fn()
       scopeManager.disable()
       scopeManager.withContext(new RootSpan(), fn)
       expect(fn).toBeCalled()
     })
 
-    it("should rethrow errors", () => {
+    it("rethrows errors", () => {
       const err = new Error("This should be rethrown")
 
       expect(() =>
@@ -82,22 +131,33 @@ describe("ScopeManager", () => {
       ).toThrow(err)
     })
 
-    it("should finally restore an old scope", () => {
-      const rootSpan = new RootSpan()
-      const scope1 = new ChildSpan(rootSpan)
-      const scope2 = new ChildSpan(rootSpan)
+    it("sets the given span as the active span", () => {
+      const span = new RootSpan()
 
-      scopeManager.withContext(scope1, () => {
-        expect(scopeManager.active()).toStrictEqual(scope1)
+      scopeManager.withContext(span, () => {
+        expect(scopeManager.active()).toBe(span)
+      })
+    })
 
-        scopeManager.withContext(scope2, () => {
-          expect(scopeManager.active()).toStrictEqual(scope2)
+    it("restores the previous active span and root span", () => {
+      const outerRootSpan = new RootSpan()
+      const outerChildSpan = new ChildSpan(outerRootSpan)
+      const innerChildSpan = new ChildSpan(outerChildSpan)
+      const innerRootSpan = new RootSpan()
+
+      scopeManager.setRoot(outerRootSpan)
+
+      scopeManager.withContext(outerChildSpan, () => {
+        scopeManager.withContext(innerChildSpan, () => {
+          scopeManager.setRoot(innerRootSpan)
         })
 
-        expect(scopeManager.active()).toStrictEqual(scope1)
+        expect(scopeManager.active()).toBe(outerChildSpan)
+        expect(scopeManager.root()).toBe(outerRootSpan)
       })
 
-      expect(scopeManager.active()).toStrictEqual(scopeManager.root())
+      expect(scopeManager.active()).toBe(outerRootSpan)
+      expect(scopeManager.root()).toBe(outerRootSpan)
     })
   })
 
