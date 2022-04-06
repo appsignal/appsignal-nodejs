@@ -17,7 +17,7 @@ describe("Data", () => {
     const nested = {
       string: "payload",
       int: 9999,
-      float: 99.0,
+      float: 99.9,
       1: true,
       null: "null_key",
       null_value: null,
@@ -57,7 +57,7 @@ describe("Data", () => {
       false,
       "string",
       9999,
-      99.0,
+      99.9,
       [1, 2, 3],
       { foo: "bʊr" },
       { arr: [1, 2, "three"], foo: "bʊr" }
