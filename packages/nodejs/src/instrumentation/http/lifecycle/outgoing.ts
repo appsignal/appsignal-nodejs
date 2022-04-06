@@ -4,11 +4,9 @@
  * Copyright 2019, OpenTelemetry Authors
  */
 
-import { Tracer, Span } from "../../../interfaces"
+import { Tracer } from "../../../interfaces"
 import url from "url"
 import { IncomingMessage, ClientRequest, RequestOptions } from "http"
-
-import { NoopSpan } from "../../../noops"
 
 type HttpRequestArgs = Array<
   (
@@ -72,7 +70,6 @@ function outgoingRequestFunction(
     urlOrOptions: string | url.URL | RequestOptions,
     ...args: unknown[]
   ): ClientRequest {
-    let span: Span
     let origin: string
     let method: string
 
@@ -91,14 +88,8 @@ function outgoingRequestFunction(
       return original.apply(this, [urlOrOptions, ...args])
     }
 
-    if (tracer.currentSpan() instanceof NoopSpan) {
-      // create a new `RootSpan` if there isn't one already in progress
-      span = tracer.createSpan()
-    } else {
-      span = tracer.currentSpan().child()
-    }
-
-    span
+    const span = tracer
+      .createSpan()
       .setName(`${method} ${origin}`)
       .setCategory("request.http")
       .set("method", method)

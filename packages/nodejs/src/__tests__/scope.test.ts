@@ -32,6 +32,29 @@ describe("ScopeManager", () => {
     })
   })
 
+  describe(".setRoot()", () => {
+    it("sets the root span and active span for the current process", () => {
+      const span = new RootSpan()
+
+      scopeManager.setRoot(span)
+
+      expect(scopeManager.root()).toStrictEqual(span)
+      expect(scopeManager.active()).toStrictEqual(span)
+    })
+
+    describe("when there is an active span", () => {
+      it("does not set the active span for the current process", () => {
+        const rootSpan = new RootSpan()
+        const childSpan = new ChildSpan(rootSpan)
+
+        scopeManager.withContext(childSpan, () => {
+          scopeManager.setRoot(rootSpan)
+          expect(scopeManager.active()).toStrictEqual(childSpan)
+        })
+      })
+    })
+  })
+
   describe(".withContext()", () => {
     it("should run the callback (object as target)", () => {
       const fn = jest.fn(() => {
