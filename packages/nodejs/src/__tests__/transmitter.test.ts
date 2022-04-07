@@ -15,6 +15,7 @@ describe("Transmitter", () => {
       nock.activate()
     }
 
+    nock.cleanAll()
     nock.disableNetConnect()
 
     originalEnv = { ...process.env }
@@ -263,6 +264,136 @@ describe("Transmitter", () => {
       expect(callback).not.toHaveBeenCalled()
     })
 
+    it("follows redirects", async () => {
+      nock("http://example.invalid")
+        .get("/301")
+        .reply(301, undefined, {
+          Location: "http://example.invalid/302"
+        })
+        .get("/302")
+        .reply(302, undefined, {
+          Location: "http://example.invalid/303"
+        })
+        .get("/303")
+        .reply(303, undefined, {
+          Location: "http://example.invalid/307"
+        })
+        .get("/307")
+        .reply(307, undefined, {
+          Location: "http://example.invalid/308"
+        })
+        .get("/308")
+        .reply(308, undefined, {
+          Location: "http://example.invalid/foo"
+        })
+        .get("/foo")
+        .reply(200, "response body")
+
+      const { callback, onData, onError } = await transmitterRequest(
+        "GET",
+        "http://example.invalid/301"
+      )
+
+      expect(callback).toHaveBeenCalledWith(
+        expect.objectContaining({ statusCode: 200 })
+      )
+      expect(callback).toHaveBeenCalledTimes(1)
+
+      expect(onData).toHaveBeenCalledWith(Buffer.from("response body"))
+      expect(onError).not.toHaveBeenCalled()
+    })
+
+    it("redirects to GET method for status code 301/302/303", async () => {
+      nock("http://example.invalid")
+        .post("/301", "request body")
+        .reply(301, undefined, {
+          Location: "http://example.invalid/foo"
+        })
+        .post("/302", "request body")
+        .reply(302, undefined, {
+          Location: "http://example.invalid/foo"
+        })
+        .post("/303", "request body")
+        .reply(303, undefined, {
+          Location: "http://example.invalid/foo"
+        })
+        .get("/foo")
+        .times(3)
+        .reply(200, "response body")
+
+      for (const statusCode of [301, 302, 303]) {
+        const { callback, onData, onError } = await transmitterRequest(
+          "POST",
+          `http://example.invalid/${statusCode}`,
+          "request body"
+        )
+
+        expect(callback).toHaveBeenCalledWith(
+          expect.objectContaining({ statusCode: 200 })
+        )
+
+        expect(onData).toHaveBeenCalledWith(Buffer.from("response body"))
+        expect(onError).not.toHaveBeenCalled()
+      }
+    })
+
+    it("redirects to the same method for status code 307/308", async () => {
+      nock("http://example.invalid")
+        .post("/307", "request body")
+        .reply(307, undefined, {
+          Location: "http://example.invalid/foo"
+        })
+        .post("/308", "request body")
+        .reply(308, undefined, {
+          Location: "http://example.invalid/foo"
+        })
+        .post("/foo", "request body")
+        .times(2)
+        .reply(200, "response body")
+
+      for (const statusCode of [307, 308]) {
+        const { callback, onData, onError } = await transmitterRequest(
+          "POST",
+          `http://example.invalid/${statusCode}`,
+          "request body"
+        )
+
+        expect(callback).toHaveBeenCalledWith(
+          expect.objectContaining({ statusCode: 200 })
+        )
+
+        expect(onData).toHaveBeenCalledWith(Buffer.from("response body"))
+        expect(onError).not.toHaveBeenCalled()
+      }
+    })
+
+    it("throws an error on a redirect loop", async () => {
+      nock("http://example.invalid")
+        .persist()
+        .get("/foo")
+        .reply(302, undefined, {
+          Location: "http://example.invalid/bar"
+        })
+        .get("/bar")
+        .reply(302, undefined, {
+          Location: "http://example.invalid/foo"
+        })
+
+      const { callback, onData, onError } = await transmitterRequest(
+        "GET",
+        `http://example.invalid/foo`
+      )
+
+      expect(callback).not.toHaveBeenCalled()
+      expect(onData).not.toHaveBeenCalled()
+      expect(onError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: "MaxRedirectsError",
+          message: "Maximum number of redirects reached"
+        })
+      )
+    })
+
     it("uses the CA file from the config", async () => {
       // disable nock, so we can mock the https library ourselves
       nock.restore()
@@ -277,16 +408,13 @@ describe("Transmitter", () => {
 
       const mock = mockRequest(https)
 
-      const { callback } = await transmitterRequest(
-        "GET",
-        "https://example.invalid"
-      )
+      await transmitterRequest("GET", "https://example.invalid")
 
       expect(fsReadFileSyncMock).toHaveBeenCalledWith("/foo/bar", "utf-8")
 
       expect(mock).toHaveBeenCalledWith(
         expect.objectContaining({ ca: "ca file contents" }),
-        callback
+        expect.any(Function)
       )
     })
 
@@ -308,14 +436,11 @@ describe("Transmitter", () => {
 
       const mock = mockRequest(https)
 
-      const { callback } = await transmitterRequest(
-        "GET",
-        "https://example.invalid"
-      )
+      await transmitterRequest("GET", "https://example.invalid")
 
       expect(mock).toHaveBeenCalledWith(
         expect.not.objectContaining({ ca: expect.anything() }),
-        callback
+        expect.any(Function)
       )
 
       expect(consoleWarnMock).toHaveBeenCalledTimes(1)
@@ -331,15 +456,12 @@ describe("Transmitter", () => {
       const httpMock = mockRequest(http)
       const httpsMock = mockRequest(https)
 
-      const { callback } = await transmitterRequest(
-        "GET",
-        "http://example.invalid"
-      )
+      await transmitterRequest("GET", "http://example.invalid")
 
       expect(httpsMock).not.toHaveBeenCalled()
       expect(httpMock).toHaveBeenCalledWith(
         expect.not.objectContaining({ ca: expect.anything() }),
-        callback
+        expect.any(Function)
       )
     })
   })
