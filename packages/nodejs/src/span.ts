@@ -3,7 +3,7 @@ import { Span, SpanOptions, SpanContext, SpanData } from "./interfaces"
 
 import { span } from "./extension_wrapper"
 import { Data } from "./internal/data"
-import { getAgentTimestamps } from "./utils"
+import { getAgentTimestamps, hrTime } from "./utils"
 import { BaseClient } from "./client"
 
 /**
@@ -174,7 +174,8 @@ export class BaseSpan implements Span {
       span.closeSpanWithTimestamp(this._ref, sec, nsec)
       return this
     } else {
-      span.closeSpan(this._ref)
+      const { sec, nsec } = hrTime()
+      span.closeSpanWithTimestamp(this._ref, sec, nsec)
       return this
     }
   }
@@ -222,7 +223,12 @@ export class ChildSpan extends BaseSpan {
           nsec
         )
       } else {
-        this._ref = span.createChildSpan(spanOrContext.ref())
+        const { sec, nsec } = hrTime()
+        this._ref = span.createChildSpanWithTimestamp(
+          spanOrContext.ref(),
+          sec,
+          nsec
+        )
       }
     } else {
       const { traceId, spanId } = spanOrContext
@@ -243,7 +249,8 @@ export class RootSpan extends BaseSpan {
       const { sec, nsec } = getAgentTimestamps(startTime)
       this._ref = span.createRootSpanWithTimestamp(namespace, sec, nsec)
     } else {
-      this._ref = span.createRootSpan(namespace)
+      const { sec, nsec } = hrTime()
+      this._ref = span.createRootSpanWithTimestamp(namespace, sec, nsec)
     }
   }
 

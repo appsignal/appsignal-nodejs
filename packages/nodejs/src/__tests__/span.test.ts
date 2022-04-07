@@ -11,6 +11,8 @@ describe("RootSpan", () => {
 
     expect(span).toBeInstanceOf(RootSpan)
     expect(internal.closed).toBeFalsy()
+    console.log(internal.start_time)
+    expect(typeof internal.start_time).toBe("number")
   })
 
   it("creates a RootSpan with a timestamp", () => {
@@ -45,9 +47,11 @@ describe("RootSpan", () => {
   it("creates a new ChildSpan", () => {
     const span = new RootSpan()
     const child = span.child()
+    const internal = child.toObject()
 
     expect(child).toBeDefined()
     expect(child).toBeInstanceOf(ChildSpan)
+    expect(typeof internal.start_time).toBe("number")
   })
 
   it("belongs to a given namespace", () => {
