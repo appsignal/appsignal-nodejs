@@ -11,7 +11,6 @@ describe("RootSpan", () => {
 
     expect(span).toBeInstanceOf(RootSpan)
     expect(internal.closed).toBeFalsy()
-    console.log(internal.start_time)
     expect(typeof internal.start_time).toBe("number")
   })
 
