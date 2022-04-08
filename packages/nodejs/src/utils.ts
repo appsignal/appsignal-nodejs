@@ -48,7 +48,7 @@ export function isWritable(path: string) {
 }
 
 /**
- * Returns a high-resolution time tuple.
+ * Returns a high-resolution time tuple containing the current time in seconds and nanoseconds.
  *
  * @function
  */
