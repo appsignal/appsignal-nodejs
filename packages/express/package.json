@@ -1,6 +1,6 @@
 {
   "name": "@appsignal/express",
-  "version": "1.0.26",
+  "version": "1.0.27",
   "main": "dist/index",
   "types": "dist/index",
   "license": "MIT",
@@ -10,7 +10,7 @@
     "directory": "packages/express"
   },
   "dependencies": {
-    "@appsignal/nodejs": "=2.3.2",
+    "@appsignal/nodejs": "=2.3.3",
     "tslib": "^2.0.3"
   },
   "peerDependencies": {

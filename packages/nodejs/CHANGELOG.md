@@ -1,5 +1,33 @@
 # AppSignal for Node.js Changelog
 
+## 2.3.3
+
+### Added
+
+- [8f745e6](https://github.com/appsignal/appsignal-nodejs/commit/8f745e6c7d5b70ab01b6cdf87ae0afcbe66850a6) patch - Log messages are now sent through a new centralized logger that writes to `/tmp/appsignal.log` by default.
+  A warning is printed to STDERR when the default or provided logPath is not accessible, and the Logger
+  automatically falls back to STDOUT. Use config option `log: stdout` to log AppSignal messages to STDOUT instead.
+
+### Changed
+
+- [9a7fafe](https://github.com/appsignal/appsignal-nodejs/commit/9a7fafed628ee1931dd70640f4da9f8ae4bc740e) patch - Bump agent to v-bbc830a
+  
+  - Support batched statsd messages
+  - Set start times for spans with traceparents
+  - Check duration in transactions for negative and too high values
+- [df63d2d](https://github.com/appsignal/appsignal-nodejs/commit/df63d2d79e1d5829264fc17fe88e6cabfc10edfc) patch - Bump agent to v-f57e6cb
+  
+  - Enable process metrics on Heroku and Dokku
+
+### Fixed
+
+- [4a498be](https://github.com/appsignal/appsignal-nodejs/commit/4a498be6f43d4ebe1cf786d14d21aae7ab19a9b3) patch - Allow nested values in `Span.setSampleData`. This change also allows
+  values other than strings, integers and booleans to be passed as values
+  within the sample data objects. Note that not all sample data keys allow
+  nested values to be passed.
+- [4ab4814](https://github.com/appsignal/appsignal-nodejs/commit/4ab481483e86425d1b6c072c4f85f88768c792c6) patch - Follow redirects when downloading the AppSignal agent. This fixes an issue where the redirect page would be downloaded instead of the agent, causing the agent installation to fail.
+- [17c0deb](https://github.com/appsignal/appsignal-nodejs/commit/17c0deb277fa53ba5cbce2cd0623e2af58cccace) patch - Fix an issue where the AppSignal extension would throw an error when an object containing a non-integer number is sent to it. This would be triggered when calling `setSampleData` with an object containing a non-integer number, or when the values for a metric's tags are non-integer numbers.
+
 ## 2.3.2
 
 ### Changed
