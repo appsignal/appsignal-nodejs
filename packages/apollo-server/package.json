@@ -1,6 +1,6 @@
 {
   "name": "@appsignal/apollo-server",
-  "version": "1.0.26",
+  "version": "1.0.27",
   "main": "dist/index",
   "types": "dist/index",
   "license": "MIT",
@@ -10,7 +10,7 @@
     "directory": "packages/apollo-server"
   },
   "dependencies": {
-    "@appsignal/nodejs": "=2.3.3",
+    "@appsignal/nodejs": "=2.3.4",
     "apollo-server-plugin-base": "^0.10.3",
     "tslib": "^2.0.3"
   },

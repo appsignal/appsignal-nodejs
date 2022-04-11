@@ -1,5 +1,15 @@
 
 
+## 1.0.27
+
+### Changed
+
+- patch - Update @appsignal/nodejs dependency to 2.3.4.
+
+### Fixed
+
+- [817fdb4](https://github.com/appsignal/appsignal-nodejs/commit/817fdb4f6c20ca64fe33205c5d15098a93bda7e2) patch - Fix error reporting. Due to a bug in the scope management logic, errors emitted by Apollo Server were not being reported by the integration.
+
 ## 1.0.26
 
 ### Changed

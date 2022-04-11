@@ -1,5 +1,15 @@
 # AppSignal for Node.js Changelog
 
+## 2.3.4
+
+### Changed
+
+- [ff871bf](https://github.com/appsignal/appsignal-nodejs/commit/ff871bf7f268f53b83f0de0fcc39c47b832fd9a9) patch - Update node-gyp to major version `9.0.0`. This drops compatibility with Python 2.7 for the extension install, but it makes it compatible with the latest Python 3 version, which should be more accessible to users going forward.
+
+### Fixed
+
+- [817fdb4](https://github.com/appsignal/appsignal-nodejs/commit/817fdb4f6c20ca64fe33205c5d15098a93bda7e2) patch - Ensure the root span is preserved across scopes. Due to a bug in the scope management logic, calling `tracer.withSpan` could cause the root span for a given scope to be forgotten.
+
 ## 2.3.3
 
 ### Added
