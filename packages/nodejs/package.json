@@ -16,7 +16,7 @@
     "@appsignal/core": "^1.1.4",
     "@appsignal/types": "^3.0.0",
     "node-addon-api": "^3.1.0",
-    "node-gyp": "^7.1.2",
+    "node-gyp": "^9.0.0",
     "require-in-the-middle": "^5.1.0",
     "semver": "^7.3.4",
     "shimmer": "^1.2.1",
