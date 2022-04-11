@@ -1,6 +1,6 @@
 const { Appsignal } = require("../../../nodejs")
 
-new Appsignal({
+const appsignal = new Appsignal({
   active: true,
   name: "<YOUR APPLICATION NAME>",
   pushApiKey: "<YOUR API KEY>"
@@ -47,9 +47,13 @@ const resolvers = {
   }
 }
 
+const { createApolloPlugin } = require("../../../apollo-server")
+
+const plugins = [createApolloPlugin(appsignal)]
+
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
-const server = new ApolloServer({ typeDefs, resolvers })
+const server = new ApolloServer({ typeDefs, resolvers, plugins })
 
 // The `listen` method launches a web server.
 server.listen({ port: 4010 }).then(({ url }) => {

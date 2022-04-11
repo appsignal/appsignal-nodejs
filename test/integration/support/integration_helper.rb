@@ -7,4 +7,8 @@ module IntegrationHelper
 
     span_id
   end
+
+  def fetch_child_span_ids(log, root_span_id)
+    log.scan(/Start child span '(\w+)' with parent '#{root_span_id}'/).map(&:first)
+  end
 end
