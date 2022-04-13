@@ -43,7 +43,8 @@ namespace :build_matrix do
                   "cache delete $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION",
                   "cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION " \
                     "packages",
-                  "cat packages/nodejs/ext/install.report"
+                  "cat packages/nodejs/ext/install.report; " \
+                    "cat packages/nodejs/ext/install.report | grep '\"status\": \"success\"'"
                 ]
               )
             ]
