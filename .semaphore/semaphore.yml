@@ -89,7 +89,8 @@ blocks:
       - mono build
       - cache delete $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
-      - cat packages/nodejs/ext/install.report
+      - 'cat packages/nodejs/ext/install.report; cat packages/nodejs/ext/install.report
+        | grep ''"status": "success"'''
 - name: Node.js 17 - Tests
   dependencies:
   - Node.js 17 - Build
@@ -191,7 +192,8 @@ blocks:
       - mono build
       - cache delete $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
-      - cat packages/nodejs/ext/install.report
+      - 'cat packages/nodejs/ext/install.report; cat packages/nodejs/ext/install.report
+        | grep ''"status": "success"'''
 - name: Node.js 16 - Tests
   dependencies:
   - Node.js 16 - Build
@@ -291,7 +293,8 @@ blocks:
       - mono build
       - cache delete $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
-      - cat packages/nodejs/ext/install.report
+      - 'cat packages/nodejs/ext/install.report; cat packages/nodejs/ext/install.report
+        | grep ''"status": "success"'''
 - name: Node.js 14 - Tests
   dependencies:
   - Node.js 14 - Build
@@ -390,7 +393,8 @@ blocks:
       - mono build
       - cache delete $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
-      - cat packages/nodejs/ext/install.report
+      - 'cat packages/nodejs/ext/install.report; cat packages/nodejs/ext/install.report
+        | grep ''"status": "success"'''
 - name: Node.js 12 - Tests
   dependencies:
   - Node.js 12 - Build
