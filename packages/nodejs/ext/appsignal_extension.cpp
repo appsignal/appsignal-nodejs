@@ -334,17 +334,6 @@ Napi::Value CreateSpanFromTraceparent(const Napi::CallbackInfo &info) {
       [](Napi::Env env, appsignal_span_t *ptr) { appsignal_free_span(ptr); });
 }
 
-Napi::Value CloseSpan(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::External<appsignal_span_t> span =
-      info[0].As<Napi::External<appsignal_span_t>>();
-
-  appsignal_close_span(span.Data());
-
-  return env.Null();
-}
-
 Napi::Value CloseSpanWithTimestamp(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
 
@@ -674,8 +663,6 @@ Napi::Object CreateSpanObject(Napi::Env env, Napi::Object exports) {
            Napi::Function::New(env, GetTraceId));
   span.Set(Napi::String::New(env, "getSpanId"),
            Napi::Function::New(env, GetSpanId));
-  span.Set(Napi::String::New(env, "closeSpan"),
-           Napi::Function::New(env, CloseSpan));
   span.Set(Napi::String::New(env, "closeSpanWithTimestamp"),
            Napi::Function::New(env, CloseSpanWithTimestamp));
   span.Set(Napi::String::New(env, "addSpanError"),
