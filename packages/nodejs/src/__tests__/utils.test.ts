@@ -14,16 +14,11 @@ describe("Utils", () => {
   describe("hrTime", () => {
     it("returns a second/nanosecond tuple", () => {
       const performance = {
+        ...perf_hooks.performance,
         timeOrigin: 1648719688126.149,
         now: function () {
           return 116931.83823999763
-        },
-        clearMarks: perf_hooks.performance.clearMarks,
-        mark: perf_hooks.performance.mark,
-        measure: perf_hooks.performance.measure,
-        nodeTiming: perf_hooks.performance.nodeTiming,
-        timerify: perf_hooks.performance.timerify,
-        eventLoopUtilization: perf_hooks.performance.eventLoopUtilization
+        }
       }
 
       expect(hrTime(performance)).toEqual({
