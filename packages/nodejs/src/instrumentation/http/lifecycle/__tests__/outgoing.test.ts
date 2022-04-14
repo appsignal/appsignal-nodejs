@@ -62,7 +62,7 @@ describe("HTTP outgoing requests", () => {
     expect(lastSpan.toObject()).toMatchObject({
       attributes: { "appsignal:category": "request.http", method: "GET" },
       error: null,
-      name: "GET http://localhost",
+      name: "GET http://example.com",
       sample_data: {},
       closed: true
     })

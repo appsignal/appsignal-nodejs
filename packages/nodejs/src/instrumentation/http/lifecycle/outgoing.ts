@@ -40,7 +40,7 @@ function optionsToOriginString(
   } else {
     // is a `RequestOptions` object
     protocol = options.protocol ?? protocol
-    hostname = options.hostname ?? hostname
+    hostname = options.hostname ?? options.host ?? hostname
   }
 
   return `${protocol}//${hostname}`
