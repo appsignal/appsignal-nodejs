@@ -79,6 +79,7 @@ build/
 /ext/appsignal.version
 /ext/libappsignal.a
 /ext/libappsignal.dylib
+/ext/libappsignal.so
 
 # Agent archives
 packages/nodejs/ext/*.tar.gz
