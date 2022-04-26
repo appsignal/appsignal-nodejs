@@ -135,36 +135,6 @@ export class BaseClient implements Client {
     return this.#tracer
   }
 
-  /*
-   * Import an OpenTelemetry span
-   */
-  public importOpenTelemetrySpan(
-    spanId: string,
-    parentSpanId: string,
-    traceId: string,
-    startTimeSec: number,
-    startTimeNsec: number,
-    endTimeSec: number,
-    endTimeNsec: number,
-    name: string,
-    attributes: HashMap<any>,
-    instrumentationLibraryName: string
-  ): null {
-    this.extension.importOpenTelemetrySpan(
-      spanId,
-      parentSpanId,
-      traceId,
-      startTimeSec,
-      startTimeNsec,
-      endTimeSec,
-      endTimeNsec,
-      name,
-      attributes,
-      instrumentationLibraryName
-    )
-    return null
-  }
-
   /**
    * Returns the current `Metrics` object.
    *

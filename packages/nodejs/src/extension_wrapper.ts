@@ -25,6 +25,9 @@ try {
       },
       runningInContainer() {
         return
+      },
+      importOpenTelemetrySpan() {
+        return
       }
     }
   } as ExtensionWrapper

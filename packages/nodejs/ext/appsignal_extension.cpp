@@ -252,7 +252,7 @@ Napi::Value GetDataToJson(const Napi::CallbackInfo &info) {
 
 // SPAN API
 
-Napi::Value ImportOpentelemetrySpan(const Napi::CallbackInfo &info) {
+Napi::Value ImportOpenTelemetrySpan(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   // Span and trace ids
@@ -668,8 +668,8 @@ Napi::Object CreateExtensionObject(Napi::Env env, Napi::Object exports) {
                 Napi::Function::New(env, DiagnoseRaw));
   extension.Set(Napi::String::New(env, "runningInContainer"),
                 Napi::Function::New(env, RunningInContainer));
-  extension.Set(Napi::String::New(env, "importOpentelemetrySpan"),
-                Napi::Function::New(env, ImportOpentelemetrySpan));
+  extension.Set(Napi::String::New(env, "importOpenTelemetrySpan"),
+                Napi::Function::New(env, ImportOpenTelemetrySpan));
 
   return extension;
 }

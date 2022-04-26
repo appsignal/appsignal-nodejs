@@ -50,19 +50,6 @@ export interface Client {
    */
   tracer(): Tracer
 
-  importOpenTelemetrySpan(
-    spanId: string,
-    parentSpanId: string,
-    traceId: string,
-    startTimeSec: number,
-    startTimeNsec: number,
-    endTimeSec: number,
-    endTimeNsec: number,
-    name: string,
-    attributes: HashMap<any>,
-    instrumentationLibraryName: string
-  ): null
-
   /**
    * Returns the current `Metrics` object.
    *
