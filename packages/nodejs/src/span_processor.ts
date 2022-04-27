@@ -4,6 +4,7 @@ import {
   ReadableSpan
 } from "./interfaces/span_processor"
 import { BaseClient as Client } from "./client"
+import { NoopSpan } from "./noops"
 
 export class SpanProcessor implements OpenTelemetrySpanProcessor {
   client: Client
@@ -22,18 +23,20 @@ export class SpanProcessor implements OpenTelemetrySpanProcessor {
   onEnd(span: ReadableSpan, _parentContext: SpanContext): void {
     const appsignalSpan = this.client.tracer().currentSpan()
 
-    this.client.extension.importOpenTelemetrySpan(
-      span.spanContext().spanId,
-      appsignalSpan.spanId,
-      appsignalSpan.traceId,
-      span.startTime[0],
-      span.startTime[1],
-      span.endTime[0],
-      span.endTime[1],
-      span.name,
-      span.attributes,
-      span.instrumentationLibrary.name
-    )
+    if (!(appsignalSpan instanceof NoopSpan)) {
+      this.client.extension.importOpenTelemetrySpan(
+        span.spanContext().spanId,
+        appsignalSpan.spanId,
+        appsignalSpan.traceId,
+        span.startTime[0],
+        span.startTime[1],
+        span.endTime[0],
+        span.endTime[1],
+        span.name,
+        span.attributes,
+        span.instrumentationLibrary.name
+      )
+    }
   }
 
   shutdown(): Promise<void> {
