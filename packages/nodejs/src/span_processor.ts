@@ -1,15 +1,15 @@
-import { Span, SpanContext } from "@opentelemetry/api"
+import {Span, SpanContext} from "@opentelemetry/api"
 import {
   OpenTelemetrySpanProcessor,
   ReadableSpan
 } from "./interfaces/span_processor"
-import { BaseClient as Client } from "./client"
-import { NoopSpan } from "./noops"
+import {BaseClient} from "./client"
+import {NoopSpan} from "./noops"
 
 export class SpanProcessor implements OpenTelemetrySpanProcessor {
-  client: Client
+  client: BaseClient
 
-  constructor(client: Client) {
+  constructor(client: BaseClient) {
     this.client = client
   }
 

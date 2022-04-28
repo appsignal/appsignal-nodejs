@@ -1,17 +1,17 @@
-import { Client, Metrics, Plugin, Tracer, AppsignalOptions } from "./interfaces"
+import {Client, Metrics, Plugin, Tracer, AppsignalOptions} from "./interfaces"
 
-import { Data } from "./internal/data"
-import { HashMap } from "@appsignal/types"
-import { Extension } from "./extension"
-import { Configuration } from "./config"
-import { BaseTracer } from "./tracer"
-import { BaseMetrics } from "./metrics"
-import { Logger } from "./logger"
-import { NoopTracer, NoopMetrics } from "./noops"
-import { Instrumentation } from "./instrument"
-import { initCorePlugins, initCoreProbes } from "./bootstrap"
-import { demo } from "./demo"
-import { VERSION } from "./version"
+import {Data} from "./internal/data"
+import {HashMap} from "@appsignal/types"
+import {Extension} from "./extension"
+import {Configuration} from "./config"
+import {BaseTracer} from "./tracer"
+import {BaseMetrics} from "./metrics"
+import {Logger} from "./logger"
+import {NoopTracer, NoopMetrics} from "./noops"
+import {Instrumentation} from "./instrument"
+import {initCorePlugins, initCoreProbes} from "./bootstrap"
+import {demo} from "./demo"
+import {VERSION} from "./version"
 
 /**
  * AppSignal for Node.js's main class.
@@ -57,7 +57,7 @@ export class BaseClient implements Client {
    * Creates a new instance of the `Appsignal` object
    */
   constructor(options: Partial<AppsignalOptions> = {}) {
-    const { ignoreInstrumentation } = options
+    const {ignoreInstrumentation} = options
 
     this.config = new Configuration(options)
     this.extension = new Extension()
@@ -75,7 +75,7 @@ export class BaseClient implements Client {
 
     this.instrumentation = new Instrumentation(this.tracer(), this.metrics())
 
-    initCorePlugins(this.instrumentation, { ignoreInstrumentation })
+    initCorePlugins(this.instrumentation, {ignoreInstrumentation})
     initCoreProbes(this.metrics())
   }
 
