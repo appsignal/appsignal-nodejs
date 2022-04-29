@@ -1,5 +1,16 @@
 # AppSignal for Node.js Changelog
 
+## 2.3.5
+
+### Changed
+
+- [fc9f2fd](https://github.com/appsignal/appsignal-nodejs/commit/fc9f2fd1936ed8abf0dee8e419d4d7eaa32efb03) patch - Use the Node.js performance module as high-resolution timer for span creation and close times. This provides more accurate times and improves compatibility with other systems in the future.
+
+### Fixed
+
+- [c2931af](https://github.com/appsignal/appsignal-nodejs/commit/c2931af6f66e8036c179e9e1f67153321d897414) patch - When instrumenting an outgoing HTTP request, read the `host` property from the request options if the `hostname` property is not present. This fixes a bug where outgoing HTTP request hosts would be shown as `http://localhost`.
+- [4c57751](https://github.com/appsignal/appsignal-nodejs/commit/4c57751afce5abf0e771ee21c858ce30e60760f9) patch - Fix error on Microsoft Windows machines on install. The AppSignal extension still won't install on Windows, but now it won't cause an error while checking a development mode condition if it should build the TypeScript package.
+
 ## 2.3.4
 
 ### Changed
