@@ -4,7 +4,7 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
   agent:
     machine:
       type: e1-standard-2
-      os_image: ubuntu1804
+      os_image: ubuntu2004
   auto_cancel:
     running:
       when: branch != 'main' AND branch != 'develop'
@@ -51,10 +51,6 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
             - name: NODE_VERSION
               value: "16"
           commands:
-            # Configure the host to use GCC 8.3 for Node.js 16. This is the minimal
-            # required version for Node.js 16, and the extension won't compile
-            # without it.
-            - sem-version c 8
             - cache restore
             - mono bootstrap --ci
             - cache store
@@ -70,12 +66,8 @@ matrix:
         - ""
 
   nodejs:
-    - nodejs: "17"
-      setup: 
-        # Configure the host to use GCC 8.3 for Node.js 16 and above. This
-        # is the minimal required version for Node.js 16 and above, and the
-        # extension won't compile without it.
-        - &gcc8 sem-version c 8
+    - nodejs: "18"
+      setup:
         # Use NPM version 8.5.3 to work around a bug when using NPM 8.5.4 or
         # higher, where commands that are ran at the root of the workspace
         # do not trigger lifecycle hooks for the workspace packages.
@@ -89,14 +81,21 @@ matrix:
         # https://github.com/nodejs/node/issues/40455
         - name: NODE_OPTIONS
           value: "--openssl-legacy-provider"
+    - nodejs: "17"
+      setup:
+        - *npm853
+      env_vars:
+        # Set `NODE_OPTIONS` to `--openssl-legacy-provider`, as a workaround
+        # for this `webpack` bug affecting the `@appsignal/nextjs` tests
+        # when running on Node 17:
+        # https://github.com/webpack/webpack/issues/14532
+        # https://github.com/nodejs/node/issues/40455
+        - name: NODE_OPTIONS
+          value: "--openssl-legacy-provider"
     - nodejs: "16"
       setup:
-        - *gcc8
         - *npm853
     - nodejs: "14"
-      setup:
-        - *npm853
-    - nodejs: "12"
       setup:
         - *npm853
   packages:
