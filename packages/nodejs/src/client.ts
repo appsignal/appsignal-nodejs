@@ -1,7 +1,5 @@
 import { Client, Metrics, Plugin, Tracer, AppsignalOptions } from "./interfaces"
 
-import { Data } from "./internal/data"
-import { HashMap } from "@appsignal/types"
 import { Extension } from "./extension"
 import { Configuration } from "./config"
 import { BaseTracer } from "./tracer"

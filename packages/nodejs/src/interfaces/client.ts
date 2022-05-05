@@ -1,4 +1,3 @@
-import { HashMap } from "@appsignal/types"
 import { Tracer } from "./tracer"
 import { Metrics } from "./metrics"
 import { Plugin } from "./plugin"
