@@ -34,8 +34,20 @@ export function expressMiddleware(appsignal: Client): RequestHandler {
       res.end = function (this: Response, ...args: any) {
         res.end = originalEnd
 
-        const { method = "GET", params = {}, query = {}, headers } = req
+        const {
+          method = "GET",
+          params = {},
+          query = {},
+          body = {},
+          headers
+        } = req
         const filteredHeaders = filterHeaders(headers, appsignal)
+        const objectBody =
+          body instanceof Object &&
+          Object.keys(body).length > 0 &&
+          !(body instanceof Buffer)
+            ? { body: body }
+            : {}
 
         // if there is no error passed to `next()`, the span name will
         // be updated to match the current path
@@ -45,7 +57,7 @@ export function expressMiddleware(appsignal: Client): RequestHandler {
           span.setName(`${method} ${baseUrl}${req.route.path}`)
         }
 
-        span.setSampleData("params", { ...params, ...query })
+        span.setSampleData("params", { ...params, ...query, ...objectBody })
         span.setSampleData("environment", filteredHeaders)
 
         return res.end.apply(this, args)
