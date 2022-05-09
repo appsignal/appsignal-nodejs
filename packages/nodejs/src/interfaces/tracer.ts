@@ -21,6 +21,13 @@ export interface Tracer {
   createSpan(options?: Partial<SpanOptions>, context?: SpanContext): Span
 
   /**
+   * Creates a new `Span` instance that is always the new RootSpan in the current
+   * async context. If a previous RootSpan existed, it's ignored from this point on.
+   * Make sure it's closed beforehand or handled by another part of the app.
+   */
+  createRootSpan(options?: Partial<SpanOptions>): Span
+
+  /**
    * Returns the current Span.
    *
    * If there is no current Span available, `undefined` is returned.

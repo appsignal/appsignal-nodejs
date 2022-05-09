@@ -93,18 +93,6 @@ describe("ScopeManager", () => {
       expect(scopeManager.root()).toBe(span)
       expect(scopeManager.active()).toBe(span)
     })
-
-    describe("when there is an active span", () => {
-      it("does not set the active span for the current process", () => {
-        const rootSpan = new RootSpan()
-        const childSpan = new ChildSpan(rootSpan)
-
-        scopeManager.withContext(childSpan, () => {
-          scopeManager.setRoot(rootSpan)
-          expect(scopeManager.active()).toBe(childSpan)
-        })
-      })
-    })
   })
 
   describe(".withContext()", () => {

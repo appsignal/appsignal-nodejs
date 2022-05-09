@@ -43,7 +43,7 @@ function incomingRequest(
     }
 
     const rootSpan = tracer
-      .createSpan()
+      .createRootSpan()
       /**
        * For our processor to work, root `Span`s must have a groupable, non-dynamic
        * name to be easily grouped into performance samples.

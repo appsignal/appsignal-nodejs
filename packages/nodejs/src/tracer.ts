@@ -44,12 +44,16 @@ export class BaseTracer implements Tracer {
     if (spanOrContext) {
       return new ChildSpan(spanOrContext, options)
     } else if (activeRootSpan instanceof NoopSpan) {
-      const rootSpan = new RootSpan(options)
-      this.#scopeManager.setRoot(rootSpan)
-      return rootSpan
+      return this.createRootSpan(options)
     } else {
       return new ChildSpan(activeRootSpan, options)
     }
+  }
+
+  public createRootSpan(options?: Partial<SpanOptions>): Span {
+    const rootSpan = new RootSpan(options)
+    this.#scopeManager.setRoot(rootSpan)
+    return rootSpan
   }
 
   /**
