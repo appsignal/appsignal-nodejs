@@ -41,7 +41,7 @@ export class BaseTracer implements Tracer {
   ): Span {
     const activeRootSpan = this.rootSpan()
 
-    if (spanOrContext) {
+    if (spanOrContext && !(spanOrContext instanceof NoopSpan)) {
       return new ChildSpan(spanOrContext, options)
     } else if (activeRootSpan instanceof NoopSpan) {
       const rootSpan = new RootSpan(options)

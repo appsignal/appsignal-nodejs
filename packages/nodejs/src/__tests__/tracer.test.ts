@@ -1,5 +1,6 @@
 import { BaseTracer as Tracer } from "../tracer"
 import { RootSpan, ChildSpan } from "../span"
+import { NoopSpan } from "../noops"
 
 describe("Tracer", () => {
   const name = "test"
@@ -11,29 +12,69 @@ describe("Tracer", () => {
   })
 
   describe(".createSpan()", () => {
-    it("assigns the spans properly", () => {
-      const rootSpan = tracer.createSpan().setName("rootSpan")
-      const rootSpanData = rootSpan.toObject()
+    describe("with no arguments", () => {
+      it("creates a root span when there is no previous root span", () => {
+        const rootSpan = tracer.createSpan().setName("rootSpan")
+        const rootSpanData = rootSpan.toObject()
 
-      expect(rootSpan).toBeInstanceOf(RootSpan)
-      expect(rootSpanData.parent_span_id).toEqual("")
-      expect(rootSpanData.name).toEqual("rootSpan")
+        expect(rootSpan).toBeInstanceOf(RootSpan)
+        expect(rootSpanData.parent_span_id).toEqual("")
+        expect(rootSpanData.name).toEqual("rootSpan")
+      })
 
-      const childSpan = tracer.createSpan().setName("childSpan")
-      const childSpanData = childSpan.toObject()
+      it("creates a child span when a previous root span exists", () => {
+        const rootSpan = tracer.createSpan().setName("rootSpan")
+        const rootSpanData = rootSpan.toObject()
 
-      expect(childSpan).toBeInstanceOf(ChildSpan)
-      expect(childSpanData.parent_span_id).toEqual(rootSpanData.span_id)
-      expect(childSpanData.name).toEqual("childSpan")
+        const childSpan = tracer.createSpan().setName("childSpan")
+        const childSpanData = childSpan.toObject()
 
-      const spanFromSpan = tracer
-        .createSpan(undefined, childSpan)
-        .setName("spanFromSpan")
-      const spanFromSpanData = spanFromSpan.toObject()
+        expect(childSpan).toBeInstanceOf(ChildSpan)
+        expect(childSpanData.parent_span_id).toEqual(rootSpanData.span_id)
+        expect(childSpanData.name).toEqual("childSpan")
+      })
+    })
 
-      expect(spanFromSpan).toBeInstanceOf(ChildSpan)
-      expect(spanFromSpanData.parent_span_id).toEqual(childSpanData.span_id)
-      expect(spanFromSpanData.name).toEqual("spanFromSpan")
+    describe("from an existing span", () => {
+      it("creates a child span of the given span", () => {
+        // the root span is not created with `tracer.createSpan()`
+        // so that the tracer doesn't already know about it
+        const rootSpan = new RootSpan().setName("rootSpan")
+        const rootSpanData = rootSpan.toObject()
+
+        const childSpan = tracer
+          .createSpan(undefined, rootSpan)
+          .setName("childSpan")
+        const childSpanData = childSpan.toObject()
+
+        expect(childSpan).toBeInstanceOf(ChildSpan)
+        expect(childSpanData.parent_span_id).toEqual(rootSpanData.span_id)
+        expect(childSpanData.name).toEqual("childSpan")
+      })
+    })
+
+    describe("from a NoopSpan", () => {
+      it("behaves as if no span was passed", () => {
+        const noopSpan = new NoopSpan()
+
+        const rootSpan = tracer
+          .createSpan(undefined, noopSpan)
+          .setName("rootSpan")
+        const rootSpanData = rootSpan.toObject()
+
+        expect(rootSpan).toBeInstanceOf(RootSpan)
+        expect(rootSpanData.parent_span_id).toEqual("")
+        expect(rootSpanData.name).toEqual("rootSpan")
+
+        const childSpan = tracer
+          .createSpan(undefined, noopSpan)
+          .setName("childSpan")
+        const childSpanData = childSpan.toObject()
+
+        expect(childSpan).toBeInstanceOf(ChildSpan)
+        expect(childSpanData.parent_span_id).toEqual(rootSpanData.span_id)
+        expect(childSpanData.name).toEqual("childSpan")
+      })
     })
   })
 
