@@ -117,9 +117,7 @@ export class ScopeManager {
   public setRoot(rootSpan: Span) {
     const uid = asyncHooks.executionAsyncId()
     this.#roots.set(uid, rootSpan)
-    if (!this.#scopes.has(uid)) {
-      this.#scopes.set(uid, rootSpan)
-    }
+    this.#scopes.set(uid, rootSpan)
   }
 
   /*

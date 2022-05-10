@@ -14,6 +14,10 @@ export class NoopTracer implements Tracer {
     return new NoopSpan()
   }
 
+  public createRootSpan(_options?: Partial<SpanOptions>): Span {
+    return new NoopSpan()
+  }
+
   public currentSpan(): Span {
     return new NoopSpan()
   }

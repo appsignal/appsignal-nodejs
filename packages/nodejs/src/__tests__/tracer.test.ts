@@ -37,6 +37,22 @@ describe("Tracer", () => {
     })
   })
 
+  describe(".createRootSpan()", () => {
+    it("creates a new span and assigns it as a root span", () => {
+      const rootSpan1 = tracer.createRootSpan()
+      expect(rootSpan1).toBeInstanceOf(RootSpan)
+      rootSpan1.close()
+      expect(tracer.rootSpan()).toEqual(rootSpan1)
+      expect(tracer.currentSpan()).toEqual(rootSpan1)
+
+      const rootSpan2 = tracer.createRootSpan()
+      expect(rootSpan2).toBeInstanceOf(RootSpan)
+      rootSpan2.close()
+      expect(tracer.rootSpan()).toEqual(rootSpan2)
+      expect(tracer.currentSpan()).toEqual(rootSpan2)
+    })
+  })
+
   describe(".sendError()", () => {
     const err = new Error("FooBarError")
 
