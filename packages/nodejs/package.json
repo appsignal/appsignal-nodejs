@@ -30,7 +30,8 @@
     "@types/semver": "*",
     "nock": "^13.2.2",
     "pg": "*",
-    "redis": "*"
+    "redis": "*",
+    "@opentelemetry/sdk-trace-base": "^1.2.0"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

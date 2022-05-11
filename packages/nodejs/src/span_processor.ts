@@ -1,7 +1,8 @@
-import { Span, SpanContext } from "@opentelemetry/api"
+import { Context } from "@opentelemetry/api"
 import {
-  OpenTelemetrySpanProcessor,
-  ReadableSpan
+  Span,
+  ReadableSpan,
+  SpanProcessor as OpenTelemetrySpanProcessor
 } from "./interfaces/span_processor"
 import { BaseClient as Client } from "./client"
 import { NoopSpan } from "./noops"
@@ -18,9 +19,9 @@ export class SpanProcessor implements OpenTelemetrySpanProcessor {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onStart(_span: Span, _parentContext: SpanContext): void {}
+  onStart(_span: Span, _parentContext: Context): void {}
 
-  onEnd(span: ReadableSpan, _parentContext: SpanContext): void {
+  onEnd(span: ReadableSpan): void {
     const appsignalSpan = this.client.tracer().currentSpan()
 
     if (!(appsignalSpan instanceof NoopSpan)) {
