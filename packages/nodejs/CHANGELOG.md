@@ -1,5 +1,11 @@
 # AppSignal for Node.js Changelog
 
+## 2.3.6
+
+### Added
+
+- [33f7864](https://github.com/appsignal/appsignal-nodejs/commit/33f78644295bca0a8395b7600798506498cd9229) patch - Add the `createRootSpan` function to the Tracer to allow explicit creation of RootSpans even if another RootSpan already exists and is tracked as the current RootSpan. Make sure to not forget about the previous RootSpan, and close it as well at some point when using this function.
+
 ## 2.3.5
 
 ### Changed

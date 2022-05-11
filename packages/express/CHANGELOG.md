@@ -1,5 +1,16 @@
 
 
+## 1.0.30
+
+### Changed
+
+- patch - Update @appsignal/nodejs dependency to 2.3.6.
+
+### Fixed
+
+- [1aaf0e3](https://github.com/appsignal/appsignal-nodejs/commit/1aaf0e38bc0a4fd09899652d68e0db70a799cf05) patch - HTTP Post requests were not sending the body params to AppSignal. They are now properly sent to the
+  application.
+
 ## 1.0.29
 
 ### Changed
