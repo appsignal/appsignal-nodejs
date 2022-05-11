@@ -7,4 +7,5 @@
  */
 
 export { BaseClient as Appsignal } from "./client"
+export { SpanProcessor } from "./span_processor"
 export * from "./interfaces"

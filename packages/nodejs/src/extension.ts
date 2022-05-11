@@ -1,4 +1,6 @@
 import { extension, isLoaded as extensionLoaded } from "./extension_wrapper"
+import { Data } from "./internal/data"
+import { HashMap } from "@appsignal/types"
 
 /**
  * The public interface for the extension.
@@ -24,6 +26,32 @@ export class Extension {
    */
   public stop() {
     extension.stop()
+  }
+
+  public importOpenTelemetrySpan(
+    spanId: string,
+    parentSpanId: string,
+    traceId: string,
+    startTimeSec: number,
+    startTimeNsec: number,
+    endTimeSec: number,
+    endTimeNsec: number,
+    name: string,
+    attributes: HashMap<any>,
+    instrumentationLibraryName: string
+  ): void {
+    extension.importOpenTelemetrySpan(
+      spanId,
+      parentSpanId,
+      traceId,
+      startTimeSec,
+      startTimeNsec,
+      endTimeSec,
+      endTimeNsec,
+      name,
+      Data.generate(attributes),
+      instrumentationLibraryName
+    )
   }
 
   public diagnose(): object {

@@ -123,7 +123,8 @@ export type SpanData = {
   namespace?: string
   parent_span_id?: string
   span_id?: string
-  start_time?: number
+  start_time_seconds?: number
+  start_time_nanoseconds?: number
   trace_id?: string
   error?: { name: string; message: string; backtrace: Array<string> }
   attributes?: { [key: string]: string }
