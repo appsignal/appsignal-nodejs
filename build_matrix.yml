@@ -22,6 +22,7 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
       commands:
         - checkout
         - "[ -n \"$NODE_VERSION\" ] && sem-version node $NODE_VERSION || echo Skipping Node.js install"
+        -  npm i -g npm@latest
 
         # Mono setup
         - script/setup
@@ -49,7 +50,7 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
         - name: Node.js Lint (Prettier)
           env_vars:
             - name: NODE_VERSION
-              value: "16"
+              value: "18"
           commands:
             - cache restore
             - mono bootstrap --ci
@@ -67,12 +68,6 @@ matrix:
 
   nodejs:
     - nodejs: "18"
-      setup:
-        # Use NPM version 8.5.3 to work around a bug when using NPM 8.5.4 or
-        # higher, where commands that are ran at the root of the workspace
-        # do not trigger lifecycle hooks for the workspace packages.
-        # https://github.com/npm/cli/issues/4552
-        - &npm853 npm i -g npm@8.5.3
       env_vars:
         # Set `NODE_OPTIONS` to `--openssl-legacy-provider`, as a workaround
         # for this `webpack` bug affecting the `@appsignal/nextjs` tests
@@ -82,8 +77,6 @@ matrix:
         - name: NODE_OPTIONS
           value: "--openssl-legacy-provider"
     - nodejs: "17"
-      setup:
-        - *npm853
       env_vars:
         # Set `NODE_OPTIONS` to `--openssl-legacy-provider`, as a workaround
         # for this `webpack` bug affecting the `@appsignal/nextjs` tests
@@ -93,11 +86,7 @@ matrix:
         - name: NODE_OPTIONS
           value: "--openssl-legacy-provider"
     - nodejs: "16"
-      setup:
-        - *npm853
     - nodejs: "14"
-      setup:
-        - *npm853
   packages:
     - package: "@appsignal/nodejs"
       path: "packages/nodejs"

@@ -27,6 +27,7 @@ global_job_config:
     - checkout
     - '[ -n "$NODE_VERSION" ] && sem-version node $NODE_VERSION || echo Skipping Node.js
       install'
+    - npm i -g npm@latest
     - script/setup
     - source ~/.bashrc
 blocks:
@@ -52,7 +53,7 @@ blocks:
     - name: Node.js Lint (Prettier)
       env_vars:
       - name: NODE_VERSION
-        value: '16'
+        value: '18'
       commands:
       - cache restore
       - mono bootstrap --ci
@@ -73,7 +74,6 @@ blocks:
       value: '18'
     prologue:
       commands:
-      - npm i -g npm@8.5.3
       - cache restore
       - mono bootstrap --ci
       - cache store
@@ -101,7 +101,6 @@ blocks:
       value: 'false'
     prologue:
       commands:
-      - npm i -g npm@8.5.3
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
@@ -180,7 +179,6 @@ blocks:
       value: '17'
     prologue:
       commands:
-      - npm i -g npm@8.5.3
       - cache restore
       - mono bootstrap --ci
       - cache store
@@ -205,7 +203,6 @@ blocks:
       value: 'false'
     prologue:
       commands:
-      - npm i -g npm@8.5.3
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
@@ -281,7 +278,6 @@ blocks:
       value: '16'
     prologue:
       commands:
-      - npm i -g npm@8.5.3
       - cache restore
       - mono bootstrap --ci
       - cache store
@@ -305,7 +301,6 @@ blocks:
       value: 'false'
     prologue:
       commands:
-      - npm i -g npm@8.5.3
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
@@ -381,7 +376,6 @@ blocks:
       value: '14'
     prologue:
       commands:
-      - npm i -g npm@8.5.3
       - cache restore
       - mono bootstrap --ci
       - cache store
@@ -405,7 +399,6 @@ blocks:
       value: 'false'
     prologue:
       commands:
-      - npm i -g npm@8.5.3
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
