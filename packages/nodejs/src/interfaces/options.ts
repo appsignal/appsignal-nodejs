@@ -18,6 +18,10 @@ export interface AppsignalOptions {
   ignoreErrors: string[]
   ignoreInstrumentation: string[]
   ignoreNamespaces: string[]
+  instrumentHttp: boolean
+  instrumentHttps: boolean
+  instrumentPg: boolean
+  instrumentRedis: boolean
   log: string
   logPath: string
   name: string

@@ -127,6 +127,10 @@ export class Configuration {
       ignoreActions: [],
       ignoreErrors: [],
       ignoreNamespaces: [],
+      instrumentHttp: true,
+      instrumentHttps: true,
+      instrumentPg: true,
+      instrumentRedis: true,
       log: "file",
       requestHeaders: [
         "accept",

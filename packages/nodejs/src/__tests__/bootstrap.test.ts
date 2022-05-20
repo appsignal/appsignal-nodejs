@@ -9,12 +9,26 @@ describe("Bootstrap", () => {
     } as unknown) as Instrumentation
 
     it("bootstraps the core instumentation plugins", () => {
-      initCorePlugins(mock, { ignoreInstrumentation: undefined })
+      initCorePlugins(mock, {
+        instrumentationConfig: {
+          http: true,
+          https: true,
+          pg: true,
+          redis: true
+        }
+      })
       expect(mock.load).toHaveBeenCalledTimes(4)
     })
 
     it("can ignore a core instumentation plugin", () => {
-      initCorePlugins(mock, { ignoreInstrumentation: ["http"] })
+      initCorePlugins(mock, {
+        instrumentationConfig: {
+          http: false,
+          https: true,
+          pg: true,
+          redis: true
+        }
+      })
 
       expect(mock.load).toHaveBeenCalledTimes(3)
       expect((mock.load as any).mock.calls.map((m: any) => m[0])).not.toContain(
