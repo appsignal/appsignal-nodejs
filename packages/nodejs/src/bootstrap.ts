@@ -17,7 +17,7 @@ export function initCorePlugins(
   instrumentation: Instrumentation,
   {
     instrumentationConfig
-  }: { instrumentationConfig?: { [key: string]: boolean } }
+  }: { instrumentationConfig?: { [key: string]: boolean | undefined } }
 ) {
   let plugins: any[] = [httpPlugin, httpsPlugin, redisPlugin, pgPlugin]
 

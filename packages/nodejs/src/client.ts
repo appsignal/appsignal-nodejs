@@ -74,10 +74,10 @@ export class BaseClient implements Client {
     const { instrumentRedis, instrumentHttp, instrumentPg } = this.config.data
     initCorePlugins(this.instrumentation, {
       instrumentationConfig: {
-        http: instrumentHttp || true,
-        https: instrumentHttp || true,
-        pg: instrumentPg || true,
-        redis: instrumentRedis || true
+        http: instrumentHttp,
+        https: instrumentHttp,
+        pg: instrumentPg,
+        redis: instrumentRedis
       }
     })
     initCoreProbes(this.metrics())

@@ -25,7 +25,7 @@ describe("Bootstrap", () => {
         instrumentationConfig: {
           http: false,
           https: true,
-          pg: true,
+          pg: undefined,
           redis: true
         }
       })
