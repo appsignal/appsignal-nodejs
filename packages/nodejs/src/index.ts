@@ -8,4 +8,6 @@
 
 export { BaseClient as Appsignal } from "./client"
 export { SpanProcessor } from "./span_processor"
+export { RedisDbStatementSerializer } from "./instrumentation/redis/opentelemetry"
+export { RedisDbStatementSerializer as IORedisDbStatementSerializer } from "./instrumentation/redis/opentelemetry"
 export * from "./interfaces"
