@@ -19,7 +19,6 @@ export interface AppsignalOptions {
   ignoreInstrumentation: string[]
   ignoreNamespaces: string[]
   instrumentHttp: boolean
-  instrumentHttps: boolean
   instrumentPg: boolean
   instrumentRedis: boolean
   log: string

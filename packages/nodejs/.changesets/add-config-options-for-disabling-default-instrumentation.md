@@ -8,7 +8,6 @@ Add config options for disabling default instrumentation like HTTP, HTTPS, Postg
 The following configuration options have been added:
 
 - `instrumentHttp`
-- `instrumentHttps`
 - `instrumentPg`
 - `instrumentRedis`
 

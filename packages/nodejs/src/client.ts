@@ -55,13 +55,7 @@ export class BaseClient implements Client {
    * Creates a new instance of the `Appsignal` object
    */
   constructor(options: Partial<AppsignalOptions> = {}) {
-    const {
-      instrumentRedis,
-      instrumentHttp,
-      instrumentHttps,
-      instrumentPg
-    } = options
-
+    const { instrumentRedis, instrumentHttp, instrumentPg } = options
     this.config = new Configuration(options)
     this.extension = new Extension()
     this.logger = this.setUpLogger()
@@ -81,7 +75,7 @@ export class BaseClient implements Client {
     initCorePlugins(this.instrumentation, {
       instrumentationConfig: {
         http: instrumentHttp || true,
-        https: instrumentHttps || true,
+        https: instrumentHttp || true,
         pg: instrumentPg || true,
         redis: instrumentRedis || true
       }
