@@ -15,14 +15,16 @@ import * as gcProbe from "./probes/v8"
  */
 export function initCorePlugins(
   instrumentation: Instrumentation,
-  { ignoreInstrumentation }: { ignoreInstrumentation?: string[] }
+  {
+    instrumentationConfig
+  }: { instrumentationConfig?: { [key: string]: boolean | undefined } }
 ) {
   let plugins: any[] = [httpPlugin, httpsPlugin, redisPlugin, pgPlugin]
 
-  // cull ignored plugins
-  if (ignoreInstrumentation && Array.isArray(ignoreInstrumentation)) {
+  // Do not load disabled instrumentation plugins
+  if (instrumentationConfig) {
     plugins = plugins.filter(
-      p => !ignoreInstrumentation.includes(p.PLUGIN_NAME)
+      plugin => instrumentationConfig[plugin.PLUGIN_NAME] !== false
     )
   }
 
