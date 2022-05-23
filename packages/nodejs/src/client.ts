@@ -55,7 +55,6 @@ export class BaseClient implements Client {
    * Creates a new instance of the `Appsignal` object
    */
   constructor(options: Partial<AppsignalOptions> = {}) {
-    const { instrumentRedis, instrumentHttp, instrumentPg } = options
     this.config = new Configuration(options)
     this.extension = new Extension()
     this.logger = this.setUpLogger()
@@ -72,6 +71,7 @@ export class BaseClient implements Client {
 
     this.instrumentation = new Instrumentation(this.tracer(), this.metrics())
 
+    const { instrumentRedis, instrumentHttp, instrumentPg } = this.config.data
     initCorePlugins(this.instrumentation, {
       instrumentationConfig: {
         http: instrumentHttp || true,
