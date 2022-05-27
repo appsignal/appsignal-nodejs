@@ -110,7 +110,7 @@ export class ScopeManager {
     const span = this.#scopes.get(uid)
     // Perform check if the span is not closed. A span that has been closed
     // can't be considered an active span anymore.
-    if (span && span.isOpen()) {
+    if (span && span.open) {
       // Span exists and is still open. These conditions make it a valid, still
       // active, span.
       return span
@@ -138,7 +138,7 @@ export class ScopeManager {
     const span = this.#roots.get(uid)
     // Perform check if the span is not closed. A span that has been closed
     // can't be considered a root span anymore.
-    if (span && span.isOpen()) {
+    if (span && span.open) {
       // Span exists and is still open. These conditions make it a valid, still
       // root, span.
       return span

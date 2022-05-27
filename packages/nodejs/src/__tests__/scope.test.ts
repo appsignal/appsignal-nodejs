@@ -178,7 +178,7 @@ describe("ScopeManager", () => {
     it("when active span is still open, it returns the active span", () => {
       const root = new RootSpan({ namespace: "root" })
       scopeManager.setRoot(root)
-      expect(root.isOpen()).toBeTruthy()
+      expect(root.open).toBeTruthy()
 
       const span = scopeManager.active()
       expect(span).toBeDefined()
@@ -190,7 +190,7 @@ describe("ScopeManager", () => {
       const root = new RootSpan({ namespace: "root" })
       scopeManager.setRoot(root)
       root.close()
-      expect(root.isOpen()).toBeFalsy()
+      expect(root.open).toBeFalsy()
 
       const span = scopeManager.active()
       expect(span).toBeUndefined()

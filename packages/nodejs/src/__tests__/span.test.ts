@@ -10,7 +10,7 @@ describe("RootSpan", () => {
     const internal = span.toObject()
 
     expect(span).toBeInstanceOf(RootSpan)
-    expect(span.isOpen()).toBeTruthy()
+    expect(span.open).toBeTruthy()
     expect(internal.closed).toBeFalsy()
     expect(typeof internal.start_time_seconds).toBe("number")
     expect(typeof internal.start_time_nanoseconds).toBe("number")
@@ -144,7 +144,7 @@ describe("RootSpan", () => {
     const span = new RootSpan().close()
     const internal = span.toObject()
 
-    expect(span.isOpen()).toBeFalsy()
+    expect(span.open).toBeFalsy()
     expect(internal.closed).toBeTruthy()
   })
 })

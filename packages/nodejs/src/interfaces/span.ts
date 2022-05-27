@@ -111,7 +111,7 @@ export interface Span {
    *
    * A closed span can't be modified or fetched attributes from.
    */
-  isOpen(): boolean
+  open: boolean
 
   /**
    * Returns a SpanData object representing the internal Span in the extension.

@@ -49,7 +49,7 @@ export class NoopSpan implements Span {
     return this
   }
 
-  public isOpen(): boolean {
+  public get open(): boolean {
     return false
   }
 
