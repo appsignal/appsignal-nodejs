@@ -17,6 +17,11 @@ import { BaseClient } from "./client"
  */
 export class BaseSpan implements Span {
   protected _ref: unknown
+  private open: boolean
+
+  constructor() {
+    this.open = true
+  }
 
   /**
    * The current ID of the trace.
@@ -169,6 +174,7 @@ export class BaseSpan implements Span {
    * timestamp in milliseconds since the UNIX epoch.
    */
   public close(endTime?: number): this {
+    this.open = false
     if (endTime && typeof endTime === "number") {
       const { sec, nsec } = getAgentTimestamps(endTime)
       span.closeSpanWithTimestamp(this._ref, sec, nsec)
@@ -178,6 +184,15 @@ export class BaseSpan implements Span {
       span.closeSpanWithTimestamp(this._ref, sec, nsec)
       return this
     }
+  }
+
+  /**
+   * Returns if the span is still open or not.
+   *
+   * A closed span can't be modified or fetched attributes from.
+   */
+  public isOpen() {
+    return this.open
   }
 
   /**

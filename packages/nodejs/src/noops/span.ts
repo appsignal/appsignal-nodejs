@@ -49,6 +49,10 @@ export class NoopSpan implements Span {
     return this
   }
 
+  public isOpen(): boolean {
+    return false
+  }
+
   public toObject(): SpanData {
     return {}
   }

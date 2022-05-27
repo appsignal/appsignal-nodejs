@@ -107,6 +107,13 @@ export interface Span {
   close(endTime?: number): this
 
   /**
+   * Returns if the span is still open or not.
+   *
+   * A closed span can't be modified or fetched attributes from.
+   */
+  isOpen(): boolean
+
+  /**
    * Returns a SpanData object representing the internal Span in the extension.
    *
    * @private

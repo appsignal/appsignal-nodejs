@@ -174,6 +174,29 @@ describe("ScopeManager", () => {
     })
   })
 
+  describe(".active()", () => {
+    it("when active span is still open, it returns the active span", () => {
+      const root = new RootSpan({ namespace: "root" })
+      scopeManager.setRoot(root)
+      expect(root.isOpen()).toBeTruthy()
+
+      const span = scopeManager.active()
+      expect(span).toBeDefined()
+      expect(span?.traceId).toBeDefined()
+      expect(span?.toObject().namespace).toEqual("root")
+    })
+
+    it("when active span is closed, it returns undefined", () => {
+      const root = new RootSpan({ namespace: "root" })
+      scopeManager.setRoot(root)
+      root.close()
+      expect(root.isOpen()).toBeFalsy()
+
+      const span = scopeManager.active()
+      expect(span).toBeUndefined()
+    })
+  })
+
   // TODO: Add tests
   describe(".emitWithContext()", () => {})
 })
