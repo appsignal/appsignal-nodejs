@@ -105,16 +105,20 @@ matrix:
       variations:
         - name: "apollo-server@latest"
           packages:
+            apollo-server: "latest"
             apollo-server-plugin-base: "latest"
+        - name: "apollo-server@3.6.0"
+          packages:
+            apollo-server: "3.6.0"
+            apollo-server-plugin-base: "3.5.0"
+        - name: "apollo-server@3.5.0"
+          packages:
+            apollo-server: "3.5.0"
+            apollo-server-plugin-base: "3.4.0"
         - name: "apollo-server@3.4.0"
           packages:
-            apollo-server-plugin-base: "3.4.0"
-        - name: "apollo-server@3.3.0"
-          packages:
+            apollo-server: "3.4.0"
             apollo-server-plugin-base: "3.3.0"
-        - name: "apollo-server@3.2.0"
-          packages:
-            apollo-server-plugin-base: "3.2.0"
       extra_tests:
         integrations:
           - script/test_package_integration apollo-server
