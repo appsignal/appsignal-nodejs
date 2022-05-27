@@ -74,8 +74,7 @@ export class ScopeManager {
      * callback is called when a promise is resolved.
      */
     const destroy = (id: number) => {
-      this.#scopes.delete(id)
-      this.#roots.delete(id)
+      this.removeSpanForUid(id)
     }
 
     this.#asyncHook = asyncHooks.createHook({
@@ -118,8 +117,7 @@ export class ScopeManager {
     } else {
       // Clear any reference to this span in the scopes manager to avoid
       // confusion next time the active span is fetched.
-      this.#scopes.delete(uid)
-      this.#roots.delete(uid)
+      this.removeSpanForUid(uid)
     }
   }
 
@@ -147,9 +145,16 @@ export class ScopeManager {
     } else {
       // Clear any reference to this span in the scopes manager to avoid
       // confusion next time the root span is fetched.
-      this.#scopes.delete(uid)
-      this.#roots.delete(uid)
+      this.removeSpanForUid(uid)
     }
+  }
+
+  /*
+   * Remove the Span for the given executionAsyncId from all scopes.
+   */
+  private removeSpanForUid(uid: number) {
+    this.#scopes.delete(uid)
+    this.#roots.delete(uid)
   }
 
   /**
@@ -170,8 +175,7 @@ export class ScopeManager {
     } finally {
       // revert to the previous span
       if (oldScope === undefined) {
-        this.#scopes.delete(uid)
-        this.#roots.delete(uid)
+        this.removeSpanForUid(uid)
       } else {
         this.#scopes.set(uid, oldScope)
         this.#roots.set(uid, rootSpan)
