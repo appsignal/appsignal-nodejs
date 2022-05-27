@@ -119,6 +119,10 @@ blocks:
       commands:
       - script/install_test_example_packages apollo-server apollo-server@latest apollo-server-plugin-base@latest
       - script/test_package_integration apollo-server
+    - name: "@appsignal/apollo-server - apollo-server@3.8.1 - integrations"
+      commands:
+      - script/install_test_example_packages apollo-server apollo-server@3.8.1 apollo-server-plugin-base@3.6.0
+      - script/test_package_integration apollo-server
     - name: "@appsignal/apollo-server - apollo-server@3.6.0 - integrations"
       commands:
       - script/install_test_example_packages apollo-server apollo-server@3.6.0 apollo-server-plugin-base@3.5.0
@@ -126,10 +130,6 @@ blocks:
     - name: "@appsignal/apollo-server - apollo-server@3.5.0 - integrations"
       commands:
       - script/install_test_example_packages apollo-server apollo-server@3.5.0 apollo-server-plugin-base@3.4.0
-      - script/test_package_integration apollo-server
-    - name: "@appsignal/apollo-server - apollo-server@3.4.0 - integrations"
-      commands:
-      - script/install_test_example_packages apollo-server apollo-server@3.4.0 apollo-server-plugin-base@3.3.0
       - script/test_package_integration apollo-server
     - name: "@appsignal/express - express@latest - integrations"
       commands:
@@ -221,6 +221,10 @@ blocks:
       commands:
       - script/install_test_example_packages apollo-server apollo-server@latest apollo-server-plugin-base@latest
       - script/test_package_integration apollo-server
+    - name: "@appsignal/apollo-server - apollo-server@3.8.1 - integrations"
+      commands:
+      - script/install_test_example_packages apollo-server apollo-server@3.8.1 apollo-server-plugin-base@3.6.0
+      - script/test_package_integration apollo-server
     - name: "@appsignal/apollo-server - apollo-server@3.6.0 - integrations"
       commands:
       - script/install_test_example_packages apollo-server apollo-server@3.6.0 apollo-server-plugin-base@3.5.0
@@ -228,10 +232,6 @@ blocks:
     - name: "@appsignal/apollo-server - apollo-server@3.5.0 - integrations"
       commands:
       - script/install_test_example_packages apollo-server apollo-server@3.5.0 apollo-server-plugin-base@3.4.0
-      - script/test_package_integration apollo-server
-    - name: "@appsignal/apollo-server - apollo-server@3.4.0 - integrations"
-      commands:
-      - script/install_test_example_packages apollo-server apollo-server@3.4.0 apollo-server-plugin-base@3.3.0
       - script/test_package_integration apollo-server
     - name: "@appsignal/express - express@latest - integrations"
       commands:
@@ -319,6 +319,10 @@ blocks:
       commands:
       - script/install_test_example_packages apollo-server apollo-server@latest apollo-server-plugin-base@latest
       - script/test_package_integration apollo-server
+    - name: "@appsignal/apollo-server - apollo-server@3.8.1 - integrations"
+      commands:
+      - script/install_test_example_packages apollo-server apollo-server@3.8.1 apollo-server-plugin-base@3.6.0
+      - script/test_package_integration apollo-server
     - name: "@appsignal/apollo-server - apollo-server@3.6.0 - integrations"
       commands:
       - script/install_test_example_packages apollo-server apollo-server@3.6.0 apollo-server-plugin-base@3.5.0
@@ -326,10 +330,6 @@ blocks:
     - name: "@appsignal/apollo-server - apollo-server@3.5.0 - integrations"
       commands:
       - script/install_test_example_packages apollo-server apollo-server@3.5.0 apollo-server-plugin-base@3.4.0
-      - script/test_package_integration apollo-server
-    - name: "@appsignal/apollo-server - apollo-server@3.4.0 - integrations"
-      commands:
-      - script/install_test_example_packages apollo-server apollo-server@3.4.0 apollo-server-plugin-base@3.3.0
       - script/test_package_integration apollo-server
     - name: "@appsignal/express - express@latest - integrations"
       commands:
@@ -417,6 +417,10 @@ blocks:
       commands:
       - script/install_test_example_packages apollo-server apollo-server@latest apollo-server-plugin-base@latest
       - script/test_package_integration apollo-server
+    - name: "@appsignal/apollo-server - apollo-server@3.8.1 - integrations"
+      commands:
+      - script/install_test_example_packages apollo-server apollo-server@3.8.1 apollo-server-plugin-base@3.6.0
+      - script/test_package_integration apollo-server
     - name: "@appsignal/apollo-server - apollo-server@3.6.0 - integrations"
       commands:
       - script/install_test_example_packages apollo-server apollo-server@3.6.0 apollo-server-plugin-base@3.5.0
@@ -424,10 +428,6 @@ blocks:
     - name: "@appsignal/apollo-server - apollo-server@3.5.0 - integrations"
       commands:
       - script/install_test_example_packages apollo-server apollo-server@3.5.0 apollo-server-plugin-base@3.4.0
-      - script/test_package_integration apollo-server
-    - name: "@appsignal/apollo-server - apollo-server@3.4.0 - integrations"
-      commands:
-      - script/install_test_example_packages apollo-server apollo-server@3.4.0 apollo-server-plugin-base@3.3.0
       - script/test_package_integration apollo-server
     - name: "@appsignal/express - express@latest - integrations"
       commands:

@@ -107,6 +107,10 @@ matrix:
           packages:
             apollo-server: "latest"
             apollo-server-plugin-base: "latest"
+        - name: "apollo-server@3.8.1"
+          packages:
+            apollo-server: "3.8.1"
+            apollo-server-plugin-base: "3.6.0"
         - name: "apollo-server@3.6.0"
           packages:
             apollo-server: "3.6.0"
@@ -115,10 +119,6 @@ matrix:
           packages:
             apollo-server: "3.5.0"
             apollo-server-plugin-base: "3.4.0"
-        - name: "apollo-server@3.4.0"
-          packages:
-            apollo-server: "3.4.0"
-            apollo-server-plugin-base: "3.3.0"
       extra_tests:
         integrations:
           - script/test_package_integration apollo-server
