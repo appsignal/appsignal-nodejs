@@ -82,15 +82,15 @@ describe("Tracer", () => {
     it("creates a new span and assigns it as a root span", () => {
       const rootSpan1 = tracer.createRootSpan()
       expect(rootSpan1).toBeInstanceOf(RootSpan)
-      rootSpan1.close()
       expect(tracer.rootSpan()).toEqual(rootSpan1)
       expect(tracer.currentSpan()).toEqual(rootSpan1)
+      rootSpan1.close()
 
       const rootSpan2 = tracer.createRootSpan()
       expect(rootSpan2).toBeInstanceOf(RootSpan)
-      rootSpan2.close()
       expect(tracer.rootSpan()).toEqual(rootSpan2)
       expect(tracer.currentSpan()).toEqual(rootSpan2)
+      rootSpan2.close()
     })
   })
 

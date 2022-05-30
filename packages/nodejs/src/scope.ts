@@ -74,8 +74,7 @@ export class ScopeManager {
      * callback is called when a promise is resolved.
      */
     const destroy = (id: number) => {
-      this.#scopes.delete(id)
-      this.#roots.delete(id)
+      this.removeSpanForUid(id)
     }
 
     this.#asyncHook = asyncHooks.createHook({
@@ -108,7 +107,18 @@ export class ScopeManager {
    */
   public active(): Span | undefined {
     const uid = asyncHooks.executionAsyncId()
-    return this.#scopes.get(uid)
+    const span = this.#scopes.get(uid)
+    // Perform check if the span is not closed. A span that has been closed
+    // can't be considered an active span anymore.
+    if (span && span.open) {
+      // Span exists and is still open. These conditions make it a valid, still
+      // active, span.
+      return span
+    } else {
+      // Clear any reference to this span in the scopes manager to avoid
+      // confusion next time the active span is fetched.
+      this.removeSpanForUid(uid)
+    }
   }
 
   /**
@@ -125,7 +135,26 @@ export class ScopeManager {
    */
   public root(): Span | undefined {
     const uid = asyncHooks.executionAsyncId()
-    return this.#roots.get(uid)
+    const span = this.#roots.get(uid)
+    // Perform check if the span is not closed. A span that has been closed
+    // can't be considered a root span anymore.
+    if (span && span.open) {
+      // Span exists and is still open. These conditions make it a valid, still
+      // root, span.
+      return span
+    } else {
+      // Clear any reference to this span in the scopes manager to avoid
+      // confusion next time the root span is fetched.
+      this.removeSpanForUid(uid)
+    }
+  }
+
+  /*
+   * Remove the Span for the given executionAsyncId from all scopes.
+   */
+  private removeSpanForUid(uid: number) {
+    this.#scopes.delete(uid)
+    this.#roots.delete(uid)
   }
 
   /**
@@ -146,8 +175,7 @@ export class ScopeManager {
     } finally {
       // revert to the previous span
       if (oldScope === undefined) {
-        this.#scopes.delete(uid)
-        this.#roots.delete(uid)
+        this.removeSpanForUid(uid)
       } else {
         this.#scopes.set(uid, oldScope)
         this.#roots.set(uid, rootSpan)
