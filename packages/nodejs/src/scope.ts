@@ -42,6 +42,19 @@ export class ScopeManager {
     this.#scopes = new Map()
 
     const init = (id: number, type: string, triggerId: number) => {
+      // Move the current span and root over to the scopes and roots map for
+      // the child executionAsyncId.
+      const transferSpanScope = (
+        list: Map<number, Span | undefined>,
+        newId: number,
+        oldId: number
+      ) => {
+        const span = list.get(oldId)
+        if (span && span.open) {
+          list.set(newId, list.get(oldId))
+        }
+      }
+
       /**
        * We use the `executionAsyncId` here, as using the `triggerId` causes context
        * confusion in applications using async/await.
@@ -49,10 +62,8 @@ export class ScopeManager {
       if (type === "PROMISE") {
         const currentId = asyncHooks.executionAsyncId()
 
-        if (this.#scopes.get(currentId)) {
-          this.#scopes.set(id, this.#scopes.get(currentId))
-          this.#roots.set(id, this.#roots.get(currentId))
-        }
+        transferSpanScope(this.#scopes, id, currentId)
+        transferSpanScope(this.#roots, id, currentId)
       } else {
         /**
          * `triggerId` usually equal the ID of the AsyncResource in whose scope we are
@@ -62,10 +73,8 @@ export class ScopeManager {
          *
          * However, as the `triggerId` can be defined in userland, we choose to respect th
          */
-        if (this.#scopes.get(triggerId)) {
-          this.#scopes.set(id, this.#scopes.get(triggerId))
-          this.#roots.set(id, this.#roots.get(triggerId))
-        }
+        transferSpanScope(this.#scopes, id, triggerId)
+        transferSpanScope(this.#roots, id, triggerId)
       }
     }
 

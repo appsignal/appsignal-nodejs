@@ -60,6 +60,20 @@ describe("ScopeManager", () => {
         asyncTaskWithContext(scopeManager, span, () => scopeManager.active())
       ).resolves.toBe(span)
     })
+
+    it("doesn't return active span is span is closed", async () => {
+      scopeManager = new ScopeManager()
+      const span = new RootSpan()
+
+      scopeManager.enable()
+
+      span.close()
+      await expect(
+        asyncTaskWithContext(scopeManager, span, () => {
+          return scopeManager.active()
+        })
+      ).resolves.toBeUndefined()
+    })
   })
 
   describe(".disable()", () => {
