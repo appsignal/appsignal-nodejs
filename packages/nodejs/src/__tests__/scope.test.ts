@@ -108,6 +108,18 @@ describe("ScopeManager", () => {
       expect(scopeManager.root()).toBe(span)
       expect(scopeManager.active()).toBe(span)
     })
+
+    it("when root span is closed, it doesn't overwrite the root span", () => {
+      const span1 = new RootSpan()
+      scopeManager.setRoot(span1)
+
+      const span2 = new RootSpan()
+      span2.close()
+      scopeManager.setRoot(span2)
+
+      expect(scopeManager.root()).toBe(span1)
+      expect(scopeManager.active()).toBe(span1)
+    })
   })
 
   describe(".root()", () => {
