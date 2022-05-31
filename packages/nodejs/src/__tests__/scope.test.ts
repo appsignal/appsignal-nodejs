@@ -109,6 +109,27 @@ describe("ScopeManager", () => {
     })
   })
 
+  describe(".root()", () => {
+    it("when root span is open, it returns the root span", () => {
+      const root = new RootSpan({ namespace: "root" })
+      scopeManager.setRoot(root)
+      expect(root.open).toBeTruthy()
+
+      const span = scopeManager.root()
+      expect(span).toBe(root)
+    })
+
+    it("when root span is closed, it returns undefined", () => {
+      const root = new RootSpan({ namespace: "root" })
+      scopeManager.setRoot(root)
+      root.close()
+      expect(root.open).toBeFalsy()
+
+      const span = scopeManager.root()
+      expect(span).toBeUndefined()
+    })
+  })
+
   describe(".withContext()", () => {
     it("runs the callback", () => {
       const fn = jest.fn()
