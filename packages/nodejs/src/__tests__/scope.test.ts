@@ -185,7 +185,7 @@ describe("ScopeManager", () => {
   })
 
   describe(".bindContext()", () => {
-    it("Propagates context to bound functions", () => {
+    it("propagates context to bound functions", () => {
       const test = new RootSpan({ namespace: "test" })
 
       let fn = () => {
