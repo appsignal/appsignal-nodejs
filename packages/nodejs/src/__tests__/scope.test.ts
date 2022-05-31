@@ -1,6 +1,7 @@
 import { ScopeManager } from "../scope"
 import { RootSpan, ChildSpan } from "../span"
 import { Span } from "../interfaces/span"
+import { NoopSpan } from "../noops/span"
 
 describe("ScopeManager", () => {
   let scopeManager: ScopeManager
@@ -174,6 +175,33 @@ describe("ScopeManager", () => {
       })
     })
 
+    it("when the given span is closed, it doesn't overwrite the current span", () => {
+      const span1 = new RootSpan()
+      scopeManager.setRoot(span1)
+
+      const span2 = new RootSpan()
+      span2.close()
+      scopeManager.setRoot(span2)
+
+      scopeManager.withContext(span2, spanInner => {
+        expect(scopeManager.root()).toBe(span1)
+        expect(scopeManager.active()).toBe(span1)
+        expect(spanInner).toBe(span1)
+      })
+    })
+
+    it("when the given span is closed, and there is no active span, return NoopSpan", () => {
+      const span1 = new RootSpan()
+      scopeManager.setRoot(span1)
+      span1.close()
+
+      scopeManager.withContext(span1, spanInner => {
+        expect(scopeManager.root()).toBeUndefined()
+        expect(scopeManager.active()).toBeUndefined()
+        expect(spanInner).toBeInstanceOf(NoopSpan)
+      })
+    })
+
     it("restores the previous active span and root span", () => {
       const outerRootSpan = new RootSpan()
       const outerChildSpan = new ChildSpan(outerRootSpan)
@@ -181,10 +209,15 @@ describe("ScopeManager", () => {
       const innerRootSpan = new RootSpan()
 
       scopeManager.setRoot(outerRootSpan)
+      expect(scopeManager.active()).toBe(outerRootSpan)
+      expect(scopeManager.root()).toBe(outerRootSpan)
 
       scopeManager.withContext(outerChildSpan, () => {
         scopeManager.withContext(innerChildSpan, () => {
+          expect(scopeManager.root()).toBe(outerRootSpan)
+          expect(scopeManager.active()).toBe(innerChildSpan)
           scopeManager.setRoot(innerRootSpan)
+          expect(scopeManager.root()).toBe(innerRootSpan)
         })
 
         expect(scopeManager.active()).toBe(outerChildSpan)

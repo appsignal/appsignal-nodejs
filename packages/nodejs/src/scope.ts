@@ -13,6 +13,7 @@ import { Span } from "./interfaces/span"
 import * as asyncHooks from "async_hooks"
 import { EventEmitter } from "events"
 import shimmer from "shimmer"
+import { NoopSpan } from "./noops/span"
 
 // A list of well-known EventEmitter methods that add event listeners.
 const EVENT_EMITTER_METHODS: Array<keyof EventEmitter> = [
@@ -111,11 +112,24 @@ export class ScopeManager {
     return this
   }
 
+  private setActive(span: Span) {
+    if (span.open) {
+      const uid = asyncHooks.executionAsyncId()
+      this.#scopes.set(uid, span)
+    }
+  }
+
   /**
    * Returns the current active `Span`.
    */
   public active(): Span | undefined {
-    const uid = asyncHooks.executionAsyncId()
+    return this.activeFor(asyncHooks.executionAsyncId())
+  }
+
+  /*
+   * Returns the current active `Span` for the given executionAsyncId.
+   */
+  private activeFor(uid: number): Span | undefined {
     const span = this.#scopes.get(uid)
     // Perform check if the span is not closed. A span that has been closed
     // can't be considered an active span anymore.
@@ -145,7 +159,13 @@ export class ScopeManager {
    * Returns the current root `Span`.
    */
   public root(): Span | undefined {
-    const uid = asyncHooks.executionAsyncId()
+    return this.rootFor(asyncHooks.executionAsyncId())
+  }
+
+  /*
+   * Returns the current root `Span` for the given executionAsyncId.
+   */
+  private rootFor(uid: number): Span | undefined {
     const span = this.#roots.get(uid)
     // Perform check if the span is not closed. A span that has been closed
     // can't be considered a root span anymore.
@@ -173,10 +193,14 @@ export class ScopeManager {
    */
   public withContext<T>(span: Span, fn: (s: Span) => T): T {
     const uid = asyncHooks.executionAsyncId()
-    const oldScope = this.#scopes.get(uid)
-    const rootSpan = this.#roots.get(uid)
+    const oldScope = this.activeFor(uid)
+    const rootSpan = this.rootFor(uid)
 
-    this.#scopes.set(uid, span)
+    if (span.open) {
+      this.setActive(span)
+    } else {
+      span = this.activeFor(uid) || new NoopSpan()
+    }
 
     try {
       return fn(span)
@@ -188,8 +212,12 @@ export class ScopeManager {
       if (oldScope === undefined) {
         this.removeSpanForUid(uid)
       } else {
-        this.#scopes.set(uid, oldScope)
-        this.#roots.set(uid, rootSpan)
+        if (rootSpan) {
+          this.setRoot(rootSpan)
+        }
+        if (oldScope) {
+          this.setActive(oldScope)
+        }
       }
     }
   }
