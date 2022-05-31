@@ -134,9 +134,11 @@ export class ScopeManager {
    * Sets the root `Span`
    */
   public setRoot(rootSpan: Span) {
-    const uid = asyncHooks.executionAsyncId()
-    this.#roots.set(uid, rootSpan)
-    this.#scopes.set(uid, rootSpan)
+    if (rootSpan.open) {
+      const uid = asyncHooks.executionAsyncId()
+      this.#roots.set(uid, rootSpan)
+      this.#scopes.set(uid, rootSpan)
+    }
   }
 
   /*
