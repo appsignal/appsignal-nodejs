@@ -187,6 +187,16 @@ describe("ScopeManager", () => {
 
       fn()
     })
+
+    it("inherits the given function's length and name", () => {
+      function add(x: number, y: number) {
+        return x + y
+      }
+      const boundFn = scopeManager.bindContext(add)
+
+      expect(boundFn.length).toEqual(2)
+      expect(boundFn.name).toEqual("add")
+    })
   })
 
   describe(".active()", () => {

@@ -227,13 +227,15 @@ export class ScopeManager {
     // prevent re-wrapping
     contextWrapper[WRAPPED] = true
 
-    // explicitly inherit the original function's length, because it is
-    // otherwise zero-ed out
+    // explicitly inherit the original function's length and name
     Object.defineProperty(contextWrapper, "length", {
-      enumerable: false,
       configurable: true,
-      writable: false,
       value: fn.length
+    })
+
+    Object.defineProperty(contextWrapper, "name", {
+      configurable: true,
+      value: fn.name
     })
 
     return contextWrapper
