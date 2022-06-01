@@ -15,12 +15,18 @@ import { EventEmitter } from "events"
 import shimmer from "shimmer"
 
 // A list of well-known EventEmitter methods that add event listeners.
-const EVENT_EMITTER_METHODS: Array<keyof EventEmitter> = [
+const EVENT_EMITTER_ADD_METHODS: Array<keyof EventEmitter> = [
   "addListener",
   "on",
   "once",
   "prependListener",
   "prependOnceListener"
+]
+
+// A list of well-known EventEmitter methods that remove event listeners.
+const EVENT_EMITTER_REMOVE_METHODS: Array<keyof EventEmitter> = [
+  "off",
+  "removeListener"
 ]
 
 const WRAPPED = Symbol("@appsignal/nodejs:WRAPPED")
@@ -235,16 +241,75 @@ export class ScopeManager {
 
   public emitWithContext(ee: EventEmitter): void {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const that = this
+    const thisScopeManager = this
 
-    EVENT_EMITTER_METHODS.forEach(method => {
+    // For each event and callback that is registered with the event emitter,
+    // `boundCallbacks` keeps a reference to the newly-created context-bound
+    // callback that wraps around the original callback.
+    // A listener with the same event and callback could be added from
+    // different asynchronous contexts, meaning its context-bound wrapper
+    // should bind it to a different scope, so it keeps a list of
+    // context-bound callbacks for a single event and callback pair.
+    const boundCallbacks = new BoundCallbacks()
+
+    EVENT_EMITTER_ADD_METHODS.forEach(method => {
       if (ee[method]) {
         shimmer.wrap(ee, method, (oldFn: Func<any>) => {
           return function (this: unknown, event: string, cb: Func<void>) {
-            return oldFn.call(this, event, that.bindContext(cb))
+            const boundCallback = thisScopeManager.bindContext(cb)
+            boundCallbacks.push(event, cb, boundCallback)
+            return oldFn.call(this, event, boundCallback)
           }
         })
       }
     })
+
+    EVENT_EMITTER_REMOVE_METHODS.forEach(method => {
+      if (ee[method]) {
+        shimmer.wrap(ee, method, (oldFn: Func<any>) => {
+          return function (this: unknown, event: string, cb: Func<void>) {
+            // If there is no bound callback for this event and callback, it
+            // might be a listener that was added before the event emitter was
+            // wrapped, so we should attempt to remove the given callback.
+            const maybeBoundCallback = boundCallbacks.pop(event, cb) ?? cb
+            return oldFn.call(this, event, maybeBoundCallback)
+          }
+        })
+      }
+    })
+  }
+}
+
+class BoundCallbacks {
+  #map: Map<string, WeakMap<Func<void>, Func<void>[]>>
+
+  constructor() {
+    this.#map = new Map()
+  }
+
+  push(event: string, cb: Func<void>, boundCallback: Func<void>): void {
+    let eventMap = this.#map.get(event)
+    if (!eventMap) {
+      eventMap = new WeakMap()
+      this.#map.set(event, eventMap)
+    }
+
+    let callbacks = eventMap.get(cb)
+    if (!callbacks) {
+      callbacks = []
+      eventMap.set(cb, callbacks)
+    }
+
+    callbacks.push(boundCallback)
+  }
+
+  pop(event: string, cb: Func<void>): Func<void> | undefined {
+    const eventMap = this.#map.get(event)
+    if (!eventMap) return
+
+    const callbacks = eventMap.get(cb)
+    if (!callbacks) return
+
+    return callbacks.pop()
   }
 }

@@ -1,6 +1,7 @@
 import { ScopeManager } from "../scope"
 import { RootSpan, ChildSpan } from "../span"
 import { Span } from "../interfaces/span"
+import { EventEmitter } from "events"
 
 describe("ScopeManager", () => {
   let scopeManager: ScopeManager
@@ -211,6 +212,83 @@ describe("ScopeManager", () => {
     })
   })
 
-  // TODO: Add tests
-  describe(".emitWithContext()", () => {})
+  describe(".emitWithContext()", () => {
+    let eventEmitter: EventEmitter
+    let listener: jest.Mock
+
+    beforeEach(() => {
+      eventEmitter = new EventEmitter()
+      listener = jest.fn(() => scopeManager.active())
+      scopeManager.emitWithContext(eventEmitter)
+    })
+
+    it("can add event listeners", () => {
+      eventEmitter.on("test", listener)
+
+      eventEmitter.emit("test")
+      expect(listener).toHaveBeenCalledTimes(1)
+    })
+
+    it("can remove event listeners", () => {
+      eventEmitter.on("test", listener)
+      eventEmitter.off("test", listener)
+
+      eventEmitter.emit("test")
+      expect(listener).not.toHaveBeenCalled()
+    })
+
+    it("binds event listeners to the active span of the scope that adds them", async () => {
+      const rootSpan = new RootSpan()
+      scopeManager.setRoot(rootSpan)
+
+      const listenerSpan = new ChildSpan(rootSpan)
+      await asyncTaskWithContext(scopeManager, listenerSpan, () => {
+        eventEmitter.on("test", listener)
+      })
+
+      eventEmitter.emit("test")
+      expect(listener).toHaveBeenCalledTimes(1)
+      expect(listener.mock.results[0].value).toBe(listenerSpan)
+    })
+
+    it("can bind the same event and callback to different active spans", async () => {
+      const firstSpan = new RootSpan()
+      await asyncTaskWithContext(scopeManager, firstSpan, () => {
+        eventEmitter.on("test", listener)
+      })
+
+      const secondSpan = new RootSpan()
+      await asyncTaskWithContext(scopeManager, secondSpan, () => {
+        eventEmitter.on("test", listener)
+      })
+
+      eventEmitter.emit("test")
+      expect(listener).toHaveBeenCalledTimes(2)
+      expect(listener.mock.results[0].value).toBe(firstSpan)
+      expect(listener.mock.results[1].value).toBe(secondSpan)
+    })
+
+    it("removes event listeners from before .emitWithContext was called", () => {
+      eventEmitter = new EventEmitter()
+      eventEmitter.on("test", listener)
+
+      scopeManager.emitWithContext(eventEmitter)
+      eventEmitter.on("test", listener)
+
+      eventEmitter.emit("test")
+      expect(listener).toHaveBeenCalledTimes(2)
+      listener.mockClear()
+
+      eventEmitter.off("test", listener)
+
+      eventEmitter.emit("test")
+      expect(listener).toHaveBeenCalledTimes(1)
+      listener.mockClear()
+
+      eventEmitter.off("test", listener)
+
+      eventEmitter.emit("test")
+      expect(listener).not.toHaveBeenCalled()
+    })
+  })
 })
