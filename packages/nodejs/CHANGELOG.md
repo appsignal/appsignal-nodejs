@@ -1,5 +1,80 @@
 # AppSignal for Node.js Changelog
 
+## 2.4.0
+
+### Added
+
+- [60d7980](https://github.com/appsignal/appsignal-nodejs/commit/60d79808a414a4c0fe4b80a76b099e22835516ee) minor - Add OpenTelemetry span processor for the mysql and mysql2 packages. These are experimental integrations and require additional set up to integrate with OpenTelemetry.
+- [9cd1c8b](https://github.com/appsignal/appsignal-nodejs/commit/9cd1c8bfc315ec9ec8ecc7be1e1b867b0466f7a7) patch - Add config options for disabling default instrumentation like HTTP, HTTPS, PostgreSQL (pg package) and Redis (node-redis package).
+  
+  The following configuration options have been added:
+  
+  - `instrumentHttp`
+  - `instrumentPg`
+  - `instrumentRedis`
+  
+  By default these configuration options are set to `true`, which means the instrumentation is active by default. If you want to disable one of these instrumentations, configure it by setting the configuration option to `false`.
+  
+  ```js
+  // appsignal.js
+  // Brief example, see our docs for a full example
+  
+  const appsignal = new Appsignal({
+    instrumentRedis: false // Disables the node-redis package instrumentation
+  });
+  ```
+- [3959858](https://github.com/appsignal/appsignal-nodejs/commit/3959858ec55ce67d19abb5abb52589a8948e39fd) patch - Add OpenTelemetry node-redis and ioredis query sanitizers. We recommend using these sanitizers to ensure no sensitive data is sent in query statements. Add the sanitizer to the `dbStatementSerializer` config as demonstrated below.
+  
+  ```js
+  // tracing.js
+  // Add the RedisDbStatementSerializer import
+  const { RedisDbStatementSerializer } = require("@appsignal/nodejs");
+  const { RedisInstrumentation } = require("@opentelemetry/instrumentation-redis");
+  const sdk = new opentelemetry.NodeSDK({
+    instrumentations: [
+      new RedisInstrumentation({
+        // Configure the AppSignal RedisDbStatementSerializer to sanitize queries
+        dbStatementSerializer: RedisDbStatementSerializer
+      })
+    ]
+  });
+  ```
+  
+  The same can be done for the ioredis instrumentation:
+  
+  ```js
+  // tracing.js
+  // Add the IORedisDbStatementSerializer import
+  const { IORedisDbStatementSerializer } = require('@appsignal/nodejs');
+  const { IORedisInstrumentation } = require('@opentelemetry/instrumentation-ioredis');
+  const sdk = new opentelemetry.NodeSDK({
+    instrumentations: [
+      // Add the IORedisInstrumentation
+      new IORedisInstrumentation({
+        // Configure the AppSignal IORedisDbStatementSerializer to sanitize queries
+        dbStatementSerializer: IORedisDbStatementSerializer
+      })
+    ]
+  });
+  ```
+
+### Changed
+
+- [ee1ea8b](https://github.com/appsignal/appsignal-nodejs/commit/ee1ea8b7bcf557c2e236a234181fa461365f3071) patch - Use the OpenTelemetry SpanProcessor interface to build our own SpanProcessor. We previously copied the SpanProcessor code into our package, but instead we now use the OpenTelemetry interface directly. This should make our processor match the expected type better.
+- [4e58a73](https://github.com/appsignal/appsignal-nodejs/commit/4e58a734b3bf4354a38f7b5f697e8b17a86fb89f) patch - Bump agent to v-0b43802.
+  
+  - Add redis and ioredis OpenTelemetry instrumentation support.
+- [01c25d3](https://github.com/appsignal/appsignal-nodejs/commit/01c25d3415db0fafbe4b82a82a78327f5864c3b9) patch - Bump agent to v-1a8ac46
+  
+  - Support OpenTelemetry root span import.
+  - Support OpenTelemetry HTTP instrumentation.
+  - Support OpenTelemetry Express instrumentation.
+
+### Fixed
+
+- [8e45eba](https://github.com/appsignal/appsignal-nodejs/commit/8e45eba34b93b6b979a47298015ca20876a71bc3) patch - Fix the `ScopeManager.active()` function returning closed spans.
+- [6d2e2d5](https://github.com/appsignal/appsignal-nodejs/commit/6d2e2d5b02d2684401368e87eb367e380f451eb7) patch - Do not transfer closed spans for new async contexts in the ScopeManager. Rather than relying on `ScopeManager.active()` and `ScopeManager.root()` to make sure the span is not already closed, also make sure it's not closed when transferring spans around between async contexts.
+
 ## 2.3.6
 
 ### Added
