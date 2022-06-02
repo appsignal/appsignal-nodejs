@@ -20,7 +20,9 @@ const DEFAULT_IGNORED_URLS = [
   // gatsby hot reloading
   /(\/__webpack_hmr)/i,
   // next.js integration web vitals endpoint
-  /(\/__appsignal-web-vitals)$/i
+  /(\/__appsignal-web-vitals)$/i,
+  // socket.io default path
+  /^(\/socket.io)/i
 ]
 
 function incomingRequest(
