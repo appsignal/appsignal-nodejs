@@ -271,8 +271,12 @@ Napi::Value ImportOpenTelemetrySpan(const Napi::CallbackInfo &info) {
   Napi::External<appsignal_data_t> attributes =
       info[8].As<Napi::External<appsignal_data_t>>();
 
-  // Name and attributes
-  Napi::String instrumentationLibraryName = info[9].As<Napi::String>();
+  // Events
+  Napi::External<appsignal_data_t> events =
+      info[9].As<Napi::External<appsignal_data_t>>();
+
+  // Instrumentation library name
+  Napi::String instrumentationLibraryName = info[10].As<Napi::String>();
 
   // Import this data as a span
   appsignal_import_opentelemetry_span(
@@ -285,6 +289,7 @@ Napi::Value ImportOpenTelemetrySpan(const Napi::CallbackInfo &info) {
       endTimeNsec.Int32Value(),
       MakeAppsignalString(name),
       attributes.Data(),
+      events.Data(),
       MakeAppsignalString(instrumentationLibraryName)
   );
 

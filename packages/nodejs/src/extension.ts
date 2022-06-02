@@ -38,6 +38,7 @@ export class Extension {
     endTimeNsec: number,
     name: string,
     attributes: HashMap<any>,
+    events: Array<any>,
     instrumentationLibraryName: string
   ): void {
     extension.importOpenTelemetrySpan(
@@ -50,6 +51,7 @@ export class Extension {
       endTimeNsec,
       name,
       Data.generate(attributes),
+      Data.generate(events),
       instrumentationLibraryName
     )
   }
