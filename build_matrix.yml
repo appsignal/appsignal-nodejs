@@ -71,16 +71,7 @@ matrix:
       env_vars:
         # Set `NODE_OPTIONS` to `--openssl-legacy-provider`, as a workaround
         # for this `webpack` bug affecting the `@appsignal/nextjs` tests
-        # when running on Node 17:
-        # https://github.com/webpack/webpack/issues/14532
-        # https://github.com/nodejs/node/issues/40455
-        - name: NODE_OPTIONS
-          value: "--openssl-legacy-provider"
-    - nodejs: "17"
-      env_vars:
-        # Set `NODE_OPTIONS` to `--openssl-legacy-provider`, as a workaround
-        # for this `webpack` bug affecting the `@appsignal/nextjs` tests
-        # when running on Node 17:
+        # when running on Node 18:
         # https://github.com/webpack/webpack/issues/14532
         # https://github.com/nodejs/node/issues/40455
         - name: NODE_OPTIONS
