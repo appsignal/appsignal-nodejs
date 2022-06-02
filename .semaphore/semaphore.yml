@@ -67,9 +67,6 @@ blocks:
   - Validation
   task:
     env_vars:
-    - &1
-      name: NODE_OPTIONS
-      value: "--openssl-legacy-provider"
     - name: NODE_VERSION
       value: '18'
     prologue:
@@ -77,7 +74,7 @@ blocks:
       - cache restore
       - mono bootstrap --ci
       - cache store
-    epilogue: &2
+    epilogue: &1
       always:
         commands:
         - ''
@@ -94,7 +91,6 @@ blocks:
   - Node.js 18 - Build
   task:
     env_vars:
-    - *1
     - name: NODE_VERSION
       value: '18'
     - name: _APPSIGNAL_EXTENSION_INSTALL
@@ -104,7 +100,7 @@ blocks:
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
-    epilogue: *2
+    epilogue: *1
     jobs:
     - name: "@appsignal/nodejs - nodejs"
       commands:
@@ -159,14 +155,6 @@ blocks:
       commands:
       - script/install_test_example_packages nextjs next@12.1.0 react@17.0.2 react-dom@17.0.2
       - script/test_package_integration nextjs
-    - name: "@appsignal/nextjs - next.js@11.1.4 - integrations"
-      commands:
-      - script/install_test_example_packages nextjs next@11.1.4 react@17.0.2 react-dom@17.0.2
-      - script/test_package_integration nextjs
-    - name: "@appsignal/nextjs - next.js@10.2.3 - integrations"
-      commands:
-      - script/install_test_example_packages nextjs next@10.2.3 react@16.14.0 react-dom@16.14.0
-      - script/test_package_integration nextjs
 - name: Node.js 16 - Build
   dependencies:
   - Validation
@@ -179,7 +167,7 @@ blocks:
       - cache restore
       - mono bootstrap --ci
       - cache store
-    epilogue: *2
+    epilogue: *1
     jobs:
     - name: Build
       commands:
@@ -202,7 +190,7 @@ blocks:
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
-    epilogue: *2
+    epilogue: *1
     jobs:
     - name: "@appsignal/nodejs - nodejs"
       commands:
@@ -277,7 +265,7 @@ blocks:
       - cache restore
       - mono bootstrap --ci
       - cache store
-    epilogue: *2
+    epilogue: *1
     jobs:
     - name: Build
       commands:
@@ -300,7 +288,7 @@ blocks:
       - cache restore
       - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
       - mono bootstrap --ci
-    epilogue: *2
+    epilogue: *1
     jobs:
     - name: "@appsignal/nodejs - nodejs"
       commands:
