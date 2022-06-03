@@ -177,8 +177,8 @@ export class ScopeManager {
    */
   public withContext<T>(span: Span, fn: (s: Span) => T): T {
     const uid = asyncHooks.executionAsyncId()
-    const oldScope = this.#scopes.get(uid)
-    const rootSpan = this.#roots.get(uid)
+    const oldScope = this.active()
+    const rootSpan = this.root()
 
     this.#scopes.set(uid, span)
 
