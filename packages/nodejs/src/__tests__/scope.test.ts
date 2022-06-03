@@ -2,6 +2,7 @@ import { ScopeManager } from "../scope"
 import { RootSpan, ChildSpan } from "../span"
 import { Span } from "../interfaces/span"
 import { EventEmitter } from "events"
+import { NoopSpan } from "../noops/span"
 
 describe("ScopeManager", () => {
   let scopeManager: ScopeManager
@@ -180,6 +181,33 @@ describe("ScopeManager", () => {
 
       scopeManager.withContext(span, () => {
         expect(scopeManager.active()).toBe(span)
+      })
+    })
+
+    it("when the given span is closed, it doesn't overwrite the current span", () => {
+      const span1 = new RootSpan()
+      scopeManager.setRoot(span1)
+
+      const span2 = new RootSpan()
+      span2.close()
+      scopeManager.setRoot(span2)
+
+      scopeManager.withContext(span2, spanInner => {
+        expect(scopeManager.root()).toBe(span1)
+        expect(scopeManager.active()).toBe(span1)
+        expect(spanInner).toBe(span1)
+      })
+    })
+
+    it("when the given span is closed, and there is no active span, it passes NoopSpan to the given function", () => {
+      const span1 = new RootSpan()
+      scopeManager.setRoot(span1)
+      span1.close()
+
+      scopeManager.withContext(span1, spanInner => {
+        expect(scopeManager.root()).toBeUndefined()
+        expect(scopeManager.active()).toBeUndefined()
+        expect(spanInner).toBeInstanceOf(NoopSpan)
       })
     })
 

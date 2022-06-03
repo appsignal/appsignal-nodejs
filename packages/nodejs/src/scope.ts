@@ -13,6 +13,7 @@ import { Span } from "./interfaces/span"
 import * as asyncHooks from "async_hooks"
 import { EventEmitter } from "events"
 import shimmer from "shimmer"
+import { NoopSpan } from "./noops/span"
 
 // A list of well-known EventEmitter methods that add event listeners.
 const EVENT_EMITTER_ADD_METHODS: Array<keyof EventEmitter> = [
@@ -182,7 +183,11 @@ export class ScopeManager {
     const oldScope = this.active()
     const rootSpan = this.root()
 
-    this.#scopes.set(uid, span)
+    if (span.open) {
+      this.#scopes.set(uid, span)
+    } else {
+      span = oldScope || new NoopSpan()
+    }
 
     try {
       return fn(span)
