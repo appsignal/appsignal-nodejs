@@ -181,7 +181,6 @@ export class ScopeManager {
   public withContext<T>(span: Span, fn: (s: Span) => T): T {
     const uid = asyncHooks.executionAsyncId()
     const oldScope = this.active()
-    const rootSpan = this.root()
 
     if (span.open) {
       this.#scopes.set(uid, span)
@@ -192,15 +191,14 @@ export class ScopeManager {
     try {
       return fn(span)
     } catch (err) {
-      rootSpan?.setError(err)
+      this.root()?.setError(err)
       throw err
     } finally {
       // revert to the previous span
       if (oldScope === undefined) {
-        this.removeSpanForUid(uid)
+        this.#scopes.delete(uid)
       } else {
         this.#scopes.set(uid, oldScope)
-        this.#roots.set(uid, rootSpan)
       }
     }
   }

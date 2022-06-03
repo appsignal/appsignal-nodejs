@@ -211,17 +211,19 @@ describe("ScopeManager", () => {
       })
     })
 
-    it("restores the previous active span and root span", () => {
+    it("restores the previous active span", () => {
       const outerRootSpan = new RootSpan()
       const outerChildSpan = new ChildSpan(outerRootSpan)
       const innerChildSpan = new ChildSpan(outerChildSpan)
-      const innerRootSpan = new RootSpan()
 
       scopeManager.setRoot(outerRootSpan)
+      expect(scopeManager.active()).toBe(outerRootSpan)
+      expect(scopeManager.root()).toBe(outerRootSpan)
 
       scopeManager.withContext(outerChildSpan, () => {
         scopeManager.withContext(innerChildSpan, () => {
-          scopeManager.setRoot(innerRootSpan)
+          expect(scopeManager.root()).toBe(outerRootSpan)
+          expect(scopeManager.active()).toBe(innerChildSpan)
         })
 
         expect(scopeManager.active()).toBe(outerChildSpan)
@@ -230,6 +232,26 @@ describe("ScopeManager", () => {
 
       expect(scopeManager.active()).toBe(outerRootSpan)
       expect(scopeManager.root()).toBe(outerRootSpan)
+    })
+
+    it("does not restore the root span if it was changed within withContext", () => {
+      const outerRootSpan = new RootSpan()
+      const outerChildSpan = new ChildSpan(outerRootSpan)
+      const innerRootSpan = new RootSpan()
+
+      scopeManager.setRoot(outerRootSpan)
+      expect(scopeManager.active()).toBe(outerRootSpan)
+      expect(scopeManager.root()).toBe(outerRootSpan)
+
+      scopeManager.withContext(outerChildSpan, () => {
+        expect(scopeManager.active()).toBe(outerChildSpan)
+        expect(scopeManager.root()).toBe(outerRootSpan)
+        scopeManager.setRoot(innerRootSpan)
+        expect(scopeManager.root()).toBe(innerRootSpan)
+      })
+
+      expect(scopeManager.active()).toBe(outerRootSpan)
+      expect(scopeManager.root()).toBe(innerRootSpan)
     })
   })
 
