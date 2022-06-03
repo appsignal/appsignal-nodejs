@@ -145,14 +145,22 @@ describe("ScopeManager", () => {
       expect(fn).toBeCalled()
     })
 
-    it("rethrows errors", () => {
+    it("stores and rethrows errors", () => {
+      const rootSpan = new RootSpan()
+      scopeManager.setRoot(rootSpan)
+      const span = new ChildSpan(rootSpan)
       const err = new Error("This should be rethrown")
 
       expect(() =>
-        scopeManager.withContext(new RootSpan(), () => {
+        scopeManager.withContext(span, () => {
           throw err
         })
       ).toThrow(err)
+      expect(rootSpan.toObject().error).toEqual({
+        name: "Error",
+        message: "This should be rethrown",
+        backtrace: expect.any(String)
+      })
     })
 
     it("sets the given span as the active span", () => {
