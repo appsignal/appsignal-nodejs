@@ -35,6 +35,18 @@ export class SpanProcessor implements OpenTelemetrySpanProcessor {
       span.instrumentationLibrary.name
     )
 
+    const errors = span.events.filter(event => event.name == "exception")
+
+    errors.forEach(e => {
+      const eventAttributes = e["attributes"] as any
+
+      otelSpan.setError(
+        eventAttributes["exception.type"],
+        eventAttributes["exception.message"],
+        eventAttributes["exception.stacktrace"]
+      )
+    })
+
     otelSpan.close()
   }
 
