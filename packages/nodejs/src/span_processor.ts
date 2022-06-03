@@ -22,22 +22,20 @@ export class SpanProcessor implements OpenTelemetrySpanProcessor {
   onStart(_span: Span, _parentContext: Context): void {}
 
   onEnd(span: ReadableSpan): void {
-    const appsignalSpan = this.client.tracer().currentSpan()
+    const otelSpan = this.client.extension.createOpenTelemetrySpan(
+      span.spanContext().spanId,
+      span.parentSpanId || "",
+      span.spanContext().traceId,
+      span.startTime[0],
+      span.startTime[1],
+      span.endTime[0],
+      span.endTime[1],
+      span.name,
+      span.attributes,
+      span.instrumentationLibrary.name
+    )
 
-    if (!(appsignalSpan instanceof NoopSpan)) {
-      this.client.extension.importOpenTelemetrySpan(
-        span.spanContext().spanId,
-        appsignalSpan.spanId,
-        appsignalSpan.traceId,
-        span.startTime[0],
-        span.startTime[1],
-        span.endTime[0],
-        span.endTime[1],
-        span.name,
-        span.attributes,
-        span.instrumentationLibrary.name
-      )
-    }
+    otelSpan.close()
   }
 
   shutdown(): Promise<void> {

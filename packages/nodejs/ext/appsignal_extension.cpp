@@ -252,7 +252,7 @@ Napi::Value GetDataToJson(const Napi::CallbackInfo &info) {
 
 // SPAN API
 
-Napi::Value ImportOpenTelemetrySpan(const Napi::CallbackInfo &info) {
+Napi::Value CreateOpenTelemetrySpan(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
 
   // Span and trace ids
@@ -275,7 +275,7 @@ Napi::Value ImportOpenTelemetrySpan(const Napi::CallbackInfo &info) {
   Napi::String instrumentationLibraryName = info[9].As<Napi::String>();
 
   // Import this data as a span
-  appsignal_import_opentelemetry_span(
+  appsignal_span_t *span_ptr = appsignal_create_opentelemetry_span(
       MakeAppsignalString(spanId),
       MakeAppsignalString(parentSpanId),
       MakeAppsignalString(traceId),
@@ -288,7 +288,9 @@ Napi::Value ImportOpenTelemetrySpan(const Napi::CallbackInfo &info) {
       MakeAppsignalString(instrumentationLibraryName)
   );
 
-  return env.Null();
+  return Napi::External<appsignal_span_t>::New(
+      env, span_ptr,
+      [](Napi::Env env, appsignal_span_t *ptr) { appsignal_free_span(ptr); });
 }
 
 Napi::Value CreateRootSpan(const Napi::CallbackInfo &info) {
@@ -371,6 +373,17 @@ Napi::Value CreateSpanFromTraceparent(const Napi::CallbackInfo &info) {
   return Napi::External<appsignal_span_t>::New(
       env, span_ptr,
       [](Napi::Env env, appsignal_span_t *ptr) { appsignal_free_span(ptr); });
+}
+
+Napi::Value CloseSpan(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  Napi::External<appsignal_span_t> span =
+      info[0].As<Napi::External<appsignal_span_t>>();
+
+  appsignal_close_span(span.Data());
+
+  return env.Null();
 }
 
 Napi::Value CloseSpanWithTimestamp(const Napi::CallbackInfo &info) {
@@ -668,8 +681,8 @@ Napi::Object CreateExtensionObject(Napi::Env env, Napi::Object exports) {
                 Napi::Function::New(env, DiagnoseRaw));
   extension.Set(Napi::String::New(env, "runningInContainer"),
                 Napi::Function::New(env, RunningInContainer));
-  extension.Set(Napi::String::New(env, "importOpenTelemetrySpan"),
-                Napi::Function::New(env, ImportOpenTelemetrySpan));
+  extension.Set(Napi::String::New(env, "createOpenTelemetrySpan"),
+                Napi::Function::New(env, CreateOpenTelemetrySpan));
 
   return extension;
 }
@@ -699,11 +712,13 @@ Napi::Object CreateSpanObject(Napi::Env env, Napi::Object exports) {
   span.Set(Napi::String::New(env, "createChildSpanWithTimestamp"),
            Napi::Function::New(env, CreateChildSpanWithTimestamp));
   span.Set(Napi::String::New(env, "createSpanFromTraceparent"),
-           Napi::Function::New(env, CreateSpanFromTraceparent));
+      Napi::Function::New(env, CreateSpanFromTraceparent));
   span.Set(Napi::String::New(env, "getTraceId"),
-           Napi::Function::New(env, GetTraceId));
+      Napi::Function::New(env, GetTraceId));
   span.Set(Napi::String::New(env, "getSpanId"),
            Napi::Function::New(env, GetSpanId));
+  span.Set(Napi::String::New(env, "closeSpan"),
+           Napi::Function::New(env, CloseSpan));
   span.Set(Napi::String::New(env, "closeSpanWithTimestamp"),
            Napi::Function::New(env, CloseSpanWithTimestamp));
   span.Set(Napi::String::New(env, "addSpanError"),
