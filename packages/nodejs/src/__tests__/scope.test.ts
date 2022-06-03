@@ -253,6 +253,26 @@ describe("ScopeManager", () => {
       expect(scopeManager.active()).toBe(outerRootSpan)
       expect(scopeManager.root()).toBe(innerRootSpan)
     })
+
+    it("does not restore the active span if it is closed", () => {
+      const rootSpan = new RootSpan()
+      const activeSpan1 = new ChildSpan(rootSpan)
+      const activeSpan2 = new ChildSpan(rootSpan)
+
+      scopeManager.setRoot(rootSpan)
+      expect(scopeManager.active()).toBe(rootSpan)
+
+      scopeManager.withContext(activeSpan1, () => {
+        expect(scopeManager.active()).toBe(activeSpan1)
+        scopeManager.withContext(activeSpan2, () => {
+          activeSpan1.close()
+          expect(scopeManager.active()).toBe(activeSpan2)
+        })
+        expect(scopeManager.active()).toBeUndefined()
+      })
+
+      expect(scopeManager.active()).toBe(rootSpan)
+    })
   })
 
   describe(".bindContext()", () => {

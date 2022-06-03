@@ -194,10 +194,11 @@ export class ScopeManager {
       this.root()?.setError(err)
       throw err
     } finally {
-      // revert to the previous span
-      if (oldScope === undefined) {
-        this.#scopes.delete(uid)
-      } else {
+      // Unset the current active span so it doesn't leak outside this context
+      // in case there was no previous active span or it's no longer open.
+      this.#scopes.delete(uid)
+      if (oldScope && oldScope.open) {
+        // Revert the current active span
         this.#scopes.set(uid, oldScope)
       }
     }
