@@ -205,7 +205,7 @@ export class ScopeManager {
     }
 
     // capture the context of the current `AsyncResource`
-    const boundContext = this.#scopes.get(asyncHooks.executionAsyncId())
+    const boundContext = this.active()
 
     // return if there is no current context to bind
     if (!boundContext) {
