@@ -118,6 +118,21 @@ export class ScopeManager {
     return this
   }
 
+  private setActive(span: Span) {
+    if (span.open) {
+      const uid = asyncHooks.executionAsyncId()
+      this.#scopes.set(uid, span)
+    }
+  }
+
+  /**
+   * Unset any active span for the current executionAsyncId.
+   */
+  private unsetActive() {
+    const uid = asyncHooks.executionAsyncId()
+    this.#scopes.delete(uid)
+  }
+
   /**
    * Returns the current active `Span`.
    */
@@ -179,11 +194,10 @@ export class ScopeManager {
    * Executes a given function within the context of a given `Span`.
    */
   public withContext<T>(span: Span, fn: (s: Span) => T): T {
-    const uid = asyncHooks.executionAsyncId()
     const oldScope = this.active()
 
     if (span.open) {
-      this.#scopes.set(uid, span)
+      this.setActive(span)
     } else {
       span = oldScope || new NoopSpan()
     }
@@ -196,10 +210,10 @@ export class ScopeManager {
     } finally {
       // Unset the current active span so it doesn't leak outside this context
       // in case there was no previous active span or it's no longer open.
-      this.#scopes.delete(uid)
-      if (oldScope && oldScope.open) {
+      this.unsetActive()
+      if (oldScope) {
         // Revert the current active span
-        this.#scopes.set(uid, oldScope)
+        this.setActive(oldScope)
       }
     }
   }
