@@ -61,6 +61,9 @@ namespace :build_matrix do
           end
 
           package["variations"].each do |variation|
+            excluded_nodejs_versions = variation.dig("exclude", "nodejs") || []
+            next if excluded_nodejs_versions.include?(nodejs_version)
+
             variation_name = variation.fetch("name")
             dependency_specification = variation["packages"]
             update_package_version_command, update_test_app_version_command =
