@@ -28,32 +28,6 @@ export class Extension {
     extension.stop()
   }
 
-  public importOpenTelemetrySpan(
-    spanId: string,
-    parentSpanId: string,
-    traceId: string,
-    startTimeSec: number,
-    startTimeNsec: number,
-    endTimeSec: number,
-    endTimeNsec: number,
-    name: string,
-    attributes: HashMap<any>,
-    instrumentationLibraryName: string
-  ): void {
-    extension.importOpenTelemetrySpan(
-      spanId,
-      parentSpanId,
-      traceId,
-      startTimeSec,
-      startTimeNsec,
-      endTimeSec,
-      endTimeNsec,
-      name,
-      Data.generate(attributes),
-      instrumentationLibraryName
-    )
-  }
-
   public diagnose(): object {
     process.env._APPSIGNAL_DIAGNOSE = "true"
     const diagnostics_report_string = extension.diagnoseRaw()
