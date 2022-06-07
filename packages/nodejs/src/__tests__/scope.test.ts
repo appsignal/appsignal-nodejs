@@ -2,6 +2,7 @@ import { ScopeManager } from "../scope"
 import { RootSpan, ChildSpan } from "../span"
 import { Span } from "../interfaces/span"
 import { EventEmitter } from "events"
+import { NoopSpan } from "../noops/span"
 
 describe("ScopeManager", () => {
   let scopeManager: ScopeManager
@@ -108,6 +109,18 @@ describe("ScopeManager", () => {
       expect(scopeManager.root()).toBe(span)
       expect(scopeManager.active()).toBe(span)
     })
+
+    it("when root span is closed, it doesn't overwrite the root span", () => {
+      const span1 = new RootSpan()
+      scopeManager.setRoot(span1)
+
+      const span2 = new RootSpan()
+      span2.close()
+      scopeManager.setRoot(span2)
+
+      expect(scopeManager.root()).toBe(span1)
+      expect(scopeManager.active()).toBe(span1)
+    })
   })
 
   describe(".root()", () => {
@@ -145,14 +158,22 @@ describe("ScopeManager", () => {
       expect(fn).toBeCalled()
     })
 
-    it("rethrows errors", () => {
+    it("stores and rethrows errors", () => {
+      const rootSpan = new RootSpan()
+      scopeManager.setRoot(rootSpan)
+      const span = new ChildSpan(rootSpan)
       const err = new Error("This should be rethrown")
 
       expect(() =>
-        scopeManager.withContext(new RootSpan(), () => {
+        scopeManager.withContext(span, () => {
           throw err
         })
       ).toThrow(err)
+      expect(rootSpan.toObject().error).toEqual({
+        name: "Error",
+        message: "This should be rethrown",
+        backtrace: expect.any(String)
+      })
     })
 
     it("sets the given span as the active span", () => {
@@ -163,17 +184,46 @@ describe("ScopeManager", () => {
       })
     })
 
-    it("restores the previous active span and root span", () => {
+    it("when the given span is closed, it doesn't overwrite the current span", () => {
+      const span1 = new RootSpan()
+      scopeManager.setRoot(span1)
+
+      const span2 = new RootSpan()
+      span2.close()
+      scopeManager.setRoot(span2)
+
+      scopeManager.withContext(span2, spanInner => {
+        expect(scopeManager.root()).toBe(span1)
+        expect(scopeManager.active()).toBe(span1)
+        expect(spanInner).toBe(span1)
+      })
+    })
+
+    it("when the given span is closed, and there is no active span, it passes NoopSpan to the given function", () => {
+      const span1 = new RootSpan()
+      scopeManager.setRoot(span1)
+      span1.close()
+
+      scopeManager.withContext(span1, spanInner => {
+        expect(scopeManager.root()).toBeUndefined()
+        expect(scopeManager.active()).toBeUndefined()
+        expect(spanInner).toBeInstanceOf(NoopSpan)
+      })
+    })
+
+    it("restores the previous active span", () => {
       const outerRootSpan = new RootSpan()
       const outerChildSpan = new ChildSpan(outerRootSpan)
       const innerChildSpan = new ChildSpan(outerChildSpan)
-      const innerRootSpan = new RootSpan()
 
       scopeManager.setRoot(outerRootSpan)
+      expect(scopeManager.active()).toBe(outerRootSpan)
+      expect(scopeManager.root()).toBe(outerRootSpan)
 
       scopeManager.withContext(outerChildSpan, () => {
         scopeManager.withContext(innerChildSpan, () => {
-          scopeManager.setRoot(innerRootSpan)
+          expect(scopeManager.root()).toBe(outerRootSpan)
+          expect(scopeManager.active()).toBe(innerChildSpan)
         })
 
         expect(scopeManager.active()).toBe(outerChildSpan)
@@ -182,6 +232,46 @@ describe("ScopeManager", () => {
 
       expect(scopeManager.active()).toBe(outerRootSpan)
       expect(scopeManager.root()).toBe(outerRootSpan)
+    })
+
+    it("does not restore the root span if it was changed within withContext", () => {
+      const outerRootSpan = new RootSpan()
+      const outerChildSpan = new ChildSpan(outerRootSpan)
+      const innerRootSpan = new RootSpan()
+
+      scopeManager.setRoot(outerRootSpan)
+      expect(scopeManager.active()).toBe(outerRootSpan)
+      expect(scopeManager.root()).toBe(outerRootSpan)
+
+      scopeManager.withContext(outerChildSpan, () => {
+        expect(scopeManager.active()).toBe(outerChildSpan)
+        expect(scopeManager.root()).toBe(outerRootSpan)
+        scopeManager.setRoot(innerRootSpan)
+        expect(scopeManager.root()).toBe(innerRootSpan)
+      })
+
+      expect(scopeManager.active()).toBe(outerRootSpan)
+      expect(scopeManager.root()).toBe(innerRootSpan)
+    })
+
+    it("does not restore the active span if it is closed", () => {
+      const rootSpan = new RootSpan()
+      const activeSpan1 = new ChildSpan(rootSpan)
+      const activeSpan2 = new ChildSpan(rootSpan)
+
+      scopeManager.setRoot(rootSpan)
+      expect(scopeManager.active()).toBe(rootSpan)
+
+      scopeManager.withContext(activeSpan1, () => {
+        expect(scopeManager.active()).toBe(activeSpan1)
+        scopeManager.withContext(activeSpan2, () => {
+          activeSpan1.close()
+          expect(scopeManager.active()).toBe(activeSpan2)
+        })
+        expect(scopeManager.active()).toBeUndefined()
+      })
+
+      expect(scopeManager.active()).toBe(rootSpan)
     })
   })
 

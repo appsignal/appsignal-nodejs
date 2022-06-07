@@ -13,6 +13,7 @@ import { Span } from "./interfaces/span"
 import * as asyncHooks from "async_hooks"
 import { EventEmitter } from "events"
 import shimmer from "shimmer"
+import { NoopSpan } from "./noops/span"
 
 // A list of well-known EventEmitter methods that add event listeners.
 const EVENT_EMITTER_ADD_METHODS: Array<keyof EventEmitter> = [
@@ -117,6 +118,21 @@ export class ScopeManager {
     return this
   }
 
+  private setActive(span: Span) {
+    if (span.open) {
+      const uid = asyncHooks.executionAsyncId()
+      this.#scopes.set(uid, span)
+    }
+  }
+
+  /**
+   * Unset any active span for the current executionAsyncId.
+   */
+  private unsetActive() {
+    const uid = asyncHooks.executionAsyncId()
+    this.#scopes.delete(uid)
+  }
+
   /**
    * Returns the current active `Span`.
    */
@@ -140,9 +156,11 @@ export class ScopeManager {
    * Sets the root `Span`
    */
   public setRoot(rootSpan: Span) {
-    const uid = asyncHooks.executionAsyncId()
-    this.#roots.set(uid, rootSpan)
-    this.#scopes.set(uid, rootSpan)
+    if (rootSpan.open) {
+      const uid = asyncHooks.executionAsyncId()
+      this.#roots.set(uid, rootSpan)
+      this.#scopes.set(uid, rootSpan)
+    }
   }
 
   /*
@@ -176,24 +194,26 @@ export class ScopeManager {
    * Executes a given function within the context of a given `Span`.
    */
   public withContext<T>(span: Span, fn: (s: Span) => T): T {
-    const uid = asyncHooks.executionAsyncId()
-    const oldScope = this.#scopes.get(uid)
-    const rootSpan = this.#roots.get(uid)
+    const oldScope = this.active()
 
-    this.#scopes.set(uid, span)
+    if (span.open) {
+      this.setActive(span)
+    } else {
+      span = oldScope || new NoopSpan()
+    }
 
     try {
       return fn(span)
     } catch (err) {
-      rootSpan?.setError(err)
+      this.root()?.setError(err)
       throw err
     } finally {
-      // revert to the previous span
-      if (oldScope === undefined) {
-        this.removeSpanForUid(uid)
-      } else {
-        this.#scopes.set(uid, oldScope)
-        this.#roots.set(uid, rootSpan)
+      // Unset the current active span so it doesn't leak outside this context
+      // in case there was no previous active span or it's no longer open.
+      this.unsetActive()
+      if (oldScope) {
+        // Revert the current active span
+        this.setActive(oldScope)
       }
     }
   }
