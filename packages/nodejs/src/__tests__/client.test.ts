@@ -5,6 +5,14 @@ import { BaseMetrics as Metrics } from "../metrics"
 import { NoopTracer, NoopMetrics } from "../noops"
 
 jest.mock("../tracer")
+jest.mock("../bootstrap", () => {
+  return {
+    initCorePlugins: jest.fn(() => false),
+    initCoreProbes: jest.fn(() => false)
+  }
+})
+
+import { initCorePlugins } from "../bootstrap"
 
 describe("BaseClient", () => {
   const name = "TEST APP"
@@ -115,5 +123,32 @@ describe("BaseClient", () => {
     client = new BaseClient({ ...DEFAULT_OPTS, active: true })
     const meter = client.metrics()
     expect(meter).toBeInstanceOf(Metrics)
+  })
+
+  describe("core plugins", () => {
+    it("activates auto instrumention by default", () => {
+      client.start()
+      expect(initCorePlugins).toHaveBeenCalledWith(expect.anything(), {
+        instrumentationConfig: {
+          http: true,
+          https: true,
+          redis: true,
+          pg: true
+        }
+      })
+    })
+
+    it("disabled configured instrumention with instrument options", () => {
+      client = new BaseClient({ instrumentHttp: false })
+      client.start()
+      expect(initCorePlugins).toHaveBeenCalledWith(expect.anything(), {
+        instrumentationConfig: {
+          http: false,
+          https: false,
+          redis: true,
+          pg: true
+        }
+      })
+    })
   })
 })
