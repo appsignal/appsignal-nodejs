@@ -1,5 +1,14 @@
 # AppSignal for Node.js Changelog
 
+## 2.4.1
+
+### Fixed
+
+- [d92583f](https://github.com/appsignal/appsignal-nodejs/commit/d92583f698bc7aae8648a564f3da914ac3b97097) patch - Do not instrument HTTP requests to the default socket.io path. This works around an issue where our HTTP instrumentation breaks socket.io's server side, causing the client side to get stuck in a connection loop.
+- [3d22f15](https://github.com/appsignal/appsignal-nodejs/commit/3d22f15371c3eaf32843e69184455c11b8b8e68a) patch - Fix removing event listeners from wrapped event emitters. When using
+  `tracer.wrapEmitter` to wrap an event emitter, it was not possible to remove
+  any listeners that were added after the event emitter was wrapped.
+
 ## 2.4.0
 
 ### Added
