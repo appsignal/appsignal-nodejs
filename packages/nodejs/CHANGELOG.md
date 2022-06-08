@@ -1,5 +1,28 @@
 # AppSignal for Node.js Changelog
 
+## 2.4.2
+
+### Changed
+
+- [b7382d7](https://github.com/appsignal/appsignal-nodejs/commit/b7382d7ee40729a0e9eea32e59daed4e69f688bf) patch - Do not restore closed spans from within the `withSpan` helper. If a previously active span gets closed while `withSpan` has another span as currently active, do not restore the closed span when the callback has finished.
+- [7a7bc9b](https://github.com/appsignal/appsignal-nodejs/commit/7a7bc9b62d5c9f021cfe337b520eac875a5b4c5f) patch - Do not restore root span after `withSpan` callback has finished. Previously the root span was restored to the original root span before the `withSpan` helper was called. This has been changed, because the `withSpan` helper is only about changing the active span, not the root span. If a new root span has been set within a `withSpan` helper callback, the root span will no longer be restored. We recommend setting a new root span before calling `withSpan` instead.
+  
+  ```js
+  const rootSpan = tracer.rootSpan()
+  const span = tracer.createSpan(...)
+  tracer.withSpan(span, function(span) {
+    tracer.createRootSpan(...)
+  });
+  // No longer match
+  rootSpan != tracer.rootSpan()
+  ```
+
+### Fixed
+
+- [8a32a21](https://github.com/appsignal/appsignal-nodejs/commit/8a32a2146862451028a5228534ffeb1a32e2f7a9) patch - Only allow open root spans to be set as root. This avoids closed root spans to be reused in child contexts.
+- [4b74e2f](https://github.com/appsignal/appsignal-nodejs/commit/4b74e2f63910bd8875b5000f059f3ddb02452a43) patch - Don't return closed spans in `withSpan` helper. If a closed span was given to the `witSpan` helper it would temporarily overwrite the context with a closed span that cannot be modified. Instead it will return the current active span, if any. If no span was active it will return a `NoopSpan`.
+- [1731c8e](https://github.com/appsignal/appsignal-nodejs/commit/1731c8ec55a54bab174b49be514edcd3a533cb8f) patch - Add `@opentelemetry/sdk-trace-base` package runtime dependency. Our OpenTelemetry SpanProcessor needs this package at runtime, not just at compile time.
+
 ## 2.4.1
 
 ### Fixed
