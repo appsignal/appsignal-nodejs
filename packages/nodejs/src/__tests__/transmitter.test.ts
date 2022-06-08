@@ -3,7 +3,6 @@ import nock from "nock"
 import https from "https"
 import fs from "fs"
 import http, { ClientRequest } from "http"
-import { HashMap } from "@appsignal/types"
 import { URLSearchParams } from "url"
 import { EventEmitter } from "events"
 
@@ -159,7 +158,7 @@ describe("Transmitter", () => {
           callback(stream)
           stream.emit("end")
 
-          return (requestCallbacks as unknown) as ClientRequest
+          return requestCallbacks as unknown as ClientRequest
         }
       )
 
@@ -172,8 +171,8 @@ describe("Transmitter", () => {
       body?: string,
       params = new URLSearchParams()
     ) {
-      return new Promise<HashMap<jest.Mock>>(resolve => {
-        const callbacks: HashMap<jest.Mock> = {
+      return new Promise<Record<string, jest.Mock>>(resolve => {
+        const callbacks: Record<string, jest.Mock> = {
           callback: jest.fn(stream => {
             stream.on("data", callbacks.onData)
             stream.on("end", () => resolve(callbacks))

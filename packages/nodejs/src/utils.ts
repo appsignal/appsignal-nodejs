@@ -1,24 +1,8 @@
 import fs from "fs"
-import path from "path"
 import perf_hooks from "perf_hooks"
 
 const NANOSECOND_DIGITS = 9
 const SECOND_TO_NANOSECONDS = Math.pow(10, NANOSECOND_DIGITS)
-
-/**
- * Retrieve a valid version number from a `package.json` in a given
- * `basedir`.
- *
- * @function
- */
-export function getPackageVerson(basedir: string): string {
-  try {
-    const { version } = require(path.join(basedir, "package.json"))
-    return version
-  } catch (e) {
-    return "0.0.0"
-  }
-}
 
 /**
  * Given a valid POSIX `timestamp` in milliseconds since the UNIX epoch,
@@ -52,9 +36,10 @@ export function isWritable(path: string) {
  *
  * @function
  */
-export function hrTime(
-  performance = perf_hooks.performance
-): { sec: number; nsec: number } {
+export function hrTime(performance = perf_hooks.performance): {
+  sec: number
+  nsec: number
+} {
   const origin = numberToHrtime(performance.timeOrigin)
   const now = numberToHrtime(performance.now())
 
@@ -69,4 +54,8 @@ function numberToHrtime(epochMillis: number) {
     SECOND_TO_NANOSECONDS
 
   return [seconds, nanoseconds]
+}
+
+export function processGetuid() {
+  return (process.getuid ?? (() => -1))()
 }

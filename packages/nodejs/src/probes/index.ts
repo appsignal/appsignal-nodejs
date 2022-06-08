@@ -1,10 +1,9 @@
 import { EventEmitter } from "events"
-import { Probes } from "../interfaces"
 
 /**
  * The Minutely probes object.
  */
-export class BaseProbes implements Probes {
+export class Probes {
   #probes: ProbeRunner
   #running = true
 

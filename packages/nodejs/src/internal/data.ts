@@ -1,8 +1,7 @@
-import { HashMap } from "@appsignal/types"
 import { datamap, dataarray } from "../extension_wrapper"
 
 export class Data {
-  public static generate(data: Array<any> | HashMap<any>) {
+  public static generate(data: Array<any> | Record<string, any>) {
     if (data.constructor.name === "Object") {
       return this.mapObject(data)
     } else if (Array.isArray(data)) {
@@ -18,7 +17,7 @@ export class Data {
     return JSON.parse(datamap.toJson(data))
   }
 
-  private static mapObject(hash_value: HashMap<any>): any {
+  private static mapObject(hash_value: Record<string, any>): any {
     const map = datamap.create()
 
     Object.entries(hash_value).forEach(([key, value]) => {

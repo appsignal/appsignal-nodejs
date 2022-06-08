@@ -1,5 +1,6 @@
 import fs from "fs"
 import { DiagnoseTool } from "../diagnose"
+import { processGetuid } from "../utils"
 import { VERSION, AGENT_VERSION } from "../version"
 
 describe("DiagnoseTool", () => {
@@ -25,7 +26,7 @@ describe("DiagnoseTool", () => {
     expect(output.config.options).toHaveProperty("endpoint")
     expect(output.config.options).toHaveProperty("environment")
 
-    expect(output.process.uid).toEqual(process.getuid())
+    expect(output.process.uid).toEqual(processGetuid())
   })
 
   describe("install report", () => {

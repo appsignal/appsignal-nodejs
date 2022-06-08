@@ -2,13 +2,12 @@ import fs from "fs"
 import path from "path"
 import { URL } from "url"
 
-import { isWritable } from "./utils"
+import { isWritable, processGetuid } from "./utils"
 import { Extension } from "./extension"
 import { Configuration } from "./config"
 import { AGENT_VERSION, VERSION } from "./version"
 import { JS_TO_RUBY_MAPPING } from "./config/configmap"
-import { AppsignalOptions } from "."
-import { HashMap } from "@appsignal/types"
+import { AppsignalOptions } from "./config/options"
 import { Transmitter } from "./transmitter"
 
 interface FileMetadata {
@@ -59,7 +58,7 @@ export class DiagnoseTool {
       },
       validation: { push_api_key: pushApiKeyValidation },
       process: {
-        uid: process.getuid()
+        uid: processGetuid()
       },
       paths: this.getPathsData()
     }
@@ -82,7 +81,7 @@ export class DiagnoseTool {
       os: process.platform,
       language_version: process.versions.node,
       heroku,
-      root: process.getuid() === 0,
+      root: processGetuid() === 0,
       running_in_container: this.#extension.runningInContainer()
     }
   }
@@ -110,7 +109,7 @@ export class DiagnoseTool {
     const config = this.#config.data
     const url = new URL(`/1/auth`, config["endpoint"])
     const transmitter = new Transmitter(url.toString())
-    let response: HashMap<any> = {}
+    let response: Record<string, any> = {}
 
     await transmitter
       .transmit()
@@ -225,7 +224,7 @@ export class DiagnoseTool {
     )
   }
 
-  public async sendReport(data: HashMap<any>) {
+  public async sendReport(data: Record<string, any>) {
     data.config.options = this.getConfigData()
     data.config.sources = this.getSources()
     const json = JSON.stringify({ diagnose: data })

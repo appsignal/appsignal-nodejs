@@ -1,15 +1,21 @@
-import { Client, Metrics, Plugin, Tracer, AppsignalOptions } from "./interfaces"
-
+import { AppsignalOptions } from "./config/options"
 import { Extension } from "./extension"
 import { Configuration } from "./config"
-import { BaseTracer } from "./tracer"
-import { BaseMetrics } from "./metrics"
+import { Metrics } from "./metrics"
+import * as gcProbe from "./probes/v8"
 import { Logger } from "./logger"
-import { NoopTracer, NoopMetrics } from "./noops"
-import { Instrumentation } from "./instrument"
-import { initCorePlugins, initCoreProbes } from "./bootstrap"
-import { demo } from "./demo"
+import { NoopMetrics } from "./noops"
 import { VERSION } from "./version"
+import { SpanProcessor } from "./span_processor"
+import { RedisDbStatementSerializer } from "./instrumentation/redis/serializer"
+import { NodeSDK } from "@opentelemetry/sdk-node"
+import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
+import { MySQLInstrumentation } from "@opentelemetry/instrumentation-mysql"
+import { MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2"
+import { RedisInstrumentation } from "@opentelemetry/instrumentation-redis"
+import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
+import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
+import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express"
 
 /**
  * AppSignal for Node.js's main class.
@@ -19,15 +25,13 @@ import { VERSION } from "./version"
  *
  * @class
  */
-export class BaseClient implements Client {
+export class Client {
   readonly VERSION = VERSION
 
   config: Configuration
   readonly logger: Logger
   extension: Extension
-  instrumentation: Instrumentation
 
-  #tracer: Tracer
   #metrics: Metrics
 
   /**
@@ -62,29 +66,18 @@ export class BaseClient implements Client {
 
     if (this.isActive) {
       this.extension.start()
-      this.#metrics = new BaseMetrics()
-      this.#tracer = new BaseTracer()
+      this.#metrics = new Metrics()
     } else {
       this.#metrics = new NoopMetrics()
-      this.#tracer = new NoopTracer()
+      console.error("AppSignal not starting, no valid configuration found")
     }
 
-    this.instrumentation = new Instrumentation(this.tracer(), this.metrics())
-
-    const { instrumentRedis, instrumentHttp, instrumentPg } = this.config.data
-    initCorePlugins(this.instrumentation, {
-      instrumentationConfig: {
-        http: instrumentHttp,
-        https: instrumentHttp,
-        pg: instrumentPg,
-        redis: instrumentRedis
-      }
-    })
-    initCoreProbes(this.metrics())
+    this.initCoreProbes()
+    this.initOpenTelemetry()
   }
 
   /**
-   * Returns `true` if the agent is loaded and configuration is valid
+   * Returns `true` if the extension is loaded and configuration is valid
    */
   get isActive(): boolean {
     return (
@@ -92,24 +85,6 @@ export class BaseClient implements Client {
       this.config.isValid &&
       (this.config.data.active ?? false)
     )
-  }
-
-  set isActive(arg) {
-    console.warn("Cannot set isActive property")
-  }
-
-  /**
-   * Starts AppSignal with the given configuration. If no configuration is set
-   * yet it will try to automatically load the configuration using the
-   * environment loaded from environment variables and the current working
-   * directory.
-   */
-  public start(): void {
-    if (this.config.isValid) {
-      this.extension.start()
-    } else {
-      console.error("Not starting, no valid AppSignal configuration found")
-    }
   }
 
   /**
@@ -130,16 +105,6 @@ export class BaseClient implements Client {
   }
 
   /**
-   * Returns the current `Tracer` instance.
-   *
-   * If the agent is inactive when this method is called, the method
-   * returns a `NoopTracer`, which will do nothing.
-   */
-  public tracer(): Tracer {
-    return this.#tracer
-  }
-
-  /**
    * Returns the current `Metrics` object.
    *
    * To track application-wide metrics, you can send custom metrics to AppSignal.
@@ -157,26 +122,42 @@ export class BaseClient implements Client {
   }
 
   /**
-   * Allows a named module to be modified by a function. The function `fn`
-   * returns a `Plugin`, which will be loaded by the instrumentation manager
-   * when the module is required.
+   * Initialises all the available probes to attach automatically at runtime.
    */
-  public instrument<T>({
-    PLUGIN_NAME: name,
-    instrument: fn
-  }: {
-    PLUGIN_NAME: string
-    instrument: (module: T, tracer: Tracer, meter: Metrics) => Plugin<T>
-  }): this {
-    this.instrumentation.load(name, fn)
-    return this
+  private initCoreProbes() {
+    const probes: any[] = [gcProbe]
+
+    // load probes
+    probes.forEach(({ PROBE_NAME, init }) =>
+      this.#metrics.probes().register(PROBE_NAME, init(this.#metrics))
+    )
   }
 
   /**
-   * Sends a demonstration/test sample for a exception and a performance issue.
+   * Initialises OpenTelemetry instrumentation
    */
-  public demo() {
-    return demo(this.tracer())
+  private initOpenTelemetry() {
+    const sdk = new NodeSDK({
+      instrumentations: [
+        new HttpInstrumentation(),
+        new ExpressInstrumentation(),
+        new MySQLInstrumentation(),
+        new MySQL2Instrumentation(),
+        new RedisInstrumentation({
+          dbStatementSerializer: RedisDbStatementSerializer
+        }),
+        new IORedisInstrumentation({
+          requireParentSpan: false,
+          dbStatementSerializer: RedisDbStatementSerializer
+        })
+      ]
+    })
+
+    sdk.start()
+
+    const tracerProvider = new NodeTracerProvider()
+    tracerProvider.addSpanProcessor(new SpanProcessor(this))
+    tracerProvider.register()
   }
 
   /**

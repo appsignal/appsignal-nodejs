@@ -293,88 +293,6 @@ Napi::Value CreateOpenTelemetrySpan(const Napi::CallbackInfo &info) {
       [](Napi::Env env, appsignal_span_t *ptr) { appsignal_free_span(ptr); });
 }
 
-Napi::Value CreateRootSpan(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::String namesp = info[0].As<Napi::String>();
-
-  const std::string &value = namesp.Utf8Value();
-  const char *cstr = value.c_str();
-  appsignal_string_t value_string_t =
-      appsignal_string_t{.len = value.size(), .buf = cstr};
-
-  appsignal_span_t *span_ptr = appsignal_create_root_span(value_string_t);
-
-  return Napi::External<appsignal_span_t>::New(
-      env, span_ptr,
-      [](Napi::Env env, appsignal_span_t *ptr) { appsignal_free_span(ptr); });
-}
-
-Napi::Value CreateRootSpanWithTimestamp(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::String namesp = info[0].As<Napi::String>();
-
-  const std::string &value = namesp.Utf8Value();
-  const char *cstr = value.c_str();
-  appsignal_string_t value_string_t =
-      appsignal_string_t{.len = value.size(), .buf = cstr};
-
-  Napi::Number sec = info[1].As<Napi::Number>();
-  Napi::Number nsec = info[2].As<Napi::Number>();
-
-  appsignal_span_t *span_ptr = appsignal_create_root_span_with_timestamp(
-      value_string_t, (long)sec.DoubleValue(), (long)nsec.DoubleValue());
-
-  return Napi::External<appsignal_span_t>::New(
-      env, span_ptr,
-      [](Napi::Env env, appsignal_span_t *ptr) { appsignal_free_span(ptr); });
-}
-
-Napi::Value CreateChildSpan(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::External<appsignal_span_t> span =
-      info[0].As<Napi::External<appsignal_span_t>>();
-
-  appsignal_span_t *span_ptr = appsignal_create_child_span(span.Data());
-
-  return Napi::External<appsignal_span_t>::New(
-      env, span_ptr,
-      [](Napi::Env env, appsignal_span_t *ptr) { appsignal_free_span(ptr); });
-}
-
-Napi::Value CreateChildSpanWithTimestamp(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::External<appsignal_span_t> span =
-      info[0].As<Napi::External<appsignal_span_t>>();
-
-  Napi::Number sec = info[1].As<Napi::Number>();
-  Napi::Number nsec = info[2].As<Napi::Number>();
-
-  appsignal_span_t *span_ptr = appsignal_create_child_span_with_timestamp(
-      span.Data(), (long)sec.DoubleValue(), (long)nsec.DoubleValue());
-
-  return Napi::External<appsignal_span_t>::New(
-      env, span_ptr,
-      [](Napi::Env env, appsignal_span_t *ptr) { appsignal_free_span(ptr); });
-}
-
-Napi::Value CreateSpanFromTraceparent(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::String traceparent = info[0].As<Napi::String>();
-  const std::string traceparent_utf8 = traceparent.Utf8Value();
-
-  appsignal_span_t *span_ptr = appsignal_create_span_from_traceparent(
-      MakeAppsignalString(traceparent_utf8));
-
-  return Napi::External<appsignal_span_t>::New(
-      env, span_ptr,
-      [](Napi::Env env, appsignal_span_t *ptr) { appsignal_free_span(ptr); });
-}
-
 Napi::Value CloseSpan(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
 
@@ -384,54 +302,6 @@ Napi::Value CloseSpan(const Napi::CallbackInfo &info) {
   appsignal_close_span(span.Data());
 
   return env.Null();
-}
-
-Napi::Value CloseSpanWithTimestamp(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::External<appsignal_span_t> span =
-      info[0].As<Napi::External<appsignal_span_t>>();
-
-  Napi::Number sec = info[1].As<Napi::Number>();
-  Napi::Number nsec = info[2].As<Napi::Number>();
-
-  appsignal_close_span_with_timestamp(span.Data(), (long)sec.DoubleValue(),
-                                      (long)nsec.DoubleValue());
-
-  return env.Null();
-}
-
-Napi::Value GetTraceId(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::External<appsignal_span_t> span =
-      info[0].As<Napi::External<appsignal_span_t>>();
-
-  appsignal_string_t str = appsignal_trace_id(span.Data());
-
-  return Napi::String::New(env, str.buf, str.len);
-}
-
-Napi::Value GetSpanId(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::External<appsignal_span_t> span =
-      info[0].As<Napi::External<appsignal_span_t>>();
-
-  appsignal_string_t str = appsignal_span_id(span.Data());
-
-  return Napi::String::New(env, str.buf, str.len);
-}
-
-Napi::Value SpanToJSON(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::External<appsignal_span_t> span =
-      info[0].As<Napi::External<appsignal_span_t>>();
-
-  appsignal_string_t str = appsignal_span_to_json(span.Data());
-
-  return Napi::String::New(env, str.buf, str.len);
 }
 
 Napi::Value AddSpanError(const Napi::CallbackInfo &info) {
@@ -450,122 +320,6 @@ Napi::Value AddSpanError(const Napi::CallbackInfo &info) {
 
   appsignal_add_span_error(span.Data(), MakeAppsignalString(name_utf8),
                            MakeAppsignalString(msg_utf8), backtrace.Data());
-
-  return env.Null();
-}
-
-Napi::Value SetSpanName(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::External<appsignal_span_t> span =
-      info[0].As<Napi::External<appsignal_span_t>>();
-
-  Napi::String name = info[1].As<Napi::String>();
-  const std::string name_utf8 = name.Utf8Value();
-
-  appsignal_set_span_name(span.Data(), MakeAppsignalString(name_utf8));
-
-  return env.Null();
-}
-
-Napi::Value SetSpanSampleData(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::External<appsignal_span_t> span =
-      info[0].As<Napi::External<appsignal_span_t>>();
-
-  Napi::String key = info[1].As<Napi::String>();
-  const std::string key_utf8 = key.Utf8Value();
-
-  Napi::External<appsignal_data_t> payload =
-      info[2].As<Napi::External<appsignal_data_t>>();
-
-  appsignal_set_span_sample_data(span.Data(), MakeAppsignalString(key_utf8),
-                                 payload.Data());
-
-  return env.Null();
-}
-
-Napi::Value SetSpanAttributeString(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::External<appsignal_span_t> span =
-      info[0].As<Napi::External<appsignal_span_t>>();
-
-  Napi::String key = info[1].As<Napi::String>();
-  const std::string key_utf8 = key.Utf8Value();
-  Napi::String value = info[2].As<Napi::String>();
-  const std::string value_utf8 = value.Utf8Value();
-
-  appsignal_set_span_attribute_string(span.Data(),
-                                      MakeAppsignalString(key_utf8),
-                                      MakeAppsignalString(value_utf8));
-
-  return env.Null();
-}
-
-Napi::Value SetSpanAttributeSqlString(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::External<appsignal_span_t> span =
-      info[0].As<Napi::External<appsignal_span_t>>();
-
-  Napi::String key = info[1].As<Napi::String>();
-  const std::string key_utf8 = key.Utf8Value();
-  Napi::String value = info[2].As<Napi::String>();
-  const std::string value_utf8 = value.Utf8Value();
-
-  appsignal_set_span_attribute_sql_string(span.Data(),
-                                          MakeAppsignalString(key_utf8),
-                                          MakeAppsignalString(value_utf8));
-
-  return env.Null();
-}
-
-Napi::Value SetSpanAttributeInt(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::External<appsignal_span_t> span =
-      info[0].As<Napi::External<appsignal_span_t>>();
-
-  Napi::String key = info[1].As<Napi::String>();
-  const std::string key_utf8 = key.Utf8Value();
-  Napi::Number value = info[2].As<Napi::Number>();
-
-  appsignal_set_span_attribute_int(span.Data(), MakeAppsignalString(key_utf8),
-                                   (long)value.DoubleValue());
-
-  return env.Null();
-}
-
-Napi::Value SetSpanAttributeBool(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::External<appsignal_span_t> span =
-      info[0].As<Napi::External<appsignal_span_t>>();
-
-  Napi::String key = info[1].As<Napi::String>();
-  const std::string key_utf8 = key.Utf8Value();
-  Napi::Boolean value = info[2].As<Napi::Boolean>();
-
-  appsignal_set_span_attribute_bool(span.Data(), MakeAppsignalString(key_utf8),
-                                    value);
-
-  return env.Null();
-}
-
-Napi::Value SetSpanAttributeDouble(const Napi::CallbackInfo &info) {
-  Napi::Env env = info.Env();
-
-  Napi::External<appsignal_span_t> span =
-      info[0].As<Napi::External<appsignal_span_t>>();
-
-  Napi::String key = info[1].As<Napi::String>();
-  const std::string key_utf8 = key.Utf8Value();
-  Napi::Number value = info[2].As<Napi::Number>();
-
-  appsignal_set_span_attribute_double(
-      span.Data(), MakeAppsignalString(key_utf8), value.DoubleValue());
 
   return env.Null();
 }
@@ -703,43 +457,10 @@ Napi::Object CreateMetricsObject(Napi::Env env, Napi::Object exports) {
 Napi::Object CreateSpanObject(Napi::Env env, Napi::Object exports) {
   Napi::Object span = Napi::Object::New(env);
 
-  span.Set(Napi::String::New(env, "createRootSpan"),
-           Napi::Function::New(env, CreateRootSpan));
-  span.Set(Napi::String::New(env, "createRootSpanWithTimestamp"),
-           Napi::Function::New(env, CreateRootSpanWithTimestamp));
-  span.Set(Napi::String::New(env, "createChildSpan"),
-           Napi::Function::New(env, CreateChildSpan));
-  span.Set(Napi::String::New(env, "createChildSpanWithTimestamp"),
-           Napi::Function::New(env, CreateChildSpanWithTimestamp));
-  span.Set(Napi::String::New(env, "createSpanFromTraceparent"),
-      Napi::Function::New(env, CreateSpanFromTraceparent));
-  span.Set(Napi::String::New(env, "getTraceId"),
-      Napi::Function::New(env, GetTraceId));
-  span.Set(Napi::String::New(env, "getSpanId"),
-           Napi::Function::New(env, GetSpanId));
   span.Set(Napi::String::New(env, "closeSpan"),
            Napi::Function::New(env, CloseSpan));
-  span.Set(Napi::String::New(env, "closeSpanWithTimestamp"),
-           Napi::Function::New(env, CloseSpanWithTimestamp));
   span.Set(Napi::String::New(env, "addSpanError"),
            Napi::Function::New(env, AddSpanError));
-  span.Set(Napi::String::New(env, "setSpanName"),
-           Napi::Function::New(env, SetSpanName));
-  span.Set(Napi::String::New(env, "setSpanSampleData"),
-           Napi::Function::New(env, SetSpanSampleData));
-  span.Set(Napi::String::New(env, "setSpanAttributeString"),
-           Napi::Function::New(env, SetSpanAttributeString));
-  span.Set(Napi::String::New(env, "setSpanAttributeSqlString"),
-           Napi::Function::New(env, SetSpanAttributeSqlString));
-  span.Set(Napi::String::New(env, "setSpanAttributeInt"),
-           Napi::Function::New(env, SetSpanAttributeInt));
-  span.Set(Napi::String::New(env, "setSpanAttributeBool"),
-           Napi::Function::New(env, SetSpanAttributeBool));
-  span.Set(Napi::String::New(env, "setSpanAttributeDouble"),
-           Napi::Function::New(env, SetSpanAttributeDouble));
-  span.Set(Napi::String::New(env, "spanToJSON"),
-           Napi::Function::New(env, SpanToJSON));
-
   return span;
 }
 

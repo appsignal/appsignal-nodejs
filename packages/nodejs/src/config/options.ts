@@ -1,4 +1,4 @@
-export interface AppsignalOptions {
+export type AppsignalOptions = {
   active: boolean
   apiKey: string
   caFilePath: string

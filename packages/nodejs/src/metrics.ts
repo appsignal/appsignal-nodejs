@@ -1,21 +1,20 @@
-import { Metrics, Probes } from "./interfaces"
-import { BaseProbes } from "./probes"
+import { Probes } from "./probes"
 import { metrics } from "./extension_wrapper"
 import { Data } from "./internal/data"
-import { BaseClient } from "./client"
 
 /**
  * The metrics object.
  *
  * @class
  */
-export class BaseMetrics implements Metrics {
+export class Metrics {
   #probes: Probes
 
   constructor() {
-    const enableMinutelyProbes = BaseClient.config.data.enableMinutelyProbes
+    const enableMinutelyProbes =
+      global.__APPSIGNAL__.config.data.enableMinutelyProbes
 
-    this.#probes = new BaseProbes({ run: enableMinutelyProbes })
+    this.#probes = new Probes({ run: enableMinutelyProbes })
   }
 
   /**

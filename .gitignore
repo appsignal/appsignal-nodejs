@@ -83,7 +83,4 @@ build/
 
 # Agent archives
 packages/nodejs/ext/*.tar.gz
-
-packages/*/test/spec/examples.txt
-packages/*/test/example/package-lock.json
 tmp

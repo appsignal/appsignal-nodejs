@@ -52,4 +52,3 @@ This package also contains the C++ extension, and the install script for the age
 [waffles-page]: https://appsignal.com/waffles
 [docs]: https://docs.appsignal.com/nodejs/
 [contributing-guide]: http://docs.appsignal.com/appsignal/contributing.html
-[semver]: http://semver.org/

@@ -1,4 +1,11 @@
-import { ExtensionWrapper } from "./interfaces/extension_wrapper"
+type ExtensionWrapper = {
+  isLoaded: boolean
+  extension: any
+  span: any
+  datamap: any
+  dataarray: any
+  metrics: any
+}
 
 let mod: ExtensionWrapper
 

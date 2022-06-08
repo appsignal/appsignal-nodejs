@@ -1,9 +1,6 @@
-import { Client } from "./src/interfaces"
+import { Client } from "./src/client"
 
 declare global {
-  namespace NodeJS {
-    interface Global {
-      __APPSIGNAL__: Client
-    }
-  }
+  // eslint-disable-next-line no-var
+  var __APPSIGNAL__: Client
 }

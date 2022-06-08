@@ -1,7 +1,6 @@
 import { extension, isLoaded as extensionLoaded } from "./extension_wrapper"
-import { OpenTelemetrySpan } from "./opentelemetry_span"
+import { Span } from "./span"
 import { Data } from "./internal/data"
-import { HashMap } from "@appsignal/types"
 
 /**
  * The public interface for the extension.
@@ -38,9 +37,9 @@ export class Extension {
     endTimeSec: number,
     endTimeNsec: number,
     name: string,
-    attributes: HashMap<any>,
+    attributes: Record<string, any>,
     instrumentationLibraryName: string
-  ): OpenTelemetrySpan {
+  ): Span {
     const ref = extension.createOpenTelemetrySpan(
       spanId,
       parentSpanId,
@@ -54,7 +53,7 @@ export class Extension {
       instrumentationLibraryName
     )
 
-    return new OpenTelemetrySpan(ref)
+    return new Span(ref)
   }
 
   public diagnose(): object {
