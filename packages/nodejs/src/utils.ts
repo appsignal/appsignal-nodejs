@@ -70,3 +70,9 @@ function numberToHrtime(epochMillis: number) {
 
   return [seconds, nanoseconds]
 }
+
+// This implementation should match the `scripts/extension/report.js`
+// implementation to generate the same path.
+export function installReportPath(): string {
+  return path.join(__dirname, "../ext/install.report")
+}
