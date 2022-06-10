@@ -1,4 +1,6 @@
+import fs from "fs"
 import { Extension } from "../extension"
+import { installReportPath } from "../utils"
 
 describe("Extension", () => {
   let ext: Extension
@@ -11,16 +13,84 @@ describe("Extension", () => {
     ext.stop()
   })
 
-  it("logs a warning when the module is required", () => {
+  it("logs an error when the module is required", () => {
     const errorSpy = jest.spyOn(console, "error")
 
     jest.resetModules()
     require("../extension")
 
     expect(errorSpy).toHaveBeenLastCalledWith(
-      "AppSignal extension not loaded. This could mean that your current " +
-        "environment isn't supported, or that another error has occurred."
+      "[appsignal][ERROR] AppSignal failed to load the extension. Please run the diagnose tool and email us at support@appsignal.com: https://docs.appsignal.com/nodejs/command-line/diagnose.html\n",
+      expect.any(Object)
     )
+  })
+
+  describe("when the install architecture doesn't match the current architecture", () => {
+    let originalInstallReport: { [key: string]: object }
+
+    beforeEach(() => {
+      // Temporary write report with other target and architecture to deliberatly cause a mismatch
+      originalInstallReport = readReport()
+      const newReport = {
+        ...originalInstallReport,
+        build: {
+          ...originalInstallReport["build"],
+          target: "dummyTarget",
+          architecture: "dummyArch"
+        }
+      }
+      dumpReport(newReport)
+    })
+
+    afterEach(() => {
+      // Restore original report so this dummy state doesn't leak into other tests or breaks the local install
+      dumpReport(originalInstallReport)
+    })
+
+    it("logs an error with the installed and current architecture", () => {
+      const errorSpy = jest.spyOn(console, "error")
+      const target = process.platform,
+        arch = process.arch
+
+      jest.resetModules()
+      require("../extension")
+
+      expect(errorSpy).toHaveBeenLastCalledWith(
+        `[appsignal][ERROR] The AppSignal extension was installed for architecture 'dummyArch-dummyTarget', but the current architecture is '${arch}-${target}'. Please reinstall the AppSignal package on the host the app is started.`
+      )
+    })
+  })
+
+  describe("when the install report can't be read", () => {
+    let originalInstallReport: { [key: string]: object }
+
+    beforeEach(() => {
+      // Remove the install report to cause a deliberate error
+      originalInstallReport = readReport()
+      fs.rmSync(installReportPath())
+    })
+
+    afterEach(() => {
+      // Restore original report so this dummy state doesn't leak into other tests or breaks the local install
+      dumpReport(originalInstallReport)
+    })
+
+    it("logs errors about missing report and mismatch in architecture", () => {
+      const errorSpy = jest.spyOn(console, "error")
+      const target = process.platform,
+        arch = process.arch
+
+      jest.resetModules()
+      require("../extension")
+
+      expect(errorSpy).toHaveBeenCalledWith(
+        "[appsignal][ERROR] Unable to fetch install report:",
+        expect.any(Object)
+      )
+      expect(errorSpy).toHaveBeenLastCalledWith(
+        `[appsignal][ERROR] The AppSignal extension was installed for architecture 'unknown-unknown', but the current architecture is '${arch}-${target}'. Please reinstall the AppSignal package on the host the app is started.`
+      )
+    })
   })
 
   it("is not loaded", () => {
@@ -49,4 +119,13 @@ describe("Extension", () => {
   it("does not error on runningInContainer", () => {
     expect(ext.runningInContainer()).toBeUndefined()
   })
+
+  function readReport() {
+    const rawReport = fs.readFileSync(installReportPath(), "utf8")
+    return JSON.parse(rawReport)
+  }
+
+  function dumpReport(report: object) {
+    fs.writeFileSync(installReportPath(), JSON.stringify(report, null, 2))
+  }
 })
