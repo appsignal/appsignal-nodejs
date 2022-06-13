@@ -2,7 +2,7 @@ import fs from "fs"
 import path from "path"
 import { URL } from "url"
 
-import { isWritable } from "./utils"
+import { isWritable, installReportPath } from "./utils"
 import { Extension } from "./extension"
 import { Configuration } from "./config"
 import { AGENT_VERSION, VERSION } from "./version"
@@ -90,7 +90,7 @@ export class DiagnoseTool {
   private getInstallationReport() {
     let rawReport
     try {
-      rawReport = fs.readFileSync(reportPath(), "utf8")
+      rawReport = fs.readFileSync(installReportPath(), "utf8")
       return JSON.parse(rawReport)
     } catch (error) {
       const report = {
@@ -260,12 +260,6 @@ export class DiagnoseTool {
         )
       })
   }
-}
-
-// This implementation should match the `scripts/extension/report.js`
-// implementation to generate the same path.
-function reportPath(): string {
-  return path.join(__dirname, "../ext/install.report")
 }
 
 function getPathType(stats: fs.Stats) {
