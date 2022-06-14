@@ -77,3 +77,7 @@ function numberToHrtime(epochMillis: number) {
 export function installReportPath(): string {
   return path.join(__dirname, "../ext/install.report")
 }
+
+export function processGetuid() {
+  return (process.getuid ?? (() => -1))()
+}

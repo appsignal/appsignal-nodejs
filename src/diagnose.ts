@@ -2,7 +2,7 @@ import fs from "fs"
 import path from "path"
 import { URL } from "url"
 
-import { isWritable, installReportPath } from "./utils"
+import { isWritable, installReportPath, processGetuid } from "./utils"
 import { Extension } from "./extension"
 import { Configuration } from "./config"
 import { AGENT_VERSION, VERSION } from "./version"
@@ -59,7 +59,7 @@ export class DiagnoseTool {
       },
       validation: { push_api_key: pushApiKeyValidation },
       process: {
-        uid: process.getuid()
+        uid: processGetuid()
       },
       paths: this.getPathsData()
     }
@@ -82,7 +82,7 @@ export class DiagnoseTool {
       os: process.platform,
       language_version: process.versions.node,
       heroku,
-      root: process.getuid() === 0,
+      root: processGetuid() === 0,
       running_in_container: this.#extension.runningInContainer()
     }
   }
