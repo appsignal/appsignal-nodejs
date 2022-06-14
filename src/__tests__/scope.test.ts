@@ -37,7 +37,7 @@ describe("ScopeManager", () => {
     // immediately, so `asyncTaskPromise` is always assigned -- but
     // the TypeScript compiler doesn't know that, so we ask it to
     // trust us that it's not `undefined`.
-    return (asyncTaskPromise as unknown) as Promise<T>
+    return asyncTaskPromise as unknown as Promise<T>
   }
 
   describe("new ScopeManager()", () => {

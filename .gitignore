@@ -80,10 +80,11 @@ build/
 /ext/libappsignal.a
 /ext/libappsignal.dylib
 /ext/libappsignal.so
+/ext/*.report
 
 # Agent archives
-packages/nodejs/ext/*.tar.gz
+ext/*.tar.gz
 
-packages/*/test/spec/examples.txt
-packages/*/test/example/package-lock.json
+test/spec/examples.txt
+test/example/package-lock.json
 tmp

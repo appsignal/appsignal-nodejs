@@ -4,9 +4,9 @@ import { initCorePlugins, initCoreProbes } from "../bootstrap"
 
 describe("Bootstrap", () => {
   describe("Plugins", () => {
-    const mock = ({
+    const mock = {
       load: jest.fn()
-    } as unknown) as Instrumentation
+    } as unknown as Instrumentation
 
     it("bootstraps the core instumentation plugins", () => {
       initCorePlugins(mock, {
@@ -42,11 +42,11 @@ describe("Bootstrap", () => {
     let mock: Metrics
 
     beforeEach(() => {
-      mock = ({
+      mock = {
         probes: jest.fn().mockImplementation(() => ({
           register: registerMock
         }))
-      } as unknown) as Metrics
+      } as unknown as Metrics
     })
 
     it("bootstraps the core probes", () => {

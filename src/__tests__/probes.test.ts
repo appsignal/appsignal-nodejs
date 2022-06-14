@@ -104,9 +104,9 @@ describe("Probes", () => {
     beforeEach(() => {
       setGaugeMock = jest.fn()
 
-      meterMock = ({
+      meterMock = {
         setGauge: setGaugeMock
-      } as unknown) as Metrics
+      } as unknown as Metrics
     })
 
     function registerV8Probe(hostname?: string) {

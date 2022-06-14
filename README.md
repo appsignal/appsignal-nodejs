@@ -4,19 +4,56 @@
 - [Documentation][docs]
 - [Support][contact]
 
-[![Build Status](https://appsignal.semaphoreci.com/badges/appsignal-nodejs/branches/main.svg?style=shields&key=7dd9fe64-f1d5-437b-a5b7-8ac337a26c5b)](https://travis-ci.org/appsignal/appsignal-nodejs) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+![npm (scoped)](https://img.shields.io/npm/v/@appsignal/nodejs) [![Build Status](https://appsignal.semaphoreci.com/badges/appsignal-nodejs/branches/main.svg?style=shields&key=7dd9fe64-f1d5-437b-a5b7-8ac337a26c5b)](https://appsignal.semaphoreci.com/projects/appsignal-nodejs) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+
+The core AppSignal for Node.js library.
 
 ## Installation
 
 Please follow our [installation guide](https://docs.appsignal.com/guides/new-application.html) in our documentation.
 
+First, [sign up][appsignal-sign-up] for an AppSignal account and run our automated install tool, which will install `@appsignal/nodejs` and any relevant integrations to your project:
+
+```bash
+npx @appsignal/cli install
+```
+
+You can also skip the automated tool and add `@appsignal/nodejs` to your `package.json` on the command line with `npm`/`yarn`:
+
+```bash
+yarn add @appsignal/nodejs
+npm install --save @appsignal/nodejs
+```
+
+Alternatively, you can manually add the `@appsignal/nodejs` package to your `package.json`. Then, run `yarn install`/`npm install`.
+
+> Installing the AppSignal for Node.js integration builds a native extension. In order to compile it, macOS users will need to install the [Xcode Developer Tools](https://osxdaily.com/2014/02/12/install-command-line-tools-mac-os-x/). Linux users will need the dependencies outlined here. Windows is not supported.
+
+You can then import and use the package in your bundle:
+
+```js
+const { Appsignal } = require("@appsignal/nodejs");
+
+const appsignal = new Appsignal({
+  active: true,
+  name: "<YOUR APPLICATION NAME>"
+  pushApiKey: "<YOUR API KEY>"
+});
+
+// ...all the rest of your code goes here!
+```
+
+> In order to auto-instrument modules, the Appsignal module must be both **required** and **initialized** before any other package.
+
+## Extension
+
+This package also contains the C++ extension, and the install script for the agent. The native extension is a bridge between the Node.js runtime and [our agent](https://docs.appsignal.com/appsignal/how-appsignal-operates.html#agent).
+
 ## Development
 
 ### Installation
 
-This repository is a [mono-managed monorepo](https://github.com/appsignal/mono/), containing packages (located in the `/packages` directory) that map to separate `npm` modules.
-
-First install mono on your local machine by [following the mono installation steps](https://github.com/appsignal/mono/#installation).
+This repository is a [mono-managed repository](https://github.com/appsignal/mono/). First install mono on your local machine by [following the mono installation steps](https://github.com/appsignal/mono/#installation).
 
 Then install the dependencies and prepare the project for development use using mono:
 
@@ -27,7 +64,7 @@ mono bootstrap
 You can then run the following to start the compiler in _watch_ mode.
 
 ```bash
-mono run npm run build:watch --parallel
+npm run build:watch --parallel
 ```
 
 You can also build the library without watching the directory:
@@ -45,10 +82,6 @@ The tests for this library use [Jest](https://jestjs.io) as the test runner. Onc
 ```bash
 mono test
 ```
-
-### Versioning
-
-This repo uses [Semantic Versioning][semver] (often referred to as _semver_). Each package in the repository is versioned independently from one another.
 
 ## Contributing
 
@@ -69,4 +102,3 @@ Also, we would be very happy to send you Stroopwafels. Have look at everyone we 
 [waffles-page]: https://www.appsignal.com/waffles
 [docs]: https://docs.appsignal.com/nodejs/
 [contributing-guide]: http://docs.appsignal.com/appsignal/contributing.html
-[semver]: http://semver.org/

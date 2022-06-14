@@ -10,7 +10,6 @@ namespace :build_matrix do
       matrix = yaml["matrix"]
       semaphore = yaml["semaphore"]
       builds = []
-      skipped_packages = Set.new
       matrix["nodejs"].each do |nodejs|
         nodejs_version = nodejs["nodejs"]
         setup = nodejs.fetch("setup", [])
@@ -34,17 +33,18 @@ namespace :build_matrix do
                 "cache store"
               ]
             },
-            "epilogue" => matrix["epilogue"],
             "jobs" => [
               build_semaphore_job(
                 "name" => "Build",
                 "commands" => [
                   "mono build",
-                  "cache delete $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION",
-                  "cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION " \
-                    "packages",
-                  "cat packages/nodejs/ext/install.report; " \
-                    "cat packages/nodejs/ext/install.report | grep '\"status\": \"success\"'"
+                  "cache delete $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID",
+                  "cache store  $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID dist",
+                  "cache delete $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID",
+                  "cache store  $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID ext",
+                  "cache delete $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID",
+                  "cache store  $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID build",
+                  "cat ext/install.report; cat ext/install.report | grep '\"status\": \"success\"'"
                 ]
               )
             ]
@@ -54,55 +54,21 @@ namespace :build_matrix do
 
         primary_block_name = "Node.js #{nodejs_version} - Tests"
         primary_jobs = []
-        matrix["packages"].each do |package|
-          has_package_tests = package_has_tests? package["path"]
-          if !has_package_tests && skipped_packages.add?(package["package"])
-            puts "DEBUG: Skipping Node.js tests for #{package["package"]}: No test files found"
-          end
+        package = matrix["package"]
+        primary_jobs << build_semaphore_job(
+          "name" => "Test package",
+          "commands" => ([
+            "mono test"
+          ] + package.fetch("extra_commands", [])).compact
+        )
 
-          package["variations"].each do |variation|
-            excluded_nodejs_versions = variation.dig("exclude", "nodejs") || []
-            next if excluded_nodejs_versions.include?(nodejs_version)
-
-            variation_name = variation.fetch("name")
-            dependency_specification = variation["packages"]
-            update_package_version_command, update_test_app_version_command =
-              if dependency_specification
-                packages = dependency_specification.map do |name, version|
-                  "#{name}@#{version}"
-                end.join(" ")
-                [
-                  "script/install_packages #{packages}",
-                  "script/install_test_example_packages " \
-                    "#{File.basename package["path"]} #{packages}"
-                ]
-              end
-
-            # Run Node.js / Jest tests against specific package versions
-            if has_package_tests
-              # Only add a job to run Node.js / Jest tests if there are any. So
-              # we don't waste a lot of time on job setup that don't do
-              # anything. If a package suddenly does get tests the validation
-              # step will fail, and will require this task to be re-run, so
-              # that we don't forget to run those new tests.
-              primary_jobs << build_semaphore_job(
-                "name" => "#{package["package"]} - #{variation_name}",
-                "commands" => ([
-                  update_package_version_command,
-                  "mono test --package=#{package["package"]}"
-                ] + package.fetch("extra_commands", [])).compact
-              )
-            end
-
-            # Run extra tests against specific package versions. If configured,
-            # run the extra tests configured for the package.
-            package.fetch("extra_tests", []).each do |test_name, extra_tests|
-              primary_jobs << build_semaphore_job(
-                "name" => "#{package["package"]} - #{variation_name} - #{test_name}",
-                "commands" => ([update_test_app_version_command] + extra_tests).compact
-              )
-            end
-          end
+        # Run extra tests against specific package versions. If configured,
+        # run the extra tests configured for the package.
+        package.fetch("extra_tests", []).each do |test_name, extra_tests|
+          primary_jobs << build_semaphore_job(
+            "name" => "Extra test - #{test_name}",
+            "commands" => extra_tests
+          )
         end
         primary_block =
           build_semaphore_task(
@@ -122,11 +88,12 @@ namespace :build_matrix do
               "prologue" => {
                 "commands" => setup + [
                   "cache restore",
-                  "cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION",
+                  "cache restore $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID",
+                  "cache restore $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID",
+                  "cache restore $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID",
                   "mono bootstrap --ci"
                 ]
               },
-              "epilogue" => matrix["epilogue"],
               "jobs" => primary_jobs
             }
           )

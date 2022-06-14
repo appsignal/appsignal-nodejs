@@ -52,9 +52,10 @@ export function isWritable(path: string) {
  *
  * @function
  */
-export function hrTime(
-  performance = perf_hooks.performance
-): { sec: number; nsec: number } {
+export function hrTime(performance = perf_hooks.performance): {
+  sec: number
+  nsec: number
+} {
   const origin = numberToHrtime(performance.timeOrigin)
   const now = numberToHrtime(performance.now())
 

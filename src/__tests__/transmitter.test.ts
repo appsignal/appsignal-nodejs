@@ -159,7 +159,7 @@ describe("Transmitter", () => {
           callback(stream)
           stream.emit("end")
 
-          return (requestCallbacks as unknown) as ClientRequest
+          return requestCallbacks as unknown as ClientRequest
         }
       )
 

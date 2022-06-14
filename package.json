@@ -1,19 +1,34 @@
 {
-  "name": "appsignal-nodejs",
-  "version": "0.0.0",
-  "private": true,
+  "name": "@appsignal/nodejs",
+  "version": "2.4.2",
   "main": "dist/index",
+  "types": "dist/index",
   "license": "MIT",
-  "engines": {
-    "node": ">= 12",
-    "npm": ">= 7"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/appsignal/appsignal-nodejs.git"
   },
-  "workspaces": [
-    "packages/*"
-  ],
-  "devDependencies": {
+  "bin": {
+    "appsignal-diagnose": "./bin/diagnose"
+  },
+  "dependencies": {
+    "@appsignal/core": "^1.1.4",
     "@appsignal/types": "^3.0.0",
+    "@opentelemetry/api": "^1.0.4",
+    "@opentelemetry/sdk-trace-base": "^1.2.0",
+    "node-addon-api": "^3.1.0",
+    "node-gyp": "^9.0.0",
+    "require-in-the-middle": "^5.1.0",
+    "semver": "^7.3.4",
+    "shimmer": "^1.2.1",
+    "tslib": "^2.0.3",
+    "winston": "^3.6.0"
+  },
+  "devDependencies": {
     "@types/jest": "^26.0.19",
+    "@types/pg": "*",
+    "@types/redis": "*",
+    "@types/semver": "*",
     "@types/shimmer": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^5.13.0",
     "@typescript-eslint/parser": "^5.13.0",
@@ -24,21 +39,37 @@
     "husky": "^4.3.6",
     "jest": "^26.6.3",
     "lint-staged": "^10.5.3",
+    "nock": "^13.2.2",
     "npm-run-all": "^4.1.5",
+    "pg": "*",
     "prettier": "^2.2.1",
+    "redis": "*",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.4.4",
-    "typescript": "^4.1.3"
+    "typescript": "~4.1.3"
   },
   "scripts": {
-    "bootstrap": "echo Please run 'mono bootstrap' instead.",
-    "bootstrap:ci": "echo Please run 'mono bootstrap --ci' instead.",
-    "build": "echo Please run 'mono build' instead.",
-    "build:watch": "echo Please run 'mono run npm run build:watch --parallel' instead.",
-    "clean": "echo Please run 'mono clean' instead.",
-    "test": "echo Please run 'mono test' instead.",
+    "build": "tsc -p tsconfig.json",
+    "build:watch": "tsc -p tsconfig.json -w --preserveWatchOutput",
+    "postclean": "npm run clean:ext",
+    "clean": "rimraf dist coverage build",
+    "clean:ext": "rimraf ext/appsignal-agent ext/libappsignal.a ext/appsignal.* ext/*.tar.gz ext/*.report",
+    "preinstall": "node scripts/extension/prebuild.js",
+    "install": "node scripts/extension/extension.js",
+    "link:npm": "npm link",
+    "link:yarn": "yarn link",
+    "test": "jest --filter=./test/filter.js",
+    "test:watch": "jest --filter=./test/filter.js --watch",
+    "pretest:failure": "npm run clean",
+    "test:failure": "_TEST_APPSIGNAL_EXTENSION_FAILURE=true _APPSIGNAL_EXTENSION_INSTALL=true npm run install; _TEST_APPSIGNAL_EXTENSION_FAILURE=true jest --filter=./test/filter.js",
     "lint": "eslint --max-warnings 0 .",
     "lint:write": "eslint --fix ."
+  },
+  "engines": {
+    "node": ">= 12"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "husky": {
     "hooks": {

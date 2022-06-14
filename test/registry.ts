@@ -27,7 +27,7 @@ jest.mock("../src/span", () => {
 
     constructor(spanOptions: Partial<SpanOptions> = {}) {
       super(spanOptions)
-      SpanTestRegistry.addSpan((this as unknown) as Span)
+      SpanTestRegistry.addSpan(this as unknown as Span)
     }
 
     // Mock the `close` functions so that `Span.toObject` will return the
@@ -50,7 +50,7 @@ jest.mock("../src/span", () => {
       spanOptions: Partial<SpanOptions> = {}
     ) {
       super(spanOrContext, spanOptions)
-      SpanTestRegistry.addSpan((this as unknown) as Span)
+      SpanTestRegistry.addSpan(this as unknown as Span)
     }
 
     // Mock the `close` functions so that `Span.toObject` will return the

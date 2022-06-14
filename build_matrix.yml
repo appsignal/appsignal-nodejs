@@ -14,10 +14,10 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
       value: 'true'
     - name: NODE_ENV
       value: test
-    - name: _PACKAGES_CACHE
-      value: v1
+    - name: _PACKAGE_CACHE
+      value: v3
     - name: _BUNDLER_CACHE
-      value: v1
+      value: v2
     prologue:
       commands:
         - checkout
@@ -61,24 +61,15 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
             - script/lint_git
 
 matrix:
-  epilogue: # Shared for all jobs in the build matrix
-    always:
-      commands:
-        - ""
-
   nodejs:
     - nodejs: "18"
     - nodejs: "16"
     - nodejs: "14"
-  packages:
-    - package: "@appsignal/nodejs"
-      path: "packages/nodejs"
-      variations:
-        - name: "nodejs"
-      extra_tests:
-        diagnose:
-          - git submodule init
-          - git submodule update
-          - LANGUAGE=nodejs test/integration/diagnose/bin/test
-      extra_commands:
-        - mono run --package @appsignal/nodejs -- npm run test:failure
+  package:
+    extra_commands: # Run in the package's job
+      - npm run test:failure
+    extra_tests: # Run as separate jobs for package
+      diagnose:
+        - git submodule init
+        - git submodule update
+        - LANGUAGE=nodejs test/integration/diagnose/bin/test

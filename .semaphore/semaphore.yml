@@ -18,10 +18,10 @@ global_job_config:
     value: 'true'
   - name: NODE_ENV
     value: test
-  - name: _PACKAGES_CACHE
-    value: v1
+  - name: _PACKAGE_CACHE
+    value: v3
   - name: _BUNDLER_CACHE
-    value: v1
+    value: v2
   prologue:
     commands:
     - checkout
@@ -74,18 +74,17 @@ blocks:
       - cache restore
       - mono bootstrap --ci
       - cache store
-    epilogue: &1
-      always:
-        commands:
-        - ''
     jobs:
     - name: Build
       commands:
       - mono build
-      - cache delete $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-      - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
-      - 'cat packages/nodejs/ext/install.report; cat packages/nodejs/ext/install.report
-        | grep ''"status": "success"'''
+      - cache delete $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache store  $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID dist
+      - cache delete $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache store  $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID ext
+      - cache delete $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache store  $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID build
+      - 'cat ext/install.report; cat ext/install.report | grep ''"status": "success"'''
 - name: Node.js 18 - Tests
   dependencies:
   - Node.js 18 - Build
@@ -98,16 +97,17 @@ blocks:
     prologue:
       commands:
       - cache restore
-      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - cache restore $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache restore $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache restore $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
       - mono bootstrap --ci
-    epilogue: *1
     jobs:
-    - name: "@appsignal/nodejs - nodejs"
+    - name: Test package
       commands:
-      - mono test --package=@appsignal/nodejs
-      - mono run --package @appsignal/nodejs -- npm run test:failure
-    - name: "@appsignal/nodejs - nodejs - diagnose"
-      commands:
+      - mono test
+      - npm run test:failure
+    - name: Extra test - diagnose
+      commands: &1
       - git submodule init
       - git submodule update
       - LANGUAGE=nodejs test/integration/diagnose/bin/test
@@ -123,15 +123,17 @@ blocks:
       - cache restore
       - mono bootstrap --ci
       - cache store
-    epilogue: *1
     jobs:
     - name: Build
       commands:
       - mono build
-      - cache delete $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-      - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
-      - 'cat packages/nodejs/ext/install.report; cat packages/nodejs/ext/install.report
-        | grep ''"status": "success"'''
+      - cache delete $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache store  $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID dist
+      - cache delete $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache store  $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID ext
+      - cache delete $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache store  $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID build
+      - 'cat ext/install.report; cat ext/install.report | grep ''"status": "success"'''
 - name: Node.js 16 - Tests
   dependencies:
   - Node.js 16 - Build
@@ -144,19 +146,17 @@ blocks:
     prologue:
       commands:
       - cache restore
-      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - cache restore $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache restore $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache restore $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
       - mono bootstrap --ci
-    epilogue: *1
     jobs:
-    - name: "@appsignal/nodejs - nodejs"
+    - name: Test package
       commands:
-      - mono test --package=@appsignal/nodejs
-      - mono run --package @appsignal/nodejs -- npm run test:failure
-    - name: "@appsignal/nodejs - nodejs - diagnose"
-      commands:
-      - git submodule init
-      - git submodule update
-      - LANGUAGE=nodejs test/integration/diagnose/bin/test
+      - mono test
+      - npm run test:failure
+    - name: Extra test - diagnose
+      commands: *1
 - name: Node.js 14 - Build
   dependencies:
   - Validation
@@ -169,15 +169,17 @@ blocks:
       - cache restore
       - mono bootstrap --ci
       - cache store
-    epilogue: *1
     jobs:
     - name: Build
       commands:
       - mono build
-      - cache delete $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
-      - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
-      - 'cat packages/nodejs/ext/install.report; cat packages/nodejs/ext/install.report
-        | grep ''"status": "success"'''
+      - cache delete $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache store  $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID dist
+      - cache delete $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache store  $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID ext
+      - cache delete $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache store  $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID build
+      - 'cat ext/install.report; cat ext/install.report | grep ''"status": "success"'''
 - name: Node.js 14 - Tests
   dependencies:
   - Node.js 14 - Build
@@ -190,16 +192,14 @@ blocks:
     prologue:
       commands:
       - cache restore
-      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - cache restore $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache restore $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache restore $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
       - mono bootstrap --ci
-    epilogue: *1
     jobs:
-    - name: "@appsignal/nodejs - nodejs"
+    - name: Test package
       commands:
-      - mono test --package=@appsignal/nodejs
-      - mono run --package @appsignal/nodejs -- npm run test:failure
-    - name: "@appsignal/nodejs - nodejs - diagnose"
-      commands:
-      - git submodule init
-      - git submodule update
-      - LANGUAGE=nodejs test/integration/diagnose/bin/test
+      - mono test
+      - npm run test:failure
+    - name: Extra test - diagnose
+      commands: *1
