@@ -1,4 +1,4 @@
-import { Context } from "@opentelemetry/api"
+import type { Context } from "@opentelemetry/api"
 import type {
   Span,
   ReadableSpan,

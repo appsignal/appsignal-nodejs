@@ -7,6 +7,17 @@ import { Logger } from "./logger"
 import { NoopMetrics } from "./noops"
 import { VERSION } from "./version"
 
+import { SpanProcessor } from "./span_processor"
+import { RedisDbStatementSerializer } from "./instrumentation/redis/serializer"
+import { NodeSDK } from "@opentelemetry/sdk-node"
+import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
+import { MySQLInstrumentation } from "@opentelemetry/instrumentation-mysql"
+import { MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2"
+import { RedisInstrumentation } from "@opentelemetry/instrumentation-redis"
+import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
+import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
+import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express"
+
 /**
  * AppSignal for Node.js's main class.
  *
@@ -63,6 +74,7 @@ export class Client {
     }
 
     this.initCoreProbes()
+    this.initOpenTelemetry()
   }
 
   /**
@@ -138,6 +150,33 @@ export class Client {
     probes.forEach(({ PROBE_NAME, init }) =>
       this.#metrics.probes().register(PROBE_NAME, init(this.#metrics))
     )
+  }
+
+  /**
+   * Initialises OpenTelemetry instrumentation
+   */
+  private initOpenTelemetry() {
+    const sdk = new NodeSDK({
+      instrumentations: [
+        new HttpInstrumentation(),
+        new ExpressInstrumentation(),
+        new MySQLInstrumentation(),
+        new MySQL2Instrumentation(),
+        new RedisInstrumentation({
+          dbStatementSerializer: RedisDbStatementSerializer
+        }),
+        new IORedisInstrumentation({
+          requireParentSpan: false,
+          dbStatementSerializer: RedisDbStatementSerializer
+        })
+      ]
+    })
+
+    sdk.start()
+
+    const tracerProvider = new NodeTracerProvider()
+    tracerProvider.addSpanProcessor(new SpanProcessor(this))
+    tracerProvider.register()
   }
 
   /**

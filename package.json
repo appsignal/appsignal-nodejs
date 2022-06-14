@@ -12,15 +12,17 @@
     "appsignal-diagnose": "./bin/diagnose"
   },
   "dependencies": {
-    "@appsignal/core": "^1.1.4",
     "@opentelemetry/api": "^1.0.4",
     "@opentelemetry/auto-instrumentations-node": "^0.30.0",
-    "@opentelemetry/sdk-node": "^0.29.2",
+    "@opentelemetry/sdk-node": "^0.28.0",
     "@opentelemetry/sdk-trace-base": "^1.2.0",
     "node-addon-api": "^3.1.0",
     "node-gyp": "^9.0.0",
     "tslib": "^2.0.3",
     "winston": "^3.6.0"
+  },
+  "peerDependencies": {
+    "mysql2": "*"
   },
   "devDependencies": {
     "@types/jest": "^26.0.19",
