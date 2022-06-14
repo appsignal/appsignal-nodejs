@@ -1,8 +1,8 @@
-import { Metrics, Probes } from "../interfaces"
-import { BaseProbes } from "../probes"
+import { Metrics } from "../metrics"
+import { Probes } from "../probes"
 
-export class NoopMetrics implements Metrics {
-  #probes = new BaseProbes({ run: false })
+export class NoopMetrics extends Metrics {
+  #probes = new Probes({ run: false })
 
   public setGauge(
     _key: string,

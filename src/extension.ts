@@ -1,6 +1,5 @@
 import { extension, isLoaded as extensionLoaded } from "./extension_wrapper"
 import { Data } from "./internal/data"
-import { HashMap } from "@appsignal/types"
 
 /**
  * The public interface for the extension.
@@ -37,7 +36,7 @@ export class Extension {
     endTimeSec: number,
     endTimeNsec: number,
     name: string,
-    attributes: HashMap<any>,
+    attributes: Record<string, any>,
     instrumentationLibraryName: string
   ): void {
     extension.importOpenTelemetrySpan(

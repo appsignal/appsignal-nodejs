@@ -1,10 +1,10 @@
 import { Context } from "@opentelemetry/api"
-import {
+import type {
   Span,
   ReadableSpan,
   SpanProcessor as OpenTelemetrySpanProcessor
-} from "./interfaces/span_processor"
-import { BaseClient as Client } from "./client"
+} from "@opentelemetry/sdk-trace-base"
+import { Client } from "./client"
 
 export class SpanProcessor implements OpenTelemetrySpanProcessor {
   client: Client

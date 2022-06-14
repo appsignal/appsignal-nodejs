@@ -1,14 +1,10 @@
-import { Client, Metrics, Plugin, Tracer, AppsignalOptions } from "./interfaces"
-
+import { AppsignalOptions } from "./config/options"
 import { Extension } from "./extension"
 import { Configuration } from "./config"
-import { BaseTracer } from "./tracer"
-import { BaseMetrics } from "./metrics"
+import { Metrics } from "./metrics"
+import * as gcProbe from "./probes/v8"
 import { Logger } from "./logger"
-import { NoopTracer, NoopMetrics } from "./noops"
-import { Instrumentation } from "./instrument"
-import { initCorePlugins, initCoreProbes } from "./bootstrap"
-import { demo } from "./demo"
+import { NoopMetrics } from "./noops"
 import { VERSION } from "./version"
 
 /**
@@ -19,15 +15,13 @@ import { VERSION } from "./version"
  *
  * @class
  */
-export class BaseClient implements Client {
+export class Client {
   readonly VERSION = VERSION
 
   config: Configuration
   readonly logger: Logger
   extension: Extension
-  instrumentation: Instrumentation
 
-  #tracer: Tracer
   #metrics: Metrics
 
   /**
@@ -62,29 +56,17 @@ export class BaseClient implements Client {
 
     if (this.isActive) {
       this.extension.start()
-      this.#metrics = new BaseMetrics()
-      this.#tracer = new BaseTracer()
+      this.#metrics = new Metrics()
     } else {
       this.#metrics = new NoopMetrics()
-      this.#tracer = new NoopTracer()
+      console.error("AppSignal not starting, no valid configuration found")
     }
 
-    this.instrumentation = new Instrumentation(this.tracer(), this.metrics())
-
-    const { instrumentRedis, instrumentHttp, instrumentPg } = this.config.data
-    initCorePlugins(this.instrumentation, {
-      instrumentationConfig: {
-        http: instrumentHttp,
-        https: instrumentHttp,
-        pg: instrumentPg,
-        redis: instrumentRedis
-      }
-    })
-    initCoreProbes(this.metrics())
+    this.initCoreProbes()
   }
 
   /**
-   * Returns `true` if the agent is loaded and configuration is valid
+   * Returns `true` if the extension is loaded and configuration is valid
    */
   get isActive(): boolean {
     return (
@@ -130,16 +112,6 @@ export class BaseClient implements Client {
   }
 
   /**
-   * Returns the current `Tracer` instance.
-   *
-   * If the agent is inactive when this method is called, the method
-   * returns a `NoopTracer`, which will do nothing.
-   */
-  public tracer(): Tracer {
-    return this.#tracer
-  }
-
-  /**
    * Returns the current `Metrics` object.
    *
    * To track application-wide metrics, you can send custom metrics to AppSignal.
@@ -157,26 +129,15 @@ export class BaseClient implements Client {
   }
 
   /**
-   * Allows a named module to be modified by a function. The function `fn`
-   * returns a `Plugin`, which will be loaded by the instrumentation manager
-   * when the module is required.
+   * Initialises all the available probes to attach automatically at runtime.
    */
-  public instrument<T>({
-    PLUGIN_NAME: name,
-    instrument: fn
-  }: {
-    PLUGIN_NAME: string
-    instrument: (module: T, tracer: Tracer, meter: Metrics) => Plugin<T>
-  }): this {
-    this.instrumentation.load(name, fn)
-    return this
-  }
+  private initCoreProbes() {
+    const probes: any[] = [gcProbe]
 
-  /**
-   * Sends a demonstration/test sample for a exception and a performance issue.
-   */
-  public demo() {
-    return demo(this.tracer())
+    // load probes
+    probes.forEach(({ PROBE_NAME, init }) =>
+      this.#metrics.probes().register(PROBE_NAME, init(this.#metrics))
+    )
   }
 
   /**

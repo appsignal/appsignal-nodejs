@@ -1,11 +1,11 @@
-import { BaseClient } from "../client"
-import { BaseMetrics as Metrics } from "../metrics"
+import { Client } from "../client"
+import { Metrics } from "../metrics"
 
 describe("Metrics", () => {
   let metrics: Metrics
 
   beforeEach(() => {
-    new BaseClient()
+    new Client()
     metrics = new Metrics()
   })
 
@@ -14,7 +14,7 @@ describe("Metrics", () => {
   })
 
   it("does not run the probes when minutely probes are off", () => {
-    new BaseClient({ enableMinutelyProbes: false })
+    new Client({ enableMinutelyProbes: false })
     metrics = new Metrics()
     expect(metrics.probes().isRunning).toEqual(false)
   })

@@ -1,13 +1,13 @@
-import { Metrics } from "../../interfaces"
+import { Metrics } from "../../metrics"
 import v8 from "v8"
 import os from "os"
-import { BaseClient } from "../../client"
+import { Client } from "../../client"
 
 export const PROBE_NAME = "v8_stats"
 
 export function init(meter: Metrics) {
   function setGauge(key: string, value: number) {
-    const hostname = BaseClient.config.data.hostname || os.hostname()
+    const hostname = Client.config.data.hostname || os.hostname()
     meter.setGauge(key, value, { hostname })
   }
 

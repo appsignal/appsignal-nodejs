@@ -1,4 +1,4 @@
-import { RedisDbStatementSerializer } from "../opentelemetry"
+import { RedisDbStatementSerializer } from "../serializer"
 
 describe("RedisDbStatementSerializer", () => {
   it("sanitizes queries without arguments", () => {

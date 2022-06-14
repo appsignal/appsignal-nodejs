@@ -1,4 +1,4 @@
-import { Client } from "./src/interfaces"
+import { Client } from "./src/client"
 
 declare global {
   namespace NodeJS {

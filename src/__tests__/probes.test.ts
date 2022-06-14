@@ -1,16 +1,15 @@
-import { Metrics, Probes } from "../interfaces"
-import { BaseProbes } from "../probes"
-import { BaseMetrics } from "../metrics"
+import { Probes } from "../probes"
+import { Metrics } from "../metrics"
 import * as v8 from "../probes/v8"
 import os from "os"
-import { BaseClient } from "../client"
+import { Client } from "../client"
 
 describe("Probes", () => {
   let probes: Probes
 
   beforeEach(() => {
     jest.useFakeTimers()
-    probes = new BaseProbes()
+    probes = new Probes()
   })
 
   afterEach(() => {
@@ -72,12 +71,12 @@ describe("Probes", () => {
 
   describe("Metrics integration test", () => {
     function initialiseMetrics(enableMinutelyProbes = true) {
-      const client = new BaseClient({
+      const client = new Client({
         active: true,
         pushApiKey: "TEST_API_KEY",
         enableMinutelyProbes
       })
-      expect(client.metrics()).toBeInstanceOf(BaseMetrics)
+      expect(client.metrics()).toBeInstanceOf(Metrics)
 
       probes = client.metrics().probes()
     }
@@ -110,7 +109,7 @@ describe("Probes", () => {
     })
 
     function registerV8Probe(hostname?: string) {
-      new BaseClient({ hostname })
+      new Client({ hostname })
 
       const { PROBE_NAME, init } = v8
       probes.register(PROBE_NAME, init(meterMock))

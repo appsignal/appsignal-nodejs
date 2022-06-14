@@ -1,6 +1,14 @@
 import fs from "fs"
-import { ExtensionWrapper } from "./interfaces/extension_wrapper"
 import { installReportPath } from "./utils"
+
+type ExtensionWrapper = {
+  isLoaded: boolean
+  extension: any
+  span: any
+  datamap: any
+  dataarray: any
+  metrics: any
+}
 
 let mod: ExtensionWrapper
 

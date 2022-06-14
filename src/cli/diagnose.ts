@@ -1,7 +1,6 @@
 const { DiagnoseTool } = require("../diagnose")
 const util = require("util")
 const readline = require("readline")
-import { HashMap } from "@appsignal/types"
 
 export class Diagnose {
   #diagnose: typeof DiagnoseTool
@@ -238,7 +237,7 @@ export class Diagnose {
     await this.#diagnose.sendReport(data)
   }
 
-  printAgentDiagnose(report: HashMap<any>) {
+  printAgentDiagnose(report: Record<string, any>) {
     if (report["error"]) {
       console.log("  Error while parsing agent diagnostics report:")
       console.log(`    Error: ${report["error"]}`)
@@ -264,7 +263,7 @@ export class Diagnose {
     }
   }
 
-  printAgentTest(definition: HashMap<any>, test: HashMap<any>) {
+  printAgentTest(definition: Record<string, any>, test: Record<string, any>) {
     const value = test["result"]
     const error = test["error"]
     const output = test["output"]
@@ -288,7 +287,7 @@ export class Diagnose {
     }
   }
 
-  agentDiagnosticTestDefinition(): HashMap<any> {
+  agentDiagnosticTestDefinition(): Record<string, any> {
     return {
       extension: {
         label: "Extension tests",

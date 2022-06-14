@@ -3,9 +3,8 @@ import os from "os"
 
 import { VERSION } from "./version"
 import { isWritable } from "./utils"
-import { AppsignalOptions } from "./interfaces/options"
+import { AppsignalOptions } from "./config/options"
 import { ENV_TO_KEY_MAPPING, PRIVATE_ENV_MAPPING } from "./config/configmap"
-import { HashMap } from "@appsignal/types"
 
 /**
  * The AppSignal configuration object.
@@ -17,7 +16,7 @@ import { HashMap } from "@appsignal/types"
  */
 export class Configuration {
   data: Partial<AppsignalOptions>
-  sources: HashMap<Partial<AppsignalOptions>>
+  sources: Record<string, Partial<AppsignalOptions>>
 
   constructor(options: Partial<AppsignalOptions>) {
     if (options.apiKey) {
