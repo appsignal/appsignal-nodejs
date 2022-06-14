@@ -21,7 +21,7 @@ export class SpanProcessor implements OpenTelemetrySpanProcessor {
   onStart(_span: Span, _parentContext: Context): void {}
 
   onEnd(span: ReadableSpan): void {
-    this.client.extension.importOpenTelemetrySpan(
+    const opentelemetrySpan = this.client.extension.createOpenTelemetrySpan(
       span.spanContext().spanId,
       span.parentSpanId || "",
       span.spanContext().traceId,
@@ -33,6 +33,7 @@ export class SpanProcessor implements OpenTelemetrySpanProcessor {
       span.attributes,
       span.instrumentationLibrary.name
     )
+    opentelemetrySpan.close()
   }
 
   shutdown(): Promise<void> {

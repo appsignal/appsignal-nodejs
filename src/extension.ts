@@ -27,7 +27,7 @@ export class Extension {
     extension.stop()
   }
 
-  public importOpenTelemetrySpan(
+  public createOpenTelemetrySpan(
     spanId: string,
     parentSpanId: string,
     traceId: string,
@@ -38,8 +38,8 @@ export class Extension {
     name: string,
     attributes: Record<string, any>,
     instrumentationLibraryName: string
-  ): void {
-    extension.importOpenTelemetrySpan(
+  ): Span {
+    const ref = extension.createOpenTelemetrySpan(
       spanId,
       parentSpanId,
       traceId,
@@ -51,6 +51,7 @@ export class Extension {
       Data.generate(attributes),
       instrumentationLibraryName
     )
+    return new Span(ref)
   }
 
   public diagnose(): object {

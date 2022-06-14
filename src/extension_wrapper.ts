@@ -57,7 +57,7 @@ try {
       runningInContainer() {
         return
       },
-      importOpenTelemetrySpan() {
+      createOpenTelemetrySpan() {
         return
       }
     }
