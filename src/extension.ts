@@ -1,4 +1,5 @@
 import { extension, isLoaded as extensionLoaded } from "./extension_wrapper"
+import { Span } from "./span"
 import { Data } from "./internal/data"
 
 /**

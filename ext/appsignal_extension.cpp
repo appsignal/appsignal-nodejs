@@ -275,7 +275,7 @@ Napi::Value CreateOpenTelemetrySpan(const Napi::CallbackInfo &info) {
   Napi::String instrumentationLibraryName = info[9].As<Napi::String>();
 
   // Create this data as a span
-  appsignal_create_opentelemetry_span(
+  appsignal_span_t *span_ptr = appsignal_create_opentelemetry_span(
       MakeAppsignalString(spanId),
       MakeAppsignalString(parentSpanId),
       MakeAppsignalString(traceId),
@@ -288,7 +288,9 @@ Napi::Value CreateOpenTelemetrySpan(const Napi::CallbackInfo &info) {
       MakeAppsignalString(instrumentationLibraryName)
   );
 
-  return env.Null();
+  return Napi::External<appsignal_span_t>::New(
+      env, span_ptr,
+      [](Napi::Env env, appsignal_span_t *ptr) { appsignal_free_span(ptr); });
 }
 
 Napi::Value AddSpanError(const Napi::CallbackInfo &info) {
@@ -456,7 +458,7 @@ Napi::Object CreateSpanObject(Napi::Env env, Napi::Object exports) {
   Napi::Object span = Napi::Object::New(env);
 
   span.Set(Napi::String::New(env, "closeSpan"),
-           Napi::Function::New(env, CloseSpan);
+           Napi::Function::New(env, CloseSpan));
   span.Set(Napi::String::New(env, "addSpanError"),
            Napi::Function::New(env, AddSpanError));
 
