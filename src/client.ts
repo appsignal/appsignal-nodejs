@@ -5,6 +5,7 @@ import { Metrics } from "./metrics"
 import * as gcProbe from "./probes/v8"
 import { Logger } from "./logger"
 import { NoopMetrics } from "./noops"
+import { demo } from "./demo"
 import { VERSION } from "./version"
 
 import { SpanProcessor } from "./span_processor"
@@ -121,6 +122,17 @@ export class Client {
 
     this.metrics().probes().stop()
     this.extension.stop()
+  }
+
+  /**
+   * Internal private function used by the demo CLI.
+   *
+   * https://docs.appsignal.com/nodejs/command-line/demo.html
+   *
+   * @private
+   */
+  public demo() {
+    demo(this)
   }
 
   /**
