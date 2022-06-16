@@ -14,6 +14,7 @@ import * as asyncHooks from "async_hooks"
 import { EventEmitter } from "events"
 import shimmer from "shimmer"
 import { NoopSpan } from "./noops/span"
+import { BaseClient } from "./client"
 
 // A list of well-known EventEmitter methods that add event listeners.
 const EVENT_EMITTER_ADD_METHODS: Array<keyof EventEmitter> = [
@@ -206,6 +207,10 @@ export class ScopeManager {
       return fn(span)
     } catch (error) {
       if (error instanceof Error) this.root()?.setError(error)
+      else
+        BaseClient.logger.warn(
+          `Caught non-Error ${error} in Scope.withContext(), skipping...`
+        )
       throw error
     } finally {
       // Unset the current active span so it doesn't leak outside this context
