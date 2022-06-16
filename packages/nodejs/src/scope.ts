@@ -204,9 +204,9 @@ export class ScopeManager {
 
     try {
       return fn(span)
-    } catch (err) {
-      this.root()?.setError(err)
-      throw err
+    } catch (error) {
+      if (error instanceof Error) this.root()?.setError(error)
+      throw error
     } finally {
       // Unset the current active span so it doesn't leak outside this context
       // in case there was no previous active span or it's no longer open.

@@ -127,12 +127,14 @@ export class BaseSpan implements Span {
 
     try {
       span.setSpanSampleData(this._ref, key, Data.generate(data))
-    } catch (e) {
-      BaseClient.logger.error(
-        `Error generating data (${e.name}: ${e.message}) for '${JSON.stringify(
-          data
-        )}'`
-      )
+    } catch (error) {
+      if (error instanceof Error) {
+        BaseClient.logger.error(
+          `Error generating data (${error.name}: ${
+            error.message
+          }) for '${JSON.stringify(data)}'`
+        )
+      }
     }
 
     return this

@@ -99,10 +99,13 @@ function outgoingRequestFunction(
 
       try {
         req = original.apply(this, [urlOrOptions, ...args])
-      } catch (err) {
-        tracer.setError(err)
-        span.close()
-        throw err
+      } catch (error) {
+        if (error instanceof Error) {
+          tracer.setError(error)
+          span.close()
+        }
+
+        throw error
       }
 
       tracer.wrapEmitter(req)
