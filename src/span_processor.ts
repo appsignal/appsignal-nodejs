@@ -21,7 +21,7 @@ export class SpanProcessor implements OpenTelemetrySpanProcessor {
   onStart(_span: Span, _parentContext: Context): void {}
 
   onEnd(span: ReadableSpan): void {
-    this.client.extension.importOpenTelemetrySpan(
+    const opentelemetrySpan = this.client.extension.createOpenTelemetrySpan(
       span.spanContext().spanId,
       span.parentSpanId || "",
       span.spanContext().traceId,
@@ -33,6 +33,19 @@ export class SpanProcessor implements OpenTelemetrySpanProcessor {
       span.attributes,
       span.instrumentationLibrary.name
     )
+
+    const errors = span.events.filter(event => event.name == "exception")
+    errors.forEach(e => {
+      const eventAttributes = e["attributes"] as any
+
+      opentelemetrySpan.setError(
+        eventAttributes["exception.type"],
+        eventAttributes["exception.message"],
+        eventAttributes["exception.stacktrace"]
+      )
+    })
+
+    opentelemetrySpan.close()
   }
 
   shutdown(): Promise<void> {

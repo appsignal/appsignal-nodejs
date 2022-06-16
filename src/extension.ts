@@ -1,4 +1,5 @@
 import { extension, isLoaded as extensionLoaded } from "./extension_wrapper"
+import { Span } from "./span"
 import { Data } from "./internal/data"
 
 /**
@@ -27,7 +28,7 @@ export class Extension {
     extension.stop()
   }
 
-  public importOpenTelemetrySpan(
+  public createOpenTelemetrySpan(
     spanId: string,
     parentSpanId: string,
     traceId: string,
@@ -38,8 +39,8 @@ export class Extension {
     name: string,
     attributes: Record<string, any>,
     instrumentationLibraryName: string
-  ): void {
-    extension.importOpenTelemetrySpan(
+  ): Span {
+    const ref = extension.createOpenTelemetrySpan(
       spanId,
       parentSpanId,
       traceId,
@@ -51,6 +52,7 @@ export class Extension {
       Data.generate(attributes),
       instrumentationLibraryName
     )
+    return new Span(ref)
   }
 
   public diagnose(): object {
