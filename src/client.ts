@@ -18,6 +18,7 @@ import { RedisInstrumentation } from "@opentelemetry/instrumentation-redis"
 import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
 import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express"
+import { KoaInstrumentation } from "@opentelemetry/instrumentation-koa"
 
 /**
  * AppSignal for Node.js's main class.
@@ -172,6 +173,7 @@ export class Client {
       instrumentations: [
         new HttpInstrumentation(),
         new ExpressInstrumentation(),
+        new KoaInstrumentation(),
         new MySQLInstrumentation(),
         new MySQL2Instrumentation(),
         new RedisInstrumentation({
