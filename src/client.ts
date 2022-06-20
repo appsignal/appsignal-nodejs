@@ -15,6 +15,7 @@ import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
 import { MySQLInstrumentation } from "@opentelemetry/instrumentation-mysql"
 import { MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2"
 import { RedisInstrumentation } from "@opentelemetry/instrumentation-redis"
+import { RedisInstrumentation as Redis4Instrumentation } from "@opentelemetry/instrumentation-redis-4"
 import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
 import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express"
@@ -177,6 +178,9 @@ export class Client {
         new MySQLInstrumentation(),
         new MySQL2Instrumentation(),
         new RedisInstrumentation({
+          dbStatementSerializer: RedisDbStatementSerializer
+        }),
+        new Redis4Instrumentation({
           dbStatementSerializer: RedisDbStatementSerializer
         }),
         new IORedisInstrumentation({
