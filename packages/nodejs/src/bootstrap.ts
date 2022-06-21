@@ -32,10 +32,12 @@ export function initCorePlugins(
   plugins.forEach(({ PLUGIN_NAME, instrument }) => {
     try {
       instrumentation.load(PLUGIN_NAME, instrument)
-    } catch (e) {
-      BaseClient.logger.warn(
-        `Failed to instrument "${PLUGIN_NAME}": ${e.message}`
-      )
+    } catch (error) {
+      if (error instanceof Error) {
+        BaseClient.logger.warn(
+          `Failed to instrument "${PLUGIN_NAME}": ${error.message}`
+        )
+      }
     }
   })
 }

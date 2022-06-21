@@ -93,16 +93,18 @@ export class DiagnoseTool {
       rawReport = fs.readFileSync(installReportPath(), "utf8")
       return JSON.parse(rawReport)
     } catch (error) {
-      const report = {
-        parsing_error: {
-          error: `${error.name}: ${error.message}`,
-          backtrace: error.stack.split("\n")
-        } as ParsingError
+      if (error instanceof Error) {
+        const report = {
+          parsing_error: {
+            error: `${error.name}: ${error.message}`,
+            backtrace: (error.stack || "").split("\n")
+          } as ParsingError
+        }
+        if (rawReport) {
+          report.parsing_error.raw = rawReport
+        }
+        return report
       }
-      if (rawReport) {
-        report.parsing_error.raw = rawReport
-      }
-      return report
     }
   }
 
