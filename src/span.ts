@@ -15,21 +15,21 @@ export type SpanData = {
 }
 
 export class Span {
-  ref: unknown
+  #ref: unknown
 
   constructor(ref: unknown) {
-    this.ref = ref
+    this.#ref = ref
   }
 
   public close(): this {
-    span.closeSpan(this.ref)
+    span.closeSpan(this.#ref)
     return this
   }
 
   public setError(name: string, message: string, stackdata: string): this {
     const parsedStackdata = Data.generate(stackdata.split("\n"))
 
-    span.addSpanError(this.ref, name, message, parsedStackdata)
+    span.addSpanError(this.#ref, name, message, parsedStackdata)
     return this
   }
 
@@ -39,7 +39,7 @@ export class Span {
    * @private
    */
   public toObject(): SpanData {
-    const json = span.spanToJSON(this.ref)
+    const json = span.spanToJSON(this.#ref)
 
     // If the span JSON is empty, the span has been closed.
     if (json.trim() === "") {
