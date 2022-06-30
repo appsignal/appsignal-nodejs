@@ -293,6 +293,17 @@ Napi::Value CreateOpenTelemetrySpan(const Napi::CallbackInfo &info) {
       [](Napi::Env env, appsignal_span_t *ptr) { appsignal_free_span(ptr); });
 }
 
+Napi::Value SpanToJSON(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  Napi::External<appsignal_span_t> span =
+      info[0].As<Napi::External<appsignal_span_t>>();
+
+  appsignal_string_t str = appsignal_span_to_json(span.Data());
+
+  return Napi::String::New(env, str.buf, str.len);
+}
+
 Napi::Value AddSpanError(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
 
@@ -461,6 +472,8 @@ Napi::Object CreateSpanObject(Napi::Env env, Napi::Object exports) {
            Napi::Function::New(env, CloseSpan));
   span.Set(Napi::String::New(env, "addSpanError"),
            Napi::Function::New(env, AddSpanError));
+  span.Set(Napi::String::New(env, "spanToJSON"),
+           Napi::Function::New(env, SpanToJSON));
 
   return span;
 }
