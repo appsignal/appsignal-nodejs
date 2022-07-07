@@ -172,7 +172,11 @@ export class Client {
   private initOpenTelemetry() {
     const sdk = new NodeSDK({
       instrumentations: [
-        new HttpInstrumentation(),
+        new HttpInstrumentation({
+          headersToSpanAttributes: {
+            server: { requestHeaders: this.config.data["requestHeaders"] }
+          }
+        }),
         new ExpressInstrumentation(),
         new KoaInstrumentation(),
         new MySQLInstrumentation(),
