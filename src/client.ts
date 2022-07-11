@@ -23,6 +23,11 @@ import { KoaInstrumentation } from "@opentelemetry/instrumentation-koa"
 
 import * as fs from "fs"
 
+import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base"
+const {
+  OTLPTraceExporter: ProtoExporter
+} = require("@opentelemetry/exporter-trace-otlp-proto")
+
 /**
  * AppSignal for Node.js's main class.
  *
@@ -200,8 +205,6 @@ export class Client {
     sdk.start()
 
     const tracerProvider = new NodeTracerProvider()
-    tracerProvider.addSpanProcessor(new SpanProcessor(this))
-
     // Add test mode span processor if private env vars are present
     const testMode = process.env["_APPSIGNAL_TEST_MODE"]
     const testModeFilePath = process.env["_APPSIGNAL_TEST_MODE_FILE_PATH"]
@@ -209,6 +212,19 @@ export class Client {
       const spanProcessor = new TestModeSpanProcessor(testModeFilePath)
       tracerProvider.addSpanProcessor(spanProcessor)
     }
+
+    const protobufCollectorOptions = {
+      url: "http://localhost:8099"
+    }
+    const protobufExporter = new ProtoExporter(protobufCollectorOptions)
+    tracerProvider.addSpanProcessor(
+      new BatchSpanProcessor(protobufExporter, {
+        // The maximum queue size. After the size is reached spans are dropped.
+        maxQueueSize: 1000,
+        // The interval between two consecutive exports
+        scheduledDelayMillis: 3000
+      })
+    )
 
     tracerProvider.register()
     return tracerProvider
