@@ -216,7 +216,7 @@ export class Diagnose {
       rl.question(
         `  Send diagnostics report to AppSignal? (Y/n): `,
         async function (answer: string) {
-          switch (answer || "y") {
+          switch ((answer || "y").toLowerCase()) {
             case "y":
               await self.sendReport(data)
               break
