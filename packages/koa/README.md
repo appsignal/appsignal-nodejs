@@ -39,6 +39,8 @@ appsignal.instrument(require("@appsignal/koa"));
 const Koa = require("koa");
 const Router = require("@koa/router"); // @koa/router is also supported out of the box!
 
+const app = new Koa();
+
 // Add error handling
 
 app.on("error", (error) => {
@@ -46,8 +48,6 @@ app.on("error", (error) => {
     .tracer()
     .setError(error)
 });
-
-const app = new Koa();
 ```
 
 ## Contributing
