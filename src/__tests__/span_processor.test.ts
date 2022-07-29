@@ -88,7 +88,7 @@ describe("Span processor", () => {
     const ctx = trace.setSpan(context.active(), parentSpan)
     context.with(ctx, () => {
       const childSpan = tracer.startSpan("childSpan")
-      childSpan.recordException(createError("ignored"))
+      childSpan.recordException(createError("childSpanError"))
       childSpan.end()
     })
 
@@ -115,7 +115,11 @@ describe("Span processor", () => {
         closed: true,
         parent_span_id: createdParentSpan?.span_id,
         trace_id: createdParentSpan?.trace_id,
-        error: null
+        error: {
+          name: "Error",
+          message: "childSpanError",
+          backtrace: expect.any(String)
+        }
       })
     )
   })
