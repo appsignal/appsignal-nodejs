@@ -199,7 +199,10 @@ export class Client {
 
     const tracerProvider = new NodeTracerProvider()
     tracerProvider.addSpanProcessor(new SpanProcessor(this))
+    tracerProvider.addSpanProcessor(new ConsoleSpanProcessor())
     tracerProvider.register()
+
+    console.log("!!! TRACER PROVIDER", tracerProvider)
 
     return tracerProvider
   }
@@ -228,5 +231,24 @@ export class Client {
    */
   private storeInGlobal(): void {
     global.__APPSIGNAL__ = this
+  }
+}
+
+class ConsoleSpanProcessor {
+  forceFlush() {
+    return Promise.resolve()
+  }
+
+  onStart(_span: any, _parentContext: any) {
+    // Does nothing
+  }
+
+  onEnd(span: any) {
+    console.log("OpenTelemetry Span:", span)
+  }
+
+  shutdown() {
+    // Does nothing
+    return Promise.resolve()
   }
 }
