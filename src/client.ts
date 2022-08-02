@@ -21,6 +21,8 @@ import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
 import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express"
 import { KoaInstrumentation } from "@opentelemetry/instrumentation-koa"
 
+import * as fs from "fs"
+
 /**
  * AppSignal for Node.js's main class.
  *
@@ -198,6 +200,11 @@ export class Client {
 
     const tracerProvider = new NodeTracerProvider()
     tracerProvider.addSpanProcessor(new SpanProcessor(this))
+    if (this.config.data.testMode) {
+      const filePath = this.config.data.testModeFilePath!
+      const spanProcessor = new TestModeSpanProcessor(filePath)
+      tracerProvider.addSpanProcessor(spanProcessor)
+    }
     tracerProvider.register()
   }
 
@@ -225,5 +232,45 @@ export class Client {
    */
   private storeInGlobal(): void {
     global.__APPSIGNAL__ = this
+  }
+}
+
+class TestModeSpanProcessor {
+  #file: number
+
+  constructor(testModeFilePath: string) {
+    this.#file = fs.openSync(testModeFilePath, "w")
+  }
+
+  forceFlush() {
+    return Promise.resolve()
+  }
+
+  onStart(_span: any, _parentContext: any) {
+    // Does nothing
+  }
+
+  onEnd(span: any) {
+    // must grab specific attributes only because
+    // the span is a circular object
+    const serializableSpan = {
+      attributes: span.attributes,
+      events: span.events,
+      status: span.status,
+      name: span.name,
+      spanId: span._spanContext.spanId,
+      traceId: span._spanContext.traceId,
+      parentSpanId: span.parentSpanId,
+      instrumentationLibrary: span.instrumentationLibrary,
+      startTime: span.startTime,
+      endTime: span.endTime
+    }
+
+    fs.appendFileSync(this.#file, JSON.stringify(serializableSpan))
+  }
+
+  shutdown() {
+    // Does nothing
+    return Promise.resolve()
   }
 }
