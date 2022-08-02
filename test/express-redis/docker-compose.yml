@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis
+    restart: always
+  app:
+    build: .
+    depends_on:
+      - redis
+    ports:
+      - "4001:4001"
+    environment:
+      - PORT=4001
+    working_dir: /
+    volumes:
+      - ./app:/app
+      - ../..:/integration
