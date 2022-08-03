@@ -8,5 +8,5 @@ export default new Appsignal({
   logPath: "/tmp",
   pushApiKey: "not-a-real-api-key",
   testMode: true,
-  testModeFilePath: "/app/spans.json"
+  testModeFilePath: "/spans/spans.json"
 })

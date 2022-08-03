@@ -5,7 +5,7 @@ services:
     image: redis
     restart: always
   app:
-    build: .
+    build: app
     depends_on:
       - redis
     ports:
@@ -15,4 +15,17 @@ services:
     working_dir: /
     volumes:
       - ./app:/app
+      - spans:/spans
       - ../..:/integration
+  tests:
+    build: tests
+    depends_on:
+      - app
+    environment:
+      - TEST_APP_URL=http://app:4001
+      - SPANS_FILE_PATH=/spans/spans.json
+    volumes:
+      - spans:/spans
+    
+volumes:
+  spans:

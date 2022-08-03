@@ -236,10 +236,10 @@ export class Client {
 }
 
 class TestModeSpanProcessor {
-  #file: number
+  #filePath: string
 
   constructor(testModeFilePath: string) {
-    this.#file = fs.openSync(testModeFilePath, "w")
+    this.#filePath = testModeFilePath
   }
 
   forceFlush() {
@@ -266,7 +266,11 @@ class TestModeSpanProcessor {
       endTime: span.endTime
     }
 
-    fs.appendFileSync(this.#file, JSON.stringify(serializableSpan))
+    // Re-open the file for every write, as the test process might have
+    // truncated it in between writes.
+    const file = fs.openSync(this.#filePath, "a")
+    fs.appendFileSync(file, `${JSON.stringify(serializableSpan)}\n`)
+    fs.closeSync(file)
   }
 
   shutdown() {
