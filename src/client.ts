@@ -35,6 +35,7 @@ export class Client {
   config: Configuration
   readonly logger: Logger
   extension: Extension
+  readonly tracerProvider: NodeTracerProvider
 
   #metrics: Metrics
 
@@ -77,7 +78,7 @@ export class Client {
     }
 
     this.initCoreProbes()
-    this.initOpenTelemetry()
+    this.tracerProvider = this.initOpenTelemetry()
   }
 
   /**
@@ -199,6 +200,7 @@ export class Client {
     const tracerProvider = new NodeTracerProvider()
     tracerProvider.addSpanProcessor(new SpanProcessor(this))
     tracerProvider.register()
+    return tracerProvider
   }
 
   /**
