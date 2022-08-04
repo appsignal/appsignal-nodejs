@@ -2,6 +2,7 @@ import { Extension } from "../extension"
 import { Client } from "../client"
 import { Metrics } from "../metrics"
 import { NoopMetrics } from "../noops"
+import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
 
 describe("Client", () => {
   const name = "TEST APP"
@@ -101,5 +102,10 @@ describe("Client", () => {
     client = new Client({ ...DEFAULT_OPTS, active: true })
     const meter = client.metrics()
     expect(meter).toBeInstanceOf(Metrics)
+  })
+
+  it("sets up an OpenTelemetry `NodeTracerProvider` in the tracerProvider property", () => {
+    client = new Client(DEFAULT_OPTS)
+    expect(client.tracerProvider).toBeInstanceOf(NodeTracerProvider)
   })
 })
