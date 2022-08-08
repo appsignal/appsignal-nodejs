@@ -26,6 +26,7 @@ services:
       - SPANS_FILE_PATH=/spans/spans.json
     volumes:
       - spans:/spans
-    
+      - ..:/helpers
+
 volumes:
   spans:
