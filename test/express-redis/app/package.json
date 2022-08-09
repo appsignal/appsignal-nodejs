@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@appsignal/nodejs": "file:../integration",
+    "@appsignal/nodejs": "^2.4.2",
     "express": "^4.17.2",
     "ioredis": "^4.28.5",
     "redis": "^4",

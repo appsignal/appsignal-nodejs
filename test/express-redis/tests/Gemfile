@@ -2,7 +2,5 @@
 
 source "https://rubygems.org"
 
-gem "rspec"
 gem "http"
-
-# gem "rails"
+gem "rspec"

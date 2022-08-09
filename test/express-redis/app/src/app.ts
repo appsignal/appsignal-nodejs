@@ -1,8 +1,6 @@
-import appsignal from "./appsignal"
 import express from "express"
 import { createClient } from "redis"
 import ioredis from "ioredis"
-import { nextTick } from "process"
 
 const redisHost = "redis://redis:6379"
 const port = process.env.PORT
