@@ -21,6 +21,8 @@ import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
 import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express"
 import { KoaInstrumentation } from "@opentelemetry/instrumentation-koa"
 
+import * as fs from "fs"
+
 /**
  * AppSignal for Node.js's main class.
  *
@@ -199,6 +201,15 @@ export class Client {
 
     const tracerProvider = new NodeTracerProvider()
     tracerProvider.addSpanProcessor(new SpanProcessor(this))
+
+    // Add test mode span processor if private env vars are present
+    const testMode = process.env["_APPSIGNAL_TEST_MODE"]
+    const testModeFilePath = process.env["_APPSIGNAL_TEST_MODE_FILE_PATH"]
+    if (testMode && testModeFilePath) {
+      const spanProcessor = new TestModeSpanProcessor(testModeFilePath)
+      tracerProvider.addSpanProcessor(spanProcessor)
+    }
+
     tracerProvider.register()
     return tracerProvider
   }
@@ -227,5 +238,49 @@ export class Client {
    */
   private storeInGlobal(): void {
     global.__APPSIGNAL__ = this
+  }
+}
+
+class TestModeSpanProcessor {
+  #filePath: string
+
+  constructor(testModeFilePath: string) {
+    this.#filePath = testModeFilePath
+  }
+
+  forceFlush() {
+    return Promise.resolve()
+  }
+
+  onStart(_span: any, _parentContext: any) {
+    // Does nothing
+  }
+
+  onEnd(span: any) {
+    // must grab specific attributes only because
+    // the span is a circular object
+    const serializableSpan = {
+      attributes: span.attributes,
+      events: span.events,
+      status: span.status,
+      name: span.name,
+      spanId: span._spanContext.spanId,
+      traceId: span._spanContext.traceId,
+      parentSpanId: span.parentSpanId,
+      instrumentationLibrary: span.instrumentationLibrary,
+      startTime: span.startTime,
+      endTime: span.endTime
+    }
+
+    // Re-open the file for every write, as the test process might have
+    // truncated it in between writes.
+    const file = fs.openSync(this.#filePath, "a")
+    fs.appendFileSync(file, `${JSON.stringify(serializableSpan)}\n`)
+    fs.closeSync(file)
+  }
+
+  shutdown() {
+    // Does nothing
+    return Promise.resolve()
   }
 }
