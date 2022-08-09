@@ -21,6 +21,13 @@ type KoaMiddleware = Middleware<DefaultState, KoaContext> & {
 export function getKoaUsePatch(tracer: Tracer) {
   return function koaUsePatch(original: (middleware: KoaMiddleware) => koa) {
     return function use(this: koa, middlewareFunction: KoaMiddleware) {
+      if (
+        middlewareFunction.constructor.name == "GeneratorFunction" ||
+        middlewareFunction.constructor.name == "AsyncGeneratorFunction"
+      ) {
+        return original.apply(this, [middlewareFunction])
+      }
+
       let patchedFunction: KoaMiddleware
 
       if (middlewareFunction.router) {

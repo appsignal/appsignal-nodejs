@@ -50,6 +50,12 @@ app.on("error", (error) => {
 });
 ```
 
+Note that generator-based middleware was deprecated in Koa version 2.x, and the next major Koa version will remove support for them entirely.
+
+Our instrumentation does not instrument generator-based middleware. The [Koa 2.x migration guide][guide] explains how you can use the `koa-convert` library to convert them to new-style async middleware.
+
+[guide]: https://github.com/koajs/koa/blob/v2.x/docs/migration.md#using-v1x-middleware-in-v2x
+
 ## Contributing
 
 Thinking of contributing to this repo? Awesome! 🚀
