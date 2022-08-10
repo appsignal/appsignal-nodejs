@@ -11,6 +11,12 @@ const Koa = require("koa")
 const app = new Koa()
 const port = 4010
 
+app.use(function* (next) {
+  // This middleware should not be instrumented, but its presence
+  // should not break the request either.
+  yield next
+})
+
 app.use(async ctx => {
   ctx.body = "Hello World!"
 })
