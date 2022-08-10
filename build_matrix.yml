@@ -59,6 +59,13 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
         - name: Git Lint (Lintje)
           commands:
             - script/lint_git
+    - name: Integration tests
+      dependencies: ["Validation"]
+      task:
+        jobs:
+        - name: Express + Redis
+          commands:
+            - script/integration_test_app express-redis
 
 matrix:
   nodejs:

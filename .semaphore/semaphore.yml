@@ -62,6 +62,14 @@ blocks:
     - name: Git Lint (Lintje)
       commands:
       - script/lint_git
+- name: Integration tests
+  dependencies:
+  - Validation
+  task:
+    jobs:
+    - name: Express + Redis
+      commands:
+      - script/integration_test_app express-redis
 - name: Node.js 18 - Build
   dependencies:
   - Validation
