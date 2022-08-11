@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    env_file:
+      - mysql.env
+  app:
+    build: app
+    depends_on:
+      - mysql
+    ports:
+      - "4001:4001"
+    environment:
+      - PORT=4001
+      - _APPSIGNAL_TEST_MODE=true
+      - _APPSIGNAL_TEST_MODE_FILE_PATH=/spans/spans.json
+    env_file:
+      - mysql.env
+    working_dir: /
+    volumes:
+      - ./app:/app
+      - spans:/spans
+      - ../..:/integration
+
+volumes:
+  spans:
