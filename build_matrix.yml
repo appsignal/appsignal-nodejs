@@ -66,6 +66,9 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
         - name: Express + Redis
           commands:
             - script/integration_test_app express-redis
+        - name: Koa + MySQL
+          commands:
+            - script/integration_test_app koa-mysql
 
 matrix:
   nodejs:
