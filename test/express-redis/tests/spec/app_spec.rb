@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.describe "Redis app" do
+  before(:all) do
+    @test_app_url = ENV.fetch("TEST_APP_URL")
+  end
+
   describe "GET /ioredis" do
     it "creates an IORedis child span on the HTTP root span" do
-      response = HTTP.get("#{TEST_APP_URL}/ioredis")
+      response = HTTP.get("#{@test_app_url}/ioredis")
       expect(response.status).to eq(200)
 
       expect_http_root_span("GET /ioredis")
@@ -17,7 +21,7 @@ RSpec.describe "Redis app" do
 
   describe "GET /redis" do
     it "creates a Redis child span on the HTTP root span" do
-      response = HTTP.get("#{TEST_APP_URL}/redis")
+      response = HTTP.get("#{@test_app_url}/redis")
       expect(response.status).to eq(200)
 
       expect_http_root_span("GET /redis")

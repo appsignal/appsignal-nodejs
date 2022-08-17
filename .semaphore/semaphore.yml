@@ -70,6 +70,9 @@ blocks:
     - name: Express + Redis
       commands:
       - script/integration_test_app express-redis
+    - name: Koa + MySQL
+      commands:
+      - script/integration_test_app koa-mysql
 - name: Node.js 18 - Build
   dependencies:
   - Validation
