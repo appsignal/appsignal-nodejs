@@ -1,6 +1,36 @@
 # frozen_string_literal: true
 
 module IntegrationHelper # rubocop:disable Metrics/ModuleLength
+  SPANS_FILE_PATH = ENV.fetch("SPANS_FILE_PATH")
+  TEST_APP_URL = ENV.fetch("TEST_APP_URL")
+
+  def self.wait_for_start
+    max_retries = 1200
+    retries = 0
+
+    begin
+      HTTP.timeout(1).get("#{TEST_APP_URL}/")
+      puts "The app has started!"
+    rescue HTTP::ConnectionError, HTTP::TimeoutError
+      if retries >= max_retries
+        puts "The app has not started after #{retries} retries. Exiting."
+        exit! 1
+      elsif (retries % 5).zero?
+        puts "The app has not started yet. Retrying... (#{retries}/#{max_retries})"
+      end
+
+      sleep 1
+      retries += 1
+      retry
+    end
+    # Wait for spans that haven't been written yet
+    sleep 1
+  end
+
+  def self.clean_spans
+    File.open(SPANS_FILE_PATH, "w").close
+  end
+
   def spans
     # Wait for spans that haven't been written yet
     sleep 1
@@ -64,8 +94,7 @@ module IntegrationHelper # rubocop:disable Metrics/ModuleLength
     root_span!
 
     expect(root_span["name"]).to eq(name)
-    expect(root_span["instrumentationLibrary"]["name"])
-      .to eq("@opentelemetry/instrumentation-http")
+    expect(root_span["instrumentationLibrary"]["name"]).to eq("@opentelemetry/instrumentation-http")
   end
 
   def expect_express_request_handler_span(endpoint)
@@ -76,10 +105,10 @@ module IntegrationHelper # rubocop:disable Metrics/ModuleLength
 
     expect(child_span_of?(root_span, request_handler_span)).to be true
 
-    expect(request_handler_span["name"])
-      .to eq("request handler - #{endpoint}")
-    expect(request_handler_span["instrumentationLibrary"]["name"])
-      .to eq("@opentelemetry/instrumentation-express")
+    expect(request_handler_span["name"]).to eq("request handler - #{endpoint}")
+    expect(request_handler_span["instrumentationLibrary"]["name"]).to eq(
+      "@opentelemetry/instrumentation-express"
+    )
   end
 
   def expect_redis_command_span(statement)
@@ -100,8 +129,9 @@ module IntegrationHelper # rubocop:disable Metrics/ModuleLength
     command = statement.split.first
 
     expect(redis_span["name"]).to eq("redis-#{command}")
-    expect(redis_span["instrumentationLibrary"]["name"])
-      .to eq("@opentelemetry/instrumentation-redis-4")
+    expect(redis_span["instrumentationLibrary"]["name"]).to eq(
+      "@opentelemetry/instrumentation-redis-4"
+    )
   end
 
   def expect_ioredis_span(statement)
@@ -109,8 +139,9 @@ module IntegrationHelper # rubocop:disable Metrics/ModuleLength
     command = statement.split.first
 
     expect(redis_span["name"]).to eq(command)
-    expect(redis_span["instrumentationLibrary"]["name"])
-      .to eq("@opentelemetry/instrumentation-ioredis")
+    expect(redis_span["instrumentationLibrary"]["name"]).to eq(
+      "@opentelemetry/instrumentation-ioredis"
+    )
   end
 
   def expect_koa_router_span(path)
