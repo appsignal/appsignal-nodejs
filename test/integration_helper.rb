@@ -170,7 +170,7 @@ module IntegrationHelper # rubocop:disable Metrics/ModuleLength
     raise "No error span found for message: '#{error_message}'" unless error_event
   end
 
-  def sql_span_by_parent_and_library(parent_span_name:, library:)
+  def sql_span_by_parent_library_and_type(parent_span_name:, library:, type:)
     parent_span = spans.find do |span|
       span["name"] == parent_span_name
     end
@@ -178,10 +178,14 @@ module IntegrationHelper # rubocop:disable Metrics/ModuleLength
 
     sql_span = spans.find do |span|
       span["parentSpanId"] == parent_span["spanId"] &&
-        span["instrumentationLibrary"]["name"] == library
+        span["instrumentationLibrary"]["name"] == library &&
+        span["name"] == type
     end
     unless sql_span
-      raise "No SQL span with parent `#{span["parentSpanId"]}` and system `#{library}` found"
+      raise(
+        "No SQL span with parent `#{span["parentSpanId"]}` type: #{type} " \
+          "and system `#{library}` found"
+      )
     end
 
     sql_span

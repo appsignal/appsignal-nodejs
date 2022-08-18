@@ -8,18 +8,19 @@ import { NoopMetrics } from "./noops"
 import { demo } from "./demo"
 import { VERSION } from "./version"
 
-import { SpanProcessor } from "./span_processor"
-import { RedisDbStatementSerializer } from "./instrumentation/redis/serializer"
+import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express"
+import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
+import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
+import { KoaInstrumentation } from "@opentelemetry/instrumentation-koa"
+import { MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2"
+import { MySQLInstrumentation } from "@opentelemetry/instrumentation-mysql"
 import { NodeSDK } from "@opentelemetry/sdk-node"
 import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
-import { MySQLInstrumentation } from "@opentelemetry/instrumentation-mysql"
-import { MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2"
-import { RedisInstrumentation } from "@opentelemetry/instrumentation-redis"
+import { PgInstrumentation } from "@opentelemetry/instrumentation-pg"
+import { RedisDbStatementSerializer } from "./instrumentation/redis/serializer"
 import { RedisInstrumentation as Redis4Instrumentation } from "@opentelemetry/instrumentation-redis-4"
-import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
-import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
-import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express"
-import { KoaInstrumentation } from "@opentelemetry/instrumentation-koa"
+import { RedisInstrumentation } from "@opentelemetry/instrumentation-redis"
+import { SpanProcessor } from "./span_processor"
 
 import * as fs from "fs"
 
@@ -184,6 +185,7 @@ export class Client {
         new KoaInstrumentation(),
         new MySQLInstrumentation(),
         new MySQL2Instrumentation(),
+        new PgInstrumentation(),
         new RedisInstrumentation({
           dbStatementSerializer: RedisDbStatementSerializer
         }),
