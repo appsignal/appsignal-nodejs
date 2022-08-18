@@ -33,9 +33,10 @@ RSpec.describe "Koa + MySQL app" do
     it "creates a MySQL child span on the Koa router span" do
       response = HTTP.get("#{@test_app_url}/mysql-query")
       expect(response.status).to eq(200)
-      sql_span = sql_span_by_parent_and_library(
+      sql_span = sql_span_by_parent_library_and_type(
         :parent_span_name => "router - /mysql-query",
-        :library => "@opentelemetry/instrumentation-mysql"
+        :library => "@opentelemetry/instrumentation-mysql",
+        :type => "SELECT"
       )
 
       expect(sql_span["attributes"]["db.statement"]).to eq("SELECT 1 + 1 AS solution")
@@ -46,9 +47,10 @@ RSpec.describe "Koa + MySQL app" do
     it "creates a MySQL2 child span on the Koa router span" do
       response = HTTP.get("#{@test_app_url}/mysql2-query")
       expect(response.status).to eq(200)
-      sql_span = sql_span_by_parent_and_library(
+      sql_span = sql_span_by_parent_library_and_type(
         :parent_span_name => "router - /mysql2-query",
-        :library => "@opentelemetry/instrumentation-mysql2"
+        :library => "@opentelemetry/instrumentation-mysql2",
+        :type => "SELECT"
       )
 
       expect(sql_span["attributes"]["db.statement"]).to eq("SELECT 1 + 1 AS solution")
