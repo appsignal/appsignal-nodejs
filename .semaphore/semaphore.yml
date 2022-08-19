@@ -73,6 +73,9 @@ blocks:
     - name: Koa + MySQL
       commands:
       - script/integration_test_app koa-mysql
+    - name: Express + Postgres
+      commands:
+      - script/integration_test_app express-postgres
 - name: Node.js 18 - Build
   dependencies:
   - Validation
