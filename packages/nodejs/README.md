@@ -32,7 +32,7 @@ const { Appsignal } = require("@appsignal/nodejs");
 
 const appsignal = new Appsignal({
   active: true,
-  name: "<YOUR APPLICATION NAME>"
+  name: "<YOUR APPLICATION NAME>",
   pushApiKey: "<YOUR API KEY>"
 });
 
