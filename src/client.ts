@@ -9,6 +9,7 @@ import { demo } from "./demo"
 import { VERSION } from "./version"
 
 import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express"
+import { GraphQLInstrumentation } from "@opentelemetry/instrumentation-graphql"
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
 import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
 import { KoaInstrumentation } from "@opentelemetry/instrumentation-koa"
@@ -182,6 +183,7 @@ export class Client {
           }
         }),
         new ExpressInstrumentation(),
+        new GraphQLInstrumentation(),
         new KoaInstrumentation(),
         new MySQLInstrumentation(),
         new MySQL2Instrumentation(),
