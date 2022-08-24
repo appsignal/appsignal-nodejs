@@ -76,6 +76,9 @@ blocks:
     - name: Express + Postgres
       commands:
       - script/integration_test_app express-postgres
+    - name: Express + Apollo
+      commands:
+      - script/integration_test_app express-apollo
 - name: Node.js 18 - Build
   dependencies:
   - Validation

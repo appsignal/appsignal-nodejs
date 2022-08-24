@@ -190,4 +190,12 @@ module IntegrationHelper # rubocop:disable Metrics/ModuleLength
 
     sql_span
   end
+
+  def expect_graphql_spans(query)
+    query_span = spans.find do |span|
+      span["name"] == "graphql.execute" && span["attributes"]["graphql.source"] == query
+    end
+
+    raise "Couldn't find GraphQL query span for query #{query}" unless query_span
+  end
 end

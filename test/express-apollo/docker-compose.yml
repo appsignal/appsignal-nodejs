@@ -14,6 +14,16 @@ services:
       - ./app:/app
       - spans:/spans
       - ../..:/integration
+  tests:
+    build: tests
+    depends_on:
+      - app
+    environment:
+      - TEST_APP_URL=http://app:4001
+      - SPANS_FILE_PATH=/spans/spans.json
+    volumes:
+      - spans:/spans
+      - ..:/helpers
 
 volumes:
   spans:
