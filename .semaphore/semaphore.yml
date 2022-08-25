@@ -79,6 +79,9 @@ blocks:
     - name: Express + Apollo
       commands:
       - script/integration_test_app express-apollo
+    - name: Express + Yoga
+      commands:
+      - script/integration_test_app express-yoga
 - name: Node.js 18 - Build
   dependencies:
   - Validation
