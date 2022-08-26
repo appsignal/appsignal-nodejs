@@ -72,6 +72,12 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
         - name: Express + Postgres
           commands:
             - script/integration_test_app express-postgres
+        - name: Express + Apollo
+          commands:
+            - script/integration_test_app express-apollo
+        - name: Express + Yoga
+          commands:
+            - script/integration_test_app express-yoga
 
 matrix:
   nodejs:
