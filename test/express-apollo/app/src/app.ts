@@ -1,6 +1,5 @@
 import express from "express"
 import { ApolloServer, gql } from "apollo-server-express"
-import fs from "fs"
 
 const port = process.env.PORT
 const app = express()
@@ -20,9 +19,6 @@ const typeDefs = gql`
     books: [Book]
     authors: [Author]
   }
-  type Query2 {
-    readError: String
-  }
 `
 
 const books = [
@@ -39,11 +35,6 @@ const books = [
 const resolvers = {
   Query: {
     books: () => books
-  },
-  Query2: {
-    readError: () => {
-      fs.readFileSync("/does/not/exist")
-    }
   }
 }
 

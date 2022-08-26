@@ -1,6 +1,5 @@
 import express from "express"
 import { createServer } from "@graphql-yoga/node"
-import fs from "fs"
 
 const port = process.env.PORT
 const app = express()
@@ -18,9 +17,6 @@ const typeDefs = /* GraphQL */ `
     books: [Book]
     authors: [Author]
   }
-  type Query2 {
-    readError: String
-  }
 `
 
 const books = [
@@ -37,11 +33,6 @@ const books = [
 const resolvers = {
   Query: {
     books: () => books
-  },
-  Query2: {
-    readError: () => {
-      fs.readFileSync("/does/not/exist")
-    }
   }
 }
 
