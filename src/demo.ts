@@ -61,7 +61,9 @@ export function demo(client: Client) {
       "Hello world! This is an error used for demonstration purposes."
     )
   } catch (error) {
-    errorRootSpan.setError(error.name, error.message, error.stack)
+    if (error instanceof Error) {
+      errorRootSpan.setError(error.name, error.message, error.stack as string)
+    }
   }
   errorRootSpan.close()
 }
