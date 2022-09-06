@@ -8,7 +8,11 @@ import { NoopMetrics } from "./noops"
 import { demo } from "./demo"
 import { VERSION } from "./version"
 
-import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express"
+import { Span as OtelSpan } from "@opentelemetry/api"
+import {
+  ExpressInstrumentation,
+  ExpressLayerType
+} from "@opentelemetry/instrumentation-express"
 import { GraphQLInstrumentation } from "@opentelemetry/instrumentation-graphql"
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
 import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
@@ -182,7 +186,26 @@ export class Client {
             server: { requestHeaders: this.config.data["requestHeaders"] }
           }
         }),
-        new ExpressInstrumentation(),
+        new ExpressInstrumentation({
+          requestHook: function (span: OtelSpan, info) {
+            if (info.layerType === ExpressLayerType.REQUEST_HANDLER) {
+              // Request parameters to magic attributes
+              const queryParams = info.request.query
+              const requestBody = info.request.body
+              const params = { ...queryParams, ...requestBody }
+              span.setAttribute(
+                "appsignal.request.parameters",
+                JSON.stringify(params)
+              )
+
+              // Session data to magic attributes
+              span.setAttribute(
+                "appsignal.request.session_data",
+                JSON.stringify(info.request.cookies)
+              )
+            }
+          }
+        }),
         new GraphQLInstrumentation(),
         new KoaInstrumentation(),
         new MySQLInstrumentation(),
