@@ -207,7 +207,17 @@ export class Client {
           }
         }),
         new GraphQLInstrumentation(),
-        new KoaInstrumentation(),
+        new KoaInstrumentation({
+          requestHook: function (span: OtelSpan, info) {
+            // Request parameters to magic attributes
+            const queryParams = info.context.request.query
+
+            span.setAttribute(
+              "appsignal.request.parameters",
+              JSON.stringify(queryParams)
+            )
+          }
+        }),
         new MySQLInstrumentation(),
         new MySQL2Instrumentation(),
         new PgInstrumentation(),
