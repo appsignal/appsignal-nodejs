@@ -179,6 +179,7 @@ export class Client {
    * Initialises OpenTelemetry instrumentation
    */
   private initOpenTelemetry() {
+    const sendParams = this.config.data.sendParams
     const sdk = new NodeSDK({
       instrumentations: [
         new HttpInstrumentation({
@@ -188,7 +189,10 @@ export class Client {
         }),
         new ExpressInstrumentation({
           requestHook: function (span: OtelSpan, info) {
-            if (info.layerType === ExpressLayerType.REQUEST_HANDLER) {
+            if (
+              info.layerType === ExpressLayerType.REQUEST_HANDLER &&
+              sendParams
+            ) {
               // Request parameters to magic attributes
               const queryParams = info.request.query
               const requestBody = info.request.body
@@ -209,13 +213,15 @@ export class Client {
         new GraphQLInstrumentation(),
         new KoaInstrumentation({
           requestHook: function (span: OtelSpan, info) {
-            // Request parameters to magic attributes
-            const queryParams = info.context.request.query
+            if (sendParams) {
+              // Request parameters to magic attributes
+              const queryParams = info.context.request.query
 
-            span.setAttribute(
-              "appsignal.request.parameters",
-              JSON.stringify(queryParams)
-            )
+              span.setAttribute(
+                "appsignal.request.parameters",
+                JSON.stringify(queryParams)
+              )
+            }
           }
         }),
         new MySQLInstrumentation(),
