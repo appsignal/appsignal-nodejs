@@ -23,7 +23,7 @@ RSpec.describe "Postgres app" do
       )
 
       expect(
-        sql_query_span["attributes"]["db.statement"]
+        sql_query_span.attributes["db.statement"]
       ).to eq("SELECT 1 + 1 AS solution")
     end
   end

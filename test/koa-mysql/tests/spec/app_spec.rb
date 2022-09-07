@@ -39,7 +39,7 @@ RSpec.describe "Koa + MySQL app" do
         :type => "SELECT"
       )
 
-      expect(sql_span["attributes"]["db.statement"]).to eq("SELECT 1 + 1 AS solution")
+      expect(sql_span.attributes["db.statement"]).to eq("SELECT 1 + 1 AS solution")
     end
   end
 
@@ -53,7 +53,7 @@ RSpec.describe "Koa + MySQL app" do
         :type => "SELECT"
       )
 
-      expect(sql_span["attributes"]["db.statement"]).to eq("SELECT 1 + 1 AS solution")
+      expect(sql_span.attributes["db.statement"]).to eq("SELECT 1 + 1 AS solution")
     end
   end
 end
