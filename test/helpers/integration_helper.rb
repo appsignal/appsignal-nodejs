@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module IntegrationHelper # rubocop:disable Metrics/ModuleLength
+module IntegrationHelper
   SPANS_FILE_PATH = ENV.fetch("SPANS_FILE_PATH")
   TEST_APP_URL = ENV.fetch("TEST_APP_URL")
 
@@ -29,19 +29,6 @@ module IntegrationHelper # rubocop:disable Metrics/ModuleLength
 
   def self.clean_spans
     Span.clear_all
-  end
-
-  # Instrumentation specific helpers
-  def expect_express_request_handler_span(endpoint)
-    request_handler_span = Span.find_by_attribute("express.type", "request_handler")
-    raise "No Express request handler span found" unless request_handler_span
-
-    expect(Span.root.transitive_parent_of?(request_handler_span)).to be true
-
-    expect(request_handler_span.name).to eq("request handler - #{endpoint}")
-    expect(request_handler_span.instrumentation_library_name).to eq(
-      "@opentelemetry/instrumentation-express"
-    )
   end
 
   def expect_redis_command_span(statement)
