@@ -29,7 +29,7 @@ export type AppsignalOptions = {
   revision: string
   runningInContainer: boolean
   sendParams: boolean
-  skipSessionData: boolean
+  sendSessionData: boolean
   workingDirPath: string
   workingDirectoryPath: string
   [key: string]: string | string[] | boolean
