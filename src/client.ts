@@ -180,6 +180,7 @@ export class Client {
    */
   private initOpenTelemetry() {
     const sendParams = this.config.data.sendParams
+    const sendSessionData = this.config.data.sendSessionData
     const sdk = new NodeSDK({
       instrumentations: [
         new HttpInstrumentation({
@@ -189,24 +190,25 @@ export class Client {
         }),
         new ExpressInstrumentation({
           requestHook: function (span: OtelSpan, info) {
-            if (
-              info.layerType === ExpressLayerType.REQUEST_HANDLER &&
-              sendParams
-            ) {
-              // Request parameters to magic attributes
-              const queryParams = info.request.query
-              const requestBody = info.request.body
-              const params = { ...queryParams, ...requestBody }
-              span.setAttribute(
-                "appsignal.request.parameters",
-                JSON.stringify(params)
-              )
+            if (info.layerType === ExpressLayerType.REQUEST_HANDLER) {
+              if (sendParams) {
+                // Request parameters to magic attributes
+                const queryParams = info.request.query
+                const requestBody = info.request.body
+                const params = { ...queryParams, ...requestBody }
+                span.setAttribute(
+                  "appsignal.request.parameters",
+                  JSON.stringify(params)
+                )
+              }
 
-              // Session data to magic attributes
-              span.setAttribute(
-                "appsignal.request.session_data",
-                JSON.stringify(info.request.cookies)
-              )
+              if (sendSessionData) {
+                // Session data to magic attributes
+                span.setAttribute(
+                  "appsignal.request.session_data",
+                  JSON.stringify(info.request.cookies)
+                )
+              }
             }
           }
         }),
