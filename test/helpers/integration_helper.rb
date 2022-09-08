@@ -32,13 +32,6 @@ module IntegrationHelper # rubocop:disable Metrics/ModuleLength
   end
 
   # Instrumentation specific helpers
-  def expect_http_root_span(name)
-    root = Span.root!
-
-    expect(root.name).to eq(name)
-    expect(root.instrumentation_library_name).to eq("@opentelemetry/instrumentation-http")
-  end
-
   def expect_express_request_handler_span(endpoint)
     request_handler_span = Span.find_by_attribute("express.type", "request_handler")
     raise "No Express request handler span found" unless request_handler_span

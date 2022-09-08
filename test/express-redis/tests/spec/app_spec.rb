@@ -10,7 +10,7 @@ RSpec.describe "Redis app" do
       response = HTTP.get("#{@test_app_url}/ioredis")
       expect(response.status).to eq(200)
 
-      expect_http_root_span("GET /ioredis")
+      expect(Span.root!).to be_http_span_with_route("GET /ioredis")
       expect_express_request_handler_span("/ioredis")
       expect_ioredis_span("connect")
       expect_ioredis_span("info")
@@ -24,7 +24,7 @@ RSpec.describe "Redis app" do
       response = HTTP.get("#{@test_app_url}/redis")
       expect(response.status).to eq(200)
 
-      expect_http_root_span("GET /redis")
+      expect(Span.root!).to be_http_span_with_route("GET /redis")
       expect_express_request_handler_span("/redis")
       expect_redis_4_span("SET ? ?")
       expect_redis_4_span("GET ?")

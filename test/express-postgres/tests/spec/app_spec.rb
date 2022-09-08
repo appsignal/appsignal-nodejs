@@ -8,6 +8,7 @@ RSpec.describe "Postgres app" do
   describe("GET /pg-query") do
     it "creates a PSQL child span on the HTTP root span" do
       response = HTTP.get("#{@test_app_url}/pg-query")
+      expect(Span.root!).to be_http_span_with_route("GET /pg-query")
       expect(response.status).to eq(200)
       # Found if it doesn't fail
       sql_span_by_parent_library_and_type(
