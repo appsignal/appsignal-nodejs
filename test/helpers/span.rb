@@ -24,6 +24,15 @@ class Span
       end
     end
 
+    def find_by_name!(name)
+      found_span = all.find do |span|
+        span.name == name
+      end
+      raise "No span with name #{name} found" unless found_span
+
+      found_span
+    end
+
     def clear_all
       File.open(SPANS_FILE_PATH, "w").close
     end
