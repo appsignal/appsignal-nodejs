@@ -22,10 +22,8 @@ RSpec.describe "Koa + MySQL app" do
 
       expect(Span.root!).to be_http_span_with_route("GET /error")
       expect("/error").to have_koa_router_span
-      expect_error_in_span(
-        :span_name => "router - /error",
-        :error_message => "Expected test error!"
-      )
+      router_span = Span.find_by_name!("router - /error")
+      expect(router_span).to have_error_event("Expected test error!")
     end
   end
 

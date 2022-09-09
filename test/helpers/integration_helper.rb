@@ -31,18 +31,6 @@ module IntegrationHelper
     Span.clear_all
   end
 
-  def expect_error_in_span(span_name:, error_message:)
-    span = Span.all.find do |error_span|
-      error_span.name == span_name
-    end
-    raise "No span with name #{span_name} found" unless span
-
-    error_event = span.events.find do |event|
-      event["name"] == "exception" && event["attributes"]["exception.message"] == error_message
-    end
-    raise "No error span found for message: '#{error_message}'" unless error_event
-  end
-
   def sql_span_by_parent_library_and_type(parent_span_name:, library:, type:)
     parent_span = Span.all.find do |span|
       span.name == parent_span_name
