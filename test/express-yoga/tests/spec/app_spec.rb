@@ -14,7 +14,7 @@ RSpec.describe "Express Yoga app" do
 
       expect(Span.root!).to be_http_span_with_route("HTTP POST")
       expect(response.code.to_i).to eq(200)
-      expect_graphql_spans(graphql_query)
+      expect(graphql_query).to have_graphql_span
     end
   end
 end

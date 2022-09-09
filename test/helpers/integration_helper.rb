@@ -51,12 +51,4 @@ module IntegrationHelper
 
     sql_span
   end
-
-  def expect_graphql_spans(query)
-    query_span = Span.all.find do |span|
-      span.name == "graphql.execute" && span.attributes["graphql.source"] == query
-    end
-
-    raise "Couldn't find GraphQL query span for query #{query}" unless query_span
-  end
 end
