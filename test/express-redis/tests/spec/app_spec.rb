@@ -12,10 +12,10 @@ RSpec.describe "Redis app" do
       expect(Span.root!).to be_http_span_with_route("GET /ioredis")
       expect("/ioredis").to have_express_request_handler
 
-      expect_ioredis_span("connect")
-      expect_ioredis_span("info")
-      expect_ioredis_span("set ? ?")
-      expect_ioredis_span("get ?")
+      expect("connect").to have_ioredis_span
+      expect("info").to have_ioredis_span
+      expect("set ? ?").to have_ioredis_span
+      expect("get ?").to have_ioredis_span
     end
   end
 
@@ -27,8 +27,8 @@ RSpec.describe "Redis app" do
       expect(Span.root!).to be_http_span_with_route("GET /redis")
       expect("/redis").to have_express_request_handler
 
-      expect_redis_4_span("SET ? ?")
-      expect_redis_4_span("GET ?")
+      expect("SET ? ?").to have_redis_4_span
+      expect("GET ?").to have_redis_4_span
     end
   end
 end

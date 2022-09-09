@@ -31,39 +31,6 @@ module IntegrationHelper
     Span.clear_all
   end
 
-  def expect_redis_command_span(statement)
-    redis_span = Span.all.find do |span|
-      next unless span.attributes["db.system"] == "redis"
-
-      span.attributes["db.statement"] == statement
-    end
-    raise "No Redis span with statement `#{statement}` found" unless redis_span
-
-    expect(Span.root.transitive_parent_of?(redis_span)).to be true
-
-    redis_span
-  end
-
-  def expect_redis_4_span(statement)
-    redis_span = expect_redis_command_span(statement)
-    command = statement.split.first
-
-    expect(redis_span.name).to eq("redis-#{command}")
-    expect(redis_span.instrumentation_library_name).to eq(
-      "@opentelemetry/instrumentation-redis-4"
-    )
-  end
-
-  def expect_ioredis_span(statement)
-    redis_span = expect_redis_command_span(statement)
-    command = statement.split.first
-
-    expect(redis_span.name).to eq(command)
-    expect(redis_span.instrumentation_library_name).to eq(
-      "@opentelemetry/instrumentation-ioredis"
-    )
-  end
-
   def expect_koa_router_span(path)
     router_span = Span.find_by_attribute("koa.type", "router")
     raise "No Koa router span found" unless router_span
