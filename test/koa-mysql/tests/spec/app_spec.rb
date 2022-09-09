@@ -11,7 +11,7 @@ RSpec.describe "Koa + MySQL app" do
       expect(response.status).to eq(200)
 
       expect(Span.root!).to be_http_span_with_route("GET /get")
-      expect_koa_router_span("/get")
+      expect("/get").to have_koa_router_span
     end
   end
 
@@ -21,7 +21,7 @@ RSpec.describe "Koa + MySQL app" do
       expect(response.status).to eq(500)
 
       expect(Span.root!).to be_http_span_with_route("GET /error")
-      expect_koa_router_span("/error")
+      expect("/error").to have_koa_router_span
       expect_error_in_span(
         :span_name => "router - /error",
         :error_message => "Expected test error!"
@@ -33,6 +33,7 @@ RSpec.describe "Koa + MySQL app" do
     it "creates a MySQL child span on the Koa router span" do
       response = HTTP.get("#{@test_app_url}/mysql-query")
       expect(Span.root!).to be_http_span_with_route("GET /mysql-query")
+      expect("/mysql-query").to have_koa_router_span
       expect(response.status).to eq(200)
 
       sql_span = sql_span_by_parent_library_and_type(
@@ -50,6 +51,7 @@ RSpec.describe "Koa + MySQL app" do
       response = HTTP.get("#{@test_app_url}/mysql2-query")
       expect(Span.root!).to be_http_span_with_route("GET /mysql2-query")
       expect(response.status).to eq(200)
+      expect("/mysql2-query").to have_koa_router_span
 
       sql_span = sql_span_by_parent_library_and_type(
         :parent_span_name => "router - /mysql2-query",

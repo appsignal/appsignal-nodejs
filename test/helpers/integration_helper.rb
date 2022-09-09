@@ -31,18 +31,6 @@ module IntegrationHelper
     Span.clear_all
   end
 
-  def expect_koa_router_span(path)
-    router_span = Span.find_by_attribute("koa.type", "router")
-    raise "No Koa router span found" unless router_span
-
-    expect(Span.root.transitive_parent_of?(router_span)).to be true
-
-    expect(router_span.name).to eq("router - #{path}")
-    expect(
-      router_span.instrumentation_library_name
-    ).to eq("@opentelemetry/instrumentation-koa")
-  end
-
   def expect_error_in_span(span_name:, error_message:)
     span = Span.all.find do |error_span|
       error_span.name == span_name
