@@ -68,13 +68,13 @@ class Span
   attr_reader :name, :id, :parent_id, :attributes, :events, :instrumentation_library_name
 
   def parent
-    all.find do |span|
+    self.class.all.find do |span|
       span.id == parent_id
     end
   end
 
   def children
-    all.find do |span|
+    self.class.all.select do |span|
       span.parent_id == id
     end
   end
@@ -87,5 +87,21 @@ class Span
     end
 
     false
+  end
+
+  def sql_child_by_library_and_type(library:, type:)
+    sql_span = children.find do |child_span|
+      child_span.instrumentation_library_name == library &&
+        child_span.name == type
+    end
+
+    unless sql_span
+      raise(
+        "No SQL span for parent `#{id}` type: #{type} "\
+          "and system `#{library}` found"
+      )
+    end
+
+    sql_span
   end
 end

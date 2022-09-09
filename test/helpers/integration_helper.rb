@@ -30,25 +30,4 @@ module IntegrationHelper
   def self.clean_spans
     Span.clear_all
   end
-
-  def sql_span_by_parent_library_and_type(parent_span_name:, library:, type:)
-    parent_span = Span.all.find do |span|
-      span.name == parent_span_name
-    end
-    raise "No parent span with name `#{parent_span_name}` found" unless parent_span
-
-    sql_span = Span.all.find do |span|
-      span.parent_id == parent_span.id &&
-        span.instrumentation_library_name == library &&
-        span.name == type
-    end
-    unless sql_span
-      raise(
-        "No SQL span with parent `#{span.parent_id}` type: #{type} " \
-          "and system `#{library}` found"
-      )
-    end
-
-    sql_span
-  end
 end
