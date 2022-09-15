@@ -12,8 +12,9 @@ RSpec.describe "Express Yoga app" do
       graphql_query = "{ books { title author } }"
       response = HTTP.post("#{@test_app_url}/graphql", :json => { :query => graphql_query })
 
+      expect(Span.root!).to be_http_span_with_route("HTTP POST")
       expect(response.code.to_i).to eq(200)
-      expect_graphql_spans(graphql_query)
+      expect(graphql_query).to have_graphql_span
     end
   end
 end

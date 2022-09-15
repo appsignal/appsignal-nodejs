@@ -2,7 +2,10 @@
 
 require "http"
 require "json"
+require "/helpers/span"
 require "/helpers/integration_helper"
+require "/helpers/http_helper"
+require "/helpers/express_helper"
 
 RSpec.configure do |config|
   config.include IntegrationHelper
