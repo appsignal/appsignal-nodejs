@@ -22,6 +22,7 @@ import { MySQLInstrumentation } from "@opentelemetry/instrumentation-mysql"
 import { NodeSDK } from "@opentelemetry/sdk-node"
 import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
 import { PgInstrumentation } from "@opentelemetry/instrumentation-pg"
+import { PrismaInstrumentation } from "@prisma/instrumentation"
 import { RedisDbStatementSerializer } from "./instrumentation/redis/serializer"
 import { RedisInstrumentation as Redis4Instrumentation } from "@opentelemetry/instrumentation-redis-4"
 import { RedisInstrumentation } from "@opentelemetry/instrumentation-redis"
@@ -238,6 +239,9 @@ export class Client {
         new IORedisInstrumentation({
           requireParentSpan: false,
           dbStatementSerializer: RedisDbStatementSerializer
+        }),
+        new PrismaInstrumentation({
+          middleware: true
         })
       ]
     })
