@@ -1,3 +1,5 @@
+import type { NodeSDKConfiguration } from "@opentelemetry/sdk-node"
+
 export type AppsignalOptions = {
   active: boolean
   apiKey: string
@@ -33,4 +35,8 @@ export type AppsignalOptions = {
   workingDirPath: string
   workingDirectoryPath: string
   [key: string]: string | string[] | boolean
+}
+
+export type OpenTelemetryOptions = {
+  additionalInstrumentations: NodeSDKConfiguration["instrumentations"]
 }

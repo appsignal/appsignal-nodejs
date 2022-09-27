@@ -1,4 +1,4 @@
-import { AppsignalOptions } from "./config/options"
+import { AppsignalOptions, OpenTelemetryOptions } from "./config/options"
 import { Extension } from "./extension"
 import { Configuration } from "./config"
 import { Metrics } from "./metrics"
@@ -72,7 +72,7 @@ export class Client {
   /**
    * Creates a new instance of the `Appsignal` object
    */
-  constructor(options: Partial<AppsignalOptions> = {}) {
+  constructor(options: Partial<AppsignalOptions & OpenTelemetryOptions> = {}) {
     this.config = new Configuration(options)
     this.extension = new Extension()
     this.logger = this.setUpLogger()
@@ -87,7 +87,9 @@ export class Client {
     }
 
     this.initCoreProbes()
-    this.tracerProvider = this.initOpenTelemetry()
+    this.tracerProvider = this.initOpenTelemetry(
+      options.additionalInstrumentations
+    )
   }
 
   /**
@@ -179,11 +181,13 @@ export class Client {
   /**
    * Initialises OpenTelemetry instrumentation
    */
-  private initOpenTelemetry() {
+  private initOpenTelemetry(
+    additionalInstrumentations?: OpenTelemetryOptions["additionalInstrumentations"]
+  ) {
     const sendParams = this.config.data.sendParams
     const sendSessionData = this.config.data.sendSessionData
     const sdk = new NodeSDK({
-      instrumentations: [
+      instrumentations: (additionalInstrumentations ?? []).concat([
         new HttpInstrumentation({
           headersToSpanAttributes: {
             server: { requestHeaders: this.config.data["requestHeaders"] }
@@ -242,7 +246,7 @@ export class Client {
         new PrismaInstrumentation({
           middleware: true
         })
-      ]
+      ])
     })
 
     sdk.start()
