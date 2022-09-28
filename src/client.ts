@@ -19,7 +19,7 @@ import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
 import { KoaInstrumentation } from "@opentelemetry/instrumentation-koa"
 import { MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2"
 import { MySQLInstrumentation } from "@opentelemetry/instrumentation-mysql"
-import { NodeSDK } from "@opentelemetry/sdk-node"
+import { NodeSDK, NodeSDKConfiguration } from "@opentelemetry/sdk-node"
 import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
 import { PgInstrumentation } from "@opentelemetry/instrumentation-pg"
 import { PrismaInstrumentation } from "@prisma/instrumentation"
@@ -28,8 +28,42 @@ import { RedisInstrumentation as Redis4Instrumentation } from "@opentelemetry/in
 import { RedisInstrumentation } from "@opentelemetry/instrumentation-redis"
 import { SpanProcessor } from "./span_processor"
 import { ProxyTracerProvider } from "@opentelemetry/api"
+import { InstrumentationBase } from "@opentelemetry/instrumentation"
 
 import * as fs from "fs"
+
+const DefaultInstrumentationMap = {
+  "@opentelemetry/instrumentation-express": ExpressInstrumentation,
+  "@opentelemetry/instrumentation-graphql": GraphQLInstrumentation,
+  "@opentelemetry/instrumentation-http": HttpInstrumentation,
+  "@opentelemetry/instrumentation-ioredis": IORedisInstrumentation,
+  "@opentelemetry/instrumentation-koa": KoaInstrumentation,
+  "@opentelemetry/instrumentation-mysql2": MySQL2Instrumentation,
+  "@opentelemetry/instrumentation-mysql": MySQLInstrumentation,
+  "@opentelemetry/instrumentation-pg": PgInstrumentation,
+  "@opentelemetry/instrumentation-redis": RedisInstrumentation,
+  "@opentelemetry/instrumentation-redis-4": Redis4Instrumentation,
+  "@prisma/instrumentation": PrismaInstrumentation
+}
+
+type ConfigArg<T> = T extends new (...args: infer U) => unknown ? U[0] : never
+export type DefaultInstrumentationConfigMap = {
+  [Name in keyof typeof DefaultInstrumentationMap]?: ConfigArg<
+    typeof DefaultInstrumentationMap[Name]
+  >
+}
+
+type InstrumentationOption = NodeSDKConfiguration["instrumentations"][number]
+
+type AppsignalInstrumentationOption = DefaultInstrumentationConfigMap & {
+  [key: string]: InstrumentationOption
+}
+
+export type AppsignalOpenTelemetryOptions = {
+  instrumentations: AppsignalInstrumentationOption
+}
+
+type Options = Partial<AppsignalOptions & AppsignalOpenTelemetryOptions>
 
 /**
  * AppSignal for Node.js's main class.
@@ -73,7 +107,7 @@ export class Client {
   /**
    * Creates a new instance of the `Appsignal` object
    */
-  constructor(options: Partial<AppsignalOptions> = {}) {
+  constructor(options: Options = {}) {
     this.config = new Configuration(options)
     this.extension = new Extension()
     this.logger = this.setUpLogger()
@@ -83,7 +117,9 @@ export class Client {
     if (this.isActive) {
       this.extension.start()
       this.#metrics = new Metrics()
-      this.tracerProvider.setDelegate(this.initOpenTelemetry())
+      this.tracerProvider.setDelegate(
+        this.initOpenTelemetry(options.instrumentations || {})
+      )
     } else {
       this.#metrics = new NoopMetrics()
       console.error("AppSignal not starting, no valid configuration found")
@@ -178,73 +214,129 @@ export class Client {
     )
   }
 
-  /**
-   * Initialises OpenTelemetry instrumentation
-   */
-  private initOpenTelemetry() {
+  private defaultInstrumentationsConfig(): DefaultInstrumentationConfigMap {
     const sendParams = this.config.data.sendParams
     const sendSessionData = this.config.data.sendSessionData
-    const sdk = new NodeSDK({
-      instrumentations: [
-        new HttpInstrumentation({
-          headersToSpanAttributes: {
-            server: { requestHeaders: this.config.data["requestHeaders"] }
-          }
-        }),
-        new ExpressInstrumentation({
-          requestHook: function (span: OtelSpan, info) {
-            if (info.layerType === ExpressLayerType.REQUEST_HANDLER) {
-              if (sendParams) {
-                // Request parameters to magic attributes
-                const queryParams = info.request.query
-                const requestBody = info.request.body
-                const params = { ...queryParams, ...requestBody }
-                span.setAttribute(
-                  "appsignal.request.parameters",
-                  JSON.stringify(params)
-                )
-              }
+    const requestHeaders = this.config.data.requestHeaders
 
-              if (sendSessionData) {
-                // Session data to magic attributes
-                span.setAttribute(
-                  "appsignal.request.session_data",
-                  JSON.stringify(info.request.cookies)
-                )
-              }
-            }
-          }
-        }),
-        new GraphQLInstrumentation(),
-        new KoaInstrumentation({
-          requestHook: function (span: OtelSpan, info) {
+    return {
+      "@opentelemetry/instrumentation-express": {
+        requestHook: function (span: OtelSpan, info) {
+          if (info.layerType === ExpressLayerType.REQUEST_HANDLER) {
             if (sendParams) {
               // Request parameters to magic attributes
-              const queryParams = info.context.request.query
-
+              const queryParams = info.request.query
+              const requestBody = info.request.body
+              const params = { ...queryParams, ...requestBody }
               span.setAttribute(
                 "appsignal.request.parameters",
-                JSON.stringify(queryParams)
+                JSON.stringify(params)
+              )
+            }
+
+            if (sendSessionData) {
+              // Session data to magic attributes
+              span.setAttribute(
+                "appsignal.request.session_data",
+                JSON.stringify(info.request.cookies)
               )
             }
           }
-        }),
-        new MySQLInstrumentation(),
-        new MySQL2Instrumentation(),
-        new PgInstrumentation(),
-        new RedisInstrumentation({
-          dbStatementSerializer: RedisDbStatementSerializer
-        }),
-        new Redis4Instrumentation({
-          dbStatementSerializer: RedisDbStatementSerializer
-        }),
-        new IORedisInstrumentation({
-          dbStatementSerializer: RedisDbStatementSerializer
-        }),
-        new PrismaInstrumentation({
-          middleware: true
-        })
-      ]
+        }
+      },
+      "@opentelemetry/instrumentation-http": {
+        headersToSpanAttributes: {
+          server: { requestHeaders }
+        }
+      },
+      "@opentelemetry/instrumentation-ioredis": {
+        dbStatementSerializer: RedisDbStatementSerializer
+      },
+      "@opentelemetry/instrumentation-koa": {
+        requestHook: function (span: OtelSpan, info) {
+          if (sendParams) {
+            // Request parameters to magic attributes
+            const queryParams = info.context.request.query
+
+            span.setAttribute(
+              "appsignal.request.parameters",
+              JSON.stringify(queryParams)
+            )
+          }
+        }
+      },
+      "@opentelemetry/instrumentation-redis": {
+        dbStatementSerializer: RedisDbStatementSerializer
+      },
+      "@opentelemetry/instrumentation-redis-4": {
+        dbStatementSerializer: RedisDbStatementSerializer
+      },
+      "@prisma/instrumentation": {
+        middleware: true
+      }
+    }
+  }
+
+  private instrumentations(
+    instrumentationsOption: AppsignalInstrumentationOption
+  ): InstrumentationOption[] {
+    const defaultConfig = this.defaultInstrumentationsConfig()
+
+    const defaultInstrumentations = Object.entries(DefaultInstrumentationMap)
+      .filter(([key, _instrumentationConstructor]) => {
+        const instrumentationName =
+          key as keyof typeof DefaultInstrumentationMap
+
+        const userInstrumentationConfig =
+          instrumentationsOption[instrumentationName] || {}
+
+        if (userInstrumentationConfig instanceof InstrumentationBase) {
+          return false
+        }
+
+        return userInstrumentationConfig.enabled !== false
+      })
+      .map(([key, instrumentationConstructor]) => {
+        const instrumentationName =
+          key as keyof typeof DefaultInstrumentationMap
+
+        const userInstrumentationConfig =
+          instrumentationsOption[instrumentationName] || {}
+        const defaultInstrumentationConfig =
+          defaultConfig[instrumentationName] || {}
+
+        const instrumentationConfig = {
+          ...defaultInstrumentationConfig,
+          ...userInstrumentationConfig
+        }
+
+        return new instrumentationConstructor(instrumentationConfig)
+      })
+
+    const defaultInstrumentationNames = Object.keys(DefaultInstrumentationMap)
+
+    const additionalInstrumentations = Object.entries(instrumentationsOption)
+      .filter(([key, instrumentation]) => {
+        const isDefault = defaultInstrumentationNames.includes(key)
+        const isInstance = instrumentation instanceof InstrumentationBase
+
+        return !isDefault || isInstance
+      })
+      .map(
+        ([_key, instrumentation]) => instrumentation as InstrumentationOption
+      )
+
+    return [...defaultInstrumentations, ...additionalInstrumentations]
+  }
+
+  /**
+   * Initialises OpenTelemetry instrumentation
+   */
+  private initOpenTelemetry(
+    instrumentationsOption: AppsignalInstrumentationOption
+  ) {
+    const sdk = new NodeSDK({
+      instrumentations: this.instrumentations(instrumentationsOption)
     })
 
     sdk.start()
