@@ -237,7 +237,6 @@ export class Client {
           dbStatementSerializer: RedisDbStatementSerializer
         }),
         new IORedisInstrumentation({
-          requireParentSpan: false,
           dbStatementSerializer: RedisDbStatementSerializer
         }),
         new PrismaInstrumentation({
