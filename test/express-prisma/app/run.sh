@@ -33,6 +33,9 @@ npm link @appsignal/nodejs
 echo "Running Prisma migrations"
 npx prisma migrate dev
 
+echo "Building the app"
+npm run build
+
 echo "Running prisma seeds"
 npx prisma db seed
 

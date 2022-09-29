@@ -78,6 +78,9 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
         - name: Express + Yoga
           commands:
             - script/integration_test_app express-yoga
+        - name: Express + Prisma
+          commands:
+            - script/integration_test_app express-prisma
 
 matrix:
   nodejs:

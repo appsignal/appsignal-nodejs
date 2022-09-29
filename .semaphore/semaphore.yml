@@ -82,6 +82,9 @@ blocks:
     - name: Express + Yoga
       commands:
       - script/integration_test_app express-yoga
+    - name: Express + Prisma
+      commands:
+      - script/integration_test_app express-prisma
 - name: Node.js 18 - Build
   dependencies:
   - Validation
