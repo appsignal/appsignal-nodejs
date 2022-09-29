@@ -18,9 +18,6 @@ export type AppsignalOptions = {
   ignoreErrors: string[]
   ignoreInstrumentation: string[]
   ignoreNamespaces: string[]
-  instrumentHttp: boolean
-  instrumentPg: boolean
-  instrumentRedis: boolean
   log: string
   logPath: string
   name: string
