@@ -6,7 +6,6 @@
   "main": "dist/app.js",
   "scripts": {
     "build": "tsc --version; tsc -p tsconfig.json",
-    "preserver": "npm run build",
     "server": "node --require ./dist/appsignal.js dist/app.js"
   },
   "prisma": {
