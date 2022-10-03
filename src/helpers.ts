@@ -1,4 +1,4 @@
-import { SpanStatusCode, AttributeValue, trace, Span } from "@opentelemetry/api"
+import { SpanStatusCode, AttributeValue, trace } from "@opentelemetry/api"
 
 function setAttribute(attribute: string, value: AttributeValue) {
   const activeSpan = trace.getActiveSpan()

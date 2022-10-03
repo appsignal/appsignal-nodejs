@@ -5,6 +5,8 @@ require "json"
 require "/helpers/span"
 require "/helpers/integration_helper"
 require "/helpers/http_helper"
+require "/helpers/error_helper"
+require "/helpers/magic_helper"
 require "/helpers/express_helper"
 require "/helpers/redis_helper"
 
