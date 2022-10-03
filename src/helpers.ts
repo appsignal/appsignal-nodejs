@@ -7,8 +7,26 @@ function setAttribute(attribute: string, value: AttributeValue) {
   }
 }
 
+function circularReplacer() {
+  const seenValue: any[] = []
+  const seenKey: string[] = []
+  return (key: string, value: any) => {
+    if (typeof value === "object" && value !== null) {
+      const i = seenValue.indexOf(value)
+      if (i !== -1) {
+        return `[cyclic value: ${seenKey[i] || "root object"}]`
+      } else {
+        seenValue.push(value)
+        seenKey.push(key)
+      }
+    }
+
+    return value
+  }
+}
+
 function setSerialisedAttribute(attribute: string, value: any) {
-  const serialisedValue = JSON.stringify(value)
+  const serialisedValue = JSON.stringify(value, circularReplacer())
   if (serialisedValue) {
     setAttribute(attribute, serialisedValue)
   }

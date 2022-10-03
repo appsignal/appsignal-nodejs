@@ -82,4 +82,19 @@ describe("Helpers", () => {
       "appsignal.namespace": "web"
     })
   })
+
+  it("handles cyclic references", () => {
+    tracerProvider.getTracer("test").startActiveSpan("Some span", span => {
+      const root: Record<string, any> = {}
+      root.nested = root
+      setCustomData(root)
+
+      span.end()
+    })
+
+    expect(spans.length).toEqual(1)
+    expect(spans[0].attributes).toMatchObject({
+      "appsignal.custom_data": '{"nested":"[cyclic value: root object]"}'
+    })
+  })
 })
