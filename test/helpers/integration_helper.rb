@@ -30,4 +30,8 @@ module IntegrationHelper
   def self.clean_spans
     Span.clear_all
   end
+
+  def self.print_spans
+    puts Span.all.inspect
+  end
 end

@@ -20,6 +20,10 @@ RSpec.configure do |config|
     IntegrationHelper.clean_spans
   end
 
+  config.after(:each) do |example|
+    IntegrationHelper.print_spans if example.exception
+  end
+
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
