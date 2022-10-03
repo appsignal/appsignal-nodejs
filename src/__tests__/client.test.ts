@@ -102,20 +102,4 @@ describe("Client", () => {
     const meter = client.metrics()
     expect(meter).toBeInstanceOf(Metrics)
   })
-
-  it("sets up a functioning OpenTelemetry `TracerProvider` when active", () => {
-    client = new Client({ ...DEFAULT_OPTS, active: true })
-    const span = client.tracerProvider
-      .getTracer("some-tracer")
-      .startSpan("aaaa")
-    expect(span.constructor.name).toEqual("Span")
-  })
-
-  it("sets up a noop OpenTelemetry `TracerProvider` when not active", () => {
-    client = new Client(DEFAULT_OPTS)
-    const span = client.tracerProvider
-      .getTracer("some-tracer")
-      .startSpan("aaaa")
-    expect(span.constructor.name).toEqual("NonRecordingSpan")
-  })
 })

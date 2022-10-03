@@ -20,14 +20,12 @@ import { KoaInstrumentation } from "@opentelemetry/instrumentation-koa"
 import { MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2"
 import { MySQLInstrumentation } from "@opentelemetry/instrumentation-mysql"
 import { NodeSDK } from "@opentelemetry/sdk-node"
-import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
 import { PgInstrumentation } from "@opentelemetry/instrumentation-pg"
 import { PrismaInstrumentation } from "@prisma/instrumentation"
 import { RedisDbStatementSerializer } from "./instrumentation/redis/serializer"
 import { RedisInstrumentation as Redis4Instrumentation } from "@opentelemetry/instrumentation-redis-4"
 import { RedisInstrumentation } from "@opentelemetry/instrumentation-redis"
 import { SpanProcessor } from "./span_processor"
-import { ProxyTracerProvider } from "@opentelemetry/api"
 
 import * as fs from "fs"
 
@@ -45,9 +43,9 @@ export class Client {
   config: Configuration
   readonly logger: Logger
   extension: Extension
-  readonly tracerProvider: ProxyTracerProvider
 
   #metrics: Metrics
+  #sdk?: NodeSDK
 
   /**
    * Global accessors for the AppSignal client
@@ -78,12 +76,11 @@ export class Client {
     this.extension = new Extension()
     this.logger = this.setUpLogger()
     this.storeInGlobal()
-    this.tracerProvider = new ProxyTracerProvider()
 
     if (this.isActive) {
       this.extension.start()
       this.#metrics = new Metrics()
-      this.tracerProvider.setDelegate(this.initOpenTelemetry())
+      this.#sdk = this.initOpenTelemetry()
     } else {
       this.#metrics = new NoopMetrics()
       console.error("AppSignal not starting, no valid configuration found")
@@ -134,6 +131,7 @@ export class Client {
       console.log("Stopping AppSignal")
     }
 
+    this.#sdk?.shutdown()
     this.metrics().probes().stop()
     this.extension.stop()
   }
@@ -237,23 +235,24 @@ export class Client {
       })
     ]
 
-    const sdk = new NodeSDK({ instrumentations })
+    const testMode = process.env["_APPSIGNAL_TEST_MODE"]
+    const testModeFilePath = process.env["_APPSIGNAL_TEST_MODE_FILE_PATH"]
+    let spanProcessor
+
+    if (testMode && testModeFilePath) {
+      spanProcessor = new TestModeSpanProcessor(testModeFilePath)
+    } else {
+      spanProcessor = new SpanProcessor(this)
+    }
+
+    const sdk = new NodeSDK({
+      instrumentations,
+      spanProcessor
+    })
 
     sdk.start()
 
-    const tracerProvider = new NodeTracerProvider()
-    tracerProvider.addSpanProcessor(new SpanProcessor(this))
-
-    // Add test mode span processor if private env vars are present
-    const testMode = process.env["_APPSIGNAL_TEST_MODE"]
-    const testModeFilePath = process.env["_APPSIGNAL_TEST_MODE_FILE_PATH"]
-    if (testMode && testModeFilePath) {
-      const spanProcessor = new TestModeSpanProcessor(testModeFilePath)
-      tracerProvider.addSpanProcessor(spanProcessor)
-    }
-
-    tracerProvider.register()
-    return tracerProvider
+    return sdk
   }
 
   /**

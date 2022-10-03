@@ -1,12 +1,11 @@
+import { trace } from "@opentelemetry/api"
 import { NodeSDK } from "@opentelemetry/sdk-node"
 import {
   ReadableSpan,
   SpanProcessor,
   TimedEvent
 } from "@opentelemetry/sdk-trace-base"
-import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
 import { Client } from "../client"
-import { trace } from "@opentelemetry/api"
 
 import {
   setBody,
@@ -40,7 +39,6 @@ function expectErrorEvent(event: TimedEvent) {
 describe("Helpers", () => {
   let spans: ReadableSpan[] = []
   let sdk: NodeSDK
-  let tracerProvider: NodeTracerProvider
 
   const spanProcessor: SpanProcessor = {
     onEnd(span) {
@@ -61,14 +59,11 @@ describe("Helpers", () => {
     new Client({})
 
     sdk = new NodeSDK({
-      instrumentations: []
+      instrumentations: [],
+      spanProcessor
     })
 
     sdk.start()
-
-    tracerProvider = new NodeTracerProvider()
-    tracerProvider.addSpanProcessor(spanProcessor)
-    tracerProvider.register()
   })
 
   beforeEach(() => {
@@ -80,7 +75,7 @@ describe("Helpers", () => {
   })
 
   it("set the attributes", () => {
-    tracerProvider.getTracer("test").startActiveSpan("Some span", span => {
+    trace.getTracer("test").startActiveSpan("Some span", span => {
       setBody("SELECT * FROM users")
       setCategory("some.query")
       setName("Some query")
@@ -109,7 +104,7 @@ describe("Helpers", () => {
   })
 
   it("handles cyclic references", () => {
-    tracerProvider.getTracer("test").startActiveSpan("Some span", span => {
+    trace.getTracer("test").startActiveSpan("Some span", span => {
       const root: Record<string, any> = {}
       root.nested = root
       setCustomData(root)
@@ -135,7 +130,7 @@ describe("Helpers", () => {
 
   describe("setError", () => {
     it("sets an error", () => {
-      tracerProvider.getTracer("test").startActiveSpan("Some span", span => {
+      trace.getTracer("test").startActiveSpan("Some span", span => {
         try {
           throwError()
         } catch (err) {
@@ -173,7 +168,7 @@ describe("Helpers", () => {
 
   describe("sendError", () => {
     it("sends an error as a separate span", () => {
-      tracerProvider.getTracer("test").startActiveSpan("Some span", span => {
+      trace.getTracer("test").startActiveSpan("Some span", span => {
         try {
           throwError()
         } catch (err) {
