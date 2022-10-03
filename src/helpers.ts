@@ -1,9 +1,9 @@
-import { AttributeValue, trace } from "@opentelemetry/api"
+import { SpanStatusCode, AttributeValue, trace, Span } from "@opentelemetry/api"
 
 function setAttribute(attribute: string, value: AttributeValue) {
-  const currentSpan = trace.getActiveSpan()
-  if (currentSpan) {
-    currentSpan.setAttribute(attribute, value)
+  const activeSpan = trace.getActiveSpan()
+  if (activeSpan) {
+    activeSpan.setAttribute(attribute, value)
   }
 }
 
@@ -76,4 +76,29 @@ export function setBody(body: string) {
 
 export function setNamespace(namespace: string) {
   setAttribute("appsignal.namespace", namespace)
+}
+
+export function setError(error: Error) {
+  if (error && error.name && error.message) {
+    const activeSpan = trace.getActiveSpan()
+    if (activeSpan) {
+      activeSpan.recordException(error)
+      activeSpan.setStatus({
+        code: SpanStatusCode.ERROR,
+        message: error.message
+      })
+    }
+  }
+}
+
+export function sendError(error: Error, fn: () => void = () => {}) {
+  if (error && error.name && error.message) {
+    trace
+      .getTracer("Appsignal.sendError")
+      .startActiveSpan(error.name, { root: true }, span => {
+        setError(error)
+        fn()
+        span.end()
+      })
+  }
 }
