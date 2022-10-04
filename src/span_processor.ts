@@ -1,3 +1,4 @@
+import * as fs from "fs"
 import type { Context } from "@opentelemetry/api"
 import type {
   Span,
@@ -49,6 +50,49 @@ export class SpanProcessor implements OpenTelemetrySpanProcessor {
   }
 
   shutdown(): Promise<void> {
+    return Promise.resolve()
+  }
+}
+
+export class TestModeSpanProcessor implements OpenTelemetrySpanProcessor {
+  #filePath: string
+
+  constructor(testModeFilePath: string) {
+    this.#filePath = testModeFilePath
+  }
+
+  forceFlush() {
+    return Promise.resolve()
+  }
+
+  onStart(_span: any, _parentContext: any) {
+    // Does nothing
+  }
+
+  onEnd(span: any) {
+    // must grab specific attributes only because
+    // the span is a circular object
+    const serializableSpan = {
+      attributes: span.attributes,
+      events: span.events,
+      status: span.status,
+      name: span.name,
+      spanId: span._spanContext.spanId,
+      traceId: span._spanContext.traceId,
+      parentSpanId: span.parentSpanId,
+      instrumentationLibrary: span.instrumentationLibrary,
+      startTime: span.startTime,
+      endTime: span.endTime
+    }
+
+    // Re-open the file for every write, as the test process might have
+    // truncated it in between writes.
+    const file = fs.openSync(this.#filePath, "a")
+    fs.appendFileSync(file, `${JSON.stringify(serializableSpan)}\n`)
+    fs.closeSync(file)
+  }
+
+  shutdown() {
     return Promise.resolve()
   }
 }

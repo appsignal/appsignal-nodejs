@@ -25,9 +25,7 @@ import { PrismaInstrumentation } from "@prisma/instrumentation"
 import { RedisDbStatementSerializer } from "./instrumentation/redis/serializer"
 import { RedisInstrumentation as Redis4Instrumentation } from "@opentelemetry/instrumentation-redis-4"
 import { RedisInstrumentation } from "@opentelemetry/instrumentation-redis"
-import { SpanProcessor } from "./span_processor"
-
-import * as fs from "fs"
+import { SpanProcessor, TestModeSpanProcessor } from "./span_processor"
 
 /**
  * AppSignal for Node.js's main class.
@@ -279,49 +277,5 @@ export class Client {
    */
   private storeInGlobal(): void {
     global.__APPSIGNAL__ = this
-  }
-}
-
-class TestModeSpanProcessor {
-  #filePath: string
-
-  constructor(testModeFilePath: string) {
-    this.#filePath = testModeFilePath
-  }
-
-  forceFlush() {
-    return Promise.resolve()
-  }
-
-  onStart(_span: any, _parentContext: any) {
-    // Does nothing
-  }
-
-  onEnd(span: any) {
-    // must grab specific attributes only because
-    // the span is a circular object
-    const serializableSpan = {
-      attributes: span.attributes,
-      events: span.events,
-      status: span.status,
-      name: span.name,
-      spanId: span._spanContext.spanId,
-      traceId: span._spanContext.traceId,
-      parentSpanId: span.parentSpanId,
-      instrumentationLibrary: span.instrumentationLibrary,
-      startTime: span.startTime,
-      endTime: span.endTime
-    }
-
-    // Re-open the file for every write, as the test process might have
-    // truncated it in between writes.
-    const file = fs.openSync(this.#filePath, "a")
-    fs.appendFileSync(file, `${JSON.stringify(serializableSpan)}\n`)
-    fs.closeSync(file)
-  }
-
-  shutdown() {
-    // Does nothing
-    return Promise.resolve()
   }
 }
