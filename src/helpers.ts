@@ -1,9 +1,16 @@
 import { SpanStatusCode, AttributeValue, trace } from "@opentelemetry/api"
+import { Client } from "./client"
 
 function setAttribute(attribute: string, value: AttributeValue) {
   const activeSpan = trace.getActiveSpan()
   if (activeSpan) {
     activeSpan.setAttribute(attribute, value)
+  } else {
+    const splitAttributes = attribute.split(".")
+    const attributeSuffix = splitAttributes[splitAttributes.length - 1]
+    Client.logger.debug(
+      `There is no active span, cannot set \`${attributeSuffix}\``
+    )
   }
 }
 
@@ -87,7 +94,13 @@ export function setError(error: Error) {
         code: SpanStatusCode.ERROR,
         message: error.message
       })
+    } else {
+      Client.logger.debug(
+        `There is no active span, cannot set \`${error.name}\``
+      )
     }
+  } else {
+    Client.logger.debug("Cannot set error, it is not an `Error`-like object")
   }
 }
 
@@ -100,5 +113,7 @@ export function sendError(error: Error, fn: () => void = () => {}) {
         fn()
         span.end()
       })
+  } else {
+    Client.logger.debug("Cannot send error, it is not an `Error`-like object")
   }
 }

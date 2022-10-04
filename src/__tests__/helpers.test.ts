@@ -26,6 +26,17 @@ function throwError() {
   throw new Error("Whoopsie!")
 }
 
+function expectErrorEvent(event: TimedEvent) {
+  expect(event).toMatchObject({
+    name: "exception",
+    attributes: {
+      "exception.message": "Whoopsie!",
+      "exception.type": "Error",
+      "exception.stacktrace": expect.stringContaining("at throwError (")
+    }
+  })
+}
+
 describe("Helpers", () => {
   let spans: ReadableSpan[] = []
   let sdk: NodeSDK
@@ -47,6 +58,8 @@ describe("Helpers", () => {
   }
 
   beforeAll(() => {
+    new Client({})
+
     sdk = new NodeSDK({
       instrumentations: []
     })
@@ -110,18 +123,17 @@ describe("Helpers", () => {
     })
   })
 
-  describe("setError", () => {
-    function expectErrorEvent(event: TimedEvent) {
-      expect(event).toMatchObject({
-        name: "exception",
-        attributes: {
-          "exception.message": "Whoopsie!",
-          "exception.type": "Error",
-          "exception.stacktrace": expect.stringContaining("at throwError (")
-        }
-      })
-    }
+  it("logs a debug warning when there is no active span", () => {
+    const debugMock = jest.spyOn(Client.logger, "debug")
 
+    setCustomData({ chunky: "bacon" })
+
+    expect(debugMock).toHaveBeenCalledWith(
+      "There is no active span, cannot set `custom_data`"
+    )
+  })
+
+  describe("setError", () => {
     it("sets an error", () => {
       tracerProvider.getTracer("test").startActiveSpan("Some span", span => {
         try {
@@ -138,6 +150,28 @@ describe("Helpers", () => {
       expectErrorEvent(spans[0].events[0])
     })
 
+    it("logs a debug warning when there is no active span", () => {
+      const debugMock = jest.spyOn(Client.logger, "debug")
+
+      setError(new Error("Oh no!"))
+
+      expect(debugMock).toHaveBeenCalledWith(
+        "There is no active span, cannot set `Error`"
+      )
+    })
+
+    it("logs a debug warning when the value is not an error", () => {
+      const debugMock = jest.spyOn(Client.logger, "debug")
+
+      setError("Oh no!" as any as Error)
+
+      expect(debugMock).toHaveBeenCalledWith(
+        "Cannot set error, it is not an `Error`-like object"
+      )
+    })
+  })
+
+  describe("sendError", () => {
     it("sends an error as a separate span", () => {
       tracerProvider.getTracer("test").startActiveSpan("Some span", span => {
         try {
@@ -181,6 +215,16 @@ describe("Helpers", () => {
       expect(spans[0].attributes).toMatchObject({
         "appsignal.custom_data": '{"chunky":"bacon"}'
       })
+    })
+
+    it("logs a debug warning when the value is not an error", () => {
+      const debugMock = jest.spyOn(Client.logger, "debug")
+
+      sendError("Oh no!" as any as Error)
+
+      expect(debugMock).toHaveBeenCalledWith(
+        "Cannot send error, it is not an `Error`-like object"
+      )
     })
   })
 })
