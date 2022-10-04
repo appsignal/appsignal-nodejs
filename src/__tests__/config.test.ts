@@ -15,6 +15,7 @@ describe("Configuration", () => {
     active: false,
     caFilePath: path.join(__dirname, "../../cert/cacert.pem"),
     debug: false,
+    disableDefaultInstrumentations: false,
     dnsServers: [],
     enableHostMetrics: true,
     enableMinutelyProbes: true,

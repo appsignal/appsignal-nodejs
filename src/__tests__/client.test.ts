@@ -1,7 +1,9 @@
+import { InstrumentationTestRegistry } from "../../test/instrumentation_registry"
 import { Extension } from "../extension"
 import { Client } from "../client"
 import { Metrics } from "../metrics"
 import { NoopMetrics } from "../noops"
+import { Instrumentation } from "@opentelemetry/instrumentation"
 
 describe("Client", () => {
   const name = "TEST APP"
@@ -101,5 +103,84 @@ describe("Client", () => {
     client = new Client({ ...DEFAULT_OPTS, active: true })
     const meter = client.metrics()
     expect(meter).toBeInstanceOf(Metrics)
+  })
+
+  describe("Instrumentations", () => {
+    it("registers the default instrumentations", () => {
+      client = new Client({ ...DEFAULT_OPTS, active: true })
+      // Not testing against all of them or a fixed number so
+      // that we don't have to change these tests every time we
+      // add a new instrumentation.
+      const instrumentationNames =
+        InstrumentationTestRegistry.instrumentationNames()
+      expect(instrumentationNames.length).toBeGreaterThan(10)
+      expect(instrumentationNames).toContain(
+        "@opentelemetry/instrumentation-http"
+      )
+    })
+
+    it("can disable all default instrumentations", () => {
+      client = new Client({
+        ...DEFAULT_OPTS,
+        active: true,
+        disableDefaultInstrumentations: true
+      })
+      const instrumentationNames =
+        InstrumentationTestRegistry.instrumentationNames()
+      expect(instrumentationNames).toEqual([])
+    })
+
+    it("can disable some default instrumentations", () => {
+      client = new Client({
+        ...DEFAULT_OPTS,
+        active: true,
+        disableDefaultInstrumentations: ["@opentelemetry/instrumentation-http"]
+      })
+      const instrumentationNames =
+        InstrumentationTestRegistry.instrumentationNames()
+      expect(instrumentationNames).not.toContain(
+        "@opentelemetry/instrumentation-http"
+      )
+      expect(instrumentationNames.length).toBeGreaterThan(0)
+    })
+
+    it("can add additional instrumentations", () => {
+      class TestInstrumentation implements Instrumentation {
+        instrumentationName = "test/instrumentation"
+        instrumentationVersion = "0.0.0"
+        enable() {
+          // Does nothing
+        }
+        disable() {
+          // Does nothing
+        }
+        setTracerProvider(_tracerProvider: any) {
+          // Does nothing
+        }
+        setMeterProvider(_meterProvider: any) {
+          // Does nothing
+        }
+        setConfig(_config: any) {
+          // Does nothing
+        }
+        getConfig() {
+          return {}
+        }
+      }
+
+      client = new Client({
+        ...DEFAULT_OPTS,
+        active: true,
+        additionalInstrumentations: [new TestInstrumentation()]
+      })
+
+      const instrumentationNames =
+        InstrumentationTestRegistry.instrumentationNames()
+      expect(instrumentationNames).toContain(
+        "@opentelemetry/instrumentation-http"
+      )
+      expect(instrumentationNames.length).toBeGreaterThan(10)
+      expect(instrumentationNames).toContain("test/instrumentation")
+    })
   })
 })
