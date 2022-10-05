@@ -14,7 +14,6 @@ describe("Configuration", () => {
   const expectedDefaultConfig = {
     active: false,
     caFilePath: path.join(__dirname, "../../cert/cacert.pem"),
-    debug: false,
     disableDefaultInstrumentations: false,
     dnsServers: [],
     enableHostMetrics: true,
@@ -41,8 +40,7 @@ describe("Configuration", () => {
     ],
     sendEnvironmentMetadata: true,
     sendParams: true,
-    sendSessionData: true,
-    transactionDebugMode: false
+    sendSessionData: true
   }
 
   function resetEnv() {
@@ -102,7 +100,6 @@ describe("Configuration", () => {
   describe("with initial config options", () => {
     it("loads initial config options", () => {
       const initialOptions = {
-        debug: true,
         enableStatsd: true
       }
       const options = {
@@ -124,10 +121,8 @@ describe("Configuration", () => {
 
   describe("with config in the environment", () => {
     it("loads configuration from the environment", () => {
-      process.env["APPSIGNAL_DEBUG"] = "true"
       process.env["APPSIGNAL_ENABLE_STATSD"] = "true"
       const envOptions = {
-        debug: true,
         enableStatsd: true
       }
       const expectedConfig = {
@@ -244,7 +239,6 @@ describe("Configuration", () => {
       expect(env("_APPSIGNAL_ACTIVE")).toBeUndefined()
       expect(env("_APPSIGNAL_APP_NAME")).toBeUndefined()
       expect(env("_APPSIGNAL_CA_FILE_PATH")).toMatch(/cert\/cacert\.pem$/)
-      expect(env("_APPSIGNAL_DEBUG_LOGGING")).toBeUndefined()
       expect(env("_APPSIGNAL_DNS_SERVERS")).toBeUndefined()
       expect(env("_APPSIGNAL_ENABLE_HOST_METRICS")).toEqual("true")
       expect(env("_APPSIGNAL_ENABLE_STATSD")).toBeUndefined()
@@ -264,7 +258,6 @@ describe("Configuration", () => {
       )
       expect(env("_APPSIGNAL_PUSH_API_KEY")).toBeUndefined()
       expect(env("_APPSIGNAL_RUNNING_IN_CONTAINER")).toBeUndefined()
-      expect(env("_APPSIGNAL_TRANSACTION_DEBUG_MODE")).toBeUndefined()
       expect(env("_APPSIGNAL_WORKING_DIRECTORY_PATH")).toBeUndefined()
       expect(env("_APPSIGNAL_WORKING_DIR_PATH")).toBeUndefined()
       expect(env("_APP_REVISION")).toBeUndefined()
@@ -287,7 +280,6 @@ describe("Configuration", () => {
           name,
           active: true,
           pushApiKey,
-          debug: true,
           dnsServers: ["8.8.8.8", "8.8.4.4"],
           enableHostMetrics: false,
           enableMinutelyProbes: false,
@@ -311,7 +303,6 @@ describe("Configuration", () => {
       it("writes configuration values to the environment", () => {
         expect(env("_APPSIGNAL_ACTIVE")).toEqual("true")
         expect(env("_APPSIGNAL_APP_NAME")).toEqual(name)
-        expect(env("_APPSIGNAL_DEBUG_LOGGING")).toEqual("true")
         expect(env("_APPSIGNAL_DNS_SERVERS")).toEqual("8.8.8.8,8.8.4.4")
         expect(env("_APPSIGNAL_ENABLE_HOST_METRICS")).toEqual("true")
         expect(env("_APPSIGNAL_ENABLE_STATSD")).toEqual("true")
@@ -340,9 +331,6 @@ describe("Configuration", () => {
         expect(env("_APPSIGNAL_PUSH_API_KEY")).toEqual(pushApiKey)
         expect(env("_APPSIGNAL_RUNNING_IN_CONTAINER")).toEqual("true")
         expect(env("_APPSIGNAL_SEND_ENVIRONMENT_METADATA")).toEqual("true")
-        // Only set because `debug` is set to true
-        // @TODO: https://github.com/appsignal/appsignal-nodejs/issues/379
-        expect(env("_APPSIGNAL_TRANSACTION_DEBUG_MODE")).toEqual("true")
         expect(env("_APPSIGNAL_WORKING_DIRECTORY_PATH")).toEqual("/my/path")
         expect(env("_APPSIGNAL_WORKING_DIR_PATH")).toBeUndefined()
         expect(env("_APP_REVISION")).toEqual("my-revision")

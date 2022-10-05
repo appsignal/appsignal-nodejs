@@ -41,13 +41,6 @@ export class Configuration {
   }
 
   /**
-   * Returns `true` if the client is in debug mode
-   */
-  public get debug(): boolean {
-    return this.data.debug || false
-  }
-
-  /**
    * Returns `true` if the current configuration is valid.
    */
   public get isValid(): boolean {
@@ -113,7 +106,6 @@ export class Configuration {
     return {
       active: false,
       caFilePath: path.join(__dirname, "../cert/cacert.pem"),
-      debug: false,
       disableDefaultInstrumentations: false,
       dnsServers: [],
       enableHostMetrics: true,
@@ -140,8 +132,7 @@ export class Configuration {
       ],
       sendEnvironmentMetadata: true,
       sendParams: true,
-      sendSessionData: true,
-      transactionDebugMode: false
+      sendSessionData: true
     }
   }
 
