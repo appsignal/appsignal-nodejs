@@ -19,13 +19,6 @@ export class Configuration {
   sources: Record<string, Partial<AppsignalOptions>>
 
   constructor(options: Partial<AppsignalOptions>) {
-    if (options.apiKey) {
-      console.warn(
-        "DEPRECATED: The `apiKey` config option was renamed to `pushApiKey`. Please rename the config option given to the Appsignal module."
-      )
-      options.pushApiKey = options.apiKey
-      delete options.apiKey
-    }
     this.sources = {
       default: this._defaultValues(),
       system: this._systemValues(),

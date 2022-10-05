@@ -140,22 +140,6 @@ describe("Configuration", () => {
     })
   })
 
-  describe("apiKey option", () => {
-    it("sets the pushApiKey config option with the apiKey value", () => {
-      const warnMock = jest.spyOn(console, "warn").mockImplementation(() => {})
-      const apiKey = "my key"
-      config = new Configuration({ apiKey })
-
-      expect(config.data.pushApiKey).toEqual(apiKey)
-      expect(config.data.apiKey).toBeUndefined()
-      expect(config.sources.initial.pushApiKey).toEqual(apiKey)
-      expect(config.sources.initial.apiKey).toBeUndefined()
-      expect(warnMock).toBeCalledWith(
-        "DEPRECATED: The `apiKey` config option was renamed to `pushApiKey`. Please rename the config option given to the Appsignal module."
-      )
-    })
-  })
-
   describe("logFilePath", () => {
     it("uses the default log file path", () => {
       jest.spyOn(fs, "accessSync").mockImplementation(() => {})
