@@ -1,8 +1,11 @@
+import type { DefaultInstrumentationName } from "../client"
+
 export type AppsignalOptions = {
   active: boolean
   apiKey: string
   caFilePath: string
   debug: boolean
+  disableDefaultInstrumentations: DefaultInstrumentationName[] | boolean
   dnsServers: string[]
   enableHostMetrics: boolean
   enableMinutelyProbes: boolean
@@ -18,11 +21,9 @@ export type AppsignalOptions = {
   ignoreErrors: string[]
   ignoreInstrumentation: string[]
   ignoreNamespaces: string[]
-  instrumentHttp: boolean
-  instrumentPg: boolean
-  instrumentRedis: boolean
   log: string
   logPath: string
+  logLevel: string
   name: string
   pushApiKey: string
   requestHeaders: string[]
@@ -32,5 +33,4 @@ export type AppsignalOptions = {
   sendSessionData: boolean
   workingDirPath: string
   workingDirectoryPath: string
-  [key: string]: string | string[] | boolean
 }

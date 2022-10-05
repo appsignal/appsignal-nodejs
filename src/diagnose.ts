@@ -205,7 +205,9 @@ export class DiagnoseTool {
 
     Object.keys(options).forEach(key => {
       const newKey = JS_TO_RUBY_MAPPING[key]
-      config[newKey] = options[key]
+      if (newKey) {
+        config[newKey] = (options as Record<string, any>)[key]
+      }
     })
 
     return config

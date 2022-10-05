@@ -114,6 +114,7 @@ export class Configuration {
       active: false,
       caFilePath: path.join(__dirname, "../cert/cacert.pem"),
       debug: false,
+      disableDefaultInstrumentations: false,
       dnsServers: [],
       enableHostMetrics: true,
       enableMinutelyProbes: true,
@@ -126,9 +127,6 @@ export class Configuration {
       ignoreActions: [],
       ignoreErrors: [],
       ignoreNamespaces: [],
-      instrumentHttp: true,
-      instrumentPg: true,
-      instrumentRedis: true,
       log: "file",
       requestHeaders: [
         "accept",

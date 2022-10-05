@@ -1,4 +1,4 @@
-import { SpanTestRegistry } from "../../test/registry"
+import { SpanTestRegistry } from "../../test/span_registry"
 import { Client } from "../client"
 import { SpanProcessor } from "../span_processor"
 import { Tracer, BasicTracerProvider } from "@opentelemetry/sdk-trace-base"
