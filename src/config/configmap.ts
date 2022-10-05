@@ -31,7 +31,6 @@ export const ENV_TO_KEY_MAPPING: { [key: string]: string } = {
   APPSIGNAL_SEND_PARAMS: "sendParams",
   APPSIGNAL_SEND_SESSION_DATA: "sendSessionData",
   APPSIGNAL_WORKING_DIRECTORY_PATH: "workingDirectoryPath",
-  APPSIGNAL_WORKING_DIR_PATH: "workingDirPath",
   APP_REVISION: "revision"
 }
 
@@ -58,7 +57,6 @@ export const PRIVATE_ENV_MAPPING: { [key: string]: string } = {
   _APPSIGNAL_RUNNING_IN_CONTAINER: "runningInContainer",
   _APPSIGNAL_SEND_ENVIRONMENT_METADATA: "sendEnvironmentMetadata",
   _APPSIGNAL_WORKING_DIRECTORY_PATH: "workingDirectoryPath",
-  _APPSIGNAL_WORKING_DIR_PATH: "workingDirPath",
   _APP_REVISION: "revision"
 }
 
@@ -90,6 +88,5 @@ export const JS_TO_RUBY_MAPPING: { [key: string]: string } = {
   sendEnvironmentMetadata: "send_environment_metadata",
   sendParams: "send_params",
   sendSessionData: "send_session_data",
-  workingDirPath: "working_dir_path",
   workingDirectoryPath: "working_directory_path"
 }

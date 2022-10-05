@@ -29,6 +29,5 @@ export type AppsignalOptions = {
   runningInContainer: boolean
   sendParams: boolean
   sendSessionData: boolean
-  workingDirPath: string
   workingDirectoryPath: string
 }
