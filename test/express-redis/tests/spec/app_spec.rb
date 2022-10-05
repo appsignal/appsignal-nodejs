@@ -6,18 +6,30 @@ RSpec.describe "Redis app" do
   end
 
   describe "GET / with params" do
-    it "adds params to the request handler span" do
+    it "adds params to the HTTP root span" do
       response = HTTP.get("#{@test_app_url}?param1=user&param2=password")
       expect(response.status).to eq(200)
       expect(Span.root!).to be_http_span_with_route("GET /")
 
-      request_handler_span = Span.find_by_name!("request handler - /")
       expected_request_parameters = {
         "param1" => "user",
         "param2" => "password"
       }
 
-      expect(request_handler_span).to match_request_parameters(expected_request_parameters)
+      expect(Span.root!).to match_request_parameters(expected_request_parameters)
+    end
+  end
+
+  describe "GET / with session data" do
+    it "adds session data to the HTTP root span" do
+      response = HTTP.cookies(:cookie => "chocolate").get(@test_app_url)
+      expect(response.status).to eq(200)
+      expect(Span.root!).to be_http_span_with_route("GET /")
+
+      expected_session_data_parameters = {
+        "cookie" => "chocolate"
+      }
+      expect(Span.root!).to match_request_session_data(expected_session_data_parameters)
     end
   end
 
@@ -45,6 +57,29 @@ RSpec.describe "Redis app" do
 
       expect("SET ? ?").to have_redis_4_span
       expect("GET ?").to have_redis_4_span
+    end
+  end
+
+  describe "GET /error" do
+    it "adds an error event on the HTTP root span" do
+      response = HTTP.get("#{@test_app_url}/error")
+      expect(response.status).to eq(500)
+
+      expect(Span.root!).to be_http_span_with_route("GET /error")
+      expect(Span.root!).to have_error_event("Expected test error!")
+    end
+  end
+
+  describe "GET /custom" do
+    it "uses custom instrumentation and magic attribute helpers" do
+      response = HTTP.get("#{@test_app_url}/custom")
+      expect(response.status).to eq(200)
+
+      expect(Span.root!).to match_custom_data({ "custom" => "data" })
+
+      custom_span = Span.find_by_name!("Custom span")
+      expect(custom_span.parent.id).to eql(Span.root.id)
+      expect(custom_span.attributes["appsignal.tag.custom"]).to eql("tag")
     end
   end
 end

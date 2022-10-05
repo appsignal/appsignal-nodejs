@@ -5,6 +5,7 @@ require "json"
 require "/helpers/span"
 require "/helpers/integration_helper"
 require "/helpers/http_helper"
+require "/helpers/magic_helper"
 require "/helpers/koa_helper"
 require "/helpers/error_helper"
 
@@ -18,6 +19,10 @@ RSpec.configure do |config|
 
   config.before(:each) do
     IntegrationHelper.clean_spans
+  end
+
+  config.after(:each) do |example|
+    IntegrationHelper.print_spans if example.exception
   end
 
   config.expect_with :rspec do |expectations|

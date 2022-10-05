@@ -1,6 +1,12 @@
 import { NodeSDK } from "@opentelemetry/sdk-node"
-import { ReadableSpan, SpanProcessor } from "@opentelemetry/sdk-trace-base"
+import {
+  ReadableSpan,
+  SpanProcessor,
+  TimedEvent
+} from "@opentelemetry/sdk-trace-base"
 import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node"
+import { Client } from "../client"
+import { trace } from "@opentelemetry/api"
 
 import {
   setBody,
@@ -11,8 +17,25 @@ import {
   setParams,
   setSessionData,
   setTag,
-  setNamespace
+  setNamespace,
+  setError,
+  sendError
 } from "../helpers"
+
+function throwError() {
+  throw new Error("Whoopsie!")
+}
+
+function expectErrorEvent(event: TimedEvent) {
+  expect(event).toMatchObject({
+    name: "exception",
+    attributes: {
+      "exception.message": "Whoopsie!",
+      "exception.type": "Error",
+      "exception.stacktrace": expect.stringContaining("at throwError (")
+    }
+  })
+}
 
 describe("Helpers", () => {
   let spans: ReadableSpan[] = []
@@ -35,6 +58,8 @@ describe("Helpers", () => {
   }
 
   beforeAll(() => {
+    new Client({})
+
     sdk = new NodeSDK({
       instrumentations: []
     })
@@ -95,6 +120,111 @@ describe("Helpers", () => {
     expect(spans.length).toEqual(1)
     expect(spans[0].attributes).toMatchObject({
       "appsignal.custom_data": '{"nested":"[cyclic value: root object]"}'
+    })
+  })
+
+  it("logs a debug warning when there is no active span", () => {
+    const debugMock = jest.spyOn(Client.logger, "debug")
+
+    setCustomData({ chunky: "bacon" })
+
+    expect(debugMock).toHaveBeenCalledWith(
+      "There is no active span, cannot set `custom_data`"
+    )
+  })
+
+  describe("setError", () => {
+    it("sets an error", () => {
+      tracerProvider.getTracer("test").startActiveSpan("Some span", span => {
+        try {
+          throwError()
+        } catch (err) {
+          setError(err)
+        }
+
+        span.end()
+      })
+
+      expect(spans.length).toEqual(1)
+      expect(spans[0].events.length).toEqual(1)
+      expectErrorEvent(spans[0].events[0])
+    })
+
+    it("logs a debug warning when there is no active span", () => {
+      const debugMock = jest.spyOn(Client.logger, "debug")
+
+      setError(new Error("Oh no!"))
+
+      expect(debugMock).toHaveBeenCalledWith(
+        "There is no active span, cannot set `Error`"
+      )
+    })
+
+    it("logs a debug warning when the value is not an error", () => {
+      const debugMock = jest.spyOn(Client.logger, "debug")
+
+      setError("Oh no!" as any as Error)
+
+      expect(debugMock).toHaveBeenCalledWith(
+        "Cannot set error, it is not an `Error`-like object"
+      )
+    })
+  })
+
+  describe("sendError", () => {
+    it("sends an error as a separate span", () => {
+      tracerProvider.getTracer("test").startActiveSpan("Some span", span => {
+        try {
+          throwError()
+        } catch (err) {
+          sendError(err)
+        }
+
+        expect(trace.getActiveSpan()).toBe(span)
+
+        span.end()
+      })
+
+      expect(spans.length).toEqual(2)
+
+      const activeSpan = spans.find(span => span.name == "Some span")
+      if (!activeSpan) throw new Error("No active span")
+
+      expect(activeSpan.events.length).toEqual(0)
+
+      const errorSpan = spans.find(span => span.name == "Error")
+      if (!errorSpan) throw new Error("No error span")
+
+      expect(errorSpan.events.length).toEqual(1)
+      expectErrorEvent(spans[0].events[0])
+    })
+
+    it("sends an error span with additional data", () => {
+      try {
+        throwError()
+      } catch (err) {
+        sendError(err, () => {
+          setCustomData({ chunky: "bacon" })
+        })
+      }
+
+      expect(spans.length).toEqual(1)
+      expect(spans[0].events.length).toEqual(1)
+      expectErrorEvent(spans[0].events[0])
+
+      expect(spans[0].attributes).toMatchObject({
+        "appsignal.custom_data": '{"chunky":"bacon"}'
+      })
+    })
+
+    it("logs a debug warning when the value is not an error", () => {
+      const debugMock = jest.spyOn(Client.logger, "debug")
+
+      sendError("Oh no!" as any as Error)
+
+      expect(debugMock).toHaveBeenCalledWith(
+        "Cannot send error, it is not an `Error`-like object"
+      )
     })
   })
 })

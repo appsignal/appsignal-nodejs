@@ -7,8 +7,8 @@ import { Logger } from "./logger"
 import { NoopMetrics } from "./noops"
 import { demo } from "./demo"
 import { VERSION } from "./version"
+import { setParams, setSessionData } from "./helpers"
 
-import { Span as OtelSpan } from "@opentelemetry/api"
 import {
   ExpressInstrumentation,
   ExpressLayerType
@@ -184,68 +184,60 @@ export class Client {
   private initOpenTelemetry() {
     const sendParams = this.config.data.sendParams
     const sendSessionData = this.config.data.sendSessionData
-    const sdk = new NodeSDK({
-      instrumentations: [
-        new HttpInstrumentation({
-          headersToSpanAttributes: {
-            server: { requestHeaders: this.config.data["requestHeaders"] }
-          }
-        }),
-        new ExpressInstrumentation({
-          requestHook: function (span: OtelSpan, info) {
-            if (info.layerType === ExpressLayerType.REQUEST_HANDLER) {
-              if (sendParams) {
-                // Request parameters to magic attributes
-                const queryParams = info.request.query
-                const requestBody = info.request.body
-                const params = { ...queryParams, ...requestBody }
-                span.setAttribute(
-                  "appsignal.request.parameters",
-                  JSON.stringify(params)
-                )
-              }
 
-              if (sendSessionData) {
-                // Session data to magic attributes
-                span.setAttribute(
-                  "appsignal.request.session_data",
-                  JSON.stringify(info.request.cookies)
-                )
-              }
-            }
-          }
-        }),
-        new GraphQLInstrumentation(),
-        new KoaInstrumentation({
-          requestHook: function (span: OtelSpan, info) {
+    const instrumentations = [
+      new HttpInstrumentation({
+        headersToSpanAttributes: {
+          server: { requestHeaders: this.config.data["requestHeaders"] }
+        }
+      }),
+      new ExpressInstrumentation({
+        requestHook: function (_span, info) {
+          if (info.layerType === ExpressLayerType.REQUEST_HANDLER) {
             if (sendParams) {
               // Request parameters to magic attributes
-              const queryParams = info.context.request.query
+              const queryParams = info.request.query
+              const requestBody = info.request.body
+              const params = { ...queryParams, ...requestBody }
+              setParams(params)
+            }
 
-              span.setAttribute(
-                "appsignal.request.parameters",
-                JSON.stringify(queryParams)
-              )
+            if (sendSessionData) {
+              // Session data to magic attributes
+              setSessionData(info.request.cookies)
             }
           }
-        }),
-        new MySQLInstrumentation(),
-        new MySQL2Instrumentation(),
-        new PgInstrumentation(),
-        new RedisInstrumentation({
-          dbStatementSerializer: RedisDbStatementSerializer
-        }),
-        new Redis4Instrumentation({
-          dbStatementSerializer: RedisDbStatementSerializer
-        }),
-        new IORedisInstrumentation({
-          dbStatementSerializer: RedisDbStatementSerializer
-        }),
-        new PrismaInstrumentation({
-          middleware: true
-        })
-      ]
-    })
+        }
+      }),
+      new GraphQLInstrumentation(),
+      new KoaInstrumentation({
+        requestHook: function (_span, info) {
+          if (sendParams) {
+            // Request parameters to magic attributes
+            const queryParams = info.context.request.query
+
+            setParams(queryParams)
+          }
+        }
+      }),
+      new MySQLInstrumentation(),
+      new MySQL2Instrumentation(),
+      new PgInstrumentation(),
+      new RedisInstrumentation({
+        dbStatementSerializer: RedisDbStatementSerializer
+      }),
+      new Redis4Instrumentation({
+        dbStatementSerializer: RedisDbStatementSerializer
+      }),
+      new IORedisInstrumentation({
+        dbStatementSerializer: RedisDbStatementSerializer
+      }),
+      new PrismaInstrumentation({
+        middleware: true
+      })
+    ]
+
+    const sdk = new NodeSDK({ instrumentations })
 
     sdk.start()
 

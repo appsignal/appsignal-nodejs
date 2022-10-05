@@ -1,9 +1,16 @@
-import { AttributeValue, trace } from "@opentelemetry/api"
+import { SpanStatusCode, AttributeValue, trace } from "@opentelemetry/api"
+import { Client } from "./client"
 
 function setAttribute(attribute: string, value: AttributeValue) {
-  const currentSpan = trace.getActiveSpan()
-  if (currentSpan) {
-    currentSpan.setAttribute(attribute, value)
+  const activeSpan = trace.getActiveSpan()
+  if (activeSpan) {
+    activeSpan.setAttribute(attribute, value)
+  } else {
+    const splitAttributes = attribute.split(".")
+    const attributeSuffix = splitAttributes[splitAttributes.length - 1]
+    Client.logger.debug(
+      `There is no active span, cannot set \`${attributeSuffix}\``
+    )
   }
 }
 
@@ -76,4 +83,37 @@ export function setBody(body: string) {
 
 export function setNamespace(namespace: string) {
   setAttribute("appsignal.namespace", namespace)
+}
+
+export function setError(error: Error) {
+  if (error && error.name && error.message) {
+    const activeSpan = trace.getActiveSpan()
+    if (activeSpan) {
+      activeSpan.recordException(error)
+      activeSpan.setStatus({
+        code: SpanStatusCode.ERROR,
+        message: error.message
+      })
+    } else {
+      Client.logger.debug(
+        `There is no active span, cannot set \`${error.name}\``
+      )
+    }
+  } else {
+    Client.logger.debug("Cannot set error, it is not an `Error`-like object")
+  }
+}
+
+export function sendError(error: Error, fn: () => void = () => {}) {
+  if (error && error.name && error.message) {
+    trace
+      .getTracer("Appsignal.sendError")
+      .startActiveSpan(error.name, { root: true }, span => {
+        setError(error)
+        fn()
+        span.end()
+      })
+  } else {
+    Client.logger.debug("Cannot send error, it is not an `Error`-like object")
+  }
 }
