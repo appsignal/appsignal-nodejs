@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo
+    environment:
+      - MONGO_INITDB_DATABASE=prisma
+    entrypoint: [ "./mongo-entrypoint.sh" ]
+    volumes:
+      - ./mongo-entrypoint.sh:/mongo-entrypoint.sh
+  mongo-2:
+    image: mongo
+    command: [ "--bind_ip_all", "--replSet", "mongo-replica-set" ]
+  mongo-3:
+    image: mongo
+    command: [ "--bind_ip_all", "--replSet", "mongo-replica-set" ]
+  app:
+    build: app
+    depends_on:
+      - mongo
+    ports:
+      - "4001:4001"
+    environment:
+      - PORT=4001
+      - _APPSIGNAL_TEST_MODE=true
+      - _APPSIGNAL_TEST_MODE_FILE_PATH=/spans/spans.json
+      - DATABASE_HOST=mongo
+    working_dir: /
+    volumes:
+      - ./app:/app
+      - spans:/spans
+      - ../..:/integration
+  tests:
+    build: tests
+    depends_on:
+      - app
+    environment:
+      - TEST_APP_URL=http://app:4001
+      - SPANS_FILE_PATH=/spans/spans.json
+    volumes:
+      - spans:/spans
+      - ../helpers:/helpers
+
+volumes:
+  spans:

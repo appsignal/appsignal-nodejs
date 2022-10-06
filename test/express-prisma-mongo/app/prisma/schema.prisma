@@ -1,0 +1,20 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["tracing"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  content   String
+  published Boolean
+  author    String
+}
