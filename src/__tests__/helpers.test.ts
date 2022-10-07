@@ -17,6 +17,7 @@ import {
   setSessionData,
   setTag,
   setNamespace,
+  setRootName,
   setError,
   sendError
 } from "../helpers"
@@ -85,6 +86,7 @@ describe("Helpers", () => {
       setHeader("content-type", "application/json")
       setTag("something", true)
       setNamespace("web")
+      setRootName("Root name")
 
       span.end()
     })
@@ -99,7 +101,8 @@ describe("Helpers", () => {
       "appsignal.request.session_data": '{"admin":true}',
       "appsignal.request.headers.content-type": "application/json",
       "appsignal.tag.something": true,
-      "appsignal.namespace": "web"
+      "appsignal.namespace": "web",
+      "appsignal.root_name": "Root name"
     })
   })
 

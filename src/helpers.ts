@@ -85,6 +85,10 @@ export function setNamespace(namespace: string) {
   setAttribute("appsignal.namespace", namespace)
 }
 
+export function setRootName(name: string) {
+  setAttribute("appsignal.root_name", name)
+}
+
 export function setError(error: Error) {
   if (error && error.name && error.message) {
     const activeSpan = trace.getActiveSpan()
