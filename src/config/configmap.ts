@@ -56,6 +56,8 @@ export const PRIVATE_ENV_MAPPING: { [key: string]: string } = {
   _APPSIGNAL_PUSH_API_KEY: "pushApiKey",
   _APPSIGNAL_RUNNING_IN_CONTAINER: "runningInContainer",
   _APPSIGNAL_SEND_ENVIRONMENT_METADATA: "sendEnvironmentMetadata",
+  _APPSIGNAL_SEND_PARAMS: "sendParams",
+  _APPSIGNAL_SEND_SESSION_DATA: "sendSessionData",
   _APPSIGNAL_WORKING_DIRECTORY_PATH: "workingDirectoryPath",
   _APP_REVISION: "revision"
 }
