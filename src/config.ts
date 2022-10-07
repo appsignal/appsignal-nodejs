@@ -19,13 +19,6 @@ export class Configuration {
   sources: Record<string, Partial<AppsignalOptions>>
 
   constructor(options: Partial<AppsignalOptions>) {
-    if (options.apiKey) {
-      console.warn(
-        "DEPRECATED: The `apiKey` config option was renamed to `pushApiKey`. Please rename the config option given to the Appsignal module."
-      )
-      options.pushApiKey = options.apiKey
-      delete options.apiKey
-    }
     this.sources = {
       default: this._defaultValues(),
       system: this._systemValues(),
@@ -38,13 +31,6 @@ export class Configuration {
     }, {})
 
     this.writePrivateConfig(this.data)
-  }
-
-  /**
-   * Returns `true` if the client is in debug mode
-   */
-  public get debug(): boolean {
-    return this.data.debug || false
   }
 
   /**
@@ -113,7 +99,6 @@ export class Configuration {
     return {
       active: false,
       caFilePath: path.join(__dirname, "../cert/cacert.pem"),
-      debug: false,
       disableDefaultInstrumentations: false,
       dnsServers: [],
       enableHostMetrics: true,
@@ -140,8 +125,7 @@ export class Configuration {
       ],
       sendEnvironmentMetadata: true,
       sendParams: true,
-      sendSessionData: true,
-      transactionDebugMode: false
+      sendSessionData: true
     }
   }
 

@@ -2,9 +2,7 @@ import type { DefaultInstrumentationName } from "../client"
 
 export type AppsignalOptions = {
   active: boolean
-  apiKey: string
   caFilePath: string
-  debug: boolean
   disableDefaultInstrumentations: DefaultInstrumentationName[] | boolean
   dnsServers: string[]
   enableHostMetrics: boolean
@@ -31,6 +29,5 @@ export type AppsignalOptions = {
   runningInContainer: boolean
   sendParams: boolean
   sendSessionData: boolean
-  workingDirPath: string
   workingDirectoryPath: string
 }

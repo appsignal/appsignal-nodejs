@@ -20,7 +20,6 @@ describe("DiagnoseTool", () => {
     expect(output.host.architecture).toEqual(process.arch)
     expect(output.host.os).toEqual(process.platform)
 
-    expect(output.config.options).toHaveProperty("debug")
     expect(output.config.options).toHaveProperty("log")
     expect(output.config.options).toHaveProperty("caFilePath")
     expect(output.config.options).toHaveProperty("endpoint")

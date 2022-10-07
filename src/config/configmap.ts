@@ -3,7 +3,6 @@ export const ENV_TO_KEY_MAPPING: { [key: string]: string } = {
   APPSIGNAL_APP_ENV: "environment",
   APPSIGNAL_APP_NAME: "name",
   APPSIGNAL_CA_FILE_PATH: "caFilePath",
-  APPSIGNAL_DEBUG: "debug",
   APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS: "disableDefaultInstrumentations",
   APPSIGNAL_DNS_SERVERS: "dnsServers",
   APPSIGNAL_ENABLE_HOST_METRICS: "enableHostMetrics",
@@ -31,9 +30,7 @@ export const ENV_TO_KEY_MAPPING: { [key: string]: string } = {
   APPSIGNAL_SEND_ENVIRONMENT_METADATA: "sendEnvironmentMetadata",
   APPSIGNAL_SEND_PARAMS: "sendParams",
   APPSIGNAL_SEND_SESSION_DATA: "sendSessionData",
-  APPSIGNAL_TRANSACTION_DEBUG_MODE: "transactionDebugMode",
   APPSIGNAL_WORKING_DIRECTORY_PATH: "workingDirectoryPath",
-  APPSIGNAL_WORKING_DIR_PATH: "workingDirPath",
   APP_REVISION: "revision"
 }
 
@@ -41,7 +38,6 @@ export const PRIVATE_ENV_MAPPING: { [key: string]: string } = {
   _APPSIGNAL_ACTIVE: "active",
   _APPSIGNAL_APP_NAME: "name",
   _APPSIGNAL_CA_FILE_PATH: "caFilePath",
-  _APPSIGNAL_DEBUG_LOGGING: "debug",
   _APPSIGNAL_DNS_SERVERS: "dnsServers",
   _APPSIGNAL_ENABLE_HOST_METRICS: "enableHostMetrics",
   _APPSIGNAL_ENABLE_STATSD: "enableStatsd",
@@ -60,9 +56,7 @@ export const PRIVATE_ENV_MAPPING: { [key: string]: string } = {
   _APPSIGNAL_PUSH_API_KEY: "pushApiKey",
   _APPSIGNAL_RUNNING_IN_CONTAINER: "runningInContainer",
   _APPSIGNAL_SEND_ENVIRONMENT_METADATA: "sendEnvironmentMetadata",
-  _APPSIGNAL_TRANSACTION_DEBUG_MODE: "debug",
   _APPSIGNAL_WORKING_DIRECTORY_PATH: "workingDirectoryPath",
-  _APPSIGNAL_WORKING_DIR_PATH: "workingDirPath",
   _APP_REVISION: "revision"
 }
 
@@ -70,7 +64,6 @@ export const JS_TO_RUBY_MAPPING: { [key: string]: string } = {
   active: "active",
   pushApiKey: "push_api_key",
   caFilePath: "ca_file_path",
-  debug: "debug",
   disableDefaultInstrumentations: "disable_default_instrumentations",
   dnsServers: "dns_servers",
   enableHostMetrics: "enable_host_metrics",
@@ -95,7 +88,5 @@ export const JS_TO_RUBY_MAPPING: { [key: string]: string } = {
   sendEnvironmentMetadata: "send_environment_metadata",
   sendParams: "send_params",
   sendSessionData: "send_session_data",
-  transactionDebugMode: "transaction_debug_mode",
-  workingDirPath: "working_dir_path",
   workingDirectoryPath: "working_directory_path"
 }
