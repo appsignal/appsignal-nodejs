@@ -17,7 +17,6 @@ export type AppsignalOptions = {
   httpProxy: string
   ignoreActions: string[]
   ignoreErrors: string[]
-  ignoreInstrumentation: string[]
   ignoreNamespaces: string[]
   log: string
   logPath: string
