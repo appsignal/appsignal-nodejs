@@ -1,5 +1,37 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.0-beta.1
+
+### Added
+
+- [ded7a82](https://github.com/appsignal/appsignal-nodejs/commit/ded7a821332efd3e97a0867adcdd60f58fdd30a2) major - Add OpenTelemetry support to the AppSignal Node.js integration. This new major release uses OpenTelemetry to support tracing instrumentation. The old `@appsignal/<package name>` instrumentation packages are not compatible. Please remove them before upgrading.
+
+### Changed
+
+- [d452b46](https://github.com/appsignal/appsignal-nodejs/commit/d452b4670b03eb8d9101684eb7188eb091fb37ea) patch - Support OpenTelemetry root spans in SpanProcessor. This change makes AppSignal instrumentation (like Express/Koa.js/Next.js) no longer a requirement. In fact you will need to use the OpenTelemetry instrumentation for those libraries from now on.
+- [60428c8](https://github.com/appsignal/appsignal-nodejs/commit/60428c8932602649fbaf54e5d9c19caa773f07c1) patch - Bump agent to v-d573c9b
+  
+  - Display unsupported OpenTelemetry spans in limited form.
+  - Clean up payload storage before sending. Should fix issues with locally queued payloads blocking data from being sent.
+  - Add `appsignal_create_opentelemetry_span` function to create spans for further modification, rather than only import them.
+- [a1d947c](https://github.com/appsignal/appsignal-nodejs/commit/a1d947c9d25055d9198600c54b1bceb28b322ad8) patch - Remove the mysql2 package peer dependency. It's not only present as a development dependency for the package.
+- [54491fa](https://github.com/appsignal/appsignal-nodejs/commit/54491fa04c75e536fc2010b3df1c1f33037af4d2) patch - Bump agent to 06391fb
+  
+  - Accept "warning" value for the `log_level` config option.
+  - Add aarch64 Linux musl build. Doesn't work for Node.js package.
+  - Improve debug logging from the extension.
+  - Fix high CPU issue for appsignal-agent when nothing could be read from the socket.
+
+### Removed
+
+- [2b95a68](https://github.com/appsignal/appsignal-nodejs/commit/2b95a6883c0da65f865b17be4e73856845d51d64) major - Remove `debug` config option. This has been replaced with `logLevel` set to `debug`.
+- [13bc306](https://github.com/appsignal/appsignal-nodejs/commit/13bc306bd02d9b2f1fb124239444f7611c68d379) major - Remove the `apiKey` config option. This has been renamed to `pushApiKey`.
+
+### Fixed
+
+- [d452b46](https://github.com/appsignal/appsignal-nodejs/commit/d452b4670b03eb8d9101684eb7188eb091fb37ea) patch - Improve the error message on extension load failure. The error message will now print more details about the installed and expected architecture when they mismatch. This is most common on apps mounted on a container after first being installed on the host with a different architecture than the container.
+- [fa13d19](https://github.com/appsignal/appsignal-nodejs/commit/fa13d198ed42eb23674732f4e17ba4b4595cea39) patch - Accept uppercase input in diagnose tool send report prompt. When prompted to send the report when the diagnose tool, it will now also accept uppercase values like "Y" and "N".
+
 ## 2.4.2
 
 ### Changed
