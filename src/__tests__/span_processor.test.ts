@@ -48,7 +48,7 @@ describe("Span processor", () => {
       name: "unknownSpan",
       closed: true,
       attributes: expect.objectContaining({
-        foo: "bar",
+        "appsignal:category": "unknown",
         "appsignal:body": expect.stringContaining("unknown-instrumentation")
       }),
       parent_span_id: "",
