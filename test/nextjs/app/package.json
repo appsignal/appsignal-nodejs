@@ -1,0 +1,22 @@
+{
+  "name": "app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "tsc --version; tsc -p tsconfig.json && next build",
+    "start": "node --require ./appsignal.js ./server.js"
+  },
+  "dependencies": {
+    "@appsignal/nodejs": "^2.4.2",
+    "next": "12.3.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.8.3",
+    "@types/react": "18.0.21",
+    "@types/react-dom": "18.0.6",
+    "typescript": "4.8.4"
+  }
+}

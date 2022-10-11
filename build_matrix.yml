@@ -84,6 +84,9 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
         - name: Express + Prisma + Mongo
           commands:
             - script/integration_test_app express-prisma-mongo
+        - name: Next.js
+          commands:
+            - script/integration_test_app nextjs
 
 matrix:
   nodejs:

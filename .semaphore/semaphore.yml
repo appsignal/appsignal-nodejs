@@ -88,6 +88,9 @@ blocks:
     - name: Express + Prisma + Mongo
       commands:
       - script/integration_test_app express-prisma-mongo
+    - name: Next.js
+      commands:
+      - script/integration_test_app nextjs
 - name: Node.js 18 - Build
   dependencies:
   - Validation
