@@ -1,5 +1,19 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.0-beta.2
+
+### Changed
+
+- [23192ef](https://github.com/appsignal/appsignal-nodejs/commit/23192ef792ae795e24dd174443c232c676edfd08) patch - Bump agent to v-de2dd6e.
+  
+  - Remove fallback for unknown span body. The notice about a missing extractor
+    is now a trace level log.
+  - Filter root span attributes that are set as tags, params, headers, etc.
+  - Filter more root span attributes that can contain PII information.
+  - Improve http extractor span name to use `http.route` attribute to always
+    build the incident action name. This should avoid new incidents with 
+    `HTTP POST`-like naming.
+
 ## 3.0.0-beta.1
 
 ### Added
