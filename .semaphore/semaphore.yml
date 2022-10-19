@@ -91,6 +91,55 @@ blocks:
     - name: Next.js
       commands:
       - script/integration_test_app nextjs
+- name: Node.js 19 - Build
+  dependencies:
+  - Validation
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '19'
+    prologue:
+      commands:
+      - cache restore
+      - mono bootstrap --ci
+      - cache store
+    jobs:
+    - name: Build
+      commands:
+      - mono build
+      - cache delete $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache store  $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID dist
+      - cache delete $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache store  $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID ext
+      - cache delete $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache store  $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID build
+      - 'cat ext/install.report; cat ext/install.report | grep ''"status": "success"'''
+- name: Node.js 19 - Tests
+  dependencies:
+  - Node.js 19 - Build
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '19'
+    - name: _APPSIGNAL_EXTENSION_INSTALL
+      value: 'false'
+    prologue:
+      commands:
+      - cache restore
+      - cache restore $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache restore $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache restore $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - mono bootstrap --ci
+    jobs:
+    - name: Test package
+      commands:
+      - mono test
+      - npm run test:failure
+    - name: Extra test - diagnose
+      commands: &1
+      - git submodule init
+      - git submodule update
+      - LANGUAGE=nodejs test/integration/diagnose/bin/test
 - name: Node.js 18 - Build
   dependencies:
   - Validation
@@ -136,10 +185,7 @@ blocks:
       - mono test
       - npm run test:failure
     - name: Extra test - diagnose
-      commands: &1
-      - git submodule init
-      - git submodule update
-      - LANGUAGE=nodejs test/integration/diagnose/bin/test
+      commands: *1
 - name: Node.js 16 - Build
   dependencies:
   - Validation
