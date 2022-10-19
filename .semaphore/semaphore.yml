@@ -62,6 +62,99 @@ blocks:
     - name: Git Lint (Lintje)
       commands:
       - script/lint_git
+- name: Node.js 19 - Build
+  dependencies:
+  - Validation
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '19'
+    prologue:
+      commands:
+      - cache restore
+      - mono bootstrap --ci
+      - cache store
+    epilogue: &1
+      always:
+        commands:
+        - ''
+    jobs:
+    - name: Build
+      commands:
+      - mono build
+      - cache delete $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - cache store $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION packages
+      - 'cat packages/nodejs/ext/install.report; cat packages/nodejs/ext/install.report
+        | grep ''"status": "success"'''
+- name: Node.js 19 - Tests
+  dependencies:
+  - Node.js 19 - Build
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '19'
+    - name: _APPSIGNAL_EXTENSION_INSTALL
+      value: 'false'
+    prologue:
+      commands:
+      - cache restore
+      - cache restore $_PACKAGES_CACHE-packages-$SEMAPHORE_GIT_SHA-v$NODE_VERSION
+      - mono bootstrap --ci
+    epilogue: *1
+    jobs:
+    - name: "@appsignal/nodejs - nodejs"
+      commands:
+      - mono test --package=@appsignal/nodejs
+      - mono run --package @appsignal/nodejs -- npm run test:failure
+    - name: "@appsignal/nodejs - nodejs - diagnose"
+      commands:
+      - git submodule init
+      - git submodule update
+      - LANGUAGE=nodejs test/integration/diagnose/bin/test
+    - name: "@appsignal/apollo-server - apollo-server@latest - integrations"
+      commands:
+      - script/install_test_example_packages apollo-server apollo-server@latest apollo-server-plugin-base@latest
+      - script/test_package_integration apollo-server
+    - name: "@appsignal/apollo-server - apollo-server@3.8.1 - integrations"
+      commands:
+      - script/install_test_example_packages apollo-server apollo-server@3.8.1 apollo-server-plugin-base@3.6.0
+      - script/test_package_integration apollo-server
+    - name: "@appsignal/apollo-server - apollo-server@3.6.0 - integrations"
+      commands:
+      - script/install_test_example_packages apollo-server apollo-server@3.6.0 apollo-server-plugin-base@3.5.0
+      - script/test_package_integration apollo-server
+    - name: "@appsignal/apollo-server - apollo-server@3.5.0 - integrations"
+      commands:
+      - script/install_test_example_packages apollo-server apollo-server@3.5.0 apollo-server-plugin-base@3.4.0
+      - script/test_package_integration apollo-server
+    - name: "@appsignal/express - express@latest - integrations"
+      commands:
+      - script/install_test_example_packages express express@latest
+      - script/test_package_integration express
+    - name: "@appsignal/express - express@4.17.1 - integrations"
+      commands:
+      - script/install_test_example_packages express express@4.17.1
+      - script/test_package_integration express
+    - name: "@appsignal/koa - koa@latest - integrations"
+      commands:
+      - script/install_test_example_packages koa koa@latest
+      - script/test_package_integration koa
+    - name: "@appsignal/koa - koa@2.13.1 - integrations"
+      commands:
+      - script/install_test_example_packages koa koa@2.13.1
+      - script/test_package_integration koa
+    - name: "@appsignal/koa - koa@2.12.1 - integrations"
+      commands:
+      - script/install_test_example_packages koa koa@2.12.1
+      - script/test_package_integration koa
+    - name: "@appsignal/nextjs - next.js@latest - integrations"
+      commands:
+      - script/install_test_example_packages nextjs next@latest react@latest react-dom@latest
+      - script/test_package_integration nextjs
+    - name: "@appsignal/nextjs - next.js@12.1.0 - integrations"
+      commands:
+      - script/install_test_example_packages nextjs next@12.1.0 react@17.0.2 react-dom@17.0.2
+      - script/test_package_integration nextjs
 - name: Node.js 18 - Build
   dependencies:
   - Validation
@@ -74,10 +167,7 @@ blocks:
       - cache restore
       - mono bootstrap --ci
       - cache store
-    epilogue: &1
-      always:
-        commands:
-        - ''
+    epilogue: *1
     jobs:
     - name: Build
       commands:

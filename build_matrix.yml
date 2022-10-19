@@ -67,6 +67,7 @@ matrix:
         - ""
 
   nodejs:
+    - nodejs: "19"
     - nodejs: "18"
     - nodejs: "16"
     - nodejs: "14"
@@ -153,6 +154,7 @@ matrix:
           exclude:
             nodejs:
               - "18"
+              - "19"
         - name: "next.js@10.2.3"
           packages:
             next: "10.2.3"
@@ -161,6 +163,7 @@ matrix:
           exclude:
             nodejs:
               - "18"
+              - "19"
       extra_tests:
         integrations:
           - script/test_package_integration nextjs
