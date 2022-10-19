@@ -90,6 +90,7 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
 
 matrix:
   nodejs:
+    - nodejs: "19"
     - nodejs: "18"
     - nodejs: "16"
     - nodejs: "14"
