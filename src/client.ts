@@ -21,6 +21,7 @@ import { KoaInstrumentation } from "@opentelemetry/instrumentation-koa"
 import { MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2"
 import { MySQLInstrumentation } from "@opentelemetry/instrumentation-mysql"
 import { NodeSDK, NodeSDKConfiguration } from "@opentelemetry/sdk-node"
+import { NestInstrumentation } from "@opentelemetry/instrumentation-nestjs-core"
 import { PgInstrumentation } from "@opentelemetry/instrumentation-pg"
 import { PrismaInstrumentation } from "@prisma/instrumentation"
 import { RedisDbStatementSerializer } from "./instrumentation/redis/serializer"
@@ -36,6 +37,7 @@ const DefaultInstrumentations = {
   "@opentelemetry/instrumentation-koa": KoaInstrumentation,
   "@opentelemetry/instrumentation-mysql2": MySQL2Instrumentation,
   "@opentelemetry/instrumentation-mysql": MySQLInstrumentation,
+  "@opentelemetry/instrumentation-nestjs-core": NestInstrumentation,
   "@opentelemetry/instrumentation-pg": PgInstrumentation,
   "@opentelemetry/instrumentation-redis": RedisInstrumentation,
   "@opentelemetry/instrumentation-redis-4": Redis4Instrumentation,

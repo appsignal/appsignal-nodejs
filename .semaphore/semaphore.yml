@@ -91,6 +91,9 @@ blocks:
     - name: Next.js
       commands:
       - script/integration_test_app nextjs
+    - name: Nest.js
+      commands:
+      - script/integration_test_app nestjs
 - name: Node.js 19 - Build
   dependencies:
   - Validation

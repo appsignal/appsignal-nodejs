@@ -87,6 +87,9 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
         - name: Next.js
           commands:
             - script/integration_test_app nextjs
+        - name: Nest.js
+          commands:
+            - script/integration_test_app nestjs
 
 matrix:
   nodejs:
