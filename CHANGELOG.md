@@ -1,5 +1,16 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.0-beta.3
+
+### Added
+
+- [c07b3a4](https://github.com/appsignal/appsignal-nodejs/commit/c07b3a41b9354e18d125ab9f5ddf48bb51ce6368) patch - Add support for Nest.js
+- [8128eb9](https://github.com/appsignal/appsignal-nodejs/commit/8128eb9db1634f0ca7c8d35c302c924719d09f20) patch - Update the AppSignal agent version to add Nest.js support.
+
+### Fixed
+
+- [8128eb9](https://github.com/appsignal/appsignal-nodejs/commit/8128eb9db1634f0ca7c8d35c302c924719d09f20) patch - Update the AppSignal agent version to fix an issue with the HTTP proxy where the proxy port would always be set to 8080.
+
 ## 3.0.0-beta.2
 
 ### Changed
