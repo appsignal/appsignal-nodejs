@@ -122,4 +122,20 @@ describe("Span processor", () => {
       })
     )
   })
+
+  it("gets the span kind as an attribute", () => {
+    tracer.startSpan("kindSpan").end()
+
+    expect(SpanTestRegistry.count()).toEqual(1)
+    expect(SpanTestRegistry.lastSpan()?.toObject()).toMatchObject({
+      name: "kindSpan",
+      closed: true,
+      attributes: expect.objectContaining({
+        "appsignal:category": "unknown",
+        "appsignal.kind": "INTERNAL"
+      }),
+      parent_span_id: "",
+      error: null
+    })
+  })
 })
