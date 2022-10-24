@@ -90,6 +90,9 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
         - name: Nest.js
           commands:
             - script/integration_test_app nestjs
+        - name: Fastify
+          commands:
+            - script/integration_test_app fastify
 
 matrix:
   nodejs:

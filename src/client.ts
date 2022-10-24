@@ -14,6 +14,7 @@ import {
   ExpressInstrumentation,
   ExpressLayerType
 } from "@opentelemetry/instrumentation-express"
+import { FastifyInstrumentation } from "@opentelemetry/instrumentation-fastify"
 import { GraphQLInstrumentation } from "@opentelemetry/instrumentation-graphql"
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
 import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
@@ -31,6 +32,7 @@ import { SpanProcessor, TestModeSpanProcessor } from "./span_processor"
 
 const DefaultInstrumentations = {
   "@opentelemetry/instrumentation-express": ExpressInstrumentation,
+  "@opentelemetry/instrumentation-fastify": FastifyInstrumentation,
   "@opentelemetry/instrumentation-graphql": GraphQLInstrumentation,
   "@opentelemetry/instrumentation-http": HttpInstrumentation,
   "@opentelemetry/instrumentation-ioredis": IORedisInstrumentation,
