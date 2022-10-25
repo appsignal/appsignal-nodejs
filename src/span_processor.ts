@@ -1,5 +1,6 @@
 import * as fs from "fs"
 import type { Context } from "@opentelemetry/api"
+import { SpanKind } from "@opentelemetry/api"
 import type {
   Span,
   ReadableSpan,
@@ -22,6 +23,12 @@ export class SpanProcessor implements OpenTelemetrySpanProcessor {
   onStart(_span: Span, _parentContext: Context): void {}
 
   onEnd(span: ReadableSpan): void {
+    // Add OpenTelemetry kind enum value as a magic attribute
+    const spanAttributes = {
+      ...span.attributes,
+      "appsignal.kind": SpanKind[span.kind]
+    }
+
     const opentelemetrySpan = this.client.extension.createOpenTelemetrySpan(
       span.spanContext().spanId,
       span.parentSpanId || "",
@@ -31,7 +38,7 @@ export class SpanProcessor implements OpenTelemetrySpanProcessor {
       span.endTime[0],
       span.endTime[1],
       span.name,
-      span.attributes,
+      spanAttributes,
       span.instrumentationLibrary.name
     )
 
