@@ -69,6 +69,9 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
         - name: Koa + MySQL
           commands:
             - script/integration_test_app koa-mysql
+        - name: Express + Mongoose
+          commands:
+            - script/integration_test_app express-mongoose
         - name: Express + Postgres
           commands:
             - script/integration_test_app express-postgres

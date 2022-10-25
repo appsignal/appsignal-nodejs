@@ -1,0 +1,24 @@
+{
+  "name": "express-mongoose",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/app.js",
+  "scripts": {
+    "build": "tsc --version; tsc -p tsconfig.json",
+    "server": "node --require ./dist/appsignal.js dist/app.js",
+    "seed": "node dist/seed.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@appsignal/nodejs": "^2.4.2",
+    "express": "^4.17.2",
+    "mongoose": "6.5.2",
+    "tslib": "^2.4.0"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.13",
+    "@types/node": "^18.8.2",
+    "typescript": "^4.8.4"
+  }
+}
