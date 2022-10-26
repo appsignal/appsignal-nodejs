@@ -94,6 +94,9 @@ blocks:
     - name: Nest.js
       commands:
       - script/integration_test_app nestjs
+    - name: Fastify
+      commands:
+      - script/integration_test_app fastify
 - name: Node.js 19 - Build
   dependencies:
   - Validation
