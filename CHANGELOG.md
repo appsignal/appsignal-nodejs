@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.0-beta.4
+
+### Added
+
+- [470c129](https://github.com/appsignal/appsignal-nodejs/commit/470c129d80d8b4118329f29f5e75022839343d9f) patch - Add Fastify support
+- [bcf182b](https://github.com/appsignal/appsignal-nodejs/commit/bcf182b987d039621899411190c285944c0af3f1) patch - Add OpenTelemetry SpanKind as a magic attribute
+- [daeeaac](https://github.com/appsignal/appsignal-nodejs/commit/daeeaac685b14f1ee9a2b6ee2bc25436004d6903) patch - Add Mongoose support
+
 ## 3.0.0-beta.3
 
 ### Added
