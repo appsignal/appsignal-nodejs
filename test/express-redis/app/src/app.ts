@@ -4,6 +4,7 @@ import ioredis from "ioredis"
 import { setTag, setCustomData, expressErrorHandler } from "@appsignal/nodejs"
 import { trace } from "@opentelemetry/api"
 import cookieParser from "cookie-parser"
+import * as fs from "fs"
 
 const redisHost = "redis://redis:6379"
 const port = process.env.PORT
@@ -60,6 +61,18 @@ app.get("/custom", (_req: any, res: any) => {
     setTag("custom", "tag")
 
     span.end()
+  })
+
+  res.send("200 OK")
+})
+
+app.get("/filesystem", (_req: any, res: any) => {
+  const filePath = "package.json"
+
+  console.log(`Checking read and write permissions on ${filePath}`)
+
+  fs.access(filePath, fs.constants.R_OK | fs.constants.W_OK, err => {
+    console.log(`${filePath} ${err ? "is not" : "is"} readable and writable`)
   })
 
   res.send("200 OK")

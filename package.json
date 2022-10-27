@@ -16,6 +16,7 @@
     "@opentelemetry/sdk-node": "^0.33.0",
     "@opentelemetry/sdk-trace-base": "^1.7.0",
     "@opentelemetry/instrumentation-fastify": "^0.30.0",
+    "@opentelemetry/instrumentation-fs": "^0.5.1",
     "@opentelemetry/instrumentation-express": "^0.31.2",
     "@opentelemetry/instrumentation-graphql": "^0.31.0",
     "@opentelemetry/instrumentation-http": "^0.32.0",

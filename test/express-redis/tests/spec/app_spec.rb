@@ -82,4 +82,17 @@ RSpec.describe "Redis app" do
       expect(custom_span.attributes["appsignal.tag.custom"]).to eql("tag")
     end
   end
+
+  describe "GET /filesystem" do
+    it "creates an fs child span" do
+      response = HTTP.get("#{@test_app_url}/filesystem")
+      expect(response.status).to eq(200)
+
+      expect(Span.root!).to be_http_span_with_route("GET /filesystem")
+
+      fs_span = Span.find_by_name!("fs access")
+      expect(fs_span.parent.id).to eql(Span.root.id)
+      expect(fs_span.instrumentation_library_name).to eql("@opentelemetry/instrumentation-fs")
+    end
+  end
 end
