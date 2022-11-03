@@ -244,10 +244,10 @@ export class Client {
         dbStatementSerializer: RedisDbStatementSerializer
       },
       "@opentelemetry/instrumentation-koa": {
-        requestHook: function (_span, info) {
+        requestHook: function (span, info) {
           if (sendParams && info.layerType === KoaLayerType.ROUTER) {
             const queryParams = info.context.request.query
-            setParams(queryParams)
+            setParams(queryParams, span)
           }
         }
       },
