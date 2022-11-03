@@ -16,17 +16,18 @@ RSpec.describe "Koa + MySQL app" do
   end
 
   describe "GET /get with params" do
-    it "adds params to the HTTP root span" do
+    it "adds params to the router child span" do
       response = HTTP.get("#{@test_app_url}/get?param1=user&param2=password")
       expect(response.status).to eq(200)
-      expect(Span.root!).to be_http_span_with_route("GET /get")
+
+      router_span = Span.find_by_name!("router - /get")
 
       expected_request_parameters = {
         "param1" => "user",
         "param2" => "password"
       }
 
-      expect(Span.root!).to match_request_parameters(expected_request_parameters)
+      expect(router_span).to match_request_parameters(expected_request_parameters)
     end
   end
 

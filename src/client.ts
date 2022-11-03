@@ -30,6 +30,7 @@ import { RedisDbStatementSerializer } from "./instrumentation/redis/serializer"
 import { RedisInstrumentation as Redis4Instrumentation } from "@opentelemetry/instrumentation-redis-4"
 import { RedisInstrumentation } from "@opentelemetry/instrumentation-redis"
 import { SpanProcessor, TestModeSpanProcessor } from "./span_processor"
+import { KoaLayerType } from "@opentelemetry/instrumentation-koa"
 
 const DefaultInstrumentations = {
   "@opentelemetry/instrumentation-express": ExpressInstrumentation,
@@ -243,10 +244,10 @@ export class Client {
         dbStatementSerializer: RedisDbStatementSerializer
       },
       "@opentelemetry/instrumentation-koa": {
-        requestHook: function (_span, info) {
-          if (sendParams) {
+        requestHook: function (span, info) {
+          if (sendParams && info.layerType === KoaLayerType.ROUTER) {
             const queryParams = info.context.request.query
-            setParams(queryParams)
+            setParams(queryParams, span)
           }
         }
       },

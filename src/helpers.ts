@@ -1,8 +1,10 @@
-import { SpanStatusCode, AttributeValue, trace } from "@opentelemetry/api"
+import { trace, SpanStatusCode } from "@opentelemetry/api"
 import { Client } from "./client"
 
-function setAttribute(attribute: string, value: AttributeValue) {
-  const activeSpan = trace.getActiveSpan()
+import type { Span, AttributeValue } from "@opentelemetry/api"
+
+function setAttribute(attribute: string, value: AttributeValue, span?: Span) {
+  const activeSpan = span ?? trace.getActiveSpan()
   if (activeSpan) {
     activeSpan.setAttribute(attribute, value)
   } else {
@@ -32,66 +34,67 @@ function circularReplacer() {
   }
 }
 
-function setSerialisedAttribute(attribute: string, value: any) {
+function setSerialisedAttribute(attribute: string, value: any, span?: Span) {
   const serialisedValue = JSON.stringify(value, circularReplacer())
   if (serialisedValue) {
-    setAttribute(attribute, serialisedValue)
+    setAttribute(attribute, serialisedValue, span)
   }
 }
 
 function setPrefixedAttribute(
   prefix: string,
   suffix: string,
-  value: AttributeValue
+  value: AttributeValue,
+  span?: Span
 ) {
   if (suffix) {
-    setAttribute(`${prefix}.${suffix}`, value)
+    setAttribute(`${prefix}.${suffix}`, value, span)
   }
 }
 
-export function setParams(params: any) {
-  setSerialisedAttribute("appsignal.request.parameters", params)
+export function setParams(params: any, span?: Span) {
+  setSerialisedAttribute("appsignal.request.parameters", params, span)
 }
 
-export function setSessionData(sessionData: any) {
-  setSerialisedAttribute("appsignal.request.session_data", sessionData)
+export function setSessionData(sessionData: any, span?: Span) {
+  setSerialisedAttribute("appsignal.request.session_data", sessionData, span)
 }
 
-export function setCustomData(customData: any) {
-  setSerialisedAttribute("appsignal.custom_data", customData)
+export function setCustomData(customData: any, span?: Span) {
+  setSerialisedAttribute("appsignal.custom_data", customData, span)
 }
 
-export function setTag(tag: string, value: AttributeValue) {
-  setPrefixedAttribute("appsignal.tag", tag, value)
+export function setTag(tag: string, value: AttributeValue, span?: Span) {
+  setPrefixedAttribute("appsignal.tag", tag, value, span)
 }
 
-export function setHeader(header: string, value: AttributeValue) {
-  setPrefixedAttribute("appsignal.request.headers", header, value)
+export function setHeader(header: string, value: AttributeValue, span?: Span) {
+  setPrefixedAttribute("appsignal.request.headers", header, value, span)
 }
 
-export function setName(name: string) {
-  setAttribute("appsignal.name", name)
+export function setName(name: string, span?: Span) {
+  setAttribute("appsignal.name", name, span)
 }
 
-export function setCategory(category: string) {
-  setAttribute("appsignal.category", category)
+export function setCategory(category: string, span?: Span) {
+  setAttribute("appsignal.category", category, span)
 }
 
-export function setBody(body: string) {
-  setAttribute("appsignal.body", body)
+export function setBody(body: string, span?: Span) {
+  setAttribute("appsignal.body", body, span)
 }
 
-export function setNamespace(namespace: string) {
-  setAttribute("appsignal.namespace", namespace)
+export function setNamespace(namespace: string, span?: Span) {
+  setAttribute("appsignal.namespace", namespace, span)
 }
 
-export function setRootName(name: string) {
-  setAttribute("appsignal.root_name", name)
+export function setRootName(name: string, span?: Span) {
+  setAttribute("appsignal.root_name", name, span)
 }
 
-export function setError(error: Error) {
+export function setError(error: Error, span?: Span) {
   if (error && error.name && error.message) {
-    const activeSpan = trace.getActiveSpan()
+    const activeSpan = span ?? trace.getActiveSpan()
     if (activeSpan) {
       activeSpan.recordException(error)
       activeSpan.setStatus({
