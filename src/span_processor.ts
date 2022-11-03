@@ -1,11 +1,12 @@
 import * as fs from "fs"
 import type { Context } from "@opentelemetry/api"
-import { SpanKind } from "@opentelemetry/api"
+import { context, SpanKind } from "@opentelemetry/api"
 import type {
   Span,
   ReadableSpan,
   SpanProcessor as OpenTelemetrySpanProcessor
 } from "@opentelemetry/sdk-trace-base"
+import { suppressTracing } from "@opentelemetry/core"
 import { Client } from "./client"
 
 export class SpanProcessor implements OpenTelemetrySpanProcessor {
@@ -92,11 +93,15 @@ export class TestModeSpanProcessor implements OpenTelemetrySpanProcessor {
       endTime: span.endTime
     }
 
-    // Re-open the file for every write, as the test process might have
-    // truncated it in between writes.
-    const file = fs.openSync(this.#filePath, "a")
-    fs.appendFileSync(file, `${JSON.stringify(serializableSpan)}\n`)
-    fs.closeSync(file)
+    // As `fs` is an automatically instrumented module by default, we supress tracing during
+    // its usage here so it doesn't fail nor contaminate actual traces.
+    context.with(suppressTracing(context.active()), () => {
+      // Re-open the file for every write, as the test process might have
+      // truncated it in between writes.
+      const file = fs.openSync(this.#filePath, "a")
+      fs.appendFileSync(file, `${JSON.stringify(serializableSpan)}\n`)
+      fs.closeSync(file)
+    })
   }
 
   shutdown() {

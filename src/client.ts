@@ -15,6 +15,7 @@ import {
   ExpressLayerType
 } from "@opentelemetry/instrumentation-express"
 import { FastifyInstrumentation } from "@opentelemetry/instrumentation-fastify"
+import { FsInstrumentation } from "@opentelemetry/instrumentation-fs"
 import { GraphQLInstrumentation } from "@opentelemetry/instrumentation-graphql"
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
 import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
@@ -35,6 +36,7 @@ import { KoaLayerType } from "@opentelemetry/instrumentation-koa"
 const DefaultInstrumentations = {
   "@opentelemetry/instrumentation-express": ExpressInstrumentation,
   "@opentelemetry/instrumentation-fastify": FastifyInstrumentation,
+  "@opentelemetry/instrumentation-fs": FsInstrumentation,
   "@opentelemetry/instrumentation-graphql": GraphQLInstrumentation,
   "@opentelemetry/instrumentation-http": HttpInstrumentation,
   "@opentelemetry/instrumentation-ioredis": IORedisInstrumentation,
