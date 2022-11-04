@@ -1,5 +1,15 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.0-beta.5
+
+### Added
+
+- [cee020f](https://github.com/appsignal/appsignal-nodejs/commit/cee020ffbc3850b6564f1d8e5312b6418f8dd15f) patch - Add fs module support
+
+### Fixed
+
+- [ec9aa36](https://github.com/appsignal/appsignal-nodejs/commit/ec9aa36a390545a56b1b8e4a1c63a0b7c4fe1a5a) patch - Only set the params on Koa router layer, instead of on all layers.
+
 ## 3.0.0-beta.4
 
 ### Added
