@@ -8,7 +8,7 @@ until nc -z $DATABASE_HOST 27017; do
   sleep 1
 done
 
-export DATABASE_URL="mongodb://$DATABASE_HOST:27017/prisma"
+export DATABASE_URL="mongodb://$DATABASE_HOST:27017/mongoose"
 
 echo "Giving permission to all users on span directory"
 chmod -R 777 /spans
