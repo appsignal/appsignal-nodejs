@@ -20,6 +20,7 @@ import { GraphQLInstrumentation } from "@opentelemetry/instrumentation-graphql"
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
 import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
 import { KoaInstrumentation } from "@opentelemetry/instrumentation-koa"
+import { MongoDBInstrumentation } from "@opentelemetry/instrumentation-mongodb"
 import { MongooseInstrumentation } from "@opentelemetry/instrumentation-mongoose"
 import { MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2"
 import { MySQLInstrumentation } from "@opentelemetry/instrumentation-mysql"
@@ -41,6 +42,7 @@ const DefaultInstrumentations = {
   "@opentelemetry/instrumentation-http": HttpInstrumentation,
   "@opentelemetry/instrumentation-ioredis": IORedisInstrumentation,
   "@opentelemetry/instrumentation-koa": KoaInstrumentation,
+  "@opentelemetry/instrumentation-mongodb": MongoDBInstrumentation,
   "@opentelemetry/instrumentation-mongoose": MongooseInstrumentation,
   "@opentelemetry/instrumentation-mysql2": MySQL2Instrumentation,
   "@opentelemetry/instrumentation-mysql": MySQLInstrumentation,
