@@ -1,5 +1,11 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.0-beta.6
+
+### Changed
+
+- [fcdaac2](https://github.com/appsignal/appsignal-nodejs/commit/fcdaac223b073974e3476551c0d592393363b188) patch - Bump agent version to support fs instrumentation
+
 ## 3.0.0-beta.5
 
 ### Added
