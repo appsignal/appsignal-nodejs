@@ -225,4 +225,65 @@ describe("Helpers", () => {
       )
     })
   })
+
+  describe("Optional span argument", () => {
+    it("can optionally take a span to use instead of the active span", () => {
+      const debugMock = jest.spyOn(Client.logger, "debug")
+
+      const tracer = trace.getTracer("test")
+      tracer.startActiveSpan("Active span", span => {
+        const childSpan = tracer.startSpan("Child span")
+
+        setBody("SELECT * FROM users", childSpan)
+        setCategory("some.query", childSpan)
+        setName("Some query", childSpan)
+        setCustomData({ chunky: "bacon" }, childSpan)
+        setParams({ id: 123 }, childSpan)
+        setSessionData({ admin: true }, childSpan)
+        setHeader("content-type", "application/json", childSpan)
+        setTag("something", true, childSpan)
+        setNamespace("web", childSpan)
+        setRootName("Root name", childSpan)
+
+        try {
+          throwError()
+        } catch (err) {
+          setError(err, childSpan)
+        }
+
+        childSpan.end()
+        span.end()
+      })
+
+      expect(spans.length).toEqual(2)
+
+      const activeSpan = spans.find(span => span.name == "Active span")
+      if (!activeSpan) throw new Error("No active span")
+
+      const childSpan = spans.find(span => span.name == "Child span")
+      if (!childSpan) throw new Error("No child span")
+
+      expect(activeSpan.attributes).toEqual({})
+
+      expect(childSpan.attributes).toMatchObject({
+        "appsignal.body": "SELECT * FROM users",
+        "appsignal.category": "some.query",
+        "appsignal.name": "Some query",
+        "appsignal.custom_data": '{"chunky":"bacon"}',
+        "appsignal.request.parameters": '{"id":123}',
+        "appsignal.request.session_data": '{"admin":true}',
+        "appsignal.request.headers.content-type": "application/json",
+        "appsignal.tag.something": true,
+        "appsignal.namespace": "web",
+        "appsignal.root_name": "Root name"
+      })
+
+      expect(activeSpan.events.length).toEqual(0)
+
+      expect(childSpan.events.length).toEqual(1)
+      expectErrorEvent(childSpan.events[0])
+
+      expect(debugMock).not.toHaveBeenCalled()
+    })
+  })
 })
