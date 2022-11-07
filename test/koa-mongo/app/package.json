@@ -1,0 +1,24 @@
+{
+  "name": "koa-mongo-example",
+  "private": true,
+  "version": "1.0.0",
+  "main": "dist/app.js",
+  "scripts": {
+    "build": "tsc --version; tsc -p tsconfig.json",
+    "server": "node --require ./dist/appsignal.js dist/app.js",
+    "seed": "node dist/seed.js"
+  },
+  "dependencies": {
+    "@appsignal/nodejs": "^2.4.2",
+    "@koa/router": "10.1.1",
+    "koa": "^2.13.4",
+    "mongodb": "^4.11.0",
+    "tslib": "^2.4.0"
+  },
+  "devDependencies": {
+    "@types/koa": "2.13.5",
+    "@types/koa__router": "8.0.11",
+    "@types/node": "18.6.3",
+    "typescript": "4.7.4"
+  }
+}
