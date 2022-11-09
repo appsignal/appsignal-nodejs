@@ -70,6 +70,15 @@ export class Extension {
     }
   }
 
+  public log(
+    group: string,
+    severity: number,
+    message: string,
+    attributes: any
+  ) {
+    extension.log(group, severity, message, Data.generate(attributes))
+  }
+
   /**
    * Determines if the app is running inside a container
    */

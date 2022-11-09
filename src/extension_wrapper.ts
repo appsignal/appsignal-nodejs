@@ -59,6 +59,9 @@ try {
       },
       createOpenTelemetrySpan() {
         return
+      },
+      log() {
+        return
       }
     }
   } as ExtensionWrapper
