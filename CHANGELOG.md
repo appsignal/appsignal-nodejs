@@ -1,5 +1,12 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.0-beta.7
+
+### Added
+
+- [e01b1d3](https://github.com/appsignal/appsignal-nodejs/commit/e01b1d3559c6080de971a8ff347c5e526b1a272e) patch - Add MongoDB instrumentation
+- [b21d2cc](https://github.com/appsignal/appsignal-nodejs/commit/b21d2cc5fc53a03980d0a813b82785bcd756d218) patch - Instrument outgoing HTTP requests
+
 ## 3.0.0-beta.6
 
 ### Changed
