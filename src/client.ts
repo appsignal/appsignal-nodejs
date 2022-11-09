@@ -8,6 +8,7 @@ import { NoopMetrics } from "./noops"
 import { demo } from "./demo"
 import { VERSION } from "./version"
 import { setParams, setSessionData } from "./helpers"
+import { Logger, LoggerLevel } from "./logger"
 
 import { Instrumentation } from "@opentelemetry/instrumentation"
 import {
@@ -101,10 +102,17 @@ export class Client {
   }
 
   /**
-   * Global accessors for the AppSignal Logger
+   * Global accessors for the AppSignal integration Logger
    */
   static get integrationLogger(): IntegrationLogger {
     return this.client.integrationLogger
+  }
+
+  /**
+   * Global accessors for the AppSignal Logger API
+   */
+  static logger(group: string, level?: LoggerLevel): Logger {
+    return this.client.logger(group, level)
   }
 
   /**
@@ -203,6 +211,10 @@ export class Client {
    */
   public metrics(): Metrics {
     return this.#metrics
+  }
+
+  public logger(group: string, level?: LoggerLevel): Logger {
+    return new Logger(this, group, level)
   }
 
   /**
