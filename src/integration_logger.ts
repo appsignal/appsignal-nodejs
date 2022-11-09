@@ -1,7 +1,7 @@
 import winston from "winston"
 const { combine, timestamp, printf } = winston.format
 
-export class Logger {
+export class IntegrationLogger {
   type: string
   level: string
   logger: winston.Logger

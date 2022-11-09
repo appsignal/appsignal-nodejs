@@ -10,7 +10,7 @@ function setAttribute(attribute: string, value: AttributeValue, span?: Span) {
   } else {
     const splitAttributes = attribute.split(".")
     const attributeSuffix = splitAttributes[splitAttributes.length - 1]
-    Client.logger.debug(
+    Client.integrationLogger.debug(
       `There is no active span, cannot set \`${attributeSuffix}\``
     )
   }
@@ -102,12 +102,14 @@ export function setError(error: Error, span?: Span) {
         message: error.message
       })
     } else {
-      Client.logger.debug(
+      Client.integrationLogger.debug(
         `There is no active span, cannot set \`${error.name}\``
       )
     }
   } else {
-    Client.logger.debug("Cannot set error, it is not an `Error`-like object")
+    Client.integrationLogger.debug(
+      "Cannot set error, it is not an `Error`-like object"
+    )
   }
 }
 
@@ -121,6 +123,8 @@ export function sendError(error: Error, fn: () => void = () => {}) {
         span.end()
       })
   } else {
-    Client.logger.debug("Cannot send error, it is not an `Error`-like object")
+    Client.integrationLogger.debug(
+      "Cannot send error, it is not an `Error`-like object"
+    )
   }
 }

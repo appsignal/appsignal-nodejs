@@ -1,10 +1,10 @@
-import { Logger } from "../logger"
+import { IntegrationLogger } from "../integration_logger"
 
-describe("Logger", () => {
-  let logger: Logger
+describe("IntegrationLogger", () => {
+  let logger: IntegrationLogger
 
   beforeEach(() => {
-    logger = new Logger("stdout", "trace")
+    logger = new IntegrationLogger("stdout", "trace")
   })
 
   it("sends errors to winston", () => {
@@ -43,22 +43,22 @@ describe("Logger", () => {
   })
 
   it("sets the proper npm log levels from our log levels", () => {
-    logger = new Logger("stdout", "error")
+    logger = new IntegrationLogger("stdout", "error")
     expect(logger.level).toEqual("error")
 
-    logger = new Logger("stdout", "warning")
+    logger = new IntegrationLogger("stdout", "warning")
     expect(logger.level).toEqual("warn")
 
-    logger = new Logger("stdout", "info")
+    logger = new IntegrationLogger("stdout", "info")
     expect(logger.level).toEqual("info")
 
-    logger = new Logger("stdout", "debug")
+    logger = new IntegrationLogger("stdout", "debug")
     expect(logger.level).toEqual("debug")
 
-    logger = new Logger("stdout", "trace")
+    logger = new IntegrationLogger("stdout", "trace")
     expect(logger.level).toEqual("silly")
 
-    logger = new Logger("stdout", "fooBarBaz")
+    logger = new IntegrationLogger("stdout", "fooBarBaz")
     expect(logger.level).toEqual("info")
   })
 })

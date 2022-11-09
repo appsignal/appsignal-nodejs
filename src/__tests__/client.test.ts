@@ -54,25 +54,25 @@ describe("Client", () => {
     expect(Client.config).toEqual(client.config)
   })
 
-  it("returns the logger from global object", () => {
-    expect(Client.logger).toEqual(client.logger)
+  it("returns the integration logger from global object", () => {
+    expect(Client.integrationLogger).toEqual(client.integrationLogger)
   })
 
-  it("sets the logger level to info by default and uses a file transport", () => {
-    expect(Client.logger.type).toEqual("file")
-    expect(Client.logger.level).toEqual("info")
+  it("sets the integration logger level to info by default and uses a file transport", () => {
+    expect(Client.integrationLogger.type).toEqual("file")
+    expect(Client.integrationLogger.level).toEqual("info")
   })
 
-  it("sets the logger level to the translated one", () => {
+  it("sets the integration logger level to the translated one", () => {
     client = new Client({ ...DEFAULT_OPTS, logLevel: "trace" })
 
-    expect(Client.logger.level).toEqual("silly")
+    expect(Client.integrationLogger.level).toEqual("silly")
   })
 
-  it("uses a console transport for logging if specified", () => {
+  it("uses a console transport for integration logging if specified", () => {
     client = new Client({ ...DEFAULT_OPTS, log: "stdout" })
 
-    expect(Client.logger.type).toEqual("stdout")
+    expect(Client.integrationLogger.type).toEqual("stdout")
   })
 
   it("does not start the client if the config is not valid", () => {
