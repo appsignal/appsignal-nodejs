@@ -21,6 +21,7 @@ export type AppsignalOptions = {
   log: string
   logPath: string
   logLevel: string
+  loggingEndpoint: string
   name: string
   pushApiKey: string
   requestHeaders: string[]

@@ -113,6 +113,7 @@ export class Configuration {
       ignoreErrors: [],
       ignoreNamespaces: [],
       log: "file",
+      loggingEndpoint: "https://appsignal-endpoint.net",
       requestHeaders: [
         "accept",
         "accept-charset",
