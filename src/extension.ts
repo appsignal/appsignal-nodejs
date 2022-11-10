@@ -1,6 +1,7 @@
 import { extension, isLoaded as extensionLoaded } from "./extension_wrapper"
 import { Span } from "./span"
 import { Data } from "./internal/data"
+import { Client } from "./client"
 
 /**
  * The public interface for the extension.
@@ -76,6 +77,7 @@ export class Extension {
     message: string,
     attributes: any
   ) {
+    Client.integrationLogger.trace(`Logging to extension for group '${group}'`)
     extension.log(group, severity, message, Data.generate(attributes))
   }
 
