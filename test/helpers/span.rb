@@ -97,7 +97,7 @@ class Span
 
     unless sql_span
       raise(
-        "No SQL span for parent `#{id}` type: #{type} "\
+        "No SQL span for parent `#{id}` type: #{type} " \
           "and system `#{library}` found"
       )
     end
