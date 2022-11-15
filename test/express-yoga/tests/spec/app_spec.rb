@@ -4,7 +4,7 @@ require "http"
 
 RSpec.describe "Express Yoga app" do
   before(:all) do
-    @test_app_url = URI(ENV.fetch("TEST_APP_URL"))
+    @test_app_url = ConfigHelper.test_app_url
   end
 
   describe("POST /graphql querying for all books and authors") do

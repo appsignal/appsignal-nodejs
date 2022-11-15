@@ -2,7 +2,7 @@
 
 RSpec.describe "NextJS app" do
   before(:all) do
-    @test_app_url = ENV.fetch("TEST_APP_URL")
+    @test_app_url = ConfigHelper.test_app_url
   end
 
   describe("GET /") do

@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
-module IntegrationHelper
-  SPANS_FILE_PATH = ENV.fetch("SPANS_FILE_PATH")
-  TEST_APP_URL = ENV.fetch("TEST_APP_URL")
+require_relative "./config_helper"
 
+module IntegrationHelper
   def self.wait_for_start
     max_retries = 1200
     retries = 0
 
     begin
-      HTTP.timeout(1).get("#{TEST_APP_URL}/")
+      HTTP.timeout(1).get("#{ConfigHelper.test_app_url}/")
       puts "The app has started!"
     rescue HTTP::ConnectionError, HTTP::TimeoutError
       if retries >= max_retries

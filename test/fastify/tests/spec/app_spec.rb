@@ -4,7 +4,7 @@ require "http"
 
 RSpec.describe "Fastify app" do
   before(:all) do
-    @test_app_url = URI(ENV.fetch("TEST_APP_URL"))
+    @test_app_url = ConfigHelper.test_app_url
   end
 
   describe("GET /") do
