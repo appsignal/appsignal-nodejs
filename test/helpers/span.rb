@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
+require_relative "./config_helper"
+
 class Span
   class << self
-    SPANS_FILE_PATH = ENV.fetch("SPANS_FILE_PATH")
-
     def all
       # Wait for spans that haven't been written yet
       sleep 1
-      File.readlines(SPANS_FILE_PATH).map do |line|
+      File.readlines(ConfigHelper.spans_file_path).map do |line|
         new(JSON.parse(line))
       end
     end
@@ -34,7 +34,7 @@ class Span
     end
 
     def clear_all
-      File.open(SPANS_FILE_PATH, "w").close
+      File.open(ConfigHelper.spans_file_path, "w").close
     end
 
     def roots
