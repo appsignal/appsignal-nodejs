@@ -1,5 +1,47 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.0
+
+Welcome to AppSignal for Node.js version 3.0.0.!
+
+In this release, we have switched to using OpenTelemetry internally for tracing. (We do not yet support OpenTelemetry for metrics and logging, but do continue to support metrics through our own metrics system.) The AppSignal instrumentation packages `@appsignal/express`, `@appsignal/koa`, `@appsignal/nextjs` and `@appsignal/apollo-server` should no longer be used. Some official OpenTelemetry instrumentation packages are bundled with our package as dependencies and instrumented automatically. Other _supported instrumentation packages_ can be [added and configured manually](https://docs.appsignal.com/nodejs/3.x/instrumentation/additional-instrumentations.html).
+
+We strongly recommend following the [migration guide] while upgrading. Instrumentation from package version 2 is not compatible with version 3. Custom instrumentation will need to be set up using [OpenTelemetry instrumentation](https://docs.appsignal.com/nodejs/3.x/instrumentation/instrumentation.html).
+
+If you run into any issues upgrading to this new version, please contact us at [support@appsignal.com][support] for help.
+
+- [Version 3 migration guide][migration guide]
+- [Contact us for support][support]
+
+[migration guide]: https://docs.appsignal.com/nodejs/3.x/migration-guide.html
+[support]: mailto:support@appsignal.com
+
+### Added
+
+- Add support for express package
+- Add support for graphql package
+- Add support for ioredis package
+- Add support for Fastify
+- Add support for Knex.js
+- Add support for koa package
+- Add support for mysql package
+- Add support for mysql2 package
+- Add support for MongoDB
+- Add support for Mongoose
+- Add support for Nest.js
+- Add support for Next.js
+- Add support for pg package
+- Add support for prisma package
+- Add support for redis package
+- Add support for redis package version 4
+- Add support for the fs module
+- Instrument outgoing HTTP requests
+
+### Changed
+
+- Use OpenTelemetry for tracing instrumentation of libraries and Node.js modules.
+- Remove dependency on `@appsignal/*` instrumentation packages.
+
 ## 3.0.0-beta.7
 
 ### Added
