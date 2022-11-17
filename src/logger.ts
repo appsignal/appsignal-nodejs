@@ -24,6 +24,12 @@ export class Logger {
   severityThreshold: number
 
   constructor(client: Client, group: string, level: LoggerLevel = "info") {
+    if (typeof group != "string") {
+      throw new TypeError(
+        `Logger group name must be a string; ${typeof group} given`
+      )
+    }
+
     this.#client = client
     this.#group = group
     this.severityThreshold = severity(level)
@@ -67,6 +73,11 @@ export class Logger {
       return
     }
 
-    this.#client.extension.log(this.#group, severity, `${message}`, attributes)
+    this.#client.extension.log(
+      this.#group,
+      severity,
+      String(message),
+      attributes
+    )
   }
 }
