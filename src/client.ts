@@ -239,6 +239,14 @@ export class Client {
           }
         }
       },
+      "@opentelemetry/instrumentation-fastify": {
+        requestHook: function (_span, info) {
+          const queryParams = info.request.query
+          const requestBody = info.request.body
+          const params = { ...queryParams, ...requestBody }
+          setParams(params)
+        }
+      },
       "@opentelemetry/instrumentation-http": {
         headersToSpanAttributes: {
           server: { requestHeaders }
