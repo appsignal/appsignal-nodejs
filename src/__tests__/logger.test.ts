@@ -1,64 +1,79 @@
-import { Logger } from "../logger"
+import { Client } from "../client"
+import { Logger, LoggerLevel } from "../logger"
 
 describe("Logger", () => {
   let logger: Logger
+  let client: Client
+
+  beforeAll(() => {
+    client = new Client({
+      name: "TEST APP",
+      pushApiKey: "PUSH_API_KEY"
+    })
+  })
 
   beforeEach(() => {
-    logger = new Logger("stdout", "trace")
+    client.extension.log = jest.fn()
+    client.integrationLogger.warn = jest.fn()
+    logger = client.logger("groupname")
   })
 
-  it("sends errors to winston", () => {
-    const errMock = jest.spyOn(logger.logger, "error")
-    logger.error("Hi, I'm error")
-
-    expect(errMock).toBeCalledWith("Hi, I'm error")
+  it("defaults to an info logger level", () => {
+    expect(logger.severityThreshold).toEqual(3)
+    expect(client.integrationLogger.warn).not.toHaveBeenCalled()
   })
 
-  it("sends warnings to winston", () => {
-    const warnMock = jest.spyOn(logger.logger, "warn")
-    logger.warn("Hi, I'm warning")
-
-    expect(warnMock).toBeCalledWith("Hi, I'm warning")
+  it("sets an info logger level when the severity is unknown and logs a warning", () => {
+    logger = client.logger("groupname", "bacon" as LoggerLevel)
+    expect(logger.severityThreshold).toEqual(3)
+    expect(client.integrationLogger.warn).toHaveBeenCalledWith(
+      expect.stringContaining(`"bacon"`)
+    )
   })
 
-  it("sends info to winston", () => {
-    const infoMock = jest.spyOn(logger.logger, "info")
-    logger.info("Hi, I'm info")
-
-    expect(infoMock).toBeCalledWith("Hi, I'm info")
+  it("sets the right severity threshold for a known logger level", () => {
+    expect(client.logger("groupname", "trace").severityThreshold).toEqual(1)
+    expect(client.logger("groupname", "debug").severityThreshold).toEqual(2)
+    expect(client.logger("groupname", "info").severityThreshold).toEqual(3)
+    expect(client.logger("groupname", "log").severityThreshold).toEqual(4)
+    expect(client.logger("groupname", "warn").severityThreshold).toEqual(5)
+    expect(client.logger("groupname", "error").severityThreshold).toEqual(6)
   })
 
-  it("sends debugs to winston", () => {
-    const debugMock = jest.spyOn(logger.logger, "debug")
-    logger.debug("Hi, I'm debug")
+  it("logs to the extension if at or above the logger level", () => {
+    const attributes = { foo: "bar", number: 42, isAnswer: true }
 
-    expect(debugMock).toBeCalledWith("Hi, I'm debug")
-  })
+    logger.trace("trace message", attributes)
+    logger.debug("debug message", attributes)
+    logger.info("info message", attributes)
+    logger.log("log message", attributes)
+    logger.warn("warn message", attributes)
+    logger.error("error message", attributes)
 
-  it("sends traces to winston", () => {
-    const sillyMock = jest.spyOn(logger.logger, "silly")
-    logger.trace("Hi, I'm trace")
-
-    expect(sillyMock).toBeCalledWith("Hi, I'm trace")
-  })
-
-  it("sets the proper npm log levels from our log levels", () => {
-    logger = new Logger("stdout", "error")
-    expect(logger.level).toEqual("error")
-
-    logger = new Logger("stdout", "warning")
-    expect(logger.level).toEqual("warn")
-
-    logger = new Logger("stdout", "info")
-    expect(logger.level).toEqual("info")
-
-    logger = new Logger("stdout", "debug")
-    expect(logger.level).toEqual("debug")
-
-    logger = new Logger("stdout", "trace")
-    expect(logger.level).toEqual("silly")
-
-    logger = new Logger("stdout", "fooBarBaz")
-    expect(logger.level).toEqual("info")
+    expect(client.extension.log).toHaveBeenCalledTimes(4)
+    expect(client.extension.log).toHaveBeenCalledWith(
+      "groupname",
+      3,
+      "info message",
+      attributes
+    )
+    expect(client.extension.log).toHaveBeenCalledWith(
+      "groupname",
+      4,
+      "log message",
+      attributes
+    )
+    expect(client.extension.log).toHaveBeenCalledWith(
+      "groupname",
+      5,
+      "warn message",
+      attributes
+    )
+    expect(client.extension.log).toHaveBeenCalledWith(
+      "groupname",
+      6,
+      "error message",
+      attributes
+    )
   })
 })

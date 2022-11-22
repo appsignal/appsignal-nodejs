@@ -1,75 +1,88 @@
-import winston from "winston"
-const { combine, timestamp, printf } = winston.format
+import { Client } from "./client"
+
+export type LoggerLevel = "trace" | "debug" | "info" | "log" | "warn" | "error"
+
+type LoggerAttributes = Record<string, string | number | boolean>
+
+const LOGGER_LEVEL_SEVERITY: Record<LoggerLevel, number> = {
+  trace: 1,
+  debug: 2,
+  info: 3,
+  log: 4,
+  warn: 5,
+  error: 6
+}
+
+const UNKNOWN_SEVERITY = 0
+
+function severity(level: LoggerLevel) {
+  return LOGGER_LEVEL_SEVERITY[level] ?? UNKNOWN_SEVERITY
+}
 
 export class Logger {
-  type: string
-  level: string
-  logger: winston.Logger
+  #client: Client
+  #group: string
+  severityThreshold: number
 
-  constructor(type: string, level: string, filename?: string) {
-    this.type = type
-    this.level = this.translateLogLevel(level)
-
-    let transport
-
-    if (type == "file") {
-      transport = new winston.transports.File({ filename: filename })
-    } else {
-      transport = new winston.transports.Console()
+  constructor(client: Client, group: string, level: LoggerLevel = "info") {
+    if (typeof group != "string") {
+      throw new TypeError(
+        `Logger group name must be a string; ${typeof group} given`
+      )
     }
 
-    const logFormat = printf(({ level, message, timestamp }) => {
-      if (type == "file") {
-        return `[${timestamp} (process) #${process.pid}][${level}] ${message}`
-      } else {
-        return `[${timestamp} (process) #${process.pid}][appsignal][${level}] ${message}`
-      }
-    })
+    this.#client = client
+    this.#group = group
+    this.severityThreshold = severity(level)
 
-    this.logger = winston.createLogger({
-      format: combine(timestamp({ format: "YYYY-MM-DDTHH:mm:ss" }), logFormat),
-      level: this.level,
-      transports: [transport]
-    })
-  }
+    if (this.severityThreshold == UNKNOWN_SEVERITY) {
+      this.#client.integrationLogger.warn(
+        `Logger level must be "trace", "debug", "info", "log", "warn" or "error", ` +
+          `but "${level}" was given. Logger level set to "info".`
+      )
 
-  public error(message: string) {
-    this.logger.error(message)
-  }
-
-  public warn(message: string) {
-    this.logger.warn(message)
-  }
-
-  public info(message: string) {
-    this.logger.info(message)
-  }
-
-  public debug(message: string) {
-    this.logger.debug(message)
-  }
-
-  public trace(message: string) {
-    this.logger.silly(message)
-  }
-
-  /**
-   * Translates our logLevel to the one supported by Winston
-   */
-  private translateLogLevel(level: string): string {
-    switch (level) {
-      case "error":
-        return "error"
-      case "warning":
-        return "warn"
-      case "info":
-        return "info"
-      case "debug":
-        return "debug"
-      case "trace":
-        return "silly"
-      default:
-        return "info"
+      this.severityThreshold = severity("info")
     }
+  }
+
+  trace(message: string, attributes?: LoggerAttributes) {
+    this.sendLog(severity("trace"), message, attributes)
+  }
+
+  debug(message: string, attributes?: LoggerAttributes) {
+    this.sendLog(severity("debug"), message, attributes)
+  }
+
+  info(message: string, attributes?: LoggerAttributes) {
+    this.sendLog(severity("info"), message, attributes)
+  }
+
+  log(message: string, attributes?: LoggerAttributes) {
+    this.sendLog(severity("log"), message, attributes)
+  }
+
+  warn(message: string, attributes?: LoggerAttributes) {
+    this.sendLog(severity("warn"), message, attributes)
+  }
+
+  error(message: string, attributes?: LoggerAttributes) {
+    this.sendLog(severity("error"), message, attributes)
+  }
+
+  private sendLog(
+    severity: number,
+    message: string,
+    attributes: LoggerAttributes = {}
+  ) {
+    if (severity < this.severityThreshold) {
+      return
+    }
+
+    this.#client.extension.log(
+      this.#group,
+      severity,
+      String(message),
+      attributes
+    )
   }
 }

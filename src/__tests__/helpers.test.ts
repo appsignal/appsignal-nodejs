@@ -122,7 +122,7 @@ describe("Helpers", () => {
   })
 
   it("logs a debug warning when there is no active span", () => {
-    const debugMock = jest.spyOn(Client.logger, "debug")
+    const debugMock = jest.spyOn(Client.integrationLogger, "debug")
 
     setCustomData({ chunky: "bacon" })
 
@@ -149,7 +149,7 @@ describe("Helpers", () => {
     })
 
     it("logs a debug warning when there is no active span", () => {
-      const debugMock = jest.spyOn(Client.logger, "debug")
+      const debugMock = jest.spyOn(Client.integrationLogger, "debug")
 
       setError(new Error("Oh no!"))
 
@@ -159,7 +159,7 @@ describe("Helpers", () => {
     })
 
     it("logs a debug warning when the value is not an error", () => {
-      const debugMock = jest.spyOn(Client.logger, "debug")
+      const debugMock = jest.spyOn(Client.integrationLogger, "debug")
 
       setError("Oh no!" as any as Error)
 
@@ -216,7 +216,7 @@ describe("Helpers", () => {
     })
 
     it("logs a debug warning when the value is not an error", () => {
-      const debugMock = jest.spyOn(Client.logger, "debug")
+      const debugMock = jest.spyOn(Client.integrationLogger, "debug")
 
       sendError("Oh no!" as any as Error)
 
@@ -228,7 +228,7 @@ describe("Helpers", () => {
 
   describe("Optional span argument", () => {
     it("can optionally take a span to use instead of the active span", () => {
-      const debugMock = jest.spyOn(Client.logger, "debug")
+      const debugMock = jest.spyOn(Client.integrationLogger, "debug")
 
       const tracer = trace.getTracer("test")
       tracer.startActiveSpan("Active span", span => {

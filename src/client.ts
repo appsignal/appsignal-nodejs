@@ -3,11 +3,12 @@ import { Extension } from "./extension"
 import { Configuration } from "./config"
 import { Metrics } from "./metrics"
 import * as gcProbe from "./probes/v8"
-import { Logger } from "./logger"
+import { IntegrationLogger } from "./integration_logger"
 import { NoopMetrics } from "./noops"
 import { demo } from "./demo"
 import { VERSION } from "./version"
 import { setParams, setSessionData } from "./helpers"
+import { Logger, LoggerLevel } from "./logger"
 
 import { Instrumentation } from "@opentelemetry/instrumentation"
 import {
@@ -80,7 +81,7 @@ export class Client {
   readonly VERSION = VERSION
 
   config: Configuration
-  readonly logger: Logger
+  readonly integrationLogger: IntegrationLogger
   extension: Extension
 
   #metrics: Metrics
@@ -101,10 +102,17 @@ export class Client {
   }
 
   /**
-   * Global accessors for the AppSignal Logger
+   * Global accessors for the AppSignal integration Logger
    */
-  static get logger(): Logger {
-    return this.client.logger
+  static get integrationLogger(): IntegrationLogger {
+    return this.client.integrationLogger
+  }
+
+  /**
+   * Global accessors for the AppSignal Logger API
+   */
+  static logger(group: string, level?: LoggerLevel): Logger {
+    return this.client.logger(group, level)
   }
 
   /**
@@ -113,7 +121,7 @@ export class Client {
   constructor(options: Partial<Options> = {}) {
     this.config = new Configuration(options)
     this.extension = new Extension()
-    this.logger = this.setUpLogger()
+    this.integrationLogger = this.setUpIntegrationLogger()
     this.storeInGlobal()
 
     if (this.isActive) {
@@ -203,6 +211,10 @@ export class Client {
    */
   public metrics(): Metrics {
     return this.#metrics
+  }
+
+  public logger(group: string, level?: LoggerLevel): Logger {
+    return new Logger(this, group, level)
   }
 
   /**
@@ -321,16 +333,16 @@ export class Client {
    * Sets up the AppSignal logger with the output based on the `log` config option. If
    * the log file is not accessible, stdout will be the output.
    */
-  private setUpLogger(): Logger {
+  private setUpIntegrationLogger(): IntegrationLogger {
     const logFilePath = this.config.logFilePath
     const logLevel = String(this.config.data["logLevel"])
     const logType = String(this.config.data["log"])
     let logger
 
     if (logType == "file" && logFilePath) {
-      logger = new Logger(logType, logLevel, logFilePath)
+      logger = new IntegrationLogger(logType, logLevel, logFilePath)
     } else {
-      logger = new Logger(logType, logLevel)
+      logger = new IntegrationLogger(logType, logLevel)
     }
 
     return logger

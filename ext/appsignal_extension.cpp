@@ -250,6 +250,27 @@ Napi::Value GetDataToJson(const Napi::CallbackInfo &info) {
   return Napi::String::New(env, str.buf, str.len);
 }
 
+// LOGGING API
+
+Napi::Value Log(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  Napi::String group = info[0].As<Napi::String>();
+  Napi::Number severity = info[1].As<Napi::Number>();
+  Napi::String message = info[2].As<Napi::String>();
+  Napi::External<appsignal_data_t> attributes =
+    info[3].As<Napi::External<appsignal_data_t>>();
+
+  appsignal_log(
+    MakeAppsignalString(group),
+    severity.Int32Value(),
+    MakeAppsignalString(message),
+    attributes.Data()
+  );
+
+  return env.Null();
+}
+
 // SPAN API
 
 Napi::Value CreateOpenTelemetrySpan(const Napi::CallbackInfo &info) {
@@ -448,6 +469,7 @@ Napi::Object CreateExtensionObject(Napi::Env env, Napi::Object exports) {
                 Napi::Function::New(env, RunningInContainer));
   extension.Set(Napi::String::New(env, "createOpenTelemetrySpan"),
                 Napi::Function::New(env, CreateOpenTelemetrySpan));
+  extension.Set(Napi::String::New(env, "log"), Napi::Function::New(env, Log));
 
   return extension;
 }
