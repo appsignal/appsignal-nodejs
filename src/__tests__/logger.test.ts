@@ -35,6 +35,7 @@ describe("Logger", () => {
     expect(client.logger("groupname", "trace").severityThreshold).toEqual(1)
     expect(client.logger("groupname", "debug").severityThreshold).toEqual(2)
     expect(client.logger("groupname", "info").severityThreshold).toEqual(3)
+    expect(client.logger("groupname", "log").severityThreshold).toEqual(4)
     expect(client.logger("groupname", "warn").severityThreshold).toEqual(5)
     expect(client.logger("groupname", "error").severityThreshold).toEqual(6)
   })
@@ -45,14 +46,21 @@ describe("Logger", () => {
     logger.trace("trace message", attributes)
     logger.debug("debug message", attributes)
     logger.info("info message", attributes)
+    logger.log("log message", attributes)
     logger.warn("warn message", attributes)
     logger.error("error message", attributes)
 
-    expect(client.extension.log).toHaveBeenCalledTimes(3)
+    expect(client.extension.log).toHaveBeenCalledTimes(4)
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       3,
       "info message",
+      attributes
+    )
+    expect(client.extension.log).toHaveBeenCalledWith(
+      "groupname",
+      4,
+      "log message",
       attributes
     )
     expect(client.extension.log).toHaveBeenCalledWith(

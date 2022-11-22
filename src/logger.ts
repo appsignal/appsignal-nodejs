@@ -1,6 +1,6 @@
 import { Client } from "./client"
 
-export type LoggerLevel = "trace" | "debug" | "info" | "warn" | "error"
+export type LoggerLevel = "trace" | "debug" | "info" | "log" | "warn" | "error"
 
 type LoggerAttributes = Record<string, string | number | boolean>
 
@@ -8,6 +8,7 @@ const LOGGER_LEVEL_SEVERITY: Record<LoggerLevel, number> = {
   trace: 1,
   debug: 2,
   info: 3,
+  log: 4,
   warn: 5,
   error: 6
 }
@@ -36,7 +37,7 @@ export class Logger {
 
     if (this.severityThreshold == UNKNOWN_SEVERITY) {
       this.#client.integrationLogger.warn(
-        `Logger level must be "trace", "debug", "info", "warn" or "error", ` +
+        `Logger level must be "trace", "debug", "info", "log", "warn" or "error", ` +
           `but "${level}" was given. Logger level set to "info".`
       )
 
@@ -45,26 +46,30 @@ export class Logger {
   }
 
   trace(message: string, attributes?: LoggerAttributes) {
-    this.log(severity("trace"), message, attributes)
+    this.sendLog(severity("trace"), message, attributes)
   }
 
   debug(message: string, attributes?: LoggerAttributes) {
-    this.log(severity("debug"), message, attributes)
+    this.sendLog(severity("debug"), message, attributes)
   }
 
   info(message: string, attributes?: LoggerAttributes) {
-    this.log(severity("info"), message, attributes)
+    this.sendLog(severity("info"), message, attributes)
+  }
+
+  log(message: string, attributes?: LoggerAttributes) {
+    this.sendLog(severity("log"), message, attributes)
   }
 
   warn(message: string, attributes?: LoggerAttributes) {
-    this.log(severity("warn"), message, attributes)
+    this.sendLog(severity("warn"), message, attributes)
   }
 
   error(message: string, attributes?: LoggerAttributes) {
-    this.log(severity("error"), message, attributes)
+    this.sendLog(severity("error"), message, attributes)
   }
 
-  private log(
+  private sendLog(
     severity: number,
     message: string,
     attributes: LoggerAttributes = {}
