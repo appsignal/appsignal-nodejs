@@ -2,7 +2,7 @@ import { Client } from "./client"
 
 export type LoggerLevel = "trace" | "debug" | "info" | "log" | "warn" | "error"
 
-type LoggerAttributes = Record<string, string | number | boolean>
+export type LoggerAttributes = Record<string, string | number | boolean>
 
 const LOGGER_LEVEL_SEVERITY: Record<LoggerLevel, number> = {
   trace: 1,
@@ -19,7 +19,16 @@ function severity(level: LoggerLevel) {
   return LOGGER_LEVEL_SEVERITY[level] ?? UNKNOWN_SEVERITY
 }
 
-export class Logger {
+export interface Logger {
+  trace(message: string, attributes?: LoggerAttributes): void
+  debug(message: string, attributes?: LoggerAttributes): void
+  info(message: string, attributes?: LoggerAttributes): void
+  log(message: string, attributes?: LoggerAttributes): void
+  warn(message: string, attributes?: LoggerAttributes): void
+  error(message: string, attributes?: LoggerAttributes): void
+}
+
+export class BaseLogger implements Logger {
   #client: Client
   #group: string
   severityThreshold: number
