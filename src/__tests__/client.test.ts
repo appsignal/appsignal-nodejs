@@ -2,8 +2,10 @@ import { InstrumentationTestRegistry } from "../../test/instrumentation_registry
 import { Extension } from "../extension"
 import { Client } from "../client"
 import { Metrics } from "../metrics"
-import { NoopMetrics } from "../noops"
+import { NoopIntegrationLogger, NoopLogger, NoopMetrics } from "../noops"
 import { Instrumentation } from "@opentelemetry/instrumentation"
+import { BaseIntegrationLogger } from "../integration_logger"
+import { BaseLogger } from "../logger"
 
 describe("Client", () => {
   const name = "TEST APP"
@@ -58,21 +60,48 @@ describe("Client", () => {
     expect(Client.integrationLogger).toEqual(client.integrationLogger)
   })
 
+  it("returns a noop integration logger if the client has not been initialised", () => {
+    global.__APPSIGNAL__ = undefined as any
+    expect(Client.integrationLogger).toBeInstanceOf(NoopIntegrationLogger)
+  })
+
+  it("returns the user logger from global object if the client is active", () => {
+    client = new Client({ ...DEFAULT_OPTS, active: true })
+    expect(Client.logger("groupname")).toBeInstanceOf(BaseLogger)
+  })
+
+  it("returns a noop user logger if the client is not active", () => {
+    expect(Client.logger("groupname")).toBeInstanceOf(NoopLogger)
+  })
+
+  it("returns a noop user logger if the client has not been initialised", () => {
+    global.__APPSIGNAL__ = undefined as any
+    expect(Client.logger("groupname")).toBeInstanceOf(NoopLogger)
+  })
+
   it("sets the integration logger level to info by default and uses a file transport", () => {
-    expect(Client.integrationLogger.type).toEqual("file")
-    expect(Client.integrationLogger.level).toEqual("info")
+    expect((Client.integrationLogger as BaseIntegrationLogger).type).toEqual(
+      "file"
+    )
+    expect((Client.integrationLogger as BaseIntegrationLogger).level).toEqual(
+      "info"
+    )
   })
 
   it("sets the integration logger level to the translated one", () => {
     client = new Client({ ...DEFAULT_OPTS, logLevel: "trace" })
 
-    expect(Client.integrationLogger.level).toEqual("silly")
+    expect((Client.integrationLogger as BaseIntegrationLogger).level).toEqual(
+      "silly"
+    )
   })
 
   it("uses a console transport for integration logging if specified", () => {
     client = new Client({ ...DEFAULT_OPTS, log: "stdout" })
 
-    expect(Client.integrationLogger.type).toEqual("stdout")
+    expect((Client.integrationLogger as BaseIntegrationLogger).type).toEqual(
+      "stdout"
+    )
   })
 
   it("does not start the client if the config is not valid", () => {

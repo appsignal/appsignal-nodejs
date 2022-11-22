@@ -3,12 +3,12 @@ import { Extension } from "./extension"
 import { Configuration } from "./config"
 import { Metrics } from "./metrics"
 import * as gcProbe from "./probes/v8"
-import { IntegrationLogger } from "./integration_logger"
-import { NoopMetrics } from "./noops"
+import { BaseIntegrationLogger, IntegrationLogger } from "./integration_logger"
+import { NoopMetrics, noopIntegrationLogger, noopLogger } from "./noops"
 import { demo } from "./demo"
 import { VERSION } from "./version"
 import { setParams, setSessionData } from "./helpers"
-import { Logger, LoggerLevel } from "./logger"
+import { BaseLogger, Logger, LoggerLevel } from "./logger"
 
 import { Instrumentation } from "@opentelemetry/instrumentation"
 import {
@@ -98,21 +98,29 @@ export class Client {
    * Global accessors for the AppSignal Config
    */
   static get config(): Configuration {
-    return this.client.config
+    return this.client?.config
   }
 
   /**
    * Global accessors for the AppSignal integration Logger
    */
   static get integrationLogger(): IntegrationLogger {
-    return this.client.integrationLogger
+    if (this.client) {
+      return this.client.integrationLogger
+    } else {
+      return noopIntegrationLogger
+    }
   }
 
   /**
    * Global accessors for the AppSignal Logger API
    */
   static logger(group: string, level?: LoggerLevel): Logger {
-    return this.client.logger(group, level)
+    if (this.client) {
+      return this.client.logger(group, level)
+    } else {
+      return noopLogger
+    }
   }
 
   /**
@@ -214,7 +222,11 @@ export class Client {
   }
 
   public logger(group: string, level?: LoggerLevel): Logger {
-    return new Logger(this, group, level)
+    if (this.isActive) {
+      return new BaseLogger(this, group, level)
+    } else {
+      return noopLogger
+    }
   }
 
   /**
@@ -340,9 +352,9 @@ export class Client {
     let logger
 
     if (logType == "file" && logFilePath) {
-      logger = new IntegrationLogger(logType, logLevel, logFilePath)
+      logger = new BaseIntegrationLogger(logType, logLevel, logFilePath)
     } else {
-      logger = new IntegrationLogger(logType, logLevel)
+      logger = new BaseIntegrationLogger(logType, logLevel)
     }
 
     return logger
