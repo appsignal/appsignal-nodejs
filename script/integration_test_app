@@ -13,11 +13,11 @@ fi
 
 test_app_path="test/$app"
 
-if [ ! -d $test_app_path ]; then
+if [ ! -d "$test_app_path" ]; then
   echo "Not test directory for app $app in $test_app_path"
   echo "Please check if the directory exists in the tests/ directory"
   exit 1
 fi
 
-cd $test_app_path
+cd "$test_app_path"
 docker-compose up --abort-on-container-exit --exit-code-from tests
