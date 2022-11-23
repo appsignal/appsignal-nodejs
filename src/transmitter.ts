@@ -137,7 +137,7 @@ export class Transmitter {
     return stream => {
       const responseStatus = stream.statusCode ?? 999
       const isRedirect = REDIRECT_STATUS_CODES.indexOf(responseStatus) !== -1
-      const newURL = stream.headers?.location
+      const newURL = this.getLocationHeader(stream.rawHeaders || [])
 
       if (isRedirect && typeof newURL !== "undefined") {
         const redirectCount = callback[REDIRECT_COUNT] ?? 0
@@ -167,6 +167,22 @@ export class Transmitter {
         callback(stream)
       }
     }
+  }
+
+  // Temporary fix to deal with the header setter removal in Node.js 19
+  // https://github.com/nodejs/node/issues/45510
+  private getLocationHeader(rawHeaders: Array<any>): string | undefined {
+    let location
+    rawHeaders.forEach((element, index) => {
+      // Skip odd indices as rawHeaders are represented as an array of pairs (key, value)
+      if (Math.abs(index % 2) == 1) return
+
+      if (element == "Location") {
+        location = rawHeaders[index + 1]
+      }
+    })
+
+    return location
   }
 
   private configParams(): URLSearchParams {

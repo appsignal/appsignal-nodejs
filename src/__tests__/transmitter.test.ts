@@ -267,7 +267,8 @@ describe("Transmitter", () => {
       nock("http://example.invalid")
         .get("/301")
         .reply(301, undefined, {
-          Location: "http://example.invalid/302"
+          Location: "http://example.invalid/302",
+          FooHeader: "Location"
         })
         .get("/302")
         .reply(302, undefined, {
