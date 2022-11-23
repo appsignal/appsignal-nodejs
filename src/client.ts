@@ -20,6 +20,7 @@ import { FsInstrumentation } from "@opentelemetry/instrumentation-fs"
 import { GraphQLInstrumentation } from "@opentelemetry/instrumentation-graphql"
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
 import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
+import { KnexInstrumentation } from "@opentelemetry/instrumentation-knex"
 import { KoaInstrumentation } from "@opentelemetry/instrumentation-koa"
 import { MongoDBInstrumentation } from "@opentelemetry/instrumentation-mongodb"
 import { MongooseInstrumentation } from "@opentelemetry/instrumentation-mongoose"
@@ -42,6 +43,7 @@ const DefaultInstrumentations = {
   "@opentelemetry/instrumentation-graphql": GraphQLInstrumentation,
   "@opentelemetry/instrumentation-http": HttpInstrumentation,
   "@opentelemetry/instrumentation-ioredis": IORedisInstrumentation,
+  "@opentelemetry/instrumentation-knex": KnexInstrumentation,
   "@opentelemetry/instrumentation-koa": KoaInstrumentation,
   "@opentelemetry/instrumentation-mongodb": MongoDBInstrumentation,
   "@opentelemetry/instrumentation-mongoose": MongooseInstrumentation,
