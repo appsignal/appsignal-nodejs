@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.1
+
+### Added
+
+- [0353a5f](https://github.com/appsignal/appsignal-nodejs/commit/0353a5f3e84ff87310b8356f681d2a9e1c6e8e04) patch - Support for Fastify request parameters. Request parameters (query, body) are now added to the HTTP spans when using Fastify.
+- [c1354f0](https://github.com/appsignal/appsignal-nodejs/commit/c1354f0ff802eeb718b43ba08e1fc0f0f248049c) patch - Add Knex.js instrumentation. We will now auto instrument database queries made with Knex.js.
+- [2e11cb2](https://github.com/appsignal/appsignal-nodejs/commit/2e11cb2bf44bd51447b0eba905cf26676471d894) patch - Support log collection from Node.js apps using the new AppSignal Logging feature. Learn more about [AppSignal's Logging on our docs](https://docs.appsignal.com/logging/platforms/integrations/nodejs.html).
+
 ## 3.0.0
 
 Welcome to AppSignal for Node.js version 3.0.0.!
