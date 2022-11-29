@@ -29,6 +29,7 @@
     "@opentelemetry/instrumentation-pg": "^0.33.0",
     "@opentelemetry/instrumentation-redis": "^0.34.0",
     "@opentelemetry/instrumentation-redis-4": "^0.34.0",
+    "@opentelemetry/instrumentation-restify": "^0.31.0",
     "@opentelemetry/sdk-node": "^0.34.0",
     "@opentelemetry/sdk-trace-base": "^1.8.0",
     "@prisma/instrumentation": "^4.4.0",

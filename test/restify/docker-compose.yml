@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  app:
+    build: app
+    ports:
+      - "4001:4001"
+    environment:
+      - PORT=4001
+      - NODE_ENV=development
+      - _APPSIGNAL_TEST_MODE=true
+      - _APPSIGNAL_TEST_MODE_FILE_PATH=/spans/spans.json
+    working_dir: /
+    volumes:
+      - ./app:/app
+      - spans:/spans
+      - ../..:/integration
+  tests:
+    build: tests
+    depends_on:
+      - app
+    environment:
+      - TEST_APP_URL=http://app:4001
+      - SPANS_FILE_PATH=/spans/spans.json
+    volumes:
+      - spans:/spans
+      - ../helpers:/helpers
+
+volumes:
+  spans:
