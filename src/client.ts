@@ -33,6 +33,7 @@ import { PrismaInstrumentation } from "@prisma/instrumentation"
 import { RedisDbStatementSerializer } from "./instrumentation/redis/serializer"
 import { RedisInstrumentation as Redis4Instrumentation } from "@opentelemetry/instrumentation-redis-4"
 import { RedisInstrumentation } from "@opentelemetry/instrumentation-redis"
+import { RestifyInstrumentation } from "@opentelemetry/instrumentation-restify"
 import { SpanProcessor, TestModeSpanProcessor } from "./span_processor"
 import { KoaLayerType } from "@opentelemetry/instrumentation-koa"
 
@@ -53,6 +54,7 @@ const DefaultInstrumentations = {
   "@opentelemetry/instrumentation-pg": PgInstrumentation,
   "@opentelemetry/instrumentation-redis": RedisInstrumentation,
   "@opentelemetry/instrumentation-redis-4": Redis4Instrumentation,
+  "@opentelemetry/instrumentation-restify": RestifyInstrumentation,
   "@prisma/instrumentation": PrismaInstrumentation
 }
 
