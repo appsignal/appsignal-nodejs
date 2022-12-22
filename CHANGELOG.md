@@ -1,5 +1,15 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.2
+
+### Added
+
+- [8c1bd31](https://github.com/appsignal/appsignal-nodejs/commit/8c1bd31123feda7f2b415e49a3ec17db72c4b9d1) patch - Add support for the [restify package](https://www.npmjs.com/package/restify).
+
+### Fixed
+
+- [63df063](https://github.com/appsignal/appsignal-nodejs/commit/63df0637300442fae2f6baf41477d42dae228369) patch - Remove client IP from HTTP traces
+
 ## 3.0.1
 
 ### Added
