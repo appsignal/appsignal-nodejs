@@ -11,6 +11,7 @@ import { setParams, setSessionData } from "./helpers"
 import { BaseLogger, Logger, LoggerLevel } from "./logger"
 
 import { Instrumentation } from "@opentelemetry/instrumentation"
+import { trace } from "@opentelemetry/api"
 import {
   ExpressInstrumentation,
   ExpressLayerType
@@ -299,6 +300,11 @@ export class Client {
       },
       "@prisma/instrumentation": {
         middleware: true
+      },
+      "@opentelemetry/instrumentation-fs": {
+        createHook: () => {
+          return trace.getActiveSpan() !== undefined
+        }
       }
     }
   }
