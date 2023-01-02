@@ -22,7 +22,10 @@ import { GraphQLInstrumentation } from "@opentelemetry/instrumentation-graphql"
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
 import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
 import { KnexInstrumentation } from "@opentelemetry/instrumentation-knex"
-import { KoaInstrumentation } from "@opentelemetry/instrumentation-koa"
+import {
+  KoaInstrumentation,
+  KoaLayerType
+} from "@opentelemetry/instrumentation-koa"
 import { MongoDBInstrumentation } from "@opentelemetry/instrumentation-mongodb"
 import { MongooseInstrumentation } from "@opentelemetry/instrumentation-mongoose"
 import { MySQL2Instrumentation } from "@opentelemetry/instrumentation-mysql2"
@@ -36,7 +39,6 @@ import { RedisInstrumentation as Redis4Instrumentation } from "@opentelemetry/in
 import { RedisInstrumentation } from "@opentelemetry/instrumentation-redis"
 import { RestifyInstrumentation } from "@opentelemetry/instrumentation-restify"
 import { SpanProcessor, TestModeSpanProcessor } from "./span_processor"
-import { KoaLayerType } from "@opentelemetry/instrumentation-koa"
 
 const DefaultInstrumentations = {
   "@opentelemetry/instrumentation-express": ExpressInstrumentation,
