@@ -79,10 +79,24 @@ export class DiagnoseTool {
     return {
       architecture: process.arch,
       os: process.platform,
+      os_distribution: this.getOsDistribution(),
       language_version: process.versions.node,
       heroku,
       root: processGetuid() === 0,
       running_in_container: this.#extension.runningInContainer()
+    }
+  }
+
+  private getOsDistribution() {
+    const path = "/etc/os-release"
+    if (fs.existsSync(path)) {
+      try {
+        return fs.readFileSync(path, "utf8")
+      } catch (error) {
+        return `Error reading ${path}: ${error}`
+      }
+    } else {
+      return ""
     }
   }
 
