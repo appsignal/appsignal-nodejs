@@ -37,7 +37,10 @@ import { PrismaInstrumentation } from "@prisma/instrumentation"
 import { RedisDbStatementSerializer } from "./instrumentation/redis/serializer"
 import { RedisInstrumentation as Redis4Instrumentation } from "@opentelemetry/instrumentation-redis-4"
 import { RedisInstrumentation } from "@opentelemetry/instrumentation-redis"
-import { RestifyInstrumentation } from "@opentelemetry/instrumentation-restify"
+import {
+  RestifyInstrumentation,
+  LayerType as RestifyLayerType
+} from "@opentelemetry/instrumentation-restify"
 import { SpanProcessor, TestModeSpanProcessor } from "./span_processor"
 
 const DefaultInstrumentations = {
@@ -299,6 +302,21 @@ export class Client {
       },
       "@opentelemetry/instrumentation-redis-4": {
         dbStatementSerializer: RedisDbStatementSerializer
+      },
+      "@opentelemetry/instrumentation-restify": {
+        requestHook: (span, info) => {
+          if (
+            sendParams &&
+            info.layerType === RestifyLayerType.REQUEST_HANDLER
+          ) {
+            const request = info.request
+            const params = Object.assign(
+              request.params || {},
+              request.query || {}
+            )
+            setParams(params, span)
+          }
+        }
       },
       "@prisma/instrumentation": {
         middleware: true

@@ -6,6 +6,7 @@ function respond(req: any, res: any, next: any) {
 }
 
 const server = restify.createServer()
+server.use(restify.plugins.queryParser())
 server.get("/", function (req: any, res: any, next: any) {
   res.send("home")
   return next()
