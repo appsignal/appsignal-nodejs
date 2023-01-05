@@ -1,5 +1,16 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.3-beta.1
+
+### Added
+
+- [7b879f6](https://github.com/appsignal/appsignal-nodejs/commit/7b879f601472707fd7b9ae8083efc789c19d7212) patch - Track the Operating System release/distro in the diagnose report. This helps us with debugging what exact version of Linux an app is running on, for example.
+- [8277bd4](https://github.com/appsignal/appsignal-nodejs/commit/8277bd4d5d5701735146e4bdf458ccaaa3135495) patch - Add Winston transport
+
+### Fixed
+
+- [7637610](https://github.com/appsignal/appsignal-nodejs/commit/76376105763299fd6f0f1df2789b57564fd39040) patch - Prevent creating fs-only samples by only creating an fs span if there is a parent span present.
+
 ## 3.0.2
 
 ### Added
