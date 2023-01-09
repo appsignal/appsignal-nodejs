@@ -23,7 +23,7 @@ RSpec.describe "restify app" do
 
   describe "GET /hello/:name" do
     it "creates restify spans" do
-      response = HTTP.get("#{test_app_url}/hello/world")
+      response = HTTP.get("#{test_app_url}/hello/world?query=value")
 
       expect(Span.root!).to be_http_span_with_route("GET /hello/:name")
       expect(response.code.to_i).to eq(200)
@@ -32,7 +32,8 @@ RSpec.describe "restify app" do
       expect(span.attributes).to include(
         "restify.type" => "request_handler",
         "restify.method" => "get",
-        "http.route" => "/hello/:name"
+        "http.route" => "/hello/:name",
+        "appsignal.request.parameters" => JSON.dump(:name => "world", :query => "value")
       )
     end
   end
@@ -41,7 +42,7 @@ RSpec.describe "restify app" do
     it "creates restify spans" do
       response = HTTP
         .headers("accept-version" => "~2")
-        .get("#{test_app_url}/goodbye/world")
+        .get("#{test_app_url}/goodbye/world?query=value")
 
       expect(Span.root!).to be_http_span_with_route("GET /goodbye/:name")
       expect(response.code.to_i).to eq(200)
@@ -50,7 +51,8 @@ RSpec.describe "restify app" do
       expect(span.attributes).to include(
         "restify.type" => "request_handler",
         "restify.method" => "get",
-        "http.route" => "/goodbye/:name"
+        "http.route" => "/goodbye/:name",
+        "appsignal.request.parameters" => JSON.dump(:name => "world", :query => "value")
       )
     end
   end
