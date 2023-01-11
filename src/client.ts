@@ -404,4 +404,11 @@ export class Client {
   private storeInGlobal(): void {
     global.__APPSIGNAL__ = this
   }
+
+  get tracer(): any {
+    console.error(
+      "The `appsignal.tracer()` function was called, but it has been removed in AppSignal for Node.js package version 3.x. Please read our migration guide to upgrade to this new version of our package: https://docs.appsignal.com/nodejs/3.x/migration-guide.html. It is also possible to downgrade to version 2.x, after which this code will work again."
+    )
+    return () => {}
+  }
 }
