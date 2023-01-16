@@ -4,7 +4,7 @@ export type LoggerLevel = "trace" | "debug" | "info" | "log" | "warn" | "error"
 
 export type LoggerAttributes = Record<string, string | number | boolean>
 
-const LOGGER_LEVEL_SEVERITY: Record<LoggerLevel, number> = {
+export const LOGGER_LEVEL_SEVERITY: Record<LoggerLevel, number> = {
   trace: 1,
   debug: 2,
   info: 3,
