@@ -1,5 +1,21 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.3
+
+### Added
+
+- [7b879f6](https://github.com/appsignal/appsignal-nodejs/commit/7b879f601472707fd7b9ae8083efc789c19d7212) patch - Track the Operating System release/distro in the diagnose report. This helps us with debugging what exact version of Linux an app is running on, for example.
+- [e4d8609](https://github.com/appsignal/appsignal-nodejs/commit/e4d86090fcc4bd83ff887cb4487714b61928bb58) patch - Report request parameters for restify apps. This is reported automatically. You can disable parameter reporting with the AppSignal `sendParams: false` configuration option.
+- [9bcd836](https://github.com/appsignal/appsignal-nodejs/commit/9bcd836e0ddf9bbce9b9bb8f51089847c93a4d2b) patch - Add Winston transport support for the logging feature.
+
+### Changed
+
+- [89f5cad](https://github.com/appsignal/appsignal-nodejs/commit/89f5cad971434b929e7887e8a00e79b20d66968e) patch - Log an error for appsignal.tracer function calls. Inform the user to update instrumentation code to be compatible with the latest version of our package.
+
+### Fixed
+
+- [7637610](https://github.com/appsignal/appsignal-nodejs/commit/76376105763299fd6f0f1df2789b57564fd39040) patch - Prevent creating fs-only samples by only creating an fs span if there is a parent span present.
+
 ## 3.0.2
 
 ### Added
