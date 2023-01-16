@@ -29,10 +29,10 @@ const LOGGER_LEVEL_SEVERITY: Record<string, number> = {
   ...SYSLOG_LOGGER_LEVEL_SEVERITY
 }
 
-const UNKNOWN_SEVERITY = 0
+const DEFAULT_SEVERITY = LOGGER_LEVEL_SEVERITY["info"]
 
 function severity(level: string) {
-  return LOGGER_LEVEL_SEVERITY[level] ?? UNKNOWN_SEVERITY
+  return LOGGER_LEVEL_SEVERITY[level] ?? DEFAULT_SEVERITY
 }
 
 export type WinstonTransportOptions = {
@@ -65,9 +65,6 @@ export class WinstonTransport extends Transport {
     }
 
     const levelSeverity = severity(info[Symbol.for("level")])
-    if (levelSeverity == UNKNOWN_SEVERITY) {
-      return
-    }
 
     const [message, attributes] = this.parseInfo(info)
 

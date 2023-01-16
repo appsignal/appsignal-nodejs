@@ -138,7 +138,7 @@ describe("BaseLogger", () => {
     )
   })
 
-  it("silently ignores unknown log levels", () => {
+  it("treats unknown log levels as info", () => {
     const logger = createLogger({
       levels: {
         foobar: 1
@@ -147,7 +147,13 @@ describe("BaseLogger", () => {
       transports: transports()
     })
     logger.log("foobar", "foobar message")
-    expect(client.extension.log).not.toHaveBeenCalled()
+    expect(client.extension.log).toHaveBeenCalledTimes(1)
+    expect(client.extension.log).toHaveBeenCalledWith(
+      "groupname",
+      3,
+      "foobar message",
+      {}
+    )
   })
 
   it("logs with all rust logger levels except log", () => {
