@@ -22,7 +22,7 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
       commands:
         - checkout
         - "[ -n \"$NODE_VERSION\" ] && sem-version node $NODE_VERSION || echo Skipping Node.js install"
-        -  npm i -g npm@latest
+        -  npm i -g npm@9.2.0
 
         # Mono setup
         - script/setup
