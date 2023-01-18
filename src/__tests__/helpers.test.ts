@@ -19,7 +19,8 @@ import {
   setNamespace,
   setRootName,
   setError,
-  sendError
+  sendError,
+  instrumentationsLoaded
 } from "../helpers"
 
 function throwError() {
@@ -284,6 +285,27 @@ describe("Helpers", () => {
       expectErrorEvent(childSpan.events[0])
 
       expect(debugMock).not.toHaveBeenCalled()
+    })
+  })
+
+  describe("instrumentationsLoaded", () => {
+    it("returns a promise from the globally stored client if found", () => {
+      const debugMock = jest.spyOn(Client.integrationLogger, "debug")
+
+      expect(instrumentationsLoaded()).toBeInstanceOf(Promise)
+      expect(debugMock).toHaveBeenCalledTimes(0)
+    })
+
+    it("returns an empty promise and logs if the globally stored client is not found", () => {
+      // Remove the stored client
+      global.__APPSIGNAL__ = null as any
+
+      const debugMock = jest.spyOn(Client.integrationLogger, "debug")
+
+      expect(instrumentationsLoaded()).toBeInstanceOf(Promise)
+      expect(debugMock).toHaveBeenCalledWith(
+        "Client is not initialized, cannot get OpenTelemetry instrumentations loaded"
+      )
     })
   })
 })
