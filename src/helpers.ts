@@ -128,3 +128,16 @@ export function sendError(error: Error, fn: () => void = () => {}) {
     )
   }
 }
+
+export function instrumentationsLoaded(): Promise<void> {
+  const globallyStoredClient = Client.client
+
+  if (globallyStoredClient) {
+    return globallyStoredClient.instrumentationsLoaded
+  } else {
+    Client.integrationLogger.debug(
+      "Client is not initialized, cannot get OpenTelemetry instrumentations loaded"
+    )
+    return Promise.resolve()
+  }
+}
