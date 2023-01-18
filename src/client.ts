@@ -93,7 +93,7 @@ export class Client {
   config: Configuration
   readonly integrationLogger: IntegrationLogger
   extension: Extension
-  instrumentationsLoaded?: Promise<void>
+  instrumentationsLoaded: Promise<void>
 
   #metrics: Metrics
   #sdk?: NodeSDK
@@ -141,6 +141,7 @@ export class Client {
     this.config = new Configuration(options)
     this.extension = new Extension()
     this.integrationLogger = this.setUpIntegrationLogger()
+    this.instrumentationsLoaded = Promise.resolve()
     this.storeInGlobal()
 
     if (this.isActive) {
