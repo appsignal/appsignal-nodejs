@@ -93,6 +93,7 @@ export class Client {
   config: Configuration
   readonly integrationLogger: IntegrationLogger
   extension: Extension
+  instrumentationsLoaded?: Promise<void>
 
   #metrics: Metrics
   #sdk?: NodeSDK
@@ -374,7 +375,7 @@ export class Client {
       spanProcessor
     })
 
-    sdk.start()
+    this.instrumentationsLoaded = sdk.start()
 
     return sdk
   }
