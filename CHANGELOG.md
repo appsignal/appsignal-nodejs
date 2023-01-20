@@ -1,5 +1,14 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.4
+
+### Added
+
+- [0a14594](https://github.com/appsignal/appsignal-nodejs/commit/0a1459417b9b509ec8f946c7f876a2612e284946) patch - Add OpenTelemetry SDK initialization helper function
+  
+  The OpenTelemetry instrumentations are loaded async, this is OK when users rely on automatic instrumentations, but for custom instrumentations
+  it might cause spans not to be reported. There's a new helper function that contains the instrumentations registration that can be awaited for resolution before running any custom instrumentations.
+
 ## 3.0.3
 
 ### Added
