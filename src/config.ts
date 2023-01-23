@@ -95,7 +95,7 @@ export class Configuration {
    *
    * @private
    */
-  private _defaultValues(): { [key: string]: any } {
+  private _defaultValues(): Partial<AppsignalOptions> {
     return {
       active: false,
       caFilePath: path.join(__dirname, "../cert/cacert.pem"),
@@ -125,7 +125,6 @@ export class Configuration {
         "content-length",
         "range"
       ],
-      sendEnvironmentMetadata: true,
       sendParams: true,
       sendSessionData: true
     }
