@@ -104,6 +104,7 @@ export class Configuration {
       enableHostMetrics: true,
       enableMinutelyProbes: true,
       enableStatsd: false,
+      enableNginxMetrics: false,
       endpoint: "https://push.appsignal.com",
       environment: process.env.NODE_ENV || "development",
       filesWorldAccessible: true,

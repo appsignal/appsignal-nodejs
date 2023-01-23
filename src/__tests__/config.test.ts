@@ -19,6 +19,7 @@ describe("Configuration", () => {
     enableHostMetrics: true,
     enableMinutelyProbes: true,
     enableStatsd: false,
+    enableNginxMetrics: false,
     endpoint: "https://push.appsignal.com",
     environment: process.env.NODE_ENV || "development",
     filesWorldAccessible: true,
@@ -227,6 +228,7 @@ describe("Configuration", () => {
       expect(env("_APPSIGNAL_DNS_SERVERS")).toBeUndefined()
       expect(env("_APPSIGNAL_ENABLE_HOST_METRICS")).toEqual("true")
       expect(env("_APPSIGNAL_ENABLE_STATSD")).toBeUndefined()
+      expect(env("_APPSIGNAL_ENABLE_NGINX_METRICS")).toBeUndefined()
       expect(env("_APPSIGNAL_ENVIRONMENT")).toBeDefined()
       expect(env("_APPSIGNAL_FILES_WORLD_ACCESSIBLE")).toEqual("true")
       expect(env("_APPSIGNAL_FILTER_DATA_KEYS")).toBeUndefined()
@@ -272,6 +274,7 @@ describe("Configuration", () => {
           enableHostMetrics: false,
           enableMinutelyProbes: false,
           enableStatsd: true,
+          enableNginxMetrics: true,
           filesWorldAccessible: true,
           filterParameters: ["password", "confirm_password"],
           filterSessionData: ["key1", "key2"],
@@ -294,6 +297,7 @@ describe("Configuration", () => {
         expect(env("_APPSIGNAL_DNS_SERVERS")).toEqual("8.8.8.8,8.8.4.4")
         expect(env("_APPSIGNAL_ENABLE_HOST_METRICS")).toEqual("true")
         expect(env("_APPSIGNAL_ENABLE_STATSD")).toEqual("true")
+        expect(env("_APPSIGNAL_ENABLE_NGINX_METRICS")).toEqual("true")
         expect(env("_APPSIGNAL_FILES_WORLD_ACCESSIBLE")).toEqual("true")
         expect(env("_APPSIGNAL_FILTER_PARAMETERS")).toEqual(
           "password,confirm_password"
