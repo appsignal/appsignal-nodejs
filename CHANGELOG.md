@@ -1,5 +1,15 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.5
+
+### Changed
+
+- [fd76568](https://github.com/appsignal/appsignal-nodejs/commit/fd765684330984359682b199500f50987ca15438) patch - Bump agent to 041b9c4.
+  
+  - Detect Kubernetes containers better.
+  - Add more trace logging for OpenTelemetry spans.
+- [c03caf2](https://github.com/appsignal/appsignal-nodejs/commit/c03caf294356243135c968b329f1116ddc1f2d85) patch - Update prisma instrumentation package. Fixes installation deprecation warning.
+
 ## 3.0.4
 
 ### Added
