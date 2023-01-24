@@ -125,6 +125,7 @@ export class Configuration {
         "content-length",
         "range"
       ],
+      sendEnvironmentMetadata: true,
       sendParams: true,
       sendSessionData: true
     }

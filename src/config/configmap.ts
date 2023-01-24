@@ -27,6 +27,7 @@ export const ENV_TO_KEY_MAPPING: Record<string, keyof AppsignalOptions> = {
   APPSIGNAL_PUSH_API_KEY: "pushApiKey",
   APPSIGNAL_REQUEST_HEADERS: "requestHeaders",
   APPSIGNAL_RUNNING_IN_CONTAINER: "runningInContainer",
+  APPSIGNAL_SEND_ENVIRONMENT_METADATA: "sendEnvironmentMetadata",
   APPSIGNAL_SEND_PARAMS: "sendParams",
   APPSIGNAL_SEND_SESSION_DATA: "sendSessionData",
   APPSIGNAL_WORKING_DIRECTORY_PATH: "workingDirectoryPath",
@@ -56,6 +57,7 @@ export const PRIVATE_ENV_MAPPING: Record<string, keyof AppsignalOptions> = {
   _APPSIGNAL_PUSH_API_ENDPOINT: "endpoint",
   _APPSIGNAL_PUSH_API_KEY: "pushApiKey",
   _APPSIGNAL_RUNNING_IN_CONTAINER: "runningInContainer",
+  _APPSIGNAL_SEND_ENVIRONMENT_METADATA: "sendEnvironmentMetadata",
   _APPSIGNAL_SEND_PARAMS: "sendParams",
   _APPSIGNAL_SEND_SESSION_DATA: "sendSessionData",
   _APPSIGNAL_WORKING_DIRECTORY_PATH: "workingDirectoryPath",
@@ -90,6 +92,7 @@ export const JS_TO_RUBY_MAPPING: Record<keyof AppsignalOptions, string> = {
   requestHeaders: "request_headers",
   revision: "revision",
   runningInContainer: "running_in_container",
+  sendEnvironmentMetadata: "send_environment_metadata",
   sendParams: "send_params",
   sendSessionData: "send_session_data",
   workingDirectoryPath: "working_directory_path"

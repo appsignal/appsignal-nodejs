@@ -28,6 +28,7 @@ export type AppsignalOptions = {
   requestHeaders: string[]
   revision: string
   runningInContainer: boolean
+  sendEnvironmentMetadata: boolean
   sendParams: boolean
   sendSessionData: boolean
   workingDirectoryPath: string
