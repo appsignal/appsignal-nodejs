@@ -68,12 +68,12 @@ describe("Span processor", () => {
       error: {
         name: "Error",
         message: "first",
-        backtrace: expect.any(String)
+        backtrace_json: expect.any(String)
       }
     })
 
     const backtrace = JSON.parse(
-      SpanTestRegistry.lastSpan()?.toObject()?.error?.backtrace ?? ""
+      SpanTestRegistry.lastSpan()?.toObject()?.error?.backtrace_json ?? ""
     )
     expect(backtrace).toBeInstanceOf(Array)
 
@@ -115,9 +115,10 @@ describe("Span processor", () => {
         parent_span_id: createdParentSpan?.span_id,
         trace_id: createdParentSpan?.trace_id,
         error: {
+          backtrace: [],
           name: "Error",
           message: "childSpanError",
-          backtrace: expect.any(String)
+          backtrace_json: expect.any(String)
         }
       })
     )

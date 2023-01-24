@@ -10,7 +10,12 @@ export type SpanData = {
   start_time_seconds?: number
   start_time_nanoseconds?: number
   trace_id?: string
-  error?: { name: string; message: string; backtrace: string }
+  error?: {
+    name: string
+    message: string
+    backtrace_json: string
+    backtrace: string[]
+  }
   attributes?: { [key: string]: string }
 }
 
