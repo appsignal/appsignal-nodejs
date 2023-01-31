@@ -1,5 +1,14 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.6
+
+### Changed
+
+- [6e71a25](https://github.com/appsignal/appsignal-nodejs/commit/6e71a2589c7451a4554679992ffb3848e4f16193) patch - Bump agent to 050d7a5.
+  
+  - Fix distributed tracing for Node.js HTTP requests.
+  - Create tags for specific HTTP attributes for all spans.
+
 ## 3.0.5
 
 ### Changed
