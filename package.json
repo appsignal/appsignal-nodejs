@@ -15,7 +15,6 @@
     "@opentelemetry/api": "^1.3.0",
     "@opentelemetry/instrumentation-express": "^0.32.0",
     "@opentelemetry/instrumentation-fastify": "^0.31.0",
-    "@opentelemetry/instrumentation-fs": "^0.6.0",
     "@opentelemetry/instrumentation-graphql": "^0.33.0",
     "@opentelemetry/instrumentation-http": "^0.34.0",
     "@opentelemetry/instrumentation-ioredis": "^0.33.0",
