@@ -1,5 +1,11 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.7
+
+### Removed
+
+- [e4ae654](https://github.com/appsignal/appsignal-nodejs/commit/e4ae654b2d4a37a1dbb8452b17731aa140421f50) patch - Remove fs instrumentation by default. It's causing issues on some installations. It can be manually added as [described in our fs module docs](https://docs.appsignal.com/nodejs/3.x/integrations/fsmodule.html).
+
 ## 3.0.6
 
 ### Changed
