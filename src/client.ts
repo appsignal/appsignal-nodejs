@@ -11,13 +11,11 @@ import { setParams, setSessionData } from "./helpers"
 import { BaseLogger, Logger, LoggerLevel } from "./logger"
 
 import { Instrumentation } from "@opentelemetry/instrumentation"
-import { trace } from "@opentelemetry/api"
 import {
   ExpressInstrumentation,
   ExpressLayerType
 } from "@opentelemetry/instrumentation-express"
 import { FastifyInstrumentation } from "@opentelemetry/instrumentation-fastify"
-import { FsInstrumentation } from "@opentelemetry/instrumentation-fs"
 import { GraphQLInstrumentation } from "@opentelemetry/instrumentation-graphql"
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http"
 import { IORedisInstrumentation } from "@opentelemetry/instrumentation-ioredis"
@@ -46,7 +44,6 @@ import { SpanProcessor, TestModeSpanProcessor } from "./span_processor"
 const DefaultInstrumentations = {
   "@opentelemetry/instrumentation-express": ExpressInstrumentation,
   "@opentelemetry/instrumentation-fastify": FastifyInstrumentation,
-  "@opentelemetry/instrumentation-fs": FsInstrumentation,
   "@opentelemetry/instrumentation-graphql": GraphQLInstrumentation,
   "@opentelemetry/instrumentation-http": HttpInstrumentation,
   "@opentelemetry/instrumentation-ioredis": IORedisInstrumentation,
@@ -322,11 +319,6 @@ export class Client {
       },
       "@prisma/instrumentation": {
         middleware: true
-      },
-      "@opentelemetry/instrumentation-fs": {
-        createHook: () => {
-          return trace.getActiveSpan() !== undefined
-        }
       }
     }
   }
