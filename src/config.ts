@@ -95,7 +95,7 @@ export class Configuration {
    *
    * @private
    */
-  private _defaultValues(): { [key: string]: any } {
+  private _defaultValues(): Partial<AppsignalOptions> {
     return {
       active: false,
       caFilePath: path.join(__dirname, "../cert/cacert.pem"),
@@ -104,6 +104,7 @@ export class Configuration {
       enableHostMetrics: true,
       enableMinutelyProbes: true,
       enableStatsd: false,
+      enableNginxMetrics: false,
       endpoint: "https://push.appsignal.com",
       environment: process.env.NODE_ENV || "development",
       filesWorldAccessible: true,

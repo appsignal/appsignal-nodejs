@@ -1,4 +1,6 @@
-export const ENV_TO_KEY_MAPPING: { [key: string]: string } = {
+import type { AppsignalOptions } from "./options"
+
+export const ENV_TO_KEY_MAPPING: Record<string, keyof AppsignalOptions> = {
   APPSIGNAL_ACTIVE: "active",
   APPSIGNAL_APP_ENV: "environment",
   APPSIGNAL_APP_NAME: "name",
@@ -8,8 +10,8 @@ export const ENV_TO_KEY_MAPPING: { [key: string]: string } = {
   APPSIGNAL_ENABLE_HOST_METRICS: "enableHostMetrics",
   APPSIGNAL_ENABLE_MINUTELY_PROBES: "enableMinutelyProbes",
   APPSIGNAL_ENABLE_STATSD: "enableStatsd",
+  APPSIGNAL_ENABLE_NGINX_METRICS: "enableNginxMetrics",
   APPSIGNAL_FILES_WORLD_ACCESSIBLE: "filesWorldAccessible",
-  APPSIGNAL_FILTER_DATA_KEYS: "filterDataKeys",
   APPSIGNAL_FILTER_PARAMETERS: "filterParameters",
   APPSIGNAL_FILTER_SESSION_DATA: "filterSessionData",
   APPSIGNAL_HOSTNAME: "hostname",
@@ -17,9 +19,6 @@ export const ENV_TO_KEY_MAPPING: { [key: string]: string } = {
   APPSIGNAL_IGNORE_ACTIONS: "ignoreActions",
   APPSIGNAL_IGNORE_ERRORS: "ignoreErrors",
   APPSIGNAL_IGNORE_NAMESPACES: "ignoreNamespaces",
-  APPSIGNAL_INSTRUMENT_HTTP: "instrumentHttp",
-  APPSIGNAL_INSTRUMENT_PG: "instrumentPg",
-  APPSIGNAL_INSTRUMENT_REDIS: "instrumentRedis",
   APPSIGNAL_LOG: "log",
   APPSIGNAL_LOG_LEVEL: "logLevel",
   APPSIGNAL_LOG_PATH: "logPath",
@@ -35,13 +34,14 @@ export const ENV_TO_KEY_MAPPING: { [key: string]: string } = {
   APP_REVISION: "revision"
 }
 
-export const PRIVATE_ENV_MAPPING: { [key: string]: string } = {
+export const PRIVATE_ENV_MAPPING: Record<string, keyof AppsignalOptions> = {
   _APPSIGNAL_ACTIVE: "active",
   _APPSIGNAL_APP_NAME: "name",
   _APPSIGNAL_CA_FILE_PATH: "caFilePath",
   _APPSIGNAL_DNS_SERVERS: "dnsServers",
   _APPSIGNAL_ENABLE_HOST_METRICS: "enableHostMetrics",
   _APPSIGNAL_ENABLE_STATSD: "enableStatsd",
+  _APPSIGNAL_ENABLE_NGINX_METRICS: "enableNginxMetrics",
   _APPSIGNAL_ENVIRONMENT: "environment",
   _APPSIGNAL_FILES_WORLD_ACCESSIBLE: "filesWorldAccessible",
   _APPSIGNAL_FILTER_PARAMETERS: "filterParameters",
@@ -64,7 +64,7 @@ export const PRIVATE_ENV_MAPPING: { [key: string]: string } = {
   _APP_REVISION: "revision"
 }
 
-export const JS_TO_RUBY_MAPPING: { [key: string]: string } = {
+export const JS_TO_RUBY_MAPPING: Record<keyof AppsignalOptions, string> = {
   active: "active",
   pushApiKey: "push_api_key",
   caFilePath: "ca_file_path",
@@ -73,12 +73,14 @@ export const JS_TO_RUBY_MAPPING: { [key: string]: string } = {
   enableHostMetrics: "enable_host_metrics",
   enableMinutelyProbes: "enable_minutely_probes",
   enableStatsd: "enable_statsd",
+  enableNginxMetrics: "enable_nginx_metrics",
   endpoint: "endpoint",
   environment: "env",
   filesWorldAccessible: "files_world_accessible",
   filterParameters: "filter_parameters",
   filterSessionData: "filter_session_data",
   hostname: "hostname",
+  httpProxy: "http_proxy",
   ignoreActions: "ignore_actions",
   ignoreErrors: "ignore_errors",
   ignoreNamespaces: "ignore_namespaces",

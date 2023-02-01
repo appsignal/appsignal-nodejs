@@ -8,6 +8,7 @@ export type AppsignalOptions = {
   enableHostMetrics: boolean
   enableMinutelyProbes: boolean
   enableStatsd: boolean
+  enableNginxMetrics: boolean
   endpoint: string
   environment: string
   filesWorldAccessible: boolean
@@ -27,6 +28,7 @@ export type AppsignalOptions = {
   requestHeaders: string[]
   revision: string
   runningInContainer: boolean
+  sendEnvironmentMetadata: boolean
   sendParams: boolean
   sendSessionData: boolean
   workingDirectoryPath: string
