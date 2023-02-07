@@ -1,5 +1,11 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.8
+
+### Added
+
+- [914dd50](https://github.com/appsignal/appsignal-nodejs/commit/914dd504803b1841fbff3937663294f163b8ec06) patch - Add NGINX metrics support. See [our documentation](https://docs.appsignal.com/metrics/nginx.html) for details.
+
 ## 3.0.7
 
 ### Removed
