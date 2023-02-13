@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.9
+
+### Changed
+
+- [6dbe01f](https://github.com/appsignal/appsignal-nodejs/commit/6dbe01fcec65c10e8ec71445f7802399e1447ca6) patch - Bump agent to 0d593d5.
+  
+  - Report shared memory metric state.
+
 ## 3.0.8
 
 ### Added
