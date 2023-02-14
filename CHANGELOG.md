@@ -1,5 +1,14 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.10
+
+### Added
+
+- [266c53e](https://github.com/appsignal/appsignal-nodejs/commit/266c53eb0b5e7f1c3c7836771bb74b07c9f8abaf) patch - Support Winston child logger groups when using the Winston transport
+  
+  When using the Winston transport for our logging feature, the child loggers with an assigned group
+  will send the group to AppSignal when logging messages.
+
 ## 3.0.9
 
 ### Changed
