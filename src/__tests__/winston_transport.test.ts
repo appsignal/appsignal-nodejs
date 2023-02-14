@@ -41,10 +41,10 @@ describe("BaseLogger", () => {
   })
 
   it("carries arguments passed to child loggers", () => {
-    const childLogger = logger.child({ child: "foo" })
+    const childLogger = logger.child({ child: "foo", group: "childgroup" })
     childLogger.info("child logger message", { argument: 123 })
     expect(client.extension.log).toHaveBeenCalledWith(
-      "groupname",
+      "childgroup",
       3,
       "child logger message",
       { child: "foo", argument: 123 }

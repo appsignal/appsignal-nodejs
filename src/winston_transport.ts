@@ -67,8 +67,18 @@ export class WinstonTransport extends Transport {
     const levelSeverity = severity(info[Symbol.for("level")])
 
     const [message, attributes] = this.parseInfo(info)
+    let group = undefined
+    if (typeof attributes["group"] == "string") {
+      group = attributes["group"]
+      delete attributes["group"]
+    }
 
-    client.extension.log(this.#group, levelSeverity, message, attributes)
+    client.extension.log(
+      group || this.#group,
+      levelSeverity,
+      message,
+      attributes
+    )
 
     callback()
   }
