@@ -76,6 +76,7 @@ export class WinstonTransport extends Transport {
     client.extension.log(
       group || this.#group,
       levelSeverity,
+      0,
       message,
       attributes
     )

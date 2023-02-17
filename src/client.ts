@@ -8,7 +8,7 @@ import { NoopMetrics, noopIntegrationLogger, noopLogger } from "./noops"
 import { demo } from "./demo"
 import { VERSION } from "./version"
 import { setParams, setSessionData } from "./helpers"
-import { BaseLogger, Logger, LoggerLevel } from "./logger"
+import { BaseLogger, Logger, LoggerFormat, LoggerLevel } from "./logger"
 
 import { Instrumentation } from "@opentelemetry/instrumentation"
 import {
@@ -123,9 +123,13 @@ export class Client {
   /**
    * Global accessors for the AppSignal Logger API
    */
-  static logger(group: string, level?: LoggerLevel): Logger {
+  static logger(
+    group: string,
+    level: LoggerLevel = "info",
+    format: LoggerFormat = "plaintext"
+  ): Logger {
     if (this.client) {
-      return this.client.logger(group, level)
+      return this.client.logger(group, level, format)
     } else {
       return noopLogger
     }
@@ -230,9 +234,13 @@ export class Client {
     return this.#metrics
   }
 
-  public logger(group: string, level?: LoggerLevel): Logger {
+  public logger(
+    group: string,
+    level: LoggerLevel = "info",
+    format: LoggerFormat = "plaintext"
+  ): Logger {
     if (this.isActive) {
-      return new BaseLogger(this, group, level)
+      return new BaseLogger(this, group, level, format)
     } else {
       return noopLogger
     }
