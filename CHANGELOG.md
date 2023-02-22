@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.11
+
+### Changed
+
+- [108fa2e](https://github.com/appsignal/appsignal-nodejs/commit/108fa2e5320cecc70e7f66a8f5a36fa9da956f02) patch - Bump agent to 8d042e2.
+  
+  - Support multiple log formats.
+
 ## 3.0.10
 
 ### Added
