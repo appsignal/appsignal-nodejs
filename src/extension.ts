@@ -73,10 +73,11 @@ export class Extension {
   public log(
     group: string,
     severity: number,
+    format: number,
     message: string,
     attributes: any
   ) {
-    extension.log(group, severity, message, Data.generate(attributes))
+    extension.log(group, severity, format, message, Data.generate(attributes))
   }
 
   /**

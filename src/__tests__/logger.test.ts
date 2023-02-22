@@ -1,5 +1,5 @@
 import { Client } from "../client"
-import { BaseLogger, LoggerLevel } from "../logger"
+import { BaseLogger, LoggerFormat, LoggerLevel } from "../logger"
 
 describe("BaseLogger", () => {
   let logger: BaseLogger
@@ -52,6 +52,36 @@ describe("BaseLogger", () => {
     ).toEqual(6)
   })
 
+  it("defaults to a plaintext logger format", () => {
+    expect(logger.format).toEqual(0)
+    expect(client.integrationLogger.warn).not.toHaveBeenCalled()
+  })
+
+  it("sets a plaintext format level when the format is unknown and logs a warning", () => {
+    logger = new BaseLogger(
+      client,
+      "groupname",
+      "trace" as LoggerLevel,
+      "bacon" as LoggerFormat
+    )
+    expect(logger.format).toEqual(0)
+    expect(client.integrationLogger.warn).toHaveBeenCalledWith(
+      expect.stringContaining(`"bacon"`)
+    )
+  })
+
+  it("sets the right format for a known logger format", () => {
+    expect(
+      new BaseLogger(client, "groupname", "trace", "plaintext").format
+    ).toEqual(0)
+    expect(
+      new BaseLogger(client, "groupname", "trace", "logfmt").format
+    ).toEqual(1)
+    expect(new BaseLogger(client, "groupname", "trace", "json").format).toEqual(
+      2
+    )
+  })
+
   it("logs to the extension if at or above the logger level", () => {
     const attributes = { foo: "bar", number: 42, isAnswer: true }
 
@@ -66,26 +96,45 @@ describe("BaseLogger", () => {
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       3,
+      0,
       "info message",
       attributes
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       4,
+      0,
       "log message",
       attributes
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       5,
+      0,
       "warn message",
       attributes
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       6,
+      0,
       "error message",
       attributes
+    )
+  })
+
+  it("logs to the extension if at or above the logger level with a format", () => {
+    logger = new BaseLogger(client, "groupname", "info", "logfmt")
+
+    logger.info("info message")
+
+    expect(client.extension.log).toHaveBeenCalledTimes(1)
+    expect(client.extension.log).toHaveBeenCalledWith(
+      "groupname",
+      3,
+      1,
+      "info message",
+      {}
     )
   })
 })

@@ -257,13 +257,15 @@ Napi::Value Log(const Napi::CallbackInfo &info) {
 
   Napi::String group = info[0].As<Napi::String>();
   Napi::Number severity = info[1].As<Napi::Number>();
-  Napi::String message = info[2].As<Napi::String>();
+  Napi::Number format = info[2].As<Napi::Number>();
+  Napi::String message = info[3].As<Napi::String>();
   Napi::External<appsignal_data_t> attributes =
-    info[3].As<Napi::External<appsignal_data_t>>();
+    info[4].As<Napi::External<appsignal_data_t>>();
 
   appsignal_log(
     MakeAppsignalString(group),
     severity.Int32Value(),
+    format.Int32Value(),
     MakeAppsignalString(message),
     attributes.Data()
   );

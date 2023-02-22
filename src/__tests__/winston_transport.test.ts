@@ -35,6 +35,7 @@ describe("BaseLogger", () => {
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       3,
+      0,
       "some data and some more data",
       { foo: 123, bar: 456 }
     )
@@ -46,6 +47,7 @@ describe("BaseLogger", () => {
     expect(client.extension.log).toHaveBeenCalledWith(
       "childgroup",
       3,
+      0,
       "child logger message",
       { child: "foo", argument: 123 }
     )
@@ -60,6 +62,7 @@ describe("BaseLogger", () => {
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       3,
+      0,
       "no nested keys",
       { argument: 123 }
     )
@@ -70,6 +73,7 @@ describe("BaseLogger", () => {
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       3,
+      0,
       "no arrays",
       { argument: 123 }
     )
@@ -85,6 +89,7 @@ describe("BaseLogger", () => {
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       3,
+      0,
       "no color for me",
       { argument: 123 }
     )
@@ -99,6 +104,7 @@ describe("BaseLogger", () => {
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       3,
+      0,
       "no timestamp for me",
       { argument: 123 }
     )
@@ -112,6 +118,7 @@ describe("BaseLogger", () => {
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       3,
+      0,
       "info message",
       {}
     )
@@ -133,6 +140,7 @@ describe("BaseLogger", () => {
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       1,
+      0,
       "silly message",
       {}
     )
@@ -151,6 +159,7 @@ describe("BaseLogger", () => {
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       3,
+      0,
       "foobar message",
       {}
     )
@@ -179,30 +188,35 @@ describe("BaseLogger", () => {
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       1,
+      0,
       "trace message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       2,
+      0,
       "debug message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       3,
+      0,
       "info message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       5,
+      0,
       "warn message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       6,
+      0,
       "error message",
       {}
     )
@@ -226,42 +240,49 @@ describe("BaseLogger", () => {
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       1,
+      0,
       "silly message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       2,
+      0,
       "debug message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       2,
+      0,
       "verbose message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       3,
+      0,
       "http message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       3,
+      0,
       "http message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       5,
+      0,
       "warn message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       6,
+      0,
       "error message",
       {}
     )
@@ -287,48 +308,56 @@ describe("BaseLogger", () => {
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       9,
+      0,
       "emerg message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       8,
+      0,
       "alert message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       7,
+      0,
       "crit message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       6,
+      0,
       "error message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       5,
+      0,
       "warning message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       4,
+      0,
       "notice message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       3,
+      0,
       "info message",
       {}
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       2,
+      0,
       "debug message",
       {}
     )
