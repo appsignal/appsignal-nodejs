@@ -4,6 +4,8 @@
 
 The AppSignal for Node.js integration for Express.js (`express`) v4.0.0+.
 
+⚠️  This package is no longer required for AppSignal for Node.js [version 3.0](https://docs.appsignal.com/nodejs/3.x.html). If you use version 3.0 or newer in your app, please remove this package from your `package.json` file.
+
 ## Installation
 
 First, [sign up for an AppSignal account][appsignal-sign-up] and add both the `@appsignal/nodejs` and `@appsignal/express` packages to your `package.json`. Then, run `yarn install`/`npm install`.
