@@ -1,5 +1,11 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.12
+
+### Fixed
+
+- [403e772](https://github.com/appsignal/appsignal-nodejs/commit/403e772aecb5e08487eaa08c229f0ec55a000480) patch - Fix grouping for Prisma queries.
+
 ## 3.0.11
 
 ### Changed
