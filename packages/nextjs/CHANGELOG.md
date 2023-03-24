@@ -1,5 +1,11 @@
 
 
+## 2.0.22
+
+### Changed
+
+- [7d73d53](https://github.com/appsignal/appsignal-nodejs/commit/7d73d53645b9ce642f7c8d3626c3ecb149bcb946) patch - Add warning to README about v2 and v3 compatibility.
+
 ## 2.0.21
 
 ### Changed

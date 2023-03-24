@@ -1,5 +1,15 @@
 
 
+## 1.0.24
+
+### Changed
+
+- [7d73d53](https://github.com/appsignal/appsignal-nodejs/commit/7d73d53645b9ce642f7c8d3626c3ecb149bcb946) patch - Add warning to README about v2 and v3 compatibility.
+
+### Fixed
+
+- [0109285](https://github.com/appsignal/appsignal-nodejs/commit/01092853643a47a5b43ec33784d4584611e58f6b) patch - Do not break requests using legacy generator middleware. Before this change, using a generator middleware, which are deprecated, would make our instrumentation break the request by not calling the next middleware in the chain. This change fixes this by not instrumenting generator middleware.
+
 ## 1.0.23
 
 ### Changed
