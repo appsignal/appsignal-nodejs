@@ -1,6 +1,6 @@
 {
   "name": "@appsignal/apollo-server",
-  "version": "1.0.32",
+  "version": "1.0.33",
   "main": "dist/index",
   "types": "dist/index",
   "license": "MIT",
