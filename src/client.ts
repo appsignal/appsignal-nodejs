@@ -376,7 +376,7 @@ export class Client {
       spanProcessor
     })
 
-    this.instrumentationsLoaded = sdk.start()
+    sdk.start()
 
     return sdk
   }
