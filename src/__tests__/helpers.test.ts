@@ -138,7 +138,7 @@ describe("Helpers", () => {
         try {
           throwError()
         } catch (err) {
-          setError(err)
+          setError(err as Error)
         }
 
         span.end()
@@ -176,7 +176,7 @@ describe("Helpers", () => {
         try {
           throwError()
         } catch (err) {
-          sendError(err)
+          sendError(err as Error)
         }
 
         expect(trace.getActiveSpan()).toBe(span)
@@ -202,7 +202,7 @@ describe("Helpers", () => {
       try {
         throwError()
       } catch (err) {
-        sendError(err, () => {
+        sendError(err as Error, () => {
           setCustomData({ chunky: "bacon" })
         })
       }
@@ -249,7 +249,7 @@ describe("Helpers", () => {
         try {
           throwError()
         } catch (err) {
-          setError(err, childSpan)
+          setError(err as Error, childSpan)
         }
 
         childSpan.end()
