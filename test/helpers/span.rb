@@ -92,7 +92,7 @@ class Span
   def sql_child_by_library_and_type(library:, type:)
     sql_span = children.find do |child_span|
       child_span.instrumentation_library_name == library &&
-        child_span.name == type
+        child_span.name.start_with?(type)
     end
 
     unless sql_span
