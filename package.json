@@ -1,6 +1,6 @@
 {
   "name": "@appsignal/nodejs",
-  "version": "3.0.12",
+  "version": "3.0.13",
   "main": "dist/index",
   "types": "dist/index",
   "license": "MIT",

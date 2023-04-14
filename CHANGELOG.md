@@ -1,5 +1,11 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.13
+
+### Changed
+
+- [3d8e2f2](https://github.com/appsignal/appsignal-nodejs/commit/3d8e2f21e7e1dcb1cf540b394271ab7f0b242058) patch - Update OpenTelemetry dependencies to the latest versions, providing many improvements and bug fixes.
+
 ## 3.0.12
 
 ### Fixed
