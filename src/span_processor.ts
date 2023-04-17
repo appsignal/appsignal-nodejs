@@ -47,11 +47,17 @@ export class SpanProcessor implements OpenTelemetrySpanProcessor {
     errors.forEach(e => {
       const eventAttributes = e["attributes"] as any
 
-      opentelemetrySpan.setError(
-        eventAttributes["exception.type"],
-        eventAttributes["exception.message"],
-        eventAttributes["exception.stacktrace"]
-      )
+      if (
+        typeof eventAttributes["exception.type"] === "string" &&
+        typeof eventAttributes["exception.message"] === "string" &&
+        typeof eventAttributes["exception.stacktrace"] === "string"
+      ) {
+        opentelemetrySpan.setError(
+          eventAttributes["exception.type"],
+          eventAttributes["exception.message"],
+          eventAttributes["exception.stacktrace"]
+        )
+      }
     })
 
     opentelemetrySpan.close()
