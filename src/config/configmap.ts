@@ -36,13 +36,13 @@ export const ENV_TO_KEY_MAPPING: Record<string, keyof AppsignalOptions> = {
 
 export const PRIVATE_ENV_MAPPING: Record<string, keyof AppsignalOptions> = {
   _APPSIGNAL_ACTIVE: "active",
+  _APPSIGNAL_APP_ENV: "environment",
   _APPSIGNAL_APP_NAME: "name",
   _APPSIGNAL_CA_FILE_PATH: "caFilePath",
   _APPSIGNAL_DNS_SERVERS: "dnsServers",
   _APPSIGNAL_ENABLE_HOST_METRICS: "enableHostMetrics",
   _APPSIGNAL_ENABLE_STATSD: "enableStatsd",
   _APPSIGNAL_ENABLE_NGINX_METRICS: "enableNginxMetrics",
-  _APPSIGNAL_ENVIRONMENT: "environment",
   _APPSIGNAL_FILES_WORLD_ACCESSIBLE: "filesWorldAccessible",
   _APPSIGNAL_FILTER_PARAMETERS: "filterParameters",
   _APPSIGNAL_FILTER_SESSION_DATA: "filterSessionData",
