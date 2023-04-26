@@ -105,10 +105,10 @@ semaphore: # Default `.semaphore/semaphore.yml` contents
 
 matrix:
   nodejs:
+    - nodejs: "20"
     - nodejs: "19"
     - nodejs: "18"
     - nodejs: "16"
-    - nodejs: "14"
   package:
     extra_commands: # Run in the package's job
       - npm run test:failure
