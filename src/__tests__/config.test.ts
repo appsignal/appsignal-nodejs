@@ -223,13 +223,13 @@ describe("Configuration", () => {
 
     it("writes default configuration values to the environment", () => {
       expect(env("_APPSIGNAL_ACTIVE")).toBeUndefined()
+      expect(env("_APPSIGNAL_APP_ENV")).toBeDefined()
       expect(env("_APPSIGNAL_APP_NAME")).toBeUndefined()
       expect(env("_APPSIGNAL_CA_FILE_PATH")).toMatch(/cert\/cacert\.pem$/)
       expect(env("_APPSIGNAL_DNS_SERVERS")).toBeUndefined()
       expect(env("_APPSIGNAL_ENABLE_HOST_METRICS")).toEqual("true")
       expect(env("_APPSIGNAL_ENABLE_STATSD")).toBeUndefined()
       expect(env("_APPSIGNAL_ENABLE_NGINX_METRICS")).toBeUndefined()
-      expect(env("_APPSIGNAL_ENVIRONMENT")).toBeDefined()
       expect(env("_APPSIGNAL_FILES_WORLD_ACCESSIBLE")).toEqual("true")
       expect(env("_APPSIGNAL_FILTER_DATA_KEYS")).toBeUndefined()
       expect(env("_APPSIGNAL_HOSTNAME")).toBeUndefined()
