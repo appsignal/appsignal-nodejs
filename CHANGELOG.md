@@ -1,5 +1,16 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.14
+
+### Changed
+
+- [c5dd902](https://github.com/appsignal/appsignal-nodejs/commit/c5dd902fe0e9d5402b7b356527b506fc111db819) patch - Update agent to version 6f29190.
+  
+  - Log revision config in boot debug log.
+  - Update internal agent CLI start command.
+  - Rename internal `_APPSIGNAL_ENVIRONMENT` variable to `_APPSIGNAL_APP_ENV` to be consistent with the public version.
+  - Support Next.js instrumentation through the official Next.js package.
+
 ## 3.0.13
 
 ### Changed
