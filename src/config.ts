@@ -1,5 +1,6 @@
 import path from "path"
 import os from "os"
+import fs from "fs"
 
 import { VERSION } from "./version"
 import { isWritable } from "./utils"
@@ -71,6 +72,18 @@ export class Configuration {
           `Unable to log to ${configuredPath}'${tmpDir}' fallback. Please check the permissions of these directories.`
         )
       }
+    }
+  }
+
+  public get clientFilePath(): string | undefined {
+    const filename = "appsignal.cjs"
+
+    if (fs.existsSync(path.join(process.cwd(), filename))) {
+      return path.join(process.cwd(), filename)
+    } else if (fs.existsSync(path.join(process.cwd(), "src", filename))) {
+      return path.join(process.cwd(), "src", filename)
+    } else {
+      return undefined
     }
   }
 
