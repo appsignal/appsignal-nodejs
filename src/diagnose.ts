@@ -5,6 +5,7 @@ import { URL } from "url"
 import { isWritable, installReportPath, processGetuid } from "./utils"
 import { Extension } from "./extension"
 import { Configuration } from "./config"
+import { Client } from "./client"
 import { AGENT_VERSION, VERSION } from "./version"
 import { JS_TO_RUBY_MAPPING } from "./config/configmap"
 import { AppsignalOptions } from "./config/options"
@@ -34,7 +35,7 @@ export class DiagnoseTool {
   #extension: Extension
 
   constructor() {
-    this.#config = new Configuration({})
+    this.#config = this.getConfigObject()
     this.#extension = new Extension()
   }
 
@@ -209,6 +210,23 @@ export class DiagnoseTool {
    */
   private getConfigData() {
     return this.optionsObject(this.#config.data)
+  }
+
+  /**
+   * If it can load the client from the `appsignal.cjs` file, get the config
+   * object from the initialized client. Otherwise, return a default config object.
+   */
+  private getConfigObject(): Configuration {
+    const temporaryConfig = new Configuration({})
+
+    // The file is required to execute the client initialization
+    // that stores the config object on the global object, making
+    // it available calling `Client.config` later.
+    if (temporaryConfig.clientFilePath) {
+      require(temporaryConfig.clientFilePath)
+    }
+
+    return Client.config ?? temporaryConfig
   }
 
   /**
