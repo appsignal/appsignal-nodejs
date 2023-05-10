@@ -181,7 +181,11 @@ export class Client {
    * directory.
    */
   public start(): void {
-    if (this.config.isValid) {
+    if (process.env["APPSIGNAL_DIAGNOSE"]) {
+      Client.integrationLogger.info(
+        "Diagnose mode is enabled, not starting extension"
+      )
+    } else if (this.config.isValid) {
       this.extension.start()
     } else {
       console.error("Not starting, no valid AppSignal configuration found")
