@@ -181,6 +181,13 @@ export class Diagnose {
 
     this.print_newline()
 
+    console.log(`  AppSignal client file`)
+    console.log(
+      `    Path: ${format_value(data["paths"]["appsignal.cjs"]["path"])}`
+    )
+
+    this.print_newline()
+
     console.log(`  AppSignal log`)
     console.log(
       `    Path: ${format_value(data["paths"]["appsignal.log"]["path"])}`

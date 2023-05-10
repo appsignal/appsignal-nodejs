@@ -216,6 +216,42 @@ describe("Configuration", () => {
     })
   })
 
+  describe("clientFilePath", () => {
+    describe("when the client file exists in the root path", () => {
+      it("returns the path to the client file", () => {
+        jest.spyOn(fs, "existsSync").mockImplementation(givenPath => {
+          return givenPath === path.join(process.cwd(), "appsignal.cjs")
+        })
+        config = new Configuration({ name, pushApiKey })
+
+        expect(config.clientFilePath).toEqual(
+          path.join(process.cwd(), "appsignal.cjs")
+        )
+      })
+    })
+
+    describe("when the client file exists in the src path", () => {
+      it("returns the path to the client file", () => {
+        jest.spyOn(fs, "existsSync").mockImplementation(givenPath => {
+          return givenPath === path.join(process.cwd(), "src", "appsignal.cjs")
+        })
+        config = new Configuration({ name, pushApiKey })
+
+        expect(config.clientFilePath).toEqual(
+          path.join(process.cwd(), "src", "appsignal.cjs")
+        )
+      })
+    })
+
+    describe("when the client file does not exist", () => {
+      it("returns undefined", () => {
+        config = new Configuration({ name, pushApiKey })
+
+        expect(config.clientFilePath).toBeUndefined()
+      })
+    })
+  })
+
   describe("private environment variables", () => {
     beforeEach(() => {
       new Configuration({})

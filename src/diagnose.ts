@@ -147,7 +147,6 @@ export class DiagnoseTool {
 
   private getPathsData() {
     const paths: { [key: string]: FileMetadata } = {}
-
     const logFilePath = this.#config.logFilePath
 
     const pathsToCheck = {
@@ -156,6 +155,9 @@ export class DiagnoseTool {
       },
       log_dir_path: {
         path: logFilePath ? path.dirname(logFilePath) : ""
+      },
+      "appsignal.cjs": {
+        path: this.#config.clientFilePath || ""
       },
       "appsignal.log": {
         path: logFilePath || "",
