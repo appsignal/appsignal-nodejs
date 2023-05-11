@@ -158,7 +158,7 @@ export class DiagnoseTool {
         path: logFilePath ? path.dirname(logFilePath) : ""
       },
       "appsignal.cjs": {
-        path: this.#config.clientFilePath || ""
+        path: Configuration.clientFilePath || ""
       },
       "appsignal.log": {
         path: logFilePath || "",
@@ -217,16 +217,23 @@ export class DiagnoseTool {
    * object from the initialized client. Otherwise, return a default config object.
    */
   private getConfigObject(): Configuration {
-    const temporaryConfig = new Configuration({})
-
     // The file is required to execute the client initialization
     // that stores the config object on the global object, making
     // it available calling `Client.config` later.
-    if (temporaryConfig.clientFilePath) {
-      require(temporaryConfig.clientFilePath)
+    if (Configuration.clientFilePath) {
+      process.env._APPSIGNAL_DIAGNOSE = "true"
+      try {
+        require(Configuration.clientFilePath)
+      } catch (e: any) {
+        Client.integrationLogger.error(
+          `Error loading AppSignal client file ${e.message}`
+        )
+      }
+
+      delete process.env._APPSIGNAL_DIAGNOSE
     }
 
-    return Client.config ?? temporaryConfig
+    return Client.config ?? new Configuration({})
   }
 
   /**

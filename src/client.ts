@@ -146,11 +146,18 @@ export class Client {
     this.storeInGlobal()
 
     if (this.isActive) {
-      this.extension.start()
-      this.#metrics = new Metrics()
-      this.#sdk = this.initOpenTelemetry(
-        options.additionalInstrumentations || []
-      )
+      if (process.env._APPSIGNAL_DIAGNOSE === "true") {
+        Client.integrationLogger.info(
+          "Diagnose mode is enabled, not starting extension, SDK and probes"
+        )
+        this.#metrics = new NoopMetrics()
+      } else {
+        this.start()
+        this.#metrics = new Metrics()
+        this.#sdk = this.initOpenTelemetry(
+          options.additionalInstrumentations || []
+        )
+      }
     } else {
       this.#metrics = new NoopMetrics()
       console.error("AppSignal not starting, no valid configuration found")
@@ -181,11 +188,7 @@ export class Client {
    * directory.
    */
   public start(): void {
-    if (process.env["APPSIGNAL_DIAGNOSE"]) {
-      Client.integrationLogger.info(
-        "Diagnose mode is enabled, not starting extension"
-      )
-    } else if (this.config.isValid) {
+    if (this.config.isValid) {
       this.extension.start()
     } else {
       console.error("Not starting, no valid AppSignal configuration found")

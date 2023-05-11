@@ -118,11 +118,11 @@ describe("Client", () => {
   })
 
   it("does not start the client if diagnose mode is enabled", () => {
-    process.env["APPSIGNAL_DIAGNOSE"] = "true"
+    process.env._APPSIGNAL_DIAGNOSE = "true"
     const startSpy = jest.spyOn(Extension.prototype, "start")
     client = new Client({ ...DEFAULT_OPTS, active: true })
-    expect(startSpy).toHaveBeenCalled()
-    delete process.env["APPSIGNAL_DIAGNOSE"]
+    expect(startSpy).not.toHaveBeenCalled()
+    delete process.env._APPSIGNAL_DIAGNOSE
   })
 
   it("starts the client when the active option is true", () => {
