@@ -222,9 +222,8 @@ describe("Configuration", () => {
         jest.spyOn(fs, "existsSync").mockImplementation(givenPath => {
           return givenPath === path.join(process.cwd(), "appsignal.cjs")
         })
-        config = new Configuration({ name, pushApiKey })
 
-        expect(config.clientFilePath).toEqual(
+        expect(Configuration.clientFilePath).toEqual(
           path.join(process.cwd(), "appsignal.cjs")
         )
       })
@@ -235,9 +234,8 @@ describe("Configuration", () => {
         jest.spyOn(fs, "existsSync").mockImplementation(givenPath => {
           return givenPath === path.join(process.cwd(), "src", "appsignal.cjs")
         })
-        config = new Configuration({ name, pushApiKey })
 
-        expect(config.clientFilePath).toEqual(
+        expect(Configuration.clientFilePath).toEqual(
           path.join(process.cwd(), "src", "appsignal.cjs")
         )
       })
@@ -245,9 +243,7 @@ describe("Configuration", () => {
 
     describe("when the client file does not exist", () => {
       it("returns undefined", () => {
-        config = new Configuration({ name, pushApiKey })
-
-        expect(config.clientFilePath).toBeUndefined()
+        expect(Configuration.clientFilePath).toBeUndefined()
       })
     })
   })

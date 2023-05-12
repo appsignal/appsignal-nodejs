@@ -75,7 +75,7 @@ export class Configuration {
     }
   }
 
-  public get clientFilePath(): string | undefined {
+  static get clientFilePath(): string | undefined {
     const filename = "appsignal.cjs"
 
     if (fs.existsSync(path.join(process.cwd(), filename))) {
