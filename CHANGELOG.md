@@ -1,5 +1,20 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.15
+
+### Added
+
+- [71e076d](https://github.com/appsignal/appsignal-nodejs/commit/71e076dc704f6b8ad945d0af6eab9a881dd1e390) patch - The diagnose CLI command now reports on the presence of the `appsignal.cjs` file.
+- [624b38b](https://github.com/appsignal/appsignal-nodejs/commit/624b38b158a778c328e8765c6495d118b1cac473) patch - Load the AppSignal app configuration file when running the diagnose to include the configuration in the diagnose report.
+
+### Changed
+
+- [c1cf2e1](https://github.com/appsignal/appsignal-nodejs/commit/c1cf2e17ebd503072314cc0120666f6affd33778) patch - Update bundled trusted root certificates.
+
+### Deprecated
+
+- [e2d5c20](https://github.com/appsignal/appsignal-nodejs/commit/e2d5c207a1b7296bc68d12298d6d0c1e44876ed7) patch - Add deprecation warning to instrumentationsLoaded helper
+
 ## 3.0.14
 
 ### Changed
