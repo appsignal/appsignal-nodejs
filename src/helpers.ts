@@ -129,15 +129,13 @@ export function sendError(error: Error, fn: () => void = () => {}) {
   }
 }
 
+/**
+ * @deprecated This function is no longer required for manual instrumentation.
+ */
 export function instrumentationsLoaded(): Promise<void> {
-  const globallyStoredClient = Client.client
+  Client.integrationLogger.warn(
+    "instrumentationsLoaded() is deprecated, please remove it from your code as it'll be deleted in the next major release."
+  )
 
-  if (globallyStoredClient) {
-    return globallyStoredClient.instrumentationsLoaded
-  } else {
-    Client.integrationLogger.debug(
-      "Client is not initialized, cannot get OpenTelemetry instrumentations loaded"
-    )
-    return Promise.resolve()
-  }
+  return Promise.resolve()
 }

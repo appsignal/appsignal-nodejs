@@ -288,23 +288,13 @@ describe("Helpers", () => {
     })
   })
 
-  describe("instrumentationsLoaded", () => {
-    it("returns a promise from the globally stored client if found", () => {
-      const debugMock = jest.spyOn(Client.integrationLogger, "debug")
-
-      expect(instrumentationsLoaded()).toBeInstanceOf(Promise)
-      expect(debugMock).toHaveBeenCalledTimes(0)
-    })
-
-    it("returns an empty promise and logs if the globally stored client is not found", () => {
-      // Remove the stored client
-      global.__APPSIGNAL__ = null as any
-
-      const debugMock = jest.spyOn(Client.integrationLogger, "debug")
+  describe("instrumentationsLoaded (deprecated)", () => {
+    it("returns a promise and a deprecation warning", () => {
+      const debugMock = jest.spyOn(Client.integrationLogger, "warn")
 
       expect(instrumentationsLoaded()).toBeInstanceOf(Promise)
       expect(debugMock).toHaveBeenCalledWith(
-        "Client is not initialized, cannot get OpenTelemetry instrumentations loaded"
+        "instrumentationsLoaded() is deprecated, please remove it from your code as it'll be deleted in the next major release."
       )
     })
   })
