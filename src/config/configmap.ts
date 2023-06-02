@@ -30,6 +30,7 @@ export const ENV_TO_KEY_MAPPING: Record<string, keyof AppsignalOptions> = {
   APPSIGNAL_SEND_ENVIRONMENT_METADATA: "sendEnvironmentMetadata",
   APPSIGNAL_SEND_PARAMS: "sendParams",
   APPSIGNAL_SEND_SESSION_DATA: "sendSessionData",
+  APPSIGNAL_STATSD_PORT: "statsdPort",
   APPSIGNAL_WORKING_DIRECTORY_PATH: "workingDirectoryPath",
   APP_REVISION: "revision"
 }
@@ -60,6 +61,7 @@ export const PRIVATE_ENV_MAPPING: Record<string, keyof AppsignalOptions> = {
   _APPSIGNAL_SEND_ENVIRONMENT_METADATA: "sendEnvironmentMetadata",
   _APPSIGNAL_SEND_PARAMS: "sendParams",
   _APPSIGNAL_SEND_SESSION_DATA: "sendSessionData",
+  _APPSIGNAL_STATSD_PORT: "statsdPort",
   _APPSIGNAL_WORKING_DIRECTORY_PATH: "workingDirectoryPath",
   _APP_REVISION: "revision"
 }
@@ -95,5 +97,6 @@ export const JS_TO_RUBY_MAPPING: Record<keyof AppsignalOptions, string> = {
   sendEnvironmentMetadata: "send_environment_metadata",
   sendParams: "send_params",
   sendSessionData: "send_session_data",
+  statsdPort: "statsd_port",
   workingDirectoryPath: "working_directory_path"
 }

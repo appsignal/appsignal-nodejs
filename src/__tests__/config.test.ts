@@ -280,6 +280,7 @@ describe("Configuration", () => {
       )
       expect(env("_APPSIGNAL_PUSH_API_KEY")).toBeUndefined()
       expect(env("_APPSIGNAL_RUNNING_IN_CONTAINER")).toBeUndefined()
+      expect(env("_APPSIGNAL_STATSD_PORT")).toBeUndefined()
       expect(env("_APPSIGNAL_WORKING_DIRECTORY_PATH")).toBeUndefined()
       expect(env("_APPSIGNAL_WORKING_DIR_PATH")).toBeUndefined()
       expect(env("_APP_REVISION")).toBeUndefined()
@@ -319,7 +320,8 @@ describe("Configuration", () => {
           logPath: "/tmp/other",
           runningInContainer: true,
           workingDirectoryPath: "/my/path",
-          revision: "my-revision"
+          revision: "my-revision",
+          statsdPort: "3000"
         })
       })
 
@@ -358,6 +360,7 @@ describe("Configuration", () => {
         expect(env("_APPSIGNAL_PUSH_API_KEY")).toEqual(pushApiKey)
         expect(env("_APPSIGNAL_RUNNING_IN_CONTAINER")).toEqual("true")
         expect(env("_APPSIGNAL_SEND_ENVIRONMENT_METADATA")).toEqual("true")
+        expect(env("_APPSIGNAL_STATSD_PORT")).toEqual("3000")
         expect(env("_APPSIGNAL_WORKING_DIRECTORY_PATH")).toEqual("/my/path")
         expect(env("_APPSIGNAL_WORKING_DIR_PATH")).toBeUndefined()
         expect(env("_APP_REVISION")).toEqual("my-revision")

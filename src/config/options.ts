@@ -31,5 +31,6 @@ export type AppsignalOptions = {
   sendEnvironmentMetadata: boolean
   sendParams: boolean
   sendSessionData: boolean
+  statsdPort: string
   workingDirectoryPath: string
 }
