@@ -1,5 +1,5 @@
 import express from "express"
-import { createServer } from "@graphql-yoga/node"
+import { createSchema, createYoga } from "graphql-yoga"
 
 const port = process.env.PORT
 const app = express()
@@ -36,11 +36,11 @@ const resolvers = {
   }
 }
 
-const yogaServer = createServer({
-  schema: {
+const yogaServer = createYoga({
+  schema: createSchema({
     typeDefs: typeDefs,
     resolvers: resolvers
-  }
+  })
 })
 
 app.use("/graphql", yogaServer)
