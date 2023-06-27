@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@appsignal/nodejs": "^2.4.2",
-    "restify": "^8.0",
+    "restify": "^11.1",
     "tslib": "^2.4.0"
   },
   "devDependencies": {
