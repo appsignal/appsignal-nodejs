@@ -231,6 +231,12 @@ export class DiagnoseTool {
       }
 
       delete process.env._APPSIGNAL_DIAGNOSE
+    } else {
+      Client.integrationLogger.warn(
+        "Could not find AppSignal client file at " +
+          `[${Configuration.clientFilePaths().join(",")}]. ` +
+          "Configuration in report may be incomplete."
+      )
     }
 
     return Client.config ?? new Configuration({})

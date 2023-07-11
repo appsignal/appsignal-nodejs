@@ -356,6 +356,14 @@ export class Diagnose {
     sources: { [source: string]: { [key: string]: any } }
   }) {
     console.log(`Configuration`)
+
+    if (Object.keys(sources.initial).length === 0) {
+      console.log(
+        "\x1b[31mWarning\x1b[0m: The initialiser file (appsignal.cjs) could" +
+          " not be found. The configuration shown here may be incomplete."
+      )
+    }
+
     Object.keys(options)
       .sort()
       .forEach(key => {
