@@ -76,15 +76,16 @@ export class Configuration {
   }
 
   static get clientFilePath(): string | undefined {
+    return this.clientFilePaths().find(fs.existsSync)
+  }
+
+  static clientFilePaths(): string[] {
     const filename = "appsignal.cjs"
 
-    if (fs.existsSync(path.join(process.cwd(), filename))) {
-      return path.join(process.cwd(), filename)
-    } else if (fs.existsSync(path.join(process.cwd(), "src", filename))) {
-      return path.join(process.cwd(), "src", filename)
-    } else {
-      return undefined
-    }
+    return [
+      path.join(process.cwd(), filename),
+      path.join(process.cwd(), "src", filename)
+    ]
   }
 
   /**
