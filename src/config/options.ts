@@ -2,6 +2,7 @@ import type { DefaultInstrumentationName } from "../client"
 
 export type AppsignalOptions = {
   active: boolean
+  bindAddress: string
   caFilePath: string
   disableDefaultInstrumentations: DefaultInstrumentationName[] | boolean
   dnsServers: string[]
