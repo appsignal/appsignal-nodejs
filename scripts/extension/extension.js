@@ -115,11 +115,7 @@ function extract(filepath) {
 }
 
 function removeFile(filepath) {
-  return new Promise((resolve, reject) => {
-    return fs.rm(filepath, err => {
-      return !err ? resolve() : reject(err)
-    })
-  })
+  fs.promises.rm(filepath)
 }
 
 function verify(filepath, checksum) {
