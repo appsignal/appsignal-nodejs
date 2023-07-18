@@ -114,6 +114,10 @@ function extract(filepath) {
   })
 }
 
+function removeFile(filepath) {
+  fs.promises.rm(filepath)
+}
+
 function verify(filepath, checksum) {
   return new Promise((resolve, reject) => {
     fs.createReadStream(filepath)
@@ -227,7 +231,9 @@ function run() {
       return verify(outputPath, metadata.checksum).then(() => {
         report.download.checksum = "verified"
 
-        return extract(outputPath)
+        return extract(outputPath).then(() => {
+          return removeFile(outputPath)
+        })
       })
     })
   }
