@@ -257,6 +257,7 @@ describe("Configuration", () => {
       expect(env("_APPSIGNAL_ACTIVE")).toBeUndefined()
       expect(env("_APPSIGNAL_APP_ENV")).toBeDefined()
       expect(env("_APPSIGNAL_APP_NAME")).toBeUndefined()
+      expect(env("_APPSIGNAL_BIND_ADDRESS")).toBeUndefined()
       expect(env("_APPSIGNAL_CA_FILE_PATH")).toMatch(/cert\/cacert\.pem$/)
       expect(env("_APPSIGNAL_DNS_SERVERS")).toBeUndefined()
       expect(env("_APPSIGNAL_ENABLE_HOST_METRICS")).toEqual("true")
@@ -302,6 +303,7 @@ describe("Configuration", () => {
         new Configuration({
           name,
           active: true,
+          bindAddress: "0.0.0.0",
           pushApiKey,
           dnsServers: ["8.8.8.8", "8.8.4.4"],
           enableHostMetrics: false,
@@ -328,6 +330,7 @@ describe("Configuration", () => {
       it("writes configuration values to the environment", () => {
         expect(env("_APPSIGNAL_ACTIVE")).toEqual("true")
         expect(env("_APPSIGNAL_APP_NAME")).toEqual(name)
+        expect(env("_APPSIGNAL_BIND_ADDRESS")).toEqual("0.0.0.0")
         expect(env("_APPSIGNAL_DNS_SERVERS")).toEqual("8.8.8.8,8.8.4.4")
         expect(env("_APPSIGNAL_ENABLE_HOST_METRICS")).toEqual("true")
         expect(env("_APPSIGNAL_ENABLE_STATSD")).toEqual("true")

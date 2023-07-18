@@ -4,6 +4,7 @@ export const ENV_TO_KEY_MAPPING: Record<string, keyof AppsignalOptions> = {
   APPSIGNAL_ACTIVE: "active",
   APPSIGNAL_APP_ENV: "environment",
   APPSIGNAL_APP_NAME: "name",
+  APPSIGNAL_BIND_ADDRESS: "bindAddress",
   APPSIGNAL_CA_FILE_PATH: "caFilePath",
   APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS: "disableDefaultInstrumentations",
   APPSIGNAL_DNS_SERVERS: "dnsServers",
@@ -39,6 +40,7 @@ export const PRIVATE_ENV_MAPPING: Record<string, keyof AppsignalOptions> = {
   _APPSIGNAL_ACTIVE: "active",
   _APPSIGNAL_APP_ENV: "environment",
   _APPSIGNAL_APP_NAME: "name",
+  _APPSIGNAL_BIND_ADDRESS: "bindAddress",
   _APPSIGNAL_CA_FILE_PATH: "caFilePath",
   _APPSIGNAL_DNS_SERVERS: "dnsServers",
   _APPSIGNAL_ENABLE_HOST_METRICS: "enableHostMetrics",
@@ -68,6 +70,7 @@ export const PRIVATE_ENV_MAPPING: Record<string, keyof AppsignalOptions> = {
 
 export const JS_TO_RUBY_MAPPING: Record<keyof AppsignalOptions, string> = {
   active: "active",
+  bindAddress: "bind_address",
   pushApiKey: "push_api_key",
   caFilePath: "ca_file_path",
   disableDefaultInstrumentations: "disable_default_instrumentations",
