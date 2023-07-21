@@ -228,14 +228,12 @@ export class DiagnoseTool {
       try {
         require(clientFilePath)
       } catch (e: any) {
-        Client.integrationLogger.error(
-          `Error loading AppSignal client file ${e.message}`
-        )
+        console.error(`Error loading AppSignal client file ${e.message}`)
       }
 
       delete process.env._APPSIGNAL_DIAGNOSE
     } else {
-      Client.integrationLogger.warn(
+      console.warn(
         "Could not find AppSignal client file at " +
           `[${Configuration.clientFilePaths().join(",")}]. ` +
           "Configuration in report may be incomplete."
