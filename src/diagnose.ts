@@ -158,8 +158,7 @@ export class DiagnoseTool {
         path: logFilePath ? path.dirname(logFilePath) : ""
       },
       "appsignal.cjs": {
-        path:
-          this.getCustomClientFilePath() || Configuration.clientFilePath || ""
+        path: this.clientFilePath() || ""
       },
       "appsignal.log": {
         path: logFilePath || "",
