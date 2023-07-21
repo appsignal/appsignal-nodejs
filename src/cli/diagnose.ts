@@ -145,7 +145,7 @@ export class Diagnose {
 
     this.print_newline()
 
-    this.printConfiguration(data["config"])
+    this.printConfiguration(data["config"], this.#diagnose.clientFilePath())
 
     this.print_newline()
 
@@ -348,18 +348,21 @@ export class Diagnose {
     }
   }
 
-  printConfiguration({
-    options,
-    sources
-  }: {
-    options: { [key: string]: any }
-    sources: { [source: string]: { [key: string]: any } }
-  }) {
+  printConfiguration(
+    {
+      options,
+      sources
+    }: {
+      options: { [key: string]: any }
+      sources: { [source: string]: { [key: string]: any } }
+    },
+    clientFilePath: string
+  ) {
     console.log(`Configuration`)
 
     if (Object.keys(sources.initial).length === 0) {
       console.log(
-        "\x1b[31mWarning\x1b[0m: The initialiser file (appsignal.cjs) could" +
+        `\x1b[31mWarning\x1b[0m: The initialiser file ('${clientFilePath}') could` +
           " not be found. The configuration shown here may be incomplete."
       )
     }

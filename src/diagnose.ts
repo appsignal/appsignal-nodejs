@@ -218,8 +218,7 @@ export class DiagnoseTool {
    * object from the initialized client. Otherwise, return a default config object.
    */
   private getConfigObject(): Configuration {
-    const clientFilePath =
-      this.getCustomClientFilePath() || Configuration.clientFilePath
+    const clientFilePath = this.clientFilePath()
     // The file is required to execute the client initialization
     // that stores the config object on the global object, making
     // it available calling `Client.config` later.
@@ -241,6 +240,10 @@ export class DiagnoseTool {
     }
 
     return Client.config ?? new Configuration({})
+  }
+
+  private clientFilePath() {
+    return this.getCustomClientFilePath() || Configuration.clientFilePath
   }
 
   /**
