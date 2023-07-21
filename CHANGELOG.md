@@ -1,5 +1,29 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.16
+
+### Added
+
+- [8b9a84d](https://github.com/appsignal/appsignal-nodejs/commit/8b9a84d11a96f6631b732f7640a88eaeb03602d5) patch - Allow configuration of the agent's StatsD server port through the `statsdPort` option.
+- [655d04f](https://github.com/appsignal/appsignal-nodejs/commit/655d04f1dc11fd18d1575ea22f399e8c192fe086) patch - Use `RENDER_GIT_COMMIT` environment variable as revision if no revision is specified.
+- [7bfaa61](https://github.com/appsignal/appsignal-nodejs/commit/7bfaa61d0a2782e3ecd8ef070be3839e7de12b17) patch - Support Prisma 5
+- [2dd8b61](https://github.com/appsignal/appsignal-nodejs/commit/2dd8b61dfa9f34d706ac61f96d71b8d1087442e6) patch - Allow configuration of the agent's TCP and UDP servers using the `bindAddress` config option. This is by default set to `127.0.0.1`, which only makes it accessible from the same host. If you want it to be accessible from other machines, use `0.0.0.0` or a specific IP address.
+
+### Changed
+
+- [6afc890](https://github.com/appsignal/appsignal-nodejs/commit/6afc8903f59159b0974d08b3192c3819d0984d4b) patch - Bump agent to fd8ee9e.
+  
+  - Rely on APPSIGNAL_RUNNING_IN_CONTAINER config option value before other environment factors to determine if the app is running in a container.
+  - Fix container detection for hosts running Docker itself.
+  - Add APPSIGNAL_STATSD_PORT config option.
+- [c2f7b2b](https://github.com/appsignal/appsignal-nodejs/commit/c2f7b2ba9973e24544d9d589aa5cb4e32a781216) patch - Bump agent to 32590eb.
+  
+  - Only ignore disk metrics that start with "loop", not all mounted disks that end with a number to report metrics for more disks.
+
+### Fixed
+
+- [d1c9ab7](https://github.com/appsignal/appsignal-nodejs/commit/d1c9ab734676307e67f56fae75fb6447ce817a30) patch - Remove agent download file after extraction. This save a couple megabytes of space that are no longer needed when the agent and extension have been extracted from the downloaded `.tar.gz` file, reducing the overall app size.
+
 ## 3.0.15
 
 ### Added
