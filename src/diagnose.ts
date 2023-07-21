@@ -158,8 +158,7 @@ export class DiagnoseTool {
         path: logFilePath ? path.dirname(logFilePath) : ""
       },
       "appsignal.cjs": {
-        path:
-          this.getCustomClientFilePath() || Configuration.clientFilePath || ""
+        path: this.clientFilePath() || ""
       },
       "appsignal.log": {
         path: logFilePath || "",
@@ -218,8 +217,7 @@ export class DiagnoseTool {
    * object from the initialized client. Otherwise, return a default config object.
    */
   private getConfigObject(): Configuration {
-    const clientFilePath =
-      this.getCustomClientFilePath() || Configuration.clientFilePath
+    const clientFilePath = this.clientFilePath()
     // The file is required to execute the client initialization
     // that stores the config object on the global object, making
     // it available calling `Client.config` later.
@@ -228,14 +226,12 @@ export class DiagnoseTool {
       try {
         require(clientFilePath)
       } catch (e: any) {
-        Client.integrationLogger.error(
-          `Error loading AppSignal client file ${e.message}`
-        )
+        console.error(`Error loading AppSignal client file ${e.message}`)
       }
 
       delete process.env._APPSIGNAL_DIAGNOSE
     } else {
-      Client.integrationLogger.warn(
+      console.warn(
         "Could not find AppSignal client file at " +
           `[${Configuration.clientFilePaths().join(",")}]. ` +
           "Configuration in report may be incomplete."
@@ -243,6 +239,10 @@ export class DiagnoseTool {
     }
 
     return Client.config ?? new Configuration({})
+  }
+
+  private clientFilePath() {
+    return this.getCustomClientFilePath() || Configuration.clientFilePath
   }
 
   /**
