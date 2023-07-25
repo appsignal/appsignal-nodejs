@@ -282,11 +282,7 @@ export class DiagnoseTool {
     if (flagIndex !== -1 && flagIndex + 1 < process.argv.length) {
       const filePath = process.argv[flagIndex + 1]
 
-      if (path.isAbsolute(filePath)) {
-        return filePath
-      } else {
-        return path.resolve(filePath)
-      }
+      return path.resolve(filePath)
     }
   }
 
