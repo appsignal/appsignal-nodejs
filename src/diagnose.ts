@@ -158,7 +158,7 @@ export class DiagnoseTool {
         path: logFilePath ? path.dirname(logFilePath) : ""
       },
       "appsignal.cjs": {
-        path: Configuration.clientFilePath || ""
+        path: this.clientFilePath() || ""
       },
       "appsignal.log": {
         path: logFilePath || "",
@@ -217,22 +217,21 @@ export class DiagnoseTool {
    * object from the initialized client. Otherwise, return a default config object.
    */
   private getConfigObject(): Configuration {
+    const clientFilePath = this.clientFilePath()
     // The file is required to execute the client initialization
     // that stores the config object on the global object, making
     // it available calling `Client.config` later.
-    if (Configuration.clientFilePath) {
+    if (clientFilePath) {
       process.env._APPSIGNAL_DIAGNOSE = "true"
       try {
-        require(Configuration.clientFilePath)
+        require(clientFilePath)
       } catch (e: any) {
-        Client.integrationLogger.error(
-          `Error loading AppSignal client file ${e.message}`
-        )
+        console.error(`Error loading AppSignal client file ${e.message}`)
       }
 
       delete process.env._APPSIGNAL_DIAGNOSE
     } else {
-      Client.integrationLogger.warn(
+      console.warn(
         "Could not find AppSignal client file at " +
           `[${Configuration.clientFilePaths().join(",")}]. ` +
           "Configuration in report may be incomplete."
@@ -240,6 +239,10 @@ export class DiagnoseTool {
     }
 
     return Client.config ?? new Configuration({})
+  }
+
+  private clientFilePath() {
+    return this.getCustomClientFilePath() || Configuration.clientFilePath
   }
 
   /**
@@ -271,6 +274,16 @@ export class DiagnoseTool {
       },
       {}
     )
+  }
+
+  private getCustomClientFilePath() {
+    const flagIndex = process.argv.indexOf("--config")
+
+    if (flagIndex !== -1 && flagIndex + 1 < process.argv.length) {
+      const filePath = process.argv[flagIndex + 1]
+
+      return path.resolve(filePath)
+    }
   }
 
   public async sendReport(data: Record<string, any>) {
