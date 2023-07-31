@@ -1,5 +1,19 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.17
+
+### Added
+
+- [d5ec649](https://github.com/appsignal/appsignal-nodejs/commit/d5ec6499995ed861fa12a5174ef82801fdcd14d0) patch - Report total CPU usage host metric for VMs. This change adds another `state` tag value on the `cpu` metric called `total_usage`, which reports the VM's total CPU usage in percentages.
+- [e37c108](https://github.com/appsignal/appsignal-nodejs/commit/e37c1088b7b7696ab871ce76b2d2bcd21634f92e) patch - Add the --config flag to diagnose command to specify a custom path for your AppSignal configuration file to
+  be taken into account when running the diagnose of your AppSignal installation.
+
+### Changed
+
+- [702d4df](https://github.com/appsignal/appsignal-nodejs/commit/702d4dfafa566d3dec9ba04682eefcc88e3c252e) patch - Bump agent to 6bec691.
+  
+  - Upgrade `sql_lexer` to v0.9.5. It adds sanitization support for the `THEN` and `ELSE` logical operators.
+
 ## 3.0.16
 
 ### Added
