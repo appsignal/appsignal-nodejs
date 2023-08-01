@@ -39,6 +39,7 @@ import {
   RestifyInstrumentation,
   LayerType as RestifyLayerType
 } from "@opentelemetry/instrumentation-restify"
+import { RemixInstrumentation } from "opentelemetry-instrumentation-remix"
 import { SpanProcessor, TestModeSpanProcessor } from "./span_processor"
 
 const DefaultInstrumentations = {
@@ -58,7 +59,8 @@ const DefaultInstrumentations = {
   "@opentelemetry/instrumentation-redis": RedisInstrumentation,
   "@opentelemetry/instrumentation-redis-4": Redis4Instrumentation,
   "@opentelemetry/instrumentation-restify": RestifyInstrumentation,
-  "@prisma/instrumentation": PrismaInstrumentation
+  "@prisma/instrumentation": PrismaInstrumentation,
+  "opentelemetry-instrumentation-remix": RemixInstrumentation
 }
 
 export type DefaultInstrumentationName = keyof typeof DefaultInstrumentations
