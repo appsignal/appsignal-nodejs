@@ -5,8 +5,8 @@ set -eu
 echo "Giving permission to all users on spans directory"
 chmod -R 777 /spans
 
-echo "Installing compatible NPM version"
-npm install -g npm@7.18.1
+echo "Install a compatible NPM version"
+npm install -g npm@9.7.1
 
 echo "Install, link and build integration"
 (
