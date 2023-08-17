@@ -1,5 +1,15 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.18
+
+### Changed
+
+- [7edc179](https://github.com/appsignal/appsignal-nodejs/commit/7edc1793f8d5751f5614f50dfa9891b9d5cd1b8a) patch - Bump agent to version d789895.
+  
+  - Increase short data truncation from 2000 to 10000 characters.
+  - Include HTTP request method on Next.js samples as incident action name. Instead of `/path` it will now report `GET /path`.
+  - Add a extractor for Remix js spans.
+
 ## 3.0.17
 
 ### Added
