@@ -266,6 +266,7 @@ describe("Configuration", () => {
       expect(env("_APPSIGNAL_FILES_WORLD_ACCESSIBLE")).toEqual("true")
       expect(env("_APPSIGNAL_FILTER_DATA_KEYS")).toBeUndefined()
       expect(env("_APPSIGNAL_HOSTNAME")).toBeUndefined()
+      expect(env("_APPSIGNAL_HOST_ROLE")).toBeUndefined()
       expect(env("_APPSIGNAL_HTTP_PROXY")).toBeUndefined()
       expect(env("_APPSIGNAL_IGNORE_ACTIONS")).toBeUndefined()
       expect(env("_APPSIGNAL_IGNORE_ERRORS")).toBeUndefined()
@@ -314,6 +315,7 @@ describe("Configuration", () => {
           filterParameters: ["password", "confirm_password"],
           filterSessionData: ["key1", "key2"],
           hostname: "MyHostName",
+          hostRole: "host role",
           httpProxy: "http://localhost",
           ignoreActions: ["MyAction", "MyOtherAction"],
           ignoreErrors: ["MyError", "MyOtherError"],
@@ -341,6 +343,7 @@ describe("Configuration", () => {
         )
         expect(env("_APPSIGNAL_FILTER_SESSION_DATA")).toEqual("key1,key2")
         expect(env("_APPSIGNAL_HOSTNAME")).toEqual("MyHostName")
+        expect(env("_APPSIGNAL_HOST_ROLE")).toEqual("host role")
         expect(env("_APPSIGNAL_HTTP_PROXY")).toEqual("http://localhost")
         expect(env("_APPSIGNAL_IGNORE_ACTIONS")).toEqual(
           "MyAction,MyOtherAction"
