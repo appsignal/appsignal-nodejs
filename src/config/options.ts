@@ -16,6 +16,7 @@ export type AppsignalOptions = {
   filterParameters: string[]
   filterSessionData: string[]
   hostname: string
+  hostRole: string
   httpProxy: string
   ignoreActions: string[]
   ignoreErrors: string[]
