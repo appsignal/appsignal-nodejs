@@ -1,5 +1,11 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.19
+
+### Added
+
+- [5cdf57b](https://github.com/appsignal/appsignal-nodejs/commit/5cdf57b700d0fe65d1997eb0eda26ba6f7cb1799) patch - Add the `hostRole` config option. This config option can be set per host to generate some metrics automatically per host and possibly do things like grouping in the future.
+
 ## 3.0.18
 
 ### Changed
