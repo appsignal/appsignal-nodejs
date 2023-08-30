@@ -1,5 +1,5 @@
 import fs from "fs"
-import { reportPath } from "../scripts/extension/support/helpers"
+import { reportPath, processTarget } from "../scripts/extension/support/helpers"
 
 type ExtensionWrapper = {
   isLoaded: boolean
@@ -28,8 +28,8 @@ try {
   mod.isLoaded = true
 } catch (error) {
   const [installArch, installTarget] = fetchInstalledArch()
-  const arch = process.arch,
-    target = process.platform
+  const arch = process.arch
+  const target = processTarget()
 
   if (arch !== installArch || target !== installTarget) {
     console.error(

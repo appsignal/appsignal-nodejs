@@ -48,6 +48,19 @@ function hasMusl() {
 }
 
 /**
+ * Returns the target platform of the current process.
+ *
+ * @return  {string}
+ */
+function processTarget() {
+  const target = [process.platform]
+  if (/linux/.test(target[0]) && hasMusl()) {
+    target.push("-musl")
+  }
+  return target.join("")
+}
+
+/**
  * Returns the filesystem path of the installation report.
  *
  * @return  {string}
@@ -61,5 +74,6 @@ module.exports = {
   hasSupportedArchitecture,
   hasMusl,
   hasSupportedOs,
+  processTarget,
   reportPath
 }
