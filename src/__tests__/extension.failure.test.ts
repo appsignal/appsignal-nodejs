@@ -1,6 +1,6 @@
 import fs from "fs"
 import { Extension } from "../extension"
-import { installReportPath } from "../utils"
+import { reportPath } from "../../scripts/extension/support/helpers"
 
 describe("Extension", () => {
   let ext: Extension
@@ -67,7 +67,7 @@ describe("Extension", () => {
     beforeEach(() => {
       // Remove the install report to cause a deliberate error
       originalInstallReport = readReport()
-      fs.rmSync(installReportPath())
+      fs.rmSync(reportPath())
     })
 
     afterEach(() => {
@@ -121,11 +121,11 @@ describe("Extension", () => {
   })
 
   function readReport() {
-    const rawReport = fs.readFileSync(installReportPath(), "utf8")
+    const rawReport = fs.readFileSync(reportPath(), "utf8")
     return JSON.parse(rawReport)
   }
 
   function dumpReport(report: object) {
-    fs.writeFileSync(installReportPath(), JSON.stringify(report, null, 2))
+    fs.writeFileSync(reportPath(), JSON.stringify(report, null, 2))
   }
 })

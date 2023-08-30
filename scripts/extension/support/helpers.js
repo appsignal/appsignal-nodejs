@@ -47,9 +47,19 @@ function hasMusl() {
   return /musl/.test(child_process.spawnSync("ldd", ["--version"]).stderr)
 }
 
+/**
+ * Returns the filesystem path of the installation report.
+ *
+ * @return  {string}
+ */
+function reportPath() {
+  return path.join(__dirname, "../../../ext/install.report")
+}
+
 module.exports = {
   hasLocalBuild,
   hasSupportedArchitecture,
   hasMusl,
-  hasSupportedOs
+  hasSupportedOs,
+  reportPath
 }

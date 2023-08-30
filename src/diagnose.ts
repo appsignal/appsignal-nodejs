@@ -2,7 +2,8 @@ import fs from "fs"
 import path from "path"
 import { URL } from "url"
 
-import { isWritable, installReportPath, processGetuid } from "./utils"
+import { reportPath } from "../scripts/extension/support/helpers"
+import { isWritable, processGetuid } from "./utils"
 import { Extension } from "./extension"
 import { Configuration } from "./config"
 import { Client } from "./client"
@@ -104,7 +105,7 @@ export class DiagnoseTool {
   private getInstallationReport() {
     let rawReport
     try {
-      rawReport = fs.readFileSync(installReportPath(), "utf8")
+      rawReport = fs.readFileSync(reportPath(), "utf8")
       return JSON.parse(rawReport)
     } catch (error: any) {
       const report = {

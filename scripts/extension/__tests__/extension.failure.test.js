@@ -1,5 +1,5 @@
 const fs = require("fs")
-const { reportPath } = require("../report")
+const { reportPath } = require("../support/helpers")
 
 function hasExtensionFailure() {
   if (process.env._TEST_APPSIGNAL_EXTENSION_FAILURE !== "true") {

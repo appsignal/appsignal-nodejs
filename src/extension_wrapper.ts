@@ -1,5 +1,5 @@
 import fs from "fs"
-import { installReportPath } from "./utils"
+import { reportPath } from "../scripts/extension/support/helpers"
 
 type ExtensionWrapper = {
   isLoaded: boolean
@@ -14,7 +14,7 @@ let mod: ExtensionWrapper
 
 function fetchInstalledArch(): [string, string] {
   try {
-    const rawReport = fs.readFileSync(installReportPath(), "utf8")
+    const rawReport = fs.readFileSync(reportPath(), "utf8")
     const buildReport = JSON.parse(rawReport)["build"]
     return [buildReport["architecture"], buildReport["target"]]
   } catch (error) {

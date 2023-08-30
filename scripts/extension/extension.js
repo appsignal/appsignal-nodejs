@@ -11,14 +11,14 @@ const { AGENT_VERSION, MIRRORS, TRIPLES } = require("./support/constants")
 const {
   hasLocalBuild,
   hasSupportedArchitecture,
-  hasSupportedOs
+  hasSupportedOs,
+  reportPath
 } = require("./support/helpers")
 
 const {
   createReport,
   createBuildReport,
-  createDownloadReport,
-  reportPath
+  createDownloadReport
 } = require("./report")
 
 const EXT_PATH = path.join(__dirname, "/../../ext/")

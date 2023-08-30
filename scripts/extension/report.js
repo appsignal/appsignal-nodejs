@@ -76,15 +76,8 @@ function createDownloadReport(report) {
   }
 }
 
-// This implementation should match the `packages/nodejs/src/utils.ts`
-// implementation to generate the same path.
-function reportPath() {
-  return path.join(__dirname, "../../ext/install.report")
-}
-
 module.exports = {
   createReport,
   createBuildReport,
-  createDownloadReport,
-  reportPath
+  createDownloadReport
 }
