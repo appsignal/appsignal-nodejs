@@ -2,7 +2,7 @@
 
 ## 3.0.20
 
-### Changed
+### Fixed
 
 - [eaaf01c](https://github.com/appsignal/appsignal-nodejs/commit/eaaf01c680ddaa044fbac4e44ffbd93049621967) patch - Bump agent to 6133900.
   
