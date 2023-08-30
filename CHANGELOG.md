@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.20
+
+### Changed
+
+- [eaaf01c](https://github.com/appsignal/appsignal-nodejs/commit/eaaf01c680ddaa044fbac4e44ffbd93049621967) patch - Bump agent to 6133900.
+  
+  - Fix `disk_inodes_usage` metric name format to not be interpreted as a JSON object.
+
 ## 3.0.19
 
 ### Added
