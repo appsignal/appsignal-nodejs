@@ -12,14 +12,14 @@ type ExtensionWrapper = {
 
 let mod: ExtensionWrapper
 
-function fetchInstalledArch(): [string, string] {
+function fetchInstalledArch(): [string, string] | [] {
   try {
     const rawReport = fs.readFileSync(reportPath(), "utf8")
     const buildReport = JSON.parse(rawReport)["build"]
     return [buildReport["architecture"], buildReport["target"]]
   } catch (error) {
     console.error("[appsignal][ERROR] Unable to fetch install report:", error)
-    return ["unknown", "unknown"]
+    return []
   }
 }
 
@@ -31,7 +31,10 @@ try {
   const arch = process.arch
   const target = processTarget()
 
-  if (arch !== installArch || target !== installTarget) {
+  if (
+    (installArch && installTarget) &&
+    (arch !== installArch || target !== installTarget)
+  ) {
     console.error(
       `[appsignal][ERROR] The AppSignal extension was installed for architecture '${installArch}-${installTarget}', but the current architecture is '${arch}-${target}'. Please reinstall the AppSignal package on the host the app is started.`
     )
