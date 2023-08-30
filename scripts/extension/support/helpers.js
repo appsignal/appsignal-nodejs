@@ -3,7 +3,7 @@ const fs = require("fs")
 const child_process = require("child_process")
 
 /**
- * Returns `true` if the /ext directory contains a local build. and vice versa
+ * Returns `true` if the /ext directory contains a local build.
  *
  * @return  {boolean}
  */
@@ -16,9 +16,9 @@ function hasLocalBuild() {
 }
 
 /**
- * Returns `true` if the current architecture is supported by the agent. and vice versa
+ * Returns `true` if the given architecture is supported by the agent.
  *
- * @param   {object}  report  A valid report object
+ * @param   {string}  arch  The architecture
  *
  * @return  {boolean}
  */
@@ -28,9 +28,9 @@ function hasSupportedArchitecture(arch) {
 }
 
 /**
- * Returns `true` if the current operating systrm is supported by the agent. and vice versa
+ * Returns `true` if the given operating system is supported by the agent.
  *
- * @param   {object}  report  A valid report object
+ * @param   {string}  os  The operating system
  *
  * @return  {boolean}
  */
@@ -39,7 +39,7 @@ function hasSupportedOs(os) {
 }
 
 /**
- * Returns `true` if the current linux system is using musl as its libc and vice versa
+ * Returns `true` if the current linux system is using musl as its libc.
  *
  * @return  {boolean}
  */
