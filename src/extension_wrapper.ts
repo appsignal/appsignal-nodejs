@@ -32,7 +32,8 @@ try {
   const target = processTarget()
 
   if (
-    (installArch && installTarget) &&
+    installArch &&
+    installTarget &&
     (arch !== installArch || target !== installTarget)
   ) {
     console.error(

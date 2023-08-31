@@ -1,5 +1,4 @@
 import fs from "fs"
-import path from "path"
 import perf_hooks from "perf_hooks"
 
 const NANOSECOND_DIGITS = 9

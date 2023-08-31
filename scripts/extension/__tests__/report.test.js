@@ -1,8 +1,14 @@
 const originalProcess = process
 const originalProcessEnv = process.env
-const mockHelpers = { hasMusl: jest.fn() }
+const mockHelpers = { spawnSync: jest.fn() }
 
-jest.doMock("../support/helpers", () => mockHelpers)
+jest.doMock("child_process", () => {
+  const originalModule = jest.requireActual("child_process")
+  return {
+    ...originalModule,
+    ...mockHelpers
+  }
+})
 
 const { createBuildReport } = require("../report")
 
@@ -32,7 +38,8 @@ describe("muslOverride", () => {
   }
 
   function setHasMusl(value) {
-    mockHelpers.hasMusl.mockReturnValue(value)
+    const stderr = value ? "musl libc (arch)" : "something else"
+    mockHelpers.spawnSync.mockReturnValue({ stderr })
   }
 
   describe("with linux platform", () => {
