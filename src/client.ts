@@ -293,6 +293,11 @@ export class Client {
           setParams(params)
         }
       },
+      "@opentelemetry/instrumentation-graphql": {
+        ignoreTrivialResolveSpans: true,
+        mergeItems: true,
+        allowValues: false
+      },
       "@opentelemetry/instrumentation-http": {
         headersToSpanAttributes: {
           server: { requestHeaders }
