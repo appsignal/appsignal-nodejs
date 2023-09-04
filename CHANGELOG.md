@@ -1,5 +1,15 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.21
+
+### Changed
+
+- [2c91c70](https://github.com/appsignal/appsignal-nodejs/commit/2c91c70d8df0ced2803dd9c880c21356109e112a) patch - Improve the behaviour of the GraphQL instrumentation, so that it creates less redundant spans for similar items in a list, and less trivial spans for attribute resolutions.
+
+### Fixed
+
+- [2c91c70](https://github.com/appsignal/appsignal-nodejs/commit/2c91c70d8df0ced2803dd9c880c21356109e112a) patch - Fix a misleading platform mismatch error when the AppSignal extension fails to load on musl-based systems.
+
 ## 3.0.20
 
 ### Fixed
