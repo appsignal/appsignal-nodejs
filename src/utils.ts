@@ -1,5 +1,4 @@
 import fs from "fs"
-import path from "path"
 import perf_hooks from "perf_hooks"
 
 const NANOSECOND_DIGITS = 9
@@ -55,12 +54,6 @@ function numberToHrtime(epochMillis: number) {
     SECOND_TO_NANOSECONDS
 
   return [seconds, nanoseconds]
-}
-
-// This implementation should match the `scripts/extension/report.js`
-// implementation to generate the same path.
-export function installReportPath(): string {
-  return path.join(__dirname, "../ext/install.report")
 }
 
 export function processGetuid() {

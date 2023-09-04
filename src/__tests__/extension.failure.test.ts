@@ -1,6 +1,9 @@
 import fs from "fs"
 import { Extension } from "../extension"
-import { installReportPath } from "../utils"
+import {
+  reportPath,
+  processTarget
+} from "../../scripts/extension/support/helpers"
 
 describe("Extension", () => {
   let ext: Extension
@@ -49,8 +52,8 @@ describe("Extension", () => {
 
     it("logs an error with the installed and current architecture", () => {
       const errorSpy = jest.spyOn(console, "error")
-      const target = process.platform,
-        arch = process.arch
+      const target = processTarget()
+      const arch = process.arch
 
       jest.resetModules()
       require("../extension")
@@ -67,7 +70,7 @@ describe("Extension", () => {
     beforeEach(() => {
       // Remove the install report to cause a deliberate error
       originalInstallReport = readReport()
-      fs.rmSync(installReportPath())
+      fs.rmSync(reportPath())
     })
 
     afterEach(() => {
@@ -75,10 +78,8 @@ describe("Extension", () => {
       dumpReport(originalInstallReport)
     })
 
-    it("logs errors about missing report and mismatch in architecture", () => {
+    it("logs an error about the missing install report", () => {
       const errorSpy = jest.spyOn(console, "error")
-      const target = process.platform,
-        arch = process.arch
 
       jest.resetModules()
       require("../extension")
@@ -88,7 +89,8 @@ describe("Extension", () => {
         expect.any(Object)
       )
       expect(errorSpy).toHaveBeenLastCalledWith(
-        `[appsignal][ERROR] The AppSignal extension was installed for architecture 'unknown-unknown', but the current architecture is '${arch}-${target}'. Please reinstall the AppSignal package on the host the app is started.`
+        "[appsignal][ERROR] AppSignal failed to load the extension. Please run the diagnose tool and email us at support@appsignal.com: https://docs.appsignal.com/nodejs/command-line/diagnose.html\n",
+        expect.any(Object)
       )
     })
   })
@@ -121,11 +123,11 @@ describe("Extension", () => {
   })
 
   function readReport() {
-    const rawReport = fs.readFileSync(installReportPath(), "utf8")
+    const rawReport = fs.readFileSync(reportPath(), "utf8")
     return JSON.parse(rawReport)
   }
 
   function dumpReport(report: object) {
-    fs.writeFileSync(installReportPath(), JSON.stringify(report, null, 2))
+    fs.writeFileSync(reportPath(), JSON.stringify(report, null, 2))
   }
 })

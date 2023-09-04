@@ -1,5 +1,5 @@
 const fs = require("fs")
-const { reportPath } = require("../report")
+const { reportPath } = require("../support/helpers")
 const { downloadFromMirror } = require("../extension")
 const nock = require("nock")
 const { Writable, EventEmitter } = require("stream")

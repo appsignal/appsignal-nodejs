@@ -1,7 +1,7 @@
 const path = require("path")
 
 const { AGENT_VERSION } = require("./support/constants")
-const { hasMusl } = require("./support/helpers")
+const { processTarget } = require("./support/helpers")
 
 function createReport() {
   return {
@@ -38,11 +38,7 @@ function agentTarget() {
     return "linux-musl"
   }
 
-  const target = [process.platform]
-  if (/linux/.test(target[0]) && hasMusl()) {
-    target.push("-musl")
-  }
-  return target.join("")
+  return processTarget()
 }
 
 function agentArchitecture() {
@@ -76,15 +72,8 @@ function createDownloadReport(report) {
   }
 }
 
-// This implementation should match the `packages/nodejs/src/utils.ts`
-// implementation to generate the same path.
-function reportPath() {
-  return path.join(__dirname, "../../ext/install.report")
-}
-
 module.exports = {
   createReport,
   createBuildReport,
-  createDownloadReport,
-  reportPath
+  createDownloadReport
 }
