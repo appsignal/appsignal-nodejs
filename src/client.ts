@@ -367,9 +367,11 @@ export class Client {
   private initOpenTelemetry(
     additionalInstrumentations: AdditionalInstrumentationsOption
   ) {
-    const instrumentations = additionalInstrumentations.concat(
-      this.defaultInstrumentations()
-    )
+    const disableSDK = process.env["_APPSIGNAl_DISABLE_OPENTELEMETRY_SDK"]
+
+    if (disableSDK) {
+      return
+    }
 
     const testMode = process.env["_APPSIGNAL_TEST_MODE"]
     const testModeFilePath = process.env["_APPSIGNAL_TEST_MODE_FILE_PATH"]
@@ -380,6 +382,10 @@ export class Client {
     } else {
       spanProcessor = new SpanProcessor(this)
     }
+
+    const instrumentations = additionalInstrumentations.concat(
+      this.defaultInstrumentations()
+    )
 
     const sdk = new NodeSDK({
       instrumentations,

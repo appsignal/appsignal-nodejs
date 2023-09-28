@@ -15,6 +15,7 @@ describe("Configuration", () => {
     active: false,
     caFilePath: path.join(__dirname, "../../cert/cacert.pem"),
     disableDefaultInstrumentations: false,
+    disableOpenTelemetrySDK: false,
     dnsServers: [],
     enableHostMetrics: true,
     enableMinutelyProbes: true,
@@ -259,6 +260,7 @@ describe("Configuration", () => {
       expect(env("_APPSIGNAL_APP_NAME")).toBeUndefined()
       expect(env("_APPSIGNAL_BIND_ADDRESS")).toBeUndefined()
       expect(env("_APPSIGNAL_CA_FILE_PATH")).toMatch(/cert\/cacert\.pem$/)
+      expect(env("_APPSIGNAL_DISABLE_OPENTELEMETRY_SDK")).toBeUndefined()
       expect(env("_APPSIGNAL_DNS_SERVERS")).toBeUndefined()
       expect(env("_APPSIGNAL_ENABLE_HOST_METRICS")).toEqual("true")
       expect(env("_APPSIGNAL_ENABLE_STATSD")).toBeUndefined()
@@ -307,6 +309,7 @@ describe("Configuration", () => {
           bindAddress: "0.0.0.0",
           pushApiKey,
           dnsServers: ["8.8.8.8", "8.8.4.4"],
+          disableOpenTelemetrySDK: true,
           enableHostMetrics: false,
           enableMinutelyProbes: false,
           enableStatsd: true,
@@ -333,6 +336,7 @@ describe("Configuration", () => {
         expect(env("_APPSIGNAL_ACTIVE")).toEqual("true")
         expect(env("_APPSIGNAL_APP_NAME")).toEqual(name)
         expect(env("_APPSIGNAL_BIND_ADDRESS")).toEqual("0.0.0.0")
+        expect(env("_APPSIGNAL_DISABLE_OPENTELEMETRY_SDK")).toEqual("true")
         expect(env("_APPSIGNAL_DNS_SERVERS")).toEqual("8.8.8.8,8.8.4.4")
         expect(env("_APPSIGNAL_ENABLE_HOST_METRICS")).toEqual("true")
         expect(env("_APPSIGNAL_ENABLE_STATSD")).toEqual("true")

@@ -5,6 +5,7 @@ export type AppsignalOptions = {
   bindAddress: string
   caFilePath: string
   disableDefaultInstrumentations: DefaultInstrumentationName[] | boolean
+  disableOpenTelemetrySDK: boolean
   dnsServers: string[]
   enableHostMetrics: boolean
   enableMinutelyProbes: boolean
