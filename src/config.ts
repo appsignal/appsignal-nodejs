@@ -114,6 +114,7 @@ export class Configuration {
       active: false,
       caFilePath: path.join(__dirname, "../cert/cacert.pem"),
       disableDefaultInstrumentations: false,
+      disableOpenTelemetrySDK: false,
       dnsServers: [],
       enableHostMetrics: true,
       enableMinutelyProbes: true,
