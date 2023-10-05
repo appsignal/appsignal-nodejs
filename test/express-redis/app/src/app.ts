@@ -16,6 +16,10 @@ app.get("/", (_req: any, res: any) => {
   res.send("200 OK")
 })
 
+app.get("/route-param/:id", (_req: any, res: any) => {
+  res.send("200 OK")
+})
+
 app.get("/error", (_req: any, _res: any) => {
   throw new Error("Expected test error!")
 })
