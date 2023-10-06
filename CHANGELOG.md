@@ -1,5 +1,11 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.22
+
+### Changed
+
+- [4d96c96](https://github.com/appsignal/appsignal-nodejs/commit/4d96c96f20cb059566fcbdb8c0b1925fe5f6952a) patch - Report express route parameters. If a route is defined like `/user/:id`, the `id` parameter will be reported from now on in the "Parameters" box on AppSignal.com.
+
 ## 3.0.21
 
 ### Changed
