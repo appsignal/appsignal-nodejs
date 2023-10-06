@@ -273,9 +273,10 @@ export class Client {
         requestHook: function (_span, info) {
           if (info.layerType === ExpressLayerType.REQUEST_HANDLER) {
             if (sendParams) {
+              const routeParams = info.request.params
               const queryParams = info.request.query
               const requestBody = info.request.body
-              const params = { ...queryParams, ...requestBody }
+              const params = { ...routeParams, ...queryParams, ...requestBody }
               setParams(params)
             }
 

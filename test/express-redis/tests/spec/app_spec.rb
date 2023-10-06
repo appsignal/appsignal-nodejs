@@ -20,6 +20,18 @@ RSpec.describe "Redis app" do
     end
   end
 
+  describe "GET route with route params" do
+    it "adds params to the HTTP root span" do
+      response = HTTP.get("#{@test_app_url}/route-param/123456")
+      expect(response.status).to eq(200)
+      expect(Span.root!).to be_http_span_with_route("GET /route-param/:id")
+
+      expected_request_parameters = { "id" => "123456" }
+
+      expect(Span.root!).to match_request_parameters(expected_request_parameters)
+    end
+  end
+
   describe "GET / with session data" do
     it "adds session data to the HTTP root span" do
       response = HTTP.cookies(:cookie => "chocolate").get(@test_app_url)
