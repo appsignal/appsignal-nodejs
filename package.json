@@ -14,7 +14,7 @@
   "dependencies": {
     "@opentelemetry/api": "^1.6.0",
     "@opentelemetry/instrumentation-express": "^0.33.1",
-    "@opentelemetry/instrumentation-fastify": "^0.32.2",
+    "@opentelemetry/instrumentation-fastify": "^0.32.3",
     "@opentelemetry/instrumentation-graphql": "^0.35.1",
     "@opentelemetry/instrumentation-http": "^0.43.0",
     "@opentelemetry/instrumentation-ioredis": "^0.35.1",
