@@ -14,7 +14,7 @@ RSpec.describe "Fastify app" do
       expect(Span.root!).to be_http_span_with_route("GET /")
 
       # Fails if not found
-      Span.find_by_name!("request handler - anonymous")
+      Span.find_by_name!("request handler - fastify")
     end
   end
 
@@ -24,7 +24,7 @@ RSpec.describe "Fastify app" do
       expect(response.status).to eq(500)
       expect(Span.root!).to be_http_span_with_route("GET /error")
 
-      request_handler_span = Span.find_by_name!("request handler - anonymous")
+      request_handler_span = Span.find_by_name!("request handler - fastify")
       expect(request_handler_span).to have_error_event("EXPECTED ERROR!")
     end
   end
