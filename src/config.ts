@@ -127,6 +127,7 @@ export class Configuration {
       ignoreActions: [],
       ignoreErrors: [],
       ignoreNamespaces: [],
+      initializeOpentelemetrySdk: true,
       log: "file",
       loggingEndpoint: "https://appsignal-endpoint.net",
       requestHeaders: [

@@ -152,9 +152,11 @@ export class Client {
       } else {
         this.start()
         this.#metrics = new Metrics()
-        this.#sdk = this.initOpenTelemetry(
-          options.additionalInstrumentations || []
-        )
+        if (this.config.data.initializeOpentelemetrySdk) {
+          this.#sdk = this.initOpenTelemetry(
+            options.additionalInstrumentations || []
+          )
+        }
       }
     } else {
       this.#metrics = new NoopMetrics()
@@ -368,10 +370,6 @@ export class Client {
   private initOpenTelemetry(
     additionalInstrumentations: AdditionalInstrumentationsOption
   ) {
-    const instrumentations = additionalInstrumentations.concat(
-      this.defaultInstrumentations()
-    )
-
     const testMode = process.env["_APPSIGNAL_TEST_MODE"]
     const testModeFilePath = process.env["_APPSIGNAL_TEST_MODE_FILE_PATH"]
     let spanProcessor
@@ -381,6 +379,10 @@ export class Client {
     } else {
       spanProcessor = new SpanProcessor(this)
     }
+
+    const instrumentations = additionalInstrumentations.concat(
+      this.defaultInstrumentations()
+    )
 
     const sdk = new NodeSDK({
       instrumentations,
