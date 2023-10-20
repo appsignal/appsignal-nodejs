@@ -1,4 +1,7 @@
-import { InstrumentationTestRegistry } from "../../test/instrumentation_registry"
+import {
+  InstrumentationTestRegistry,
+  instrumentationNames
+} from "../../test/instrumentation_registry"
 import { Extension } from "../extension"
 import { Client } from "../client"
 import { Metrics } from "../metrics"
@@ -16,6 +19,7 @@ describe("Client", () => {
   const DEFAULT_OPTS = { name, pushApiKey }
 
   beforeEach(() => {
+    InstrumentationTestRegistry.clear()
     client = new Client({ ...DEFAULT_OPTS })
   })
 
@@ -142,16 +146,37 @@ describe("Client", () => {
     expect(meter).toBeInstanceOf(Metrics)
   })
 
+  it("initializes the OpenTelemetry SDK when active", () => {
+    client = new Client({ ...DEFAULT_OPTS, active: true })
+    expect(InstrumentationTestRegistry.didInitializeSDK).toEqual(true)
+  })
+
+  it("does not initialize the OpenTelemetry SDK when its config option is false", () => {
+    client = new Client({
+      ...DEFAULT_OPTS,
+      active: true,
+      initializeOpentelemetrySdk: false
+    })
+    expect(InstrumentationTestRegistry.didInitializeSDK).toEqual(false)
+  })
+
   describe("Instrumentations", () => {
     it("registers the default instrumentations", () => {
       client = new Client({ ...DEFAULT_OPTS, active: true })
       // Not testing against all of them or a fixed number so
       // that we don't have to change these tests every time we
       // add a new instrumentation.
-      const instrumentationNames =
+      const registryInstrumentationNames =
         InstrumentationTestRegistry.instrumentationNames()
-      expect(instrumentationNames.length).toBeGreaterThan(10)
-      expect(instrumentationNames).toContain(
+      expect(registryInstrumentationNames.length).toBeGreaterThan(10)
+      expect(registryInstrumentationNames).toContain(
+        "@opentelemetry/instrumentation-http"
+      )
+
+      const opentelemetryInstrumentations =
+        client.opentelemetryInstrumentations()
+      expect(opentelemetryInstrumentations.length).toBeGreaterThan(10)
+      expect(instrumentationNames(opentelemetryInstrumentations)).toContain(
         "@opentelemetry/instrumentation-http"
       )
     })
@@ -165,6 +190,7 @@ describe("Client", () => {
       const instrumentationNames =
         InstrumentationTestRegistry.instrumentationNames()
       expect(instrumentationNames).toEqual([])
+      expect(client.opentelemetryInstrumentations()).toEqual([])
     })
 
     it("can disable some default instrumentations", () => {
@@ -173,12 +199,19 @@ describe("Client", () => {
         active: true,
         disableDefaultInstrumentations: ["@opentelemetry/instrumentation-http"]
       })
-      const instrumentationNames =
+      const registryInstrumentationNames =
         InstrumentationTestRegistry.instrumentationNames()
-      expect(instrumentationNames).not.toContain(
+      expect(registryInstrumentationNames).not.toContain(
         "@opentelemetry/instrumentation-http"
       )
-      expect(instrumentationNames.length).toBeGreaterThan(0)
+      expect(registryInstrumentationNames.length).toBeGreaterThan(10)
+
+      const opentelemetryInstrumentations =
+        client.opentelemetryInstrumentations()
+      expect(instrumentationNames(opentelemetryInstrumentations)).not.toContain(
+        "@opentelemetry/instrumentation-http"
+      )
+      expect(opentelemetryInstrumentations.length).toBeGreaterThan(10)
     })
 
     it("can add additional instrumentations", () => {
@@ -211,13 +244,22 @@ describe("Client", () => {
         additionalInstrumentations: [new TestInstrumentation()]
       })
 
-      const instrumentationNames =
+      const registryInstrumentationNames =
         InstrumentationTestRegistry.instrumentationNames()
-      expect(instrumentationNames).toContain(
+      expect(registryInstrumentationNames).toContain(
         "@opentelemetry/instrumentation-http"
       )
-      expect(instrumentationNames.length).toBeGreaterThan(10)
-      expect(instrumentationNames).toContain("test/instrumentation")
+      expect(registryInstrumentationNames.length).toBeGreaterThan(10)
+      expect(registryInstrumentationNames).toContain("test/instrumentation")
+      const opentelemetryInstrumentations =
+        client.opentelemetryInstrumentations()
+      expect(instrumentationNames(opentelemetryInstrumentations)).toContain(
+        "@opentelemetry/instrumentation-http"
+      )
+      expect(opentelemetryInstrumentations.length).toBeGreaterThan(10)
+      expect(instrumentationNames(opentelemetryInstrumentations)).toContain(
+        "test/instrumentation"
+      )
     })
   })
 })

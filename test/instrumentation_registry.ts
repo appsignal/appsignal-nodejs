@@ -3,22 +3,28 @@ import { Instrumentation } from "@opentelemetry/instrumentation"
 
 type InstrumentationsOption = NodeSDKConfiguration["instrumentations"]
 
+export function instrumentationNames(instrumentations: InstrumentationsOption) {
+  return instrumentations.map(
+    instrumentation => (instrumentation as Instrumentation).instrumentationName
+  )
+}
+
 export class InstrumentationTestRegistry {
   static instrumentations?: InstrumentationsOption
+  static didInitializeSDK = false
 
   static setInstrumentations(instrumentations: InstrumentationsOption) {
     this.instrumentations = instrumentations
+    this.didInitializeSDK = true
   }
 
   static instrumentationNames() {
-    return (this.instrumentations || []).map(
-      instrumentation =>
-        (instrumentation as Instrumentation).instrumentationName
-    )
+    return instrumentationNames(this.instrumentations || [])
   }
 
   static clear() {
     this.instrumentations = undefined
+    this.didInitializeSDK = false
   }
 }
 
