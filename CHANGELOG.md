@@ -1,5 +1,17 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.24
+
+### Changed
+
+- [2eb17b0](https://github.com/appsignal/appsignal-nodejs/commit/2eb17b0e3d8acfdf57bf2dda27a9b4b07db0a202) patch - Bump agent to e8207c1.
+  
+  - Add `memory_in_percentages` and `swap_in_percentages` host metrics that represents metrics in percentages.
+  - Ignore `/snap/` disk mountpoints.
+  - Fix issue with the open span count in logs being logged as a negative number.
+  - Fix agent's TCP server getting stuck when two requests are made within the same fraction of a second.
+- [037fcaa](https://github.com/appsignal/appsignal-nodejs/commit/037fcaaa9034668ce1610e72aaf27561e80b98d2) patch - Update Fastify dependency to make it compatible with Fastify 5
+
 ## 3.0.23
 
 ### Changed
