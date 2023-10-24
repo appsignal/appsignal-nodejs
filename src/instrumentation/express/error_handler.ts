@@ -1,11 +1,11 @@
-import { Request, Response, NextFunction, ErrorRequestHandler } from "express"
+import { NextFunction } from "express"
 import { setError } from "../../helpers"
 
-export function expressErrorHandler(): ErrorRequestHandler {
+export function expressErrorHandler() {
   return function (
     err: Error & { status?: number },
-    req: Request,
-    res: Response,
+    req: any,
+    res: any,
     next: NextFunction
   ) {
     if (!err.status || err.status >= 500) {
