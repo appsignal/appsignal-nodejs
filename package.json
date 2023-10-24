@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@opentelemetry/api": "^1.6.0",
-    "@opentelemetry/instrumentation-express": "^0.33.1",
+    "@opentelemetry/instrumentation-express": "^0.33.2",
     "@opentelemetry/instrumentation-fastify": "^0.32.3",
     "@opentelemetry/instrumentation-graphql": "^0.35.1",
     "@opentelemetry/instrumentation-http": "^0.43.0",
@@ -29,7 +29,7 @@
     "@opentelemetry/instrumentation-redis": "^0.35.1",
     "@opentelemetry/instrumentation-redis-4": "^0.35.1",
     "@opentelemetry/instrumentation-restify": "^0.34.0",
-    "@opentelemetry/sdk-node": "^0.43.0",
+    "@opentelemetry/sdk-node": "^0.44.0",
     "@opentelemetry/sdk-trace-base": "^1.17.0",
     "@prisma/instrumentation": "^5.3.1",
     "node-addon-api": "^3.1.0",
