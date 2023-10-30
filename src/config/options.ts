@@ -21,6 +21,7 @@ export type AppsignalOptions = {
   ignoreActions: string[]
   ignoreErrors: string[]
   ignoreNamespaces: string[]
+  initializeOpentelemetrySdk: boolean
   log: string
   logPath: string
   logLevel: string

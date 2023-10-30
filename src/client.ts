@@ -70,10 +70,10 @@ type DefaultInstrumentationsConfigMap = {
   >
 }
 
-type AdditionalInstrumentationsOption = NodeSDKConfiguration["instrumentations"]
+type NodeSDKInstrumentationsOption = NodeSDKConfiguration["instrumentations"]
 
 export type Options = AppsignalOptions & {
-  additionalInstrumentations: AdditionalInstrumentationsOption
+  additionalInstrumentations: NodeSDKInstrumentationsOption
 }
 
 /**
@@ -93,6 +93,7 @@ export class Client {
 
   #metrics: Metrics
   #sdk?: NodeSDK
+  #additionalInstrumentations: NodeSDKInstrumentationsOption
 
   /**
    * Global accessors for the AppSignal client
@@ -138,6 +139,8 @@ export class Client {
    * Creates a new instance of the `Appsignal` object
    */
   constructor(options: Partial<Options> = {}) {
+    this.#additionalInstrumentations = options.additionalInstrumentations || []
+
     this.config = new Configuration(options)
     this.extension = new Extension()
     this.integrationLogger = this.setUpIntegrationLogger()
@@ -152,9 +155,9 @@ export class Client {
       } else {
         this.start()
         this.#metrics = new Metrics()
-        this.#sdk = this.initOpenTelemetry(
-          options.additionalInstrumentations || []
-        )
+        if (this.config.data.initializeOpentelemetrySdk) {
+          this.#sdk = this.initOpenTelemetry()
+        }
       }
     } else {
       this.#metrics = new NoopMetrics()
@@ -362,16 +365,16 @@ export class Client {
       )
   }
 
+  public opentelemetryInstrumentations(): NodeSDKInstrumentationsOption {
+    return this.#additionalInstrumentations.concat(
+      this.defaultInstrumentations()
+    )
+  }
+
   /**
    * Initialises OpenTelemetry instrumentation
    */
-  private initOpenTelemetry(
-    additionalInstrumentations: AdditionalInstrumentationsOption
-  ) {
-    const instrumentations = additionalInstrumentations.concat(
-      this.defaultInstrumentations()
-    )
-
+  private initOpenTelemetry() {
     const testMode = process.env["_APPSIGNAL_TEST_MODE"]
     const testModeFilePath = process.env["_APPSIGNAL_TEST_MODE_FILE_PATH"]
     let spanProcessor
@@ -381,6 +384,8 @@ export class Client {
     } else {
       spanProcessor = new SpanProcessor(this)
     }
+
+    const instrumentations = this.opentelemetryInstrumentations()
 
     const sdk = new NodeSDK({
       instrumentations,
