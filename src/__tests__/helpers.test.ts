@@ -9,6 +9,7 @@ import { Client } from "../client"
 
 import {
   setBody,
+  setSqlBody,
   setCategory,
   setCustomData,
   setHeader,
@@ -78,7 +79,8 @@ describe("Helpers", () => {
 
   it("set the attributes", () => {
     trace.getTracer("test").startActiveSpan("Some span", span => {
-      setBody("SELECT * FROM users")
+      setBody("Some body")
+      setSqlBody("SELECT * FROM users")
       setCategory("some.query")
       setName("Some query")
       setCustomData({ chunky: "bacon" })
@@ -94,7 +96,8 @@ describe("Helpers", () => {
 
     expect(spans.length).toEqual(1)
     expect(spans[0].attributes).toMatchObject({
-      "appsignal.body": "SELECT * FROM users",
+      "appsignal.body": "Some body",
+      "appsignal.sql_body": "SELECT * FROM users",
       "appsignal.category": "some.query",
       "appsignal.name": "Some query",
       "appsignal.custom_data": '{"chunky":"bacon"}',
@@ -235,7 +238,8 @@ describe("Helpers", () => {
       tracer.startActiveSpan("Active span", span => {
         const childSpan = tracer.startSpan("Child span")
 
-        setBody("SELECT * FROM users", childSpan)
+        setBody("Some body", childSpan)
+        setSqlBody("SELECT * FROM users", childSpan)
         setCategory("some.query", childSpan)
         setName("Some query", childSpan)
         setCustomData({ chunky: "bacon" }, childSpan)
@@ -267,7 +271,8 @@ describe("Helpers", () => {
       expect(activeSpan.attributes).toEqual({})
 
       expect(childSpan.attributes).toMatchObject({
-        "appsignal.body": "SELECT * FROM users",
+        "appsignal.body": "Some body",
+        "appsignal.sql_body": "SELECT * FROM users",
         "appsignal.category": "some.query",
         "appsignal.name": "Some query",
         "appsignal.custom_data": '{"chunky":"bacon"}',

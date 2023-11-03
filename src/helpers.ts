@@ -84,6 +84,10 @@ export function setBody(body: string, span?: Span) {
   setAttribute("appsignal.body", body, span)
 }
 
+export function setSqlBody(body: string, span?: Span) {
+  setAttribute("appsignal.sql_body", body, span)
+}
+
 export function setNamespace(namespace: string, span?: Span) {
   setAttribute("appsignal.namespace", namespace, span)
 }
