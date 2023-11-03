@@ -1,4 +1,5 @@
 const { DiagnoseTool } = require("../diagnose")
+const { processGetuid } = require("../utils")
 const util = require("util")
 const readline = require("readline")
 
@@ -165,36 +166,13 @@ export class Diagnose {
 
     console.log(`Paths`)
 
-    const contents = data["paths"]["appsignal.log"]["content"]
-
-    console.log(`  Current working directory`)
-    console.log(
-      `    Path: ${format_value(data["paths"]["working_dir"]["path"])}`
-    )
-
+    this.printPath("Current working directory", data["paths"]["working_dir"])
     this.print_newline()
-
-    console.log(`  Log directory`)
-    console.log(
-      `    Path: ${format_value(data["paths"]["log_dir_path"]["path"])}`
-    )
-
+    this.printPath("Log directory", data["paths"]["log_dir_path"])
     this.print_newline()
-
-    console.log(`  AppSignal client file`)
-    console.log(
-      `    Path: ${format_value(data["paths"]["appsignal.cjs"]["path"])}`
-    )
-
+    this.printPath("AppSignal client file", data["paths"]["appsignal.cjs"])
     this.print_newline()
-
-    console.log(`  AppSignal log`)
-    console.log(
-      `    Path: ${format_value(data["paths"]["appsignal.log"]["path"])}`
-    )
-    console.log(`    Contents (last 10 lines):`)
-    console.log(contents.slice(contents.length - 10).join("\n"))
-
+    this.printPath("AppSignal log", data["paths"]["appsignal.log"])
     this.print_newline()
 
     console.log(`Diagnostics report`)
@@ -235,6 +213,29 @@ export class Diagnose {
           rl.close()
         }
       )
+    }
+  }
+
+  printPath(label: string, path: Record<string, any>) {
+    console.log(`  ${label}`)
+    console.log(`    Path: ${format_value(path["path"])}`)
+    if (!path["exists"]) {
+      console.log(`    Exists?: false`)
+      return
+    }
+    console.log(`    Writable?: ${format_value(path["writable"])}`)
+    const processUid = processGetuid()
+    const fileUid = path["ownership"]["uid"]
+    const isOwner = processUid == fileUid
+    console.log(
+      `    Ownership?: ${format_value(
+        isOwner
+      )} (file: ${fileUid}, process: ${processUid})`
+    )
+    const contents = path["content"]
+    if (contents) {
+      console.log(`    Contents (last 10 lines):`)
+      console.log(contents.slice(contents.length - 10).join("\n"))
     }
   }
 
