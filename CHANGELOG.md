@@ -1,5 +1,85 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.25
+
+### Added
+
+- [ab7f3c7](https://github.com/appsignal/appsignal-nodejs/commit/ab7f3c73308b77a9573bb7fb74e18a34fa95be35) patch - Add `initializeOpentelemetrySdk` configuration option. This allows those who
+  would rather take control of how OpenTelemetry is initialised in their
+  application to skip AppSignal's initialization of the OpenTelemetry SDK.
+  
+  Additionally, add an `opentelemetryInstrumentations` method on the client,
+  which returns AppSignal's default OpenTelemetry instrumentations, already
+  configured to work correctly with AppSignal. The provided list of
+  instrumentations will follow the `additionalInstrumentations` and
+  `disableDefaultInstrumentations` config options, if those are set.
+  
+  This is not the recommended way to use AppSignal for Node.js. Only use this
+  config option and this method if you're really sure that you know what
+  you're doing.
+  
+  When initialising OpenTelemetry, it is necessary to add the AppSignal span
+  processor in order for data to be sent to AppSignal. For example, using the
+  OpenTelemetry SDK:
+  
+  ```js
+  import { SpanProcessor, Appsignal } from "@appsignal/nodejs";
+  // or: const { SpanProcessor, Appsignal } = require("@appsignal/nodejs")
+  
+  const sdk = new NodeSDK({
+    spanProcessor: new SpanProcessor(Appsignal.client)
+    instrumentations: Appsignal.client.opentelemetryInstrumentations()
+  });
+  
+  sdk.start()
+  ```
+  
+  The above snippet assumes that the AppSignal client has been initialised
+  beforehand.
+  
+  When making use of this config option, the OpenTelemetry instrumentations
+  must be configured in the same way as it is done in the AppSignal integration.
+  In the above snippet, the `instrumentations` property in the OpenTelemetry SDK
+  is set to the AppSignal client's list of OpenTelemetry instrumentations, which
+  are configured to work correctly with AppSignal.
+- [daa8982](https://github.com/appsignal/appsignal-nodejs/commit/daa898225e0594b9b4831da08c84f139cf842166) patch - Add the `setSqlBody` tracing helper to set the body attribute on a span that contains a SQL query. When using this helper the given SQL query will be sanitized, reducing the chances of sending sensitive data to AppSignal.
+  
+  ```js
+  import { setSqlBody } from "@appsignal/nodejs";
+  
+  // Must be used in an instrumented context -- e.g. an Express route
+  setSqlBody("SELECT * FROM users WHERE 'password' = 'secret'");
+  // Will be stored as: "SELECT * FROM users WHERE 'password' = ?"
+  ```
+  
+  When the `setBody` helper is also used, the `setSqlBody` overwrites the `setBody` attribute.
+  
+  More information about our [tracing helpers](https://docs.appsignal.com/nodejs/3.x/instrumentation/instrumentation.html) can be found in our documentation.
+
+### Changed
+
+- [33bce2e](https://github.com/appsignal/appsignal-nodejs/commit/33bce2e837505b8beaa140c578816aa7007c3569) patch - Bump agent to b604345.
+  
+  - Add an exponential backoff to the retry sleep time to bind to the StatsD, NGINX and OpenTelemetry exporter ports. This gives the agent a longer time to connect to the ports if they become available within a 4 minute window.
+  - Changes to the agent logger:
+    - Logs from the agent and extension now use a more consistent format in logs for spans and transactions.
+    - Logs that are for more internal use are moved to the trace log level and logs that are useful for debugging most support issues are moved to the debug log level. It should not be necessary to use log level 'trace' as often anymore. The 'debug' log level should be enough.
+  - Add `running_in_container` to agent diagnose report, to be used primarily by the Python package as a way to detect if an app's host is a container or not.
+  
+  Bump agent to 8260fa1.
+  
+  - Add `appsignal.sql_body` magic span attribute for OpenTelemetry spans. When this attribute is detected, we store the value as the span/event body. This span is sanitized beforehand so it doesn't contain any sensitive data and helps to group events in our backend. When used in combination with the `appsignal.body` attribute, the new `appsignal.sql_body` attribute is leading.
+  
+  More information on [AppSignal OpenTelemetry span attributes](https://docs.appsignal.com/opentelemetry/custom-instrumentation/attributes.html) can be found in our docs.
+- [285f89e](https://github.com/appsignal/appsignal-nodejs/commit/285f89e732a552a5ec8f2ca627d492b7d0d2ea19) patch - Print more path details in the diagnose CLI output. It will now print details like if a path exists, the ownership of a path and if it's writable or not to help debug issues locally.
+- [3204cdd](https://github.com/appsignal/appsignal-nodejs/commit/3204cdd597cc342343aae434ca0de277418e08e2) patch - Bump agent to 1dd2a18.
+  
+  - When adding an SQL body attribute via the extension, instead of truncating the body first and sanitising it later, sanitise it first and truncate it later. This prevents an issue where queries containing very big values result in truncated sanitisations.
+
+### Fixed
+
+- [3367dfe](https://github.com/appsignal/appsignal-nodejs/commit/3367dfe583f4c2104f6f4b1e223eda88c58d88a1) patch - Fix a TypeScript types compatibility error upon app compilation when using the AppSignal Express error handler.
+
 ## 3.0.24
 
 ### Changed
