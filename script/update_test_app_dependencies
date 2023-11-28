@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -eu
+
+for app in test/*; do
+  # Check that it is a test app
+  if test -f "$app/app/package-lock.json"; then
+    echo "Updating dependencies for $app..."
+    pushd "$app/app" > /dev/null
+    npm update
+    popd > /dev/null
+  fi
+done
