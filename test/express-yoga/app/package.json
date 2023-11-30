@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@appsignal/nodejs": "^2.4.2",
+    "@appsignal/nodejs": "^3.0.26",
     "graphql-yoga": "^4.0.0",
     "express": "^4.17.2",
     "tslib": "^2.4.0"

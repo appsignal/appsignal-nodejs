@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@appsignal/nodejs": "^2.4.2",
+    "@appsignal/nodejs": "^3.0.26",
     "cookie-parser": "^1.4.6",
     "express": "^4.17.2",
     "ioredis": "^4.28.5",

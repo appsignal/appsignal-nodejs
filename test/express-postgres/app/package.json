@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@appsignal/nodejs": "^2.4.2",
+    "@appsignal/nodejs": "^3.0.26",
     "express": "^4.17.2",
     "pg": "^8.7.3",
     "tslib": "^2.4.0"
