@@ -29,7 +29,7 @@
     "@opentelemetry/instrumentation-redis": ">= 0.35.4 < 0.36",
     "@opentelemetry/instrumentation-redis-4": ">= 0.35.5 < 0.36",
     "@opentelemetry/instrumentation-restify": ">= 0.34.2 < 0.35",
-    "@opentelemetry/sdk-node": ">= 0.43.0 < 0.44",
+    "@opentelemetry/sdk-node": ">= 0.45.0 < 0.46",
     "@opentelemetry/sdk-trace-base": ">= 1.18.1 < 1.19",
     "@prisma/instrumentation": ">= 5.4.0 < 5.6.0",
     "node-addon-api": "^3.1.0",
