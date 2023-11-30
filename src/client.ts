@@ -66,7 +66,7 @@ export type DefaultInstrumentationName = keyof typeof DefaultInstrumentations
 type ConfigArg<T> = T extends new (...args: infer U) => unknown ? U[0] : never
 type DefaultInstrumentationsConfigMap = {
   [Name in DefaultInstrumentationName]?: ConfigArg<
-    typeof DefaultInstrumentations[Name]
+    (typeof DefaultInstrumentations)[Name]
   >
 }
 
