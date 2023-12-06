@@ -1,5 +1,12 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.28
+
+### Fixed
+
+- [72e9e73](https://github.com/appsignal/appsignal-nodejs/commit/72e9e731b3a28155fe7c77d67ae619f649bfeec1) patch - Update the diagnose tool URLs printed by the CLI and package to the new location in our documentation.
+- [96b8545](https://github.com/appsignal/appsignal-nodejs/commit/96b8545323195ee5857a18190c5138834e51756f) patch - Fix compatibility issue with Node.js's node-gyp package and Python 3.12.0. Python 3.12.0 removed a package called "distutils", causing the extension to fail to install. Upgrade the node-gyp package with the fix for this issue.
+
 ## 3.0.27
 
 ### Changed
