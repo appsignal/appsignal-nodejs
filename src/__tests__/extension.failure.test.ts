@@ -23,7 +23,7 @@ describe("Extension", () => {
     require("../extension")
 
     expect(errorSpy).toHaveBeenLastCalledWith(
-      "[appsignal][ERROR] AppSignal failed to load the extension. Please run the diagnose tool and email us at support@appsignal.com: https://docs.appsignal.com/nodejs/command-line/diagnose.html\n",
+      "[appsignal][ERROR] AppSignal failed to load the extension. Please run the diagnose tool and email us at support@appsignal.com: https://docs.appsignal.com/nodejs/3.x/command-line/diagnose.html\n",
       expect.any(Object)
     )
   })
@@ -89,7 +89,7 @@ describe("Extension", () => {
         expect.any(Object)
       )
       expect(errorSpy).toHaveBeenLastCalledWith(
-        "[appsignal][ERROR] AppSignal failed to load the extension. Please run the diagnose tool and email us at support@appsignal.com: https://docs.appsignal.com/nodejs/command-line/diagnose.html\n",
+        "[appsignal][ERROR] AppSignal failed to load the extension. Please run the diagnose tool and email us at support@appsignal.com: https://docs.appsignal.com/nodejs/3.x/command-line/diagnose.html\n",
         expect.any(Object)
       )
     })

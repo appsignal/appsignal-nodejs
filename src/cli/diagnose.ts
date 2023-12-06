@@ -151,7 +151,9 @@ export class Diagnose {
     this.print_newline()
 
     console.log(`Read more about how the diagnose config output is rendered`)
-    console.log(`https://docs.appsignal.com/nodejs/command-line/diagnose.html`)
+    console.log(
+      `https://docs.appsignal.com/nodejs/3.x/command-line/diagnose.html`
+    )
 
     this.print_newline()
 
