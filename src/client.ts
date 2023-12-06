@@ -217,7 +217,7 @@ export class Client {
   /**
    * Internal private function used by the demo CLI.
    *
-   * https://docs.appsignal.com/nodejs/command-line/demo.html
+   * https://docs.appsignal.com/nodejs/3.x/command-line/demo.html
    *
    * @private
    */
