@@ -1,5 +1,27 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.27
+
+### Changed
+
+- [5c460cc](https://github.com/appsignal/appsignal-nodejs/commit/5c460ccda90e128a8560c53f0094684fd31c00d6) patch - Remove `route` tag from HTTP server spans. Since the span will already have the route attribute as part of its name, the tag is redundant.
+- [5c460cc](https://github.com/appsignal/appsignal-nodejs/commit/5c460ccda90e128a8560c53f0094684fd31c00d6) patch - Filter more disk mountpoints for disk usage and disk IO stats. This helps reduce noise in the host metrics by focussing on more important mountpoints.
+  
+  The following mountpoint are ignored. Any mountpoint containing:
+  
+  - `/etc/hostname`
+  - `/etc/hosts`
+  - `/etc/resolv.conf`
+  - `/snap/`
+  - `/proc/`
+
+### Fixed
+
+- [5c460cc](https://github.com/appsignal/appsignal-nodejs/commit/5c460ccda90e128a8560c53f0094684fd31c00d6) patch - Fix an issue where the `method` tag extracted from an incoming HTTP request span would be overriden with the method used for an outgoing HTTP request span.
+- [5c460cc](https://github.com/appsignal/appsignal-nodejs/commit/5c460ccda90e128a8560c53f0094684fd31c00d6) patch - - Support disk usage reporting (using `df`) on Alpine Linux. This host metric would report an error on Alpine Linux.
+  - When a disk mountpoint has no inodes usage percentage, skip the mountpoint, and report the inodes information successfully for the inodes that do have an inodes usage percentage.
+- [7ec2008](https://github.com/appsignal/appsignal-nodejs/commit/7ec20087293a6809f54b01097b87624d6c72042e) patch - Fix missing error metrics for the error rate and error count graphs in some scenarios, like with Koa apps.
+
 ## 3.0.26
 
 ### Changed
