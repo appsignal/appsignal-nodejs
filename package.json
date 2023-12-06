@@ -33,7 +33,7 @@
     "@opentelemetry/sdk-trace-base": "^1.17.0",
     "@prisma/instrumentation": "^5.3.1",
     "node-addon-api": "^3.1.0",
-    "node-gyp": "^9.0.0",
+    "node-gyp": "^10.0.0",
     "tslib": "^2.0.3",
     "winston": "^3.6.0"
   },
