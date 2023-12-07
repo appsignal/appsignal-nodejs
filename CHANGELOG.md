@@ -1,5 +1,11 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.29
+
+### Changed
+
+- [ec9c4fb](https://github.com/appsignal/appsignal-nodejs/commit/ec9c4fb9ba8db544630b507e8e77207c17f60f14) patch - Update OpenTelemetry dependencies. This fixes a known issue with Next.js and webpack compatibility and includes other fixes.
+
 ## 3.0.28
 
 ### Fixed
