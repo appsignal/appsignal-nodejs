@@ -15,7 +15,7 @@
     "start:prod": "node --require ./dist/appsignal.js dist/main"
   },
   "dependencies": {
-    "@appsignal/nodejs": "^2.4.2",
+    "@appsignal/nodejs": "^3.0.26",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",

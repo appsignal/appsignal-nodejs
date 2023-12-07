@@ -9,10 +9,10 @@
     "server": "node --require ./dist/appsignal.js dist/app.js"
   },
   "dependencies": {
-    "@appsignal/nodejs": "^2.4.2",
-    "@koa/router": "10.1.1",
+    "@appsignal/nodejs": "^3.0.26",
+    "@koa/router": "^10.1.1",
     "koa": "^2.13.4",
-    "koa-bodyparser": "4.3.0",
+    "koa-bodyparser": "^4.3.0",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "tslib": "^2.4.0"

@@ -8,10 +8,10 @@
     "start": "node --require ./appsignal.js ./server.js"
   },
   "dependencies": {
-    "@appsignal/nodejs": "^2.4.2",
-    "next": "13.5.4",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "@appsignal/nodejs": "^3.0.26",
+    "next": "^13.5.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/node": "18.8.3",
