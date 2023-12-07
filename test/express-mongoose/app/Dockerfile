@@ -1,6 +1,6 @@
-FROM node:16
+FROM node:18
 
-RUN apt-get update && apt-get install -y netcat
+RUN apt-get update && apt-get install -y netcat-openbsd
 
 COPY run.sh /
 
