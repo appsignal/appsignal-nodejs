@@ -61,7 +61,7 @@
     "build:watch": "tsc -p tsconfig.json -w --preserveWatchOutput",
     "postclean": "npm run clean:ext",
     "clean": "rimraf dist coverage build",
-    "clean:ext": "rimraf ext/appsignal-agent ext/._appsignal-agent ext/libappsignal.a ext/libappsignal.dylib ext/appsignal.* ext/*.tar.gz ext/*.report build/",
+    "clean:ext": "rimraf ext/appsignal-agent ext/._appsignal-agent ext/._appsignal.h ext/libappsignal.a ext/libappsignal.dylib ext/appsignal.* ext/*.tar.gz ext/*.report build/",
     "preinstall": "node scripts/extension/prebuild.js",
     "install": "node scripts/extension/extension.js",
     "link:npm": "npm link",
