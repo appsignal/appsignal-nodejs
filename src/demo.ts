@@ -23,7 +23,7 @@ export function demo(client: Client) {
     startSec + 1,
     startNsec * 1.2,
     "GET /demo",
-    { demo_sample: true },
+    { "appsignal.tag.demo_sample": true },
     "@opentelemetry/instrumentation-http"
   )
   performanceRootSpan.close()
@@ -53,7 +53,7 @@ export function demo(client: Client) {
     startSec + 1,
     startNsec + 200,
     "GET /demo",
-    { demo_sample: true },
+    { "appsignal.tag.demo_sample": true },
     "@opentelemetry/instrumentation-http"
   )
   try {
