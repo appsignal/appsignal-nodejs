@@ -9,6 +9,7 @@ import { demo } from "./demo"
 import { VERSION } from "./version"
 import { setParams, setSessionData } from "./helpers"
 import { BaseLogger, Logger, LoggerFormat, LoggerLevel } from "./logger"
+import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api"
 
 import { Instrumentation } from "@opentelemetry/instrumentation"
 import {
@@ -157,6 +158,7 @@ export class Client {
         this.#metrics = new Metrics()
         if (this.config.data.initializeOpentelemetrySdk) {
           this.#sdk = this.initOpenTelemetry()
+          this.setUpOpenTelemetryLogger()
         }
       }
     } else {
@@ -414,6 +416,17 @@ export class Client {
     }
 
     return logger
+  }
+
+  /**
+   * Sets up the OpenTelemetry diag logger based on our integration logger level.
+   * If our integration logger level is "silly" ("trace"), the OpenTelemetry diag debug messages
+   * are logged.
+   */
+  private setUpOpenTelemetryLogger(): void {
+    if (this.config.data["logLevel"] === "trace") {
+      diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG)
+    }
   }
 
   /**
