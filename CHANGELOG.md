@@ -1,5 +1,23 @@
 # AppSignal for Node.js Changelog
 
+## 3.0.30
+
+### Added
+
+- [6d4cd2b](https://github.com/appsignal/appsignal-nodejs/commit/6d4cd2b760770607432c038177871ea7b5bb4ce7) patch - When the AppSignal log level is set to "trace". Additional information from the OpenTelemetry instrumentations is now logged.
+
+### Changed
+
+- [6b75b87](https://github.com/appsignal/appsignal-nodejs/commit/6b75b87152689b094294d2b2d989d042facfb422) patch - Fix disk usage returning a Vec with no entries on Alpine Linux when the `df --local` command fails.
+
+### Removed
+
+- [6b75b87](https://github.com/appsignal/appsignal-nodejs/commit/6b75b87152689b094294d2b2d989d042facfb422) patch - Remove the `appsignal_set_host_guage` and `appsignal_set_process_gauge` extension functions. These functions were already deprecated and did not report any metrics.
+
+### Fixed
+
+- [c49dbf3](https://github.com/appsignal/appsignal-nodejs/commit/c49dbf3d242bbdc89423dad1aa4027b5f4a51569) patch - Fix the demo sample recognition. Demo samples didn't show the helpful explanation box in the UI, because the `demo_sample` tag was set incorrectly as an attribute.
+
 ## 3.0.29
 
 ### Changed
