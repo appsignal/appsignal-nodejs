@@ -10,6 +10,8 @@ import { VERSION } from "./version"
 import { setParams, setSessionData } from "./helpers"
 import { BaseLogger, Logger, LoggerFormat, LoggerLevel } from "./logger"
 import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api"
+import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics"
+import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto"
 
 import { Instrumentation } from "@opentelemetry/instrumentation"
 import {
@@ -389,9 +391,17 @@ export class Client {
 
     const instrumentations = this.opentelemetryInstrumentations()
 
+    // Metrics initialization
+    const metricReader = new PeriodicExportingMetricReader({
+      exporter: new OTLPMetricExporter({
+        url: "http://localhost:8099/v1/metrics"
+      })
+    })
+
     const sdk = new NodeSDK({
       instrumentations,
-      spanProcessor
+      spanProcessor,
+      metricReader
     })
 
     sdk.start()
