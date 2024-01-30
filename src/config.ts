@@ -116,6 +116,7 @@ export class Configuration {
       disableDefaultInstrumentations: false,
       dnsServers: [],
       enableHostMetrics: true,
+      enableOpentelemetryHttp: true,
       enableMinutelyProbes: true,
       enableStatsd: false,
       enableNginxMetrics: false,

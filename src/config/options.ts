@@ -8,6 +8,7 @@ export type AppsignalOptions = {
   dnsServers: string[]
   enableHostMetrics: boolean
   enableMinutelyProbes: boolean
+  enableOpentelemetryHttp: boolean
   enableStatsd: boolean
   enableNginxMetrics: boolean
   endpoint: string
