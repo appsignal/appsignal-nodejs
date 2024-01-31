@@ -256,7 +256,7 @@ describe("Configuration", () => {
     })
 
     it("writes default configuration values to the environment", () => {
-      expect(env("_APPSIGNAL_ACTIVE")).toBeUndefined()
+      expect(env("_APPSIGNAL_ACTIVE")).toEqual("false")
       expect(env("_APPSIGNAL_APP_ENV")).toBeDefined()
       expect(env("_APPSIGNAL_APP_NAME")).toBeUndefined()
       expect(env("_APPSIGNAL_BIND_ADDRESS")).toBeUndefined()
@@ -264,8 +264,8 @@ describe("Configuration", () => {
       expect(env("_APPSIGNAL_DNS_SERVERS")).toBeUndefined()
       expect(env("_APPSIGNAL_ENABLE_HOST_METRICS")).toEqual("true")
       expect(env("_APPSIGNAL_ENABLE_OPENTELEMETRY_HTTP")).toEqual("true")
-      expect(env("_APPSIGNAL_ENABLE_STATSD")).toBeUndefined()
-      expect(env("_APPSIGNAL_ENABLE_NGINX_METRICS")).toBeUndefined()
+      expect(env("_APPSIGNAL_ENABLE_STATSD")).toEqual("false")
+      expect(env("_APPSIGNAL_ENABLE_NGINX_METRICS")).toEqual("false")
       expect(env("_APPSIGNAL_FILES_WORLD_ACCESSIBLE")).toEqual("true")
       expect(env("_APPSIGNAL_FILTER_DATA_KEYS")).toBeUndefined()
       expect(env("_APPSIGNAL_HOSTNAME")).toBeUndefined()
@@ -338,7 +338,7 @@ describe("Configuration", () => {
         expect(env("_APPSIGNAL_APP_NAME")).toEqual(name)
         expect(env("_APPSIGNAL_BIND_ADDRESS")).toEqual("0.0.0.0")
         expect(env("_APPSIGNAL_DNS_SERVERS")).toEqual("8.8.8.8,8.8.4.4")
-        expect(env("_APPSIGNAL_ENABLE_HOST_METRICS")).toEqual("true")
+        expect(env("_APPSIGNAL_ENABLE_HOST_METRICS")).toEqual("false")
         expect(env("_APPSIGNAL_ENABLE_OPENTELEMETRY_HTTP")).toEqual("false")
         expect(env("_APPSIGNAL_ENABLE_STATSD")).toEqual("true")
         expect(env("_APPSIGNAL_ENABLE_NGINX_METRICS")).toEqual("true")

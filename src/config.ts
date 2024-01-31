@@ -206,7 +206,9 @@ export class Configuration {
         process.env[k] = current.join(",")
       }
 
-      if (current) process.env[k] = String(current)
+      if (current || typeof current === "boolean") {
+        process.env[k] = String(current)
+      }
     })
   }
 
