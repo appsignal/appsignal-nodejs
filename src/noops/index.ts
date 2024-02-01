@@ -1,3 +1,3 @@
 export * from "./metrics"
-export * from "./integration_logger"
+export * from "./internal_logger"
 export * from "./logger"

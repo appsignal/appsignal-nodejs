@@ -66,7 +66,7 @@ export class BaseLogger implements Logger {
     this.format = get_format(format)
 
     if (this.severityThreshold == UNKNOWN_SEVERITY) {
-      this.#client.integrationLogger.warn(
+      this.#client.internalLogger.warn(
         `Logger level must be "trace", "debug", "info", "log", "warn" or "error", ` +
           `but "${level}" was given. Logger level set to "info".`
       )
@@ -74,7 +74,7 @@ export class BaseLogger implements Logger {
     }
 
     if (this.format == UNKNOWN_FORMAT) {
-      this.#client.integrationLogger.warn(
+      this.#client.internalLogger.warn(
         `Logger format must be "plaintext", "logfmt", or "json", ` +
           `but "${format}" was given. Logger format set to "plaintext".`
       )

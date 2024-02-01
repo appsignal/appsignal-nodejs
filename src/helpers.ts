@@ -10,7 +10,7 @@ function setAttribute(attribute: string, value: AttributeValue, span?: Span) {
   } else {
     const splitAttributes = attribute.split(".")
     const attributeSuffix = splitAttributes[splitAttributes.length - 1]
-    Client.integrationLogger.debug(
+    Client.internalLogger.debug(
       `There is no active span, cannot set \`${attributeSuffix}\``
     )
   }
@@ -106,12 +106,12 @@ export function setError(error: Error, span?: Span) {
         message: error.message
       })
     } else {
-      Client.integrationLogger.debug(
+      Client.internalLogger.debug(
         `There is no active span, cannot set \`${error.name}\``
       )
     }
   } else {
-    Client.integrationLogger.debug(
+    Client.internalLogger.debug(
       "Cannot set error, it is not an `Error`-like object"
     )
   }
@@ -127,7 +127,7 @@ export function sendError(error: Error, fn: () => void = () => {}) {
         span.end()
       })
   } else {
-    Client.integrationLogger.debug(
+    Client.internalLogger.debug(
       "Cannot send error, it is not an `Error`-like object"
     )
   }
@@ -137,7 +137,7 @@ export function sendError(error: Error, fn: () => void = () => {}) {
  * @deprecated This function is no longer required for manual instrumentation.
  */
 export function instrumentationsLoaded(): Promise<void> {
-  Client.integrationLogger.warn(
+  Client.internalLogger.warn(
     "instrumentationsLoaded() is deprecated, please remove it from your code as it'll be deleted in the next major release."
   )
 
