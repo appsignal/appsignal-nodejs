@@ -28,6 +28,7 @@ export type AppsignalOptions = {
   logLevel: string
   loggingEndpoint: string
   name: string
+  opentelemetryPort: string
   pushApiKey: string
   requestHeaders: string[]
   revision: string

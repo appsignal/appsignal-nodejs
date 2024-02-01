@@ -32,6 +32,7 @@ describe("Configuration", () => {
     initializeOpentelemetrySdk: true,
     log: "file",
     loggingEndpoint: "https://appsignal-endpoint.net",
+    opentelemetryPort: "8099",
     requestHeaders: [
       "accept",
       "accept-charset",
@@ -280,6 +281,7 @@ describe("Configuration", () => {
       expect(env("_APPSIGNAL_LOGGING_ENDPOINT")).toEqual(
         "https://appsignal-endpoint.net"
       )
+      expect(env("_APPSIGNAL_OPENTELEMETRY_PORT")).toEqual("8099")
       expect(env("_APPSIGNAL_PUSH_API_ENDPOINT")).toEqual(
         "https://push.appsignal.com"
       )
@@ -326,6 +328,7 @@ describe("Configuration", () => {
           ignoreNamespaces: ["MyNamespace", "MyOtherNamespace"],
           logLevel: "debug",
           logPath: "/tmp/other",
+          opentelemetryPort: "8082",
           runningInContainer: true,
           workingDirectoryPath: "/my/path",
           revision: "my-revision",
@@ -365,6 +368,7 @@ describe("Configuration", () => {
         expect(env("_APPSIGNAL_LOGGING_ENDPOINT")).toEqual(
           "https://appsignal-endpoint.net"
         )
+        expect(env("_APPSIGNAL_OPENTELEMETRY_PORT")).toEqual("8082")
         expect(env("_APPSIGNAL_PUSH_API_ENDPOINT")).toEqual(
           "https://push.appsignal.com"
         )

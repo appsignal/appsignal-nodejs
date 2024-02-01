@@ -131,6 +131,7 @@ export class Configuration {
       initializeOpentelemetrySdk: true,
       log: "file",
       loggingEndpoint: "https://appsignal-endpoint.net",
+      opentelemetryPort: "8099",
       requestHeaders: [
         "accept",
         "accept-charset",

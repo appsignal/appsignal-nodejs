@@ -396,7 +396,7 @@ export class Client {
     if (this.config.data["enableOpentelemetryHttp"]) {
       metricReader = new PeriodicExportingMetricReader({
         exporter: new OTLPMetricExporter({
-          url: "http://localhost:8099/v1/metrics"
+          url: `http://localhost:${this.config.data["opentelemetryPort"]}/v1/metrics`
         })
       })
     }
