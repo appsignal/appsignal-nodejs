@@ -8,6 +8,7 @@ export type AppsignalOptions = {
   dnsServers: string[]
   enableHostMetrics: boolean
   enableMinutelyProbes: boolean
+  enableOpentelemetryHttp: boolean
   enableStatsd: boolean
   enableNginxMetrics: boolean
   endpoint: string
@@ -27,6 +28,7 @@ export type AppsignalOptions = {
   logLevel: string
   loggingEndpoint: string
   name: string
+  opentelemetryPort: string
   pushApiKey: string
   requestHeaders: string[]
   revision: string

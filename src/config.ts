@@ -116,6 +116,7 @@ export class Configuration {
       disableDefaultInstrumentations: false,
       dnsServers: [],
       enableHostMetrics: true,
+      enableOpentelemetryHttp: true,
       enableMinutelyProbes: true,
       enableStatsd: false,
       enableNginxMetrics: false,
@@ -130,6 +131,7 @@ export class Configuration {
       initializeOpentelemetrySdk: true,
       log: "file",
       loggingEndpoint: "https://appsignal-endpoint.net",
+      opentelemetryPort: "8099",
       requestHeaders: [
         "accept",
         "accept-charset",
@@ -205,7 +207,9 @@ export class Configuration {
         process.env[k] = current.join(",")
       }
 
-      if (current) process.env[k] = String(current)
+      if (current || typeof current === "boolean") {
+        process.env[k] = String(current)
+      }
     })
   }
 
