@@ -14,19 +14,19 @@ describe("BaseLogger", () => {
 
   beforeEach(() => {
     client.extension.log = jest.fn()
-    client.integrationLogger.warn = jest.fn()
+    client.internalLogger.warn = jest.fn()
     logger = new BaseLogger(client, "groupname")
   })
 
   it("defaults to an info logger level", () => {
     expect(logger.severityThreshold).toEqual(3)
-    expect(client.integrationLogger.warn).not.toHaveBeenCalled()
+    expect(client.internalLogger.warn).not.toHaveBeenCalled()
   })
 
   it("sets an info logger level when the severity is unknown and logs a warning", () => {
     logger = new BaseLogger(client, "groupname", "bacon" as LoggerLevel)
     expect(logger.severityThreshold).toEqual(3)
-    expect(client.integrationLogger.warn).toHaveBeenCalledWith(
+    expect(client.internalLogger.warn).toHaveBeenCalledWith(
       expect.stringContaining(`"bacon"`)
     )
   })
@@ -54,7 +54,7 @@ describe("BaseLogger", () => {
 
   it("defaults to a plaintext logger format", () => {
     expect(logger.format).toEqual(0)
-    expect(client.integrationLogger.warn).not.toHaveBeenCalled()
+    expect(client.internalLogger.warn).not.toHaveBeenCalled()
   })
 
   it("sets a plaintext format level when the format is unknown and logs a warning", () => {
@@ -65,7 +65,7 @@ describe("BaseLogger", () => {
       "bacon" as LoggerFormat
     )
     expect(logger.format).toEqual(0)
-    expect(client.integrationLogger.warn).toHaveBeenCalledWith(
+    expect(client.internalLogger.warn).toHaveBeenCalledWith(
       expect.stringContaining(`"bacon"`)
     )
   })

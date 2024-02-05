@@ -3,8 +3,8 @@ import { Extension } from "./extension"
 import { Configuration } from "./config"
 import { Metrics } from "./metrics"
 import * as gcProbe from "./probes/v8"
-import { BaseIntegrationLogger, IntegrationLogger } from "./integration_logger"
-import { NoopMetrics, noopIntegrationLogger, noopLogger } from "./noops"
+import { BaseInternalLogger, InternalLogger } from "./internal_logger"
+import { NoopMetrics, noopInternalLogger, noopLogger } from "./noops"
 import { demo } from "./demo"
 import { VERSION } from "./version"
 import { setParams, setSessionData } from "./helpers"
@@ -91,7 +91,7 @@ export class Client {
   readonly VERSION = VERSION
 
   config: Configuration
-  readonly integrationLogger: IntegrationLogger
+  readonly internalLogger: InternalLogger
   extension: Extension
 
   #metrics: Metrics
@@ -115,11 +115,11 @@ export class Client {
   /**
    * Global accessors for the AppSignal integration Logger
    */
-  static get integrationLogger(): IntegrationLogger {
+  static get internalLogger(): InternalLogger {
     if (this.client) {
-      return this.client.integrationLogger
+      return this.client.internalLogger
     } else {
-      return noopIntegrationLogger
+      return noopInternalLogger
     }
   }
 
@@ -146,12 +146,12 @@ export class Client {
 
     this.config = new Configuration(options)
     this.extension = new Extension()
-    this.integrationLogger = this.setUpIntegrationLogger()
+    this.internalLogger = this.setupInternalLogger()
     this.storeInGlobal()
 
     if (this.isActive) {
       if (process.env._APPSIGNAL_DIAGNOSE === "true") {
-        Client.integrationLogger.info(
+        Client.internalLogger.info(
           "Diagnose mode is enabled, not starting extension, SDK and probes"
         )
         this.#metrics = new NoopMetrics()
@@ -416,16 +416,16 @@ export class Client {
    * Sets up the AppSignal logger with the output based on the `log` config option. If
    * the log file is not accessible, stdout will be the output.
    */
-  private setUpIntegrationLogger(): IntegrationLogger {
+  private setupInternalLogger(): InternalLogger {
     const logFilePath = this.config.logFilePath
     const logLevel = String(this.config.data["logLevel"])
     const logType = String(this.config.data["log"])
     let logger
 
     if (logType == "file" && logFilePath) {
-      logger = new BaseIntegrationLogger(logType, logLevel, logFilePath)
+      logger = new BaseInternalLogger(logType, logLevel, logFilePath)
     } else {
-      logger = new BaseIntegrationLogger(logType, logLevel)
+      logger = new BaseInternalLogger(logType, logLevel)
     }
 
     return logger

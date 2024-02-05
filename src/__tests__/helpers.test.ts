@@ -126,7 +126,7 @@ describe("Helpers", () => {
   })
 
   it("logs a debug warning when there is no active span", () => {
-    const debugMock = jest.spyOn(Client.integrationLogger, "debug")
+    const debugMock = jest.spyOn(Client.internalLogger, "debug")
 
     setCustomData({ chunky: "bacon" })
 
@@ -153,7 +153,7 @@ describe("Helpers", () => {
     })
 
     it("logs a debug warning when there is no active span", () => {
-      const debugMock = jest.spyOn(Client.integrationLogger, "debug")
+      const debugMock = jest.spyOn(Client.internalLogger, "debug")
 
       setError(new Error("Oh no!"))
 
@@ -163,7 +163,7 @@ describe("Helpers", () => {
     })
 
     it("logs a debug warning when the value is not an error", () => {
-      const debugMock = jest.spyOn(Client.integrationLogger, "debug")
+      const debugMock = jest.spyOn(Client.internalLogger, "debug")
 
       setError("Oh no!" as any as Error)
 
@@ -220,7 +220,7 @@ describe("Helpers", () => {
     })
 
     it("logs a debug warning when the value is not an error", () => {
-      const debugMock = jest.spyOn(Client.integrationLogger, "debug")
+      const debugMock = jest.spyOn(Client.internalLogger, "debug")
 
       sendError("Oh no!" as any as Error)
 
@@ -232,7 +232,7 @@ describe("Helpers", () => {
 
   describe("Optional span argument", () => {
     it("can optionally take a span to use instead of the active span", () => {
-      const debugMock = jest.spyOn(Client.integrationLogger, "debug")
+      const debugMock = jest.spyOn(Client.internalLogger, "debug")
 
       const tracer = trace.getTracer("test")
       tracer.startActiveSpan("Active span", span => {
@@ -295,7 +295,7 @@ describe("Helpers", () => {
 
   describe("instrumentationsLoaded (deprecated)", () => {
     it("returns a promise and a deprecation warning", () => {
-      const debugMock = jest.spyOn(Client.integrationLogger, "warn")
+      const debugMock = jest.spyOn(Client.internalLogger, "warn")
 
       expect(instrumentationsLoaded()).toBeInstanceOf(Promise)
       expect(debugMock).toHaveBeenCalledWith(

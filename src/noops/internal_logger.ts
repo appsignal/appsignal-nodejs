@@ -1,6 +1,6 @@
-import { IntegrationLogger } from "../integration_logger"
+import { InternalLogger } from "../internal_logger"
 
-export class NoopIntegrationLogger implements IntegrationLogger {
+export class NoopInternalLogger implements InternalLogger {
   error(_message: string) {
     // noop
   }
@@ -18,4 +18,4 @@ export class NoopIntegrationLogger implements IntegrationLogger {
   }
 }
 
-export const noopIntegrationLogger = new NoopIntegrationLogger()
+export const noopInternalLogger = new NoopInternalLogger()
