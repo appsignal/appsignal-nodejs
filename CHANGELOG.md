@@ -1,5 +1,20 @@
 # AppSignal for Node.js Changelog
 
+## 3.1.0
+
+### Added
+
+- [232ad25](https://github.com/appsignal/appsignal-nodejs/commit/232ad25657b82566b0da9df5bde3cd1a4074f074) minor - The OpenTelemetry metric exporter is now initialized by default. The integration will send default metrics from the instrumentations, and also allows you to send your custom metrics using OpenTelemetry to AppSignal to build your own dashboards.
+
+### Changed
+
+- [56fae90](https://github.com/appsignal/appsignal-nodejs/commit/56fae90bda5223c873b857f8787a74d02a88b24a) patch - Make the debug log message for OpenTelemetry spans from libraries we don't automatically recognize more clear. Mention the span id and the instrumentation library.
+- [56fae90](https://github.com/appsignal/appsignal-nodejs/commit/56fae90bda5223c873b857f8787a74d02a88b24a) patch - Fix an issue where queries containing a MySQL leading type indicator would only be partially sanitised.
+
+### Fixed
+
+- [c41d2f1](https://github.com/appsignal/appsignal-nodejs/commit/c41d2f18b231c9168c5a1965a7c66abc4b70b9f8) patch - Fix issue with boolean config options not being set to `false` properly for the agent configuration.
+
 ## 3.0.30
 
 ### Added
