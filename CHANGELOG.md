@@ -27,7 +27,7 @@
 
 ### Removed
 
-- [6b75b87](https://github.com/appsignal/appsignal-nodejs/commit/6b75b87152689b094294d2b2d989d042facfb422) patch - Remove the `appsignal_set_host_guage` and `appsignal_set_process_gauge` extension functions. These functions were already deprecated and did not report any metrics.
+- [6b75b87](https://github.com/appsignal/appsignal-nodejs/commit/6b75b87152689b094294d2b2d989d042facfb422) patch - Remove the `appsignal_set_host_gauge` and `appsignal_set_process_gauge` extension functions. These functions were already deprecated and did not report any metrics.
 
 ### Fixed
 
