@@ -1,5 +1,23 @@
 # AppSignal for Node.js Changelog
 
+## 3.2.0
+
+_Published on 2024-03-06._
+
+### Added
+
+- [a977204](https://github.com/appsignal/appsignal-nodejs/commit/a977204e8aa7a75be3787b73f8179f43836bb684) patch - Add histogram support to the OpenTelemetry HTTP server. This allows OpenTelemetry-based instrumentations to report histogram data to AppSignal as distribution metrics.
+
+### Changed
+
+- [335324a](https://github.com/appsignal/appsignal-nodejs/commit/335324ae26bedee062b00ebce22da0d683a89584) minor - **Breaking change**: Normalize CPU metrics for cgroups v1 systems. When we can detect how many CPUs are configured in the container's limits, we will normalize the CPU percentages to a maximum of 100%. This is a breaking change. Triggers for CPU percentages that are configured for a CPU percentage higher than 100% will no longer trigger after this update. Please configure triggers to a percentage with a maximum of 100% CPU percentage.
+- [335324a](https://github.com/appsignal/appsignal-nodejs/commit/335324ae26bedee062b00ebce22da0d683a89584) patch - Support fractional CPUs for cgroups v2 metrics. Previously a CPU count of 0.5 would be interpreted as 1 CPU. Now it will be correctly seen as half a CPU and calculate CPU percentages accordingly.
+- [f99d4c5](https://github.com/appsignal/appsignal-nodejs/commit/f99d4c556b4cb53d5d519613da18554387c906cf) patch - Update bundled trusted root certificates.
+
+### Fixed
+
+- [e5fa556](https://github.com/appsignal/appsignal-nodejs/commit/e5fa55652ef1bb0df6ac39da25c94fdf590cd63a) patch - Fix (sub)traces not being reported in their entirety when the OpenTelemetry exporter sends one trace in multiple export requests. This would be an issue for long running traces, that are exported in several requests.
+
 ## 3.1.0
 
 ### Added
