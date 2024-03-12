@@ -1,5 +1,11 @@
 # AppSignal for Node.js Changelog
 
+## 3.3.0
+
+### Added
+
+- [7846141](https://github.com/appsignal/appsignal-nodejs/commit/7846141dcca787c3c478769c17ee0e712eb19d59) minor - Add Node.js Apollo Gateway span mapping. This supports reporting OpenTelemetry Apollo Gateway spans as AppSignal spans, for the Node.js integration.
+
 ## 3.2.0
 
 _Published on 2024-03-06._
