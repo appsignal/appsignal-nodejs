@@ -5,7 +5,7 @@ import fs from "fs"
 import { VERSION } from "./version"
 import { isWritable } from "./utils"
 import { AppsignalOptions } from "./config/options"
-import { ENV_TO_KEY_MAPPING, PRIVATE_ENV_MAPPING, BOOL_KEYS, STRING_KEYS } from "./config/configmap"
+import { ENV_TO_KEY_MAPPING, PRIVATE_ENV_MAPPING, BOOL_KEYS, STRING_KEYS, LIST_KEYS } from "./config/configmap"
 
 /**
  * The AppSignal configuration object.
@@ -182,6 +182,14 @@ export class Configuration {
 
       if (current) {
         conf[ENV_TO_KEY_MAPPING[k]] = current == "true"
+      }
+    })
+
+    LIST_KEYS.forEach(k => {
+      const current = process.env[k]
+
+      if (current) {
+        conf[ENV_TO_KEY_MAPPING[k]] = current.split(",")
       }
     })
 
