@@ -4,6 +4,7 @@ export type AppsignalOptions = {
   active: boolean
   bindAddress: string
   caFilePath: string
+  cpuCount: number
   disableDefaultInstrumentations: DefaultInstrumentationName[] | boolean
   dnsServers: string[]
   enableHostMetrics: boolean

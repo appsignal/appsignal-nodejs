@@ -11,7 +11,8 @@ import {
   BOOL_KEYS,
   STRING_KEYS,
   LIST_KEYS,
-  LIST_OR_BOOL_KEYS
+  LIST_OR_BOOL_KEYS,
+  FLOAT_KEYS
 } from "./config/configmap"
 
 /**
@@ -211,6 +212,18 @@ export class Configuration {
         conf[ENV_TO_KEY_MAPPING[k]] = false
       } else if (current) {
         conf[ENV_TO_KEY_MAPPING[k]] = current.split(",")
+      }
+    })
+
+    FLOAT_KEYS.forEach(k => {
+      const current = process.env[k]
+
+      if (current) {
+        const parsed = parseFloat(current)
+
+        if (!isNaN(parsed)) {
+          conf[ENV_TO_KEY_MAPPING[k]] = parsed
+        }
       }
     })
 

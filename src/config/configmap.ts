@@ -6,6 +6,7 @@ export const ENV_TO_KEY_MAPPING: Record<string, keyof AppsignalOptions> = {
   APPSIGNAL_APP_NAME: "name",
   APPSIGNAL_BIND_ADDRESS: "bindAddress",
   APPSIGNAL_CA_FILE_PATH: "caFilePath",
+  APPSIGNAL_CPU_COUNT: "cpuCount",
   APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS: "disableDefaultInstrumentations",
   APPSIGNAL_DNS_SERVERS: "dnsServers",
   APPSIGNAL_ENABLE_HOST_METRICS: "enableHostMetrics",
@@ -46,6 +47,7 @@ export const PRIVATE_ENV_MAPPING: Record<string, keyof AppsignalOptions> = {
   _APPSIGNAL_APP_NAME: "name",
   _APPSIGNAL_BIND_ADDRESS: "bindAddress",
   _APPSIGNAL_CA_FILE_PATH: "caFilePath",
+  _APPSIGNAL_CPU_COUNT: "cpuCount",
   _APPSIGNAL_DNS_SERVERS: "dnsServers",
   _APPSIGNAL_ENABLE_HOST_METRICS: "enableHostMetrics",
   _APPSIGNAL_ENABLE_OPENTELEMETRY_HTTP: "enableOpentelemetryHttp",
@@ -80,6 +82,7 @@ export const JS_TO_RUBY_MAPPING: Record<keyof AppsignalOptions, string> = {
   bindAddress: "bind_address",
   pushApiKey: "push_api_key",
   caFilePath: "ca_file_path",
+  cpuCount: "cpu_count",
   disableDefaultInstrumentations: "disable_default_instrumentations",
   dnsServers: "dns_servers",
   enableHostMetrics: "enable_host_metrics",
@@ -163,3 +166,5 @@ export const LIST_KEYS: string[] = [
 export const LIST_OR_BOOL_KEYS: string[] = [
   "APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS"
 ]
+
+export const FLOAT_KEYS: string[] = ["APPSIGNAL_CPU_COUNT"]

@@ -129,11 +129,15 @@ describe("Configuration", () => {
       process.env["APPSIGNAL_ENABLE_STATSD"] = "true"
       process.env["APPSIGNAL_ENABLE_HOST_METRICS"] = "false"
       process.env["APPSIGNAL_DNS_SERVERS"] = "8.8.8.8,8.8.4.4"
+      process.env["APPSIGNAL_CPU_COUNT"] = "1.5"
+
       const envOptions = {
         enableStatsd: true,
         enableHostMetrics: false,
-        dnsServers: ["8.8.8.8", "8.8.4.4"]
+        dnsServers: ["8.8.8.8", "8.8.4.4"],
+        cpuCount: 1.5
       }
+
       const expectedConfig = {
         ...expectedDefaultConfig,
         ...envOptions
@@ -319,6 +323,7 @@ describe("Configuration", () => {
       expect(env("_APPSIGNAL_APP_NAME")).toBeUndefined()
       expect(env("_APPSIGNAL_BIND_ADDRESS")).toBeUndefined()
       expect(env("_APPSIGNAL_CA_FILE_PATH")).toMatch(/cert\/cacert\.pem$/)
+      expect(env("_APPSIGNAL_CPU_COUNT")).toBeUndefined()
       expect(env("_APPSIGNAL_DNS_SERVERS")).toBeUndefined()
       expect(env("_APPSIGNAL_ENABLE_HOST_METRICS")).toEqual("true")
       expect(env("_APPSIGNAL_ENABLE_OPENTELEMETRY_HTTP")).toEqual("true")
@@ -367,6 +372,7 @@ describe("Configuration", () => {
           name,
           active: true,
           bindAddress: "0.0.0.0",
+          cpuCount: 1.5,
           pushApiKey,
           dnsServers: ["8.8.8.8", "8.8.4.4"],
           enableHostMetrics: false,
@@ -397,6 +403,7 @@ describe("Configuration", () => {
         expect(env("_APPSIGNAL_ACTIVE")).toEqual("true")
         expect(env("_APPSIGNAL_APP_NAME")).toEqual(name)
         expect(env("_APPSIGNAL_BIND_ADDRESS")).toEqual("0.0.0.0")
+        expect(env("_APPSIGNAL_CPU_COUNT")).toEqual("1.5")
         expect(env("_APPSIGNAL_DNS_SERVERS")).toEqual("8.8.8.8,8.8.4.4")
         expect(env("_APPSIGNAL_ENABLE_HOST_METRICS")).toEqual("false")
         expect(env("_APPSIGNAL_ENABLE_OPENTELEMETRY_HTTP")).toEqual("false")
