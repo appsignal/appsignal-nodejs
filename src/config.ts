@@ -173,12 +173,7 @@ export class Configuration {
       const current = process.env[k]
 
       if (current) {
-        try {
-          // attempt to extract a value from a string
-          conf[v] = eval(current)
-        } catch (e) {
-          conf[v] = current
-        }
+        conf[v] = current
       }
     })
 
