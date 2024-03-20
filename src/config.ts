@@ -187,8 +187,10 @@ export class Configuration {
     BOOL_KEYS.forEach(k => {
       const current = process.env[k]
 
-      if (current) {
-        conf[ENV_TO_KEY_MAPPING[k]] = current == "true"
+      if (current == "true") {
+        conf[ENV_TO_KEY_MAPPING[k]] = true
+      } else if (current == "false") {
+        conf[ENV_TO_KEY_MAPPING[k]] = false
       }
     })
 

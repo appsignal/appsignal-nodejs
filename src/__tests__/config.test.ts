@@ -127,9 +127,11 @@ describe("Configuration", () => {
   describe("with config in the environment", () => {
     it("loads configuration from the environment", () => {
       process.env["APPSIGNAL_ENABLE_STATSD"] = "true"
+      process.env["APPSIGNAL_ENABLE_HOST_METRICS"] = "false"
       process.env["APPSIGNAL_DNS_SERVERS"] = "8.8.8.8,8.8.4.4"
       const envOptions = {
         enableStatsd: true,
+        enableHostMetrics: false,
         dnsServers: ["8.8.8.8", "8.8.4.4"]
       }
       const expectedConfig = {
