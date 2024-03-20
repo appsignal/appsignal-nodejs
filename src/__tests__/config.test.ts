@@ -168,7 +168,7 @@ describe("Configuration", () => {
     })
 
     describe("with APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS set to true", () => {
-      it("sets disableDefaultInstrumentations to false", () => {
+      it("sets disableDefaultInstrumentations to true", () => {
         process.env["APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS"] = "true"
         const envOptions = {
           disableDefaultInstrumentations: true
@@ -183,7 +183,7 @@ describe("Configuration", () => {
       })
     })
 
-    describe("withAPPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS set to false", () => {
+    describe("with APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS set to false", () => {
       it("sets disableDefaultInstrumentations to false", () => {
         process.env["APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS"] = "false"
         const envOptions = {
