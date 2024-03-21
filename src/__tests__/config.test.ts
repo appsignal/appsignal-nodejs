@@ -127,8 +127,12 @@ describe("Configuration", () => {
   describe("with config in the environment", () => {
     it("loads configuration from the environment", () => {
       process.env["APPSIGNAL_ENABLE_STATSD"] = "true"
+      process.env["APPSIGNAL_ENABLE_HOST_METRICS"] = "false"
+      process.env["APPSIGNAL_DNS_SERVERS"] = "8.8.8.8,8.8.4.4"
       const envOptions = {
-        enableStatsd: true
+        enableStatsd: true,
+        enableHostMetrics: false,
+        dnsServers: ["8.8.8.8", "8.8.4.4"]
       }
       const expectedConfig = {
         ...expectedDefaultConfig,
@@ -142,6 +146,59 @@ describe("Configuration", () => {
       expect(config.sources.system).toEqual({})
       expect(config.sources.initial).toEqual({})
       expect(config.sources.env).toEqual(envOptions)
+    })
+
+    describe("with a list as APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS", () => {
+      it("sets disableDefaultInstrumentations to the list", () => {
+        process.env["APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS"] =
+          "@opentelemetry/instrumentation-express,@opentelemetry/instrumentation-fastify,@opentelemetry/instrumentation-fs"
+        const envOptions = {
+          disableDefaultInstrumentations: [
+            "@opentelemetry/instrumentation-express",
+            "@opentelemetry/instrumentation-fastify",
+            "@opentelemetry/instrumentation-fs"
+          ]
+        }
+        const expectedConfig = {
+          ...expectedDefaultConfig,
+          ...envOptions
+        }
+        config = new Configuration({})
+
+        expect(config.data).toEqual(expectedConfig)
+      })
+    })
+
+    describe("with APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS set to true", () => {
+      it("sets disableDefaultInstrumentations to true", () => {
+        process.env["APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS"] = "true"
+        const envOptions = {
+          disableDefaultInstrumentations: true
+        }
+        const expectedConfig = {
+          ...expectedDefaultConfig,
+          ...envOptions
+        }
+        config = new Configuration({})
+
+        expect(config.data).toEqual(expectedConfig)
+      })
+    })
+
+    describe("with APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS set to false", () => {
+      it("sets disableDefaultInstrumentations to false", () => {
+        process.env["APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS"] = "false"
+        const envOptions = {
+          disableDefaultInstrumentations: false
+        }
+        const expectedConfig = {
+          ...expectedDefaultConfig,
+          ...envOptions
+        }
+        config = new Configuration({})
+
+        expect(config.data).toEqual(expectedConfig)
+      })
     })
   })
 

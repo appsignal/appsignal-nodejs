@@ -5,7 +5,14 @@ import fs from "fs"
 import { VERSION } from "./version"
 import { isWritable } from "./utils"
 import { AppsignalOptions } from "./config/options"
-import { ENV_TO_KEY_MAPPING, PRIVATE_ENV_MAPPING } from "./config/configmap"
+import {
+  ENV_TO_KEY_MAPPING,
+  PRIVATE_ENV_MAPPING,
+  BOOL_KEYS,
+  STRING_KEYS,
+  LIST_KEYS,
+  LIST_OR_BOOL_KEYS
+} from "./config/configmap"
 
 /**
  * The AppSignal configuration object.
@@ -169,16 +176,41 @@ export class Configuration {
   private _loadFromEnvironment(): { [key: string]: any } {
     const conf: { [key: string]: any } = {}
 
-    Object.entries(ENV_TO_KEY_MAPPING).forEach(([k, v]) => {
+    STRING_KEYS.forEach(k => {
       const current = process.env[k]
 
       if (current) {
-        try {
-          // attempt to extract a value from a string
-          conf[v] = eval(current)
-        } catch (e) {
-          conf[v] = current
-        }
+        conf[ENV_TO_KEY_MAPPING[k]] = current
+      }
+    })
+
+    BOOL_KEYS.forEach(k => {
+      const current = process.env[k]
+
+      if (current == "true") {
+        conf[ENV_TO_KEY_MAPPING[k]] = true
+      } else if (current == "false") {
+        conf[ENV_TO_KEY_MAPPING[k]] = false
+      }
+    })
+
+    LIST_KEYS.forEach(k => {
+      const current = process.env[k]
+
+      if (current) {
+        conf[ENV_TO_KEY_MAPPING[k]] = current.split(",")
+      }
+    })
+
+    LIST_OR_BOOL_KEYS.forEach(k => {
+      const current = process.env[k]
+
+      if (current == "true") {
+        conf[ENV_TO_KEY_MAPPING[k]] = true
+      } else if (current == "false") {
+        conf[ENV_TO_KEY_MAPPING[k]] = false
+      } else if (current) {
+        conf[ENV_TO_KEY_MAPPING[k]] = current.split(",")
       }
     })
 
