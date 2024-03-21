@@ -1,5 +1,15 @@
 # AppSignal for Node.js Changelog
 
+## 3.3.1
+
+_Published on 2024-03-21._
+
+### Changed
+
+- [e5fca24](https://github.com/appsignal/appsignal-nodejs/commit/e5fca24b3d88ced9f16babc70e5e3a9b4c6693a6) patch - Don’t evaluate environment variable values to read configuration
+  
+  In previous versions of the Node.js integration, environment variables were evaluated to read their values. This version instead parses them based on their expected values.
+
 ## 3.3.0
 
 ### Added
