@@ -1,11 +1,12 @@
 import type { AppsignalOptions } from "./options"
 
-export const ENV_TO_KEY_MAPPING: Record<string, keyof AppsignalOptions> = {
+export const ENV_TO_KEY_MAPPING = {
   APPSIGNAL_ACTIVE: "active",
   APPSIGNAL_APP_ENV: "environment",
   APPSIGNAL_APP_NAME: "name",
   APPSIGNAL_BIND_ADDRESS: "bindAddress",
   APPSIGNAL_CA_FILE_PATH: "caFilePath",
+  APPSIGNAL_CPU_COUNT: "cpuCount",
   APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS: "disableDefaultInstrumentations",
   APPSIGNAL_DNS_SERVERS: "dnsServers",
   APPSIGNAL_ENABLE_HOST_METRICS: "enableHostMetrics",
@@ -38,7 +39,7 @@ export const ENV_TO_KEY_MAPPING: Record<string, keyof AppsignalOptions> = {
   APPSIGNAL_STATSD_PORT: "statsdPort",
   APPSIGNAL_WORKING_DIRECTORY_PATH: "workingDirectoryPath",
   APP_REVISION: "revision"
-}
+} satisfies Record<string, keyof AppsignalOptions>
 
 export const PRIVATE_ENV_MAPPING: Record<string, keyof AppsignalOptions> = {
   _APPSIGNAL_ACTIVE: "active",
@@ -46,6 +47,7 @@ export const PRIVATE_ENV_MAPPING: Record<string, keyof AppsignalOptions> = {
   _APPSIGNAL_APP_NAME: "name",
   _APPSIGNAL_BIND_ADDRESS: "bindAddress",
   _APPSIGNAL_CA_FILE_PATH: "caFilePath",
+  _APPSIGNAL_CPU_COUNT: "cpuCount",
   _APPSIGNAL_DNS_SERVERS: "dnsServers",
   _APPSIGNAL_ENABLE_HOST_METRICS: "enableHostMetrics",
   _APPSIGNAL_ENABLE_OPENTELEMETRY_HTTP: "enableOpentelemetryHttp",
@@ -80,6 +82,7 @@ export const JS_TO_RUBY_MAPPING: Record<keyof AppsignalOptions, string> = {
   bindAddress: "bind_address",
   pushApiKey: "push_api_key",
   caFilePath: "ca_file_path",
+  cpuCount: "cpu_count",
   disableDefaultInstrumentations: "disable_default_instrumentations",
   dnsServers: "dns_servers",
   enableHostMetrics: "enable_host_metrics",
@@ -115,7 +118,7 @@ export const JS_TO_RUBY_MAPPING: Record<keyof AppsignalOptions, string> = {
   workingDirectoryPath: "working_directory_path"
 }
 
-export const BOOL_KEYS: string[] = [
+export const BOOL_KEYS: (keyof typeof ENV_TO_KEY_MAPPING)[] = [
   "APPSIGNAL_ACTIVE",
   "APPSIGNAL_ENABLE_HOST_METRICS",
   "APPSIGNAL_ENABLE_OPENTELEMETRY_HTTP",
@@ -129,7 +132,7 @@ export const BOOL_KEYS: string[] = [
   "APPSIGNAL_SEND_SESSION_DATA"
 ]
 
-export const STRING_KEYS: string[] = [
+export const STRING_KEYS: (keyof typeof ENV_TO_KEY_MAPPING)[] = [
   "APPSIGNAL_APP_ENV",
   "APPSIGNAL_APP_NAME",
   "APPSIGNAL_BIND_ADDRESS",
@@ -150,7 +153,7 @@ export const STRING_KEYS: string[] = [
   "APP_REVISION"
 ]
 
-export const LIST_KEYS: string[] = [
+export const LIST_KEYS: (keyof typeof ENV_TO_KEY_MAPPING)[] = [
   "APPSIGNAL_DNS_SERVERS",
   "APPSIGNAL_FILTER_PARAMETERS",
   "APPSIGNAL_FILTER_SESSION_DATA",
@@ -160,6 +163,10 @@ export const LIST_KEYS: string[] = [
   "APPSIGNAL_REQUEST_HEADERS"
 ]
 
-export const LIST_OR_BOOL_KEYS: string[] = [
+export const LIST_OR_BOOL_KEYS: (keyof typeof ENV_TO_KEY_MAPPING)[] = [
   "APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS"
+]
+
+export const FLOAT_KEYS: (keyof typeof ENV_TO_KEY_MAPPING)[] = [
+  "APPSIGNAL_CPU_COUNT"
 ]
