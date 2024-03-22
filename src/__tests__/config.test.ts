@@ -3,6 +3,14 @@ import fs from "fs"
 
 import { VERSION } from "../version"
 import { Configuration } from "../config"
+import {
+  ENV_TO_KEY_MAPPING,
+  BOOL_KEYS,
+  FLOAT_KEYS,
+  LIST_KEYS,
+  LIST_OR_BOOL_KEYS,
+  STRING_KEYS
+} from "../config/configmap"
 
 describe("Configuration", () => {
   const name = "TEST APP"
@@ -71,6 +79,22 @@ describe("Configuration", () => {
   beforeEach(() => {
     jest.resetModules()
     resetEnv()
+  })
+
+  it("knows how to transform all environment variables into options", () => {
+    const allKeys = Object.keys(ENV_TO_KEY_MAPPING).sort()
+
+    const allKeyTransformations = [
+      BOOL_KEYS,
+      STRING_KEYS,
+      LIST_KEYS,
+      LIST_OR_BOOL_KEYS,
+      FLOAT_KEYS
+    ]
+      .flat()
+      .sort()
+
+    expect(allKeys).toEqual(allKeyTransformations)
   })
 
   describe("with only default options", () => {
