@@ -1,5 +1,15 @@
 # AppSignal for Node.js Changelog
 
+## 3.3.2
+
+_Published on 2024-03-22._
+
+### Added
+
+- [e7cf661](https://github.com/appsignal/appsignal-nodejs/commit/e7cf6614c53ff7d2e0554f8d90749c713cd045a2) patch - Implement CPU count configuration option. Use it to override the auto-detected, cgroups-provided number of CPUs that is used to calculate CPU usage percentages.
+  
+  To set it, use the `cpuCount` configuration option, or the `APPSIGNAL_CPU_COUNT` environment variable.
+
 ## 3.3.1
 
 _Published on 2024-03-21._
