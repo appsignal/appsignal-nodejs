@@ -15,7 +15,7 @@
   "dependencies": {
     "@prisma/client": "^4.4.0",
     "@appsignal/nodejs": "^3.0.26",
-    "express": "^4.17.2",
+    "express": "^4.19.2",
     "tslib": "^2.4.0"
   },
   "devDependencies": {
