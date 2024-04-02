@@ -32,3 +32,21 @@ function sendInvoices() {
 If an exception is raised within the function, the finish event will not be
 reported to AppSignal, triggering a notification about the missing heartbeat.
 The exception will bubble outside of the heartbeat function.
+
+If the function passed to `heartbeat` returns a promise, the finish event will
+be reported to AppSignal if the promise resolves, and a wrapped promise will
+be returned, which can be awaited. This means that you can use heartbeats to
+track the duration of async functions:
+
+```javascript
+import { heartbeat } from "@appsignal/nodejs"
+
+async function sendInvoices() {
+  await heartbeat("send_invoices", async () => {
+    // ... your async code here ...
+  })
+}
+```
+
+If the promise is rejected, or if it never resolves, the finish event will
+not be reported to AppSignal.

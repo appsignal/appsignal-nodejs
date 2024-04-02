@@ -97,6 +97,14 @@ export function heartbeat<T>(name: string, fn?: () => T): T | undefined {
     output = fn()
   }
 
-  heartbeat.finish()
+  if (output instanceof Promise) {
+    output = output.then(result => {
+      heartbeat.finish()
+      return result
+    }) as typeof output
+  } else {
+    heartbeat.finish()
+  }
+
   return output
 }
