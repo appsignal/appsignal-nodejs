@@ -11,13 +11,31 @@ export type Event = {
   timestamp: number
 }
 
+class PendingPromiseSet<T> extends Set<Promise<T>> {
+  add(promise: Promise<T>) {
+    super.add(promise)
+    promise.finally(() => this.delete(promise))
+    return this
+  }
+
+  async allSettled() {
+    await Promise.allSettled(this)
+  }
+}
+
 export class Heartbeat {
+  private static heartbeatPromises = new PendingPromiseSet<any>()
+
   name: string
   id: string
 
   constructor(name: string) {
     this.name = name
     this.id = crypto.randomBytes(8).toString("hex")
+  }
+
+  public static async shutdown() {
+    await Heartbeat.heartbeatPromises.allSettled()
   }
 
   public start() {
@@ -45,16 +63,26 @@ export class Heartbeat {
       return
     }
 
-    new Transmitter(
+    const promise = new Transmitter(
       `${Client.config.data.loggingEndpoint}/heartbeats/json`,
       JSON.stringify(event)
-    ).transmit().then(({status}: {status: number}) => {
-      if (status !== 200) {
-        Client.internalLogger.warn(`Failed to transmit heartbeat: status code ${status}`)
-      }
-    }).catch(({error}: {error: Error}) => {
-      Client.internalLogger.warn(`Failed to transmit heartbeat: ${error.message}`)
-    })
+    ).transmit()
+
+    const handledPromise = promise
+      .then(({ status }: { status: number }) => {
+        if (status !== 200) {
+          Client.internalLogger.warn(
+            `Failed to transmit heartbeat: status code ${status}`
+          )
+        }
+      })
+      .catch(({ error }: { error: Error }) => {
+        Client.internalLogger.warn(
+          `Failed to transmit heartbeat: ${error.message}`
+        )
+      })
+
+    Heartbeat.heartbeatPromises.add(handledPromise)
   }
 }
 
