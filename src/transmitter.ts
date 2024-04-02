@@ -4,6 +4,7 @@ import http from "http"
 
 import { Configuration } from "./config"
 import { URL, URLSearchParams } from "url"
+import { Client } from "./client"
 
 const REDIRECT_COUNT = Symbol("redirect-count")
 
@@ -38,7 +39,7 @@ export class Transmitter {
   #body: string
 
   constructor(url: string, body = "") {
-    this.#config = new Configuration({})
+    this.#config = Client.config ?? new Configuration({})
     this.#url = url
     this.#body = body
   }
