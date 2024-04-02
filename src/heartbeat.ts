@@ -38,12 +38,12 @@ export class Heartbeat {
     await Heartbeat.heartbeatPromises.allSettled()
   }
 
-  public start() {
-    this.transmit(this.event("start"))
+  public start(): Promise<void> {
+    return this.transmit(this.event("start"))
   }
 
-  public finish() {
-    this.transmit(this.event("finish"))
+  public finish(): Promise<void> {
+    return this.transmit(this.event("finish"))
   }
 
   private event(kind: EventKind): Event {
@@ -55,12 +55,12 @@ export class Heartbeat {
     }
   }
 
-  private transmit(event: Event) {
+  private transmit(event: Event): Promise<void> {
     if (Client.client === undefined || !Client.client.isActive) {
       Client.internalLogger.debug(
-        "AppSignal not started; not sending heartbeat"
+        "AppSignal not active, not transmitting heartbeat event"
       )
-      return
+      return Promise.resolve()
     }
 
     const promise = new Transmitter(
@@ -70,19 +70,27 @@ export class Heartbeat {
 
     const handledPromise = promise
       .then(({ status }: { status: number }) => {
-        if (status !== 200) {
+        if (status >= 200 && status <= 299) {
+          Client.internalLogger.trace(
+            `Transmitted heartbeat \`${event.name}\` (${event.id}) ${event.kind} event`
+          )
+        } else {
           Client.internalLogger.warn(
-            `Failed to transmit heartbeat: status code ${status}`
+            `Failed to transmit heartbeat event: status code was ${status}`
           )
         }
       })
       .catch(({ error }: { error: Error }) => {
         Client.internalLogger.warn(
-          `Failed to transmit heartbeat: ${error.message}`
+          `Failed to transmit heartbeat event: ${error.message}`
         )
+
+        return Promise.resolve()
       })
 
     Heartbeat.heartbeatPromises.add(handledPromise)
+
+    return handledPromise
   }
 }
 
