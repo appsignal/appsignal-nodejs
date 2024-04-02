@@ -15,7 +15,7 @@
     "@opentelemetry/api": ">= 1.6.0 < 1.7",
     "@appsignal/nodejs": "^3.0.26",
     "cookie-parser": "^1.4.6",
-    "express": "^4.17.2",
+    "express": "^4.19.2",
     "ioredis": "^4.28.5",
     "redis": "^4",
     "tslib": "^2.4.0"
