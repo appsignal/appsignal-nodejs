@@ -1,5 +1,5 @@
 import { Transmitter } from "../transmitter"
-import nock from "nock"
+import nock, { Scope } from "nock"
 import https from "https"
 import fs from "fs"
 import http, { ClientRequest } from "http"
@@ -33,8 +33,8 @@ describe("Transmitter", () => {
       return new Transmitter("https://example.com/foo", "request body")
     }
 
-    function mockSampleRequest(responseBody: object | string, query = {}) {
-      nock("https://example.com")
+    function mockSampleRequest(responseBody: object | string, query = {}): Scope {
+      return nock("https://example.com")
         .post("/foo", "request body")
         .query({
           api_key: "",
@@ -59,17 +59,21 @@ describe("Transmitter", () => {
     it("resolves to a response on success", async () => {
       const transmitter = sampleTransmitter()
 
-      mockSampleRequest({ json: "response" })
+      const scope = mockSampleRequest({ json: "response" })
 
       await expectResponse(transmitter.transmit(), { json: "response" })
+      
+      scope.done()
     })
 
     it("resolves to an empty object if the response is not JSON", async () => {
       const transmitter = sampleTransmitter()
 
-      mockSampleRequest("not JSON")
+      const scope = mockSampleRequest("not JSON")
 
       await expectResponse(transmitter.transmit(), {})
+
+      scope.done()
     })
 
     it("rejects on error", async () => {
@@ -91,7 +95,7 @@ describe("Transmitter", () => {
 
       const transmitter = sampleTransmitter()
 
-      mockSampleRequest(
+      const scope = mockSampleRequest(
         {},
         {
           api_key: "some_api_key",
@@ -102,6 +106,8 @@ describe("Transmitter", () => {
       )
 
       await expectResponse(transmitter.transmit(), {})
+
+      scope.done()
     })
   })
 
@@ -109,7 +115,7 @@ describe("Transmitter", () => {
     const transmitter = new Transmitter("http://example.com/foo")
 
     it("resolves to a response stream on success", async () => {
-      nock("http://example.com").get("/foo").reply(200, "response body")
+      const scope = nock("http://example.com").get("/foo").reply(200, "response body")
 
       const stream = await transmitter.downloadStream()
 
@@ -118,15 +124,19 @@ describe("Transmitter", () => {
           stream.on("data", resolve)
         })
       ).resolves.toEqual(Buffer.from("response body"))
+
+      scope.done()
     })
 
     it("rejects if the status code is not successful", async () => {
-      nock("http://example.com").get("/foo").reply(404, "not found")
+      const scope = nock("http://example.com").get("/foo").reply(404, "not found")
 
       await expect(transmitter.downloadStream()).rejects.toMatchObject({
         kind: "statusCode",
         statusCode: 404
       })
+
+      scope.done()
     })
 
     it("rejects if there's a request error", async () => {
@@ -194,7 +204,7 @@ describe("Transmitter", () => {
     }
 
     it("performs an HTTP GET request", async () => {
-      nock("http://example.invalid").get("/foo").reply(200, "response body")
+      const scope = nock("http://example.invalid").get("/foo").reply(200, "response body")
 
       const { callback, onData, onError } = await transmitterRequest(
         "GET",
@@ -207,10 +217,12 @@ describe("Transmitter", () => {
 
       expect(onData).toHaveBeenCalledWith(Buffer.from("response body"))
       expect(onError).not.toHaveBeenCalled()
+
+      scope.done()
     })
 
     it("performs an HTTP POST request", async () => {
-      nock("http://example.invalid")
+      const scope = nock("http://example.invalid")
         .post("/foo", "request body")
         .reply(200, "response body")
 
@@ -226,10 +238,12 @@ describe("Transmitter", () => {
 
       expect(onData).toHaveBeenCalledWith(Buffer.from("response body"))
       expect(onError).not.toHaveBeenCalled()
+
+      scope.done()
     })
 
     it("performs an HTTP request with query parameters", async () => {
-      nock("http://example.invalid")
+      const scope = nock("http://example.invalid")
         .get("/foo")
         .query({ bar: "baz" })
         .reply(200, "response body")
@@ -247,6 +261,8 @@ describe("Transmitter", () => {
 
       expect(onData).toHaveBeenCalledWith(Buffer.from("response body"))
       expect(onError).not.toHaveBeenCalled()
+
+      scope.done()
     })
 
     it("listens to errors on the request", async () => {
@@ -264,7 +280,7 @@ describe("Transmitter", () => {
     })
 
     it("follows redirects", async () => {
-      nock("http://example.invalid")
+      const scope = nock("http://example.invalid")
         .get("/301")
         .reply(301, undefined, {
           Location: "http://example.invalid/302",
@@ -301,10 +317,12 @@ describe("Transmitter", () => {
 
       expect(onData).toHaveBeenCalledWith(Buffer.from("response body"))
       expect(onError).not.toHaveBeenCalled()
+
+      scope.done()
     })
 
     it("redirects to GET method for status code 301/302/303", async () => {
-      nock("http://example.invalid")
+      const scope = nock("http://example.invalid")
         .post("/301", "request body")
         .reply(301, undefined, {
           Location: "http://example.invalid/foo"
@@ -335,10 +353,12 @@ describe("Transmitter", () => {
         expect(onData).toHaveBeenCalledWith(Buffer.from("response body"))
         expect(onError).not.toHaveBeenCalled()
       }
+
+      scope.done()
     })
 
     it("redirects to the same method for status code 307/308", async () => {
-      nock("http://example.invalid")
+      const scope = nock("http://example.invalid")
         .post("/307", "request body")
         .reply(307, undefined, {
           Location: "http://example.invalid/foo"
@@ -365,10 +385,12 @@ describe("Transmitter", () => {
         expect(onData).toHaveBeenCalledWith(Buffer.from("response body"))
         expect(onError).not.toHaveBeenCalled()
       }
+
+      scope.done()
     })
 
     it("throws an error on a redirect loop", async () => {
-      nock("http://example.invalid")
+      const scope = nock("http://example.invalid")
         .persist()
         .get("/foo")
         .reply(302, undefined, {
@@ -392,6 +414,8 @@ describe("Transmitter", () => {
           message: "Maximum number of redirects reached"
         })
       )
+
+      scope.done()
     })
 
     it("uses the CA file from the config", async () => {
