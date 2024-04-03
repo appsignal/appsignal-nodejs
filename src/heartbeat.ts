@@ -51,7 +51,7 @@ export class Heartbeat {
       name: this.name,
       id: this.id,
       kind: kind,
-      timestamp: Date.now()
+      timestamp: Math.floor(Date.now() / 1000)
     }
   }
 
@@ -106,10 +106,7 @@ export function heartbeat<T>(name: string, fn?: () => T): T | undefined {
   }
 
   if (output instanceof Promise) {
-    output = output.then(result => {
-      heartbeat.finish()
-      return result
-    }) as typeof output
+    output.then(() => heartbeat.finish()).catch(() => {})
   } else {
     heartbeat.finish()
   }

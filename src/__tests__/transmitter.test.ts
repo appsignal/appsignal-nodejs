@@ -33,7 +33,10 @@ describe("Transmitter", () => {
       return new Transmitter("https://example.com/foo", "request body")
     }
 
-    function mockSampleRequest(responseBody: object | string, query = {}): Scope {
+    function mockSampleRequest(
+      responseBody: object | string,
+      query = {}
+    ): Scope {
       return nock("https://example.com")
         .post("/foo", "request body")
         .query({
@@ -62,7 +65,7 @@ describe("Transmitter", () => {
       const scope = mockSampleRequest({ json: "response" })
 
       await expectResponse(transmitter.transmit(), { json: "response" })
-      
+
       scope.done()
     })
 
@@ -115,7 +118,9 @@ describe("Transmitter", () => {
     const transmitter = new Transmitter("http://example.com/foo")
 
     it("resolves to a response stream on success", async () => {
-      const scope = nock("http://example.com").get("/foo").reply(200, "response body")
+      const scope = nock("http://example.com")
+        .get("/foo")
+        .reply(200, "response body")
 
       const stream = await transmitter.downloadStream()
 
@@ -129,7 +134,9 @@ describe("Transmitter", () => {
     })
 
     it("rejects if the status code is not successful", async () => {
-      const scope = nock("http://example.com").get("/foo").reply(404, "not found")
+      const scope = nock("http://example.com")
+        .get("/foo")
+        .reply(404, "not found")
 
       await expect(transmitter.downloadStream()).rejects.toMatchObject({
         kind: "statusCode",
@@ -204,7 +211,9 @@ describe("Transmitter", () => {
     }
 
     it("performs an HTTP GET request", async () => {
-      const scope = nock("http://example.invalid").get("/foo").reply(200, "response body")
+      const scope = nock("http://example.invalid")
+        .get("/foo")
+        .reply(200, "response body")
 
       const { callback, onData, onError } = await transmitterRequest(
         "GET",
