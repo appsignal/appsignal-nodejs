@@ -14,6 +14,7 @@ import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics"
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto"
 
 import { Instrumentation } from "@opentelemetry/instrumentation"
+import { AmqplibInstrumentation } from "@opentelemetry/instrumentation-amqplib"
 import {
   ExpressInstrumentation,
   ExpressLayerType
@@ -46,6 +47,7 @@ import { SpanProcessor, TestModeSpanProcessor } from "./span_processor"
 import { Heartbeat } from "./heartbeat"
 
 const DefaultInstrumentations = {
+  "@opentelemetry/instrumentation-amqplib": AmqplibInstrumentation,
   "@opentelemetry/instrumentation-express": ExpressInstrumentation,
   "@opentelemetry/instrumentation-fastify": FastifyInstrumentation,
   "@opentelemetry/instrumentation-graphql": GraphQLInstrumentation,
