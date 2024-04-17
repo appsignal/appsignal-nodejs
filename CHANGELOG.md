@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.3.3
+
+_Published on 2024-04-17._
+
+### Fixed
+
+- [80c7dbf](https://github.com/appsignal/appsignal-nodejs/commit/80c7dbfe31c100cd974aeadafe8e4c2257a18793) patch - Fix `UNKNOWN` method in Next.js 14 performance traces.
+
 ## 3.3.2
 
 _Published on 2024-03-22._
