@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.3.4
+
+_Published on 2024-04-19._
+
+### Fixed
+
+- [b344156](https://github.com/appsignal/appsignal-nodejs/commit/b344156001e60801819d610e079bcf8b49d903ae) patch - Fix incorrect HTTP methods like `render` or `getServerSideProps` in Next.js 14 performance samples.
+
 ## 3.3.3
 
 _Published on 2024-04-17._
