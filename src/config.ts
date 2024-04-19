@@ -135,6 +135,7 @@ export class Configuration {
       filterSessionData: [],
       ignoreActions: [],
       ignoreErrors: [],
+      ignoreLogs: [],
       ignoreNamespaces: [],
       initializeOpentelemetrySdk: true,
       log: "file",

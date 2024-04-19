@@ -22,6 +22,7 @@ export const ENV_TO_KEY_MAPPING = {
   APPSIGNAL_HTTP_PROXY: "httpProxy",
   APPSIGNAL_IGNORE_ACTIONS: "ignoreActions",
   APPSIGNAL_IGNORE_ERRORS: "ignoreErrors",
+  APPSIGNAL_IGNORE_LOGS: "ignoreLogs",
   APPSIGNAL_IGNORE_NAMESPACES: "ignoreNamespaces",
   APPSIGNAL_INITIALIZE_OPENTELEMETRY_SDK: "initializeOpentelemetrySdk",
   APPSIGNAL_LOG: "log",
@@ -61,6 +62,7 @@ export const PRIVATE_ENV_MAPPING: Record<string, keyof AppsignalOptions> = {
   _APPSIGNAL_HTTP_PROXY: "httpProxy",
   _APPSIGNAL_IGNORE_ACTIONS: "ignoreActions",
   _APPSIGNAL_IGNORE_ERRORS: "ignoreErrors",
+  _APPSIGNAL_IGNORE_LOGS: "ignoreLogs",
   _APPSIGNAL_IGNORE_NAMESPACES: "ignoreNamespaces",
   _APPSIGNAL_LOG: "log",
   _APPSIGNAL_LOG_LEVEL: "logLevel",
@@ -100,6 +102,7 @@ export const JS_TO_RUBY_MAPPING: Record<keyof AppsignalOptions, string> = {
   httpProxy: "http_proxy",
   ignoreActions: "ignore_actions",
   ignoreErrors: "ignore_errors",
+  ignoreLogs: "ignore_logs",
   ignoreNamespaces: "ignore_namespaces",
   initializeOpentelemetrySdk: "initialize_opentelemetry_sdk",
   log: "log",
@@ -159,6 +162,7 @@ export const LIST_KEYS: (keyof typeof ENV_TO_KEY_MAPPING)[] = [
   "APPSIGNAL_FILTER_SESSION_DATA",
   "APPSIGNAL_IGNORE_ACTIONS",
   "APPSIGNAL_IGNORE_ERRORS",
+  "APPSIGNAL_IGNORE_LOGS",
   "APPSIGNAL_IGNORE_NAMESPACES",
   "APPSIGNAL_REQUEST_HEADERS"
 ]

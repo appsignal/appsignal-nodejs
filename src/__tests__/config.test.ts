@@ -36,6 +36,7 @@ describe("Configuration", () => {
     filterSessionData: [],
     ignoreActions: [],
     ignoreErrors: [],
+    ignoreLogs: [],
     ignoreNamespaces: [],
     initializeOpentelemetrySdk: true,
     log: "file",
@@ -360,6 +361,7 @@ describe("Configuration", () => {
       expect(env("_APPSIGNAL_HTTP_PROXY")).toBeUndefined()
       expect(env("_APPSIGNAL_IGNORE_ACTIONS")).toBeUndefined()
       expect(env("_APPSIGNAL_IGNORE_ERRORS")).toBeUndefined()
+      expect(env("_APPSIGNAL_IGNORE_LOGS")).toBeUndefined()
       expect(env("_APPSIGNAL_IGNORE_NAMESPACES")).toBeUndefined()
       expect(env("_APPSIGNAL_LOG")).toEqual("file")
       expect(env("_APPSIGNAL_LOG_LEVEL")).toBeUndefined()
@@ -412,6 +414,7 @@ describe("Configuration", () => {
           httpProxy: "http://localhost",
           ignoreActions: ["MyAction", "MyOtherAction"],
           ignoreErrors: ["MyError", "MyOtherError"],
+          ignoreLogs: ["^start$", "^Completed 2.* in .*ms$"],
           ignoreNamespaces: ["MyNamespace", "MyOtherNamespace"],
           logLevel: "debug",
           logPath: "/tmp/other",
@@ -445,6 +448,9 @@ describe("Configuration", () => {
           "MyAction,MyOtherAction"
         )
         expect(env("_APPSIGNAL_IGNORE_ERRORS")).toEqual("MyError,MyOtherError")
+        expect(env("_APPSIGNAL_IGNORE_LOGS")).toEqual(
+          "^start$,^Completed 2.* in .*ms$"
+        )
         expect(env("_APPSIGNAL_IGNORE_NAMESPACES")).toEqual(
           "MyNamespace,MyOtherNamespace"
         )
