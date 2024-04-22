@@ -22,6 +22,7 @@ export type AppsignalOptions = {
   httpProxy: string
   ignoreActions: string[]
   ignoreErrors: string[]
+  ignoreLogs: string[]
   ignoreNamespaces: string[]
   initializeOpentelemetrySdk: boolean
   log: string
