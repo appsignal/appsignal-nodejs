@@ -1,5 +1,92 @@
 # AppSignal for Node.js Changelog
 
+## 3.4.0
+
+_Published on 2024-04-22._
+
+### Added
+
+- [81bd0a9](https://github.com/appsignal/appsignal-nodejs/commit/81bd0a95fc696d49228cc1375a4e59058d7ecbe1) minor - _Heartbeats are currently only available to beta testers. If you are interested in trying it out, [send an email to support@appsignal.com](mailto:support@appsignal.com?subject=Heartbeat%20beta)!_
+  
+  ---
+  
+  Add heartbeats support. You can send heartbeats directly from your code, to
+  track the execution of certain processes:
+  
+  ```javascript
+  import { heartbeat } from "@appsignal/nodejs"
+  
+  function sendInvoices() {
+    // ... your code here ...
+    heartbeat("send_invoices")
+  }
+  ```
+  
+  You can pass a function to `heartbeat`, to report to AppSignal both when the
+  process starts, and when it finishes, allowing you to see the duration of the
+  process:
+  
+  ```javascript
+  import { heartbeat } from "@appsignal/nodejs"
+  
+  function sendInvoices() {
+    heartbeat("send_invoices", () => {
+      // ... your code here ...
+    })
+  }
+  ```
+  
+  If an exception is raised within the function, the finish event will not be
+  reported to AppSignal, triggering a notification about the missing heartbeat.
+  The exception will bubble outside of the heartbeat function.
+  
+  If the function passed to `heartbeat` returns a promise, the finish event will
+  be reported to AppSignal if the promise resolves. This means that you can use
+  heartbeats to track the duration of async functions:
+  
+  ```javascript
+  import { heartbeat } from "@appsignal/nodejs"
+  
+  async function sendInvoices() {
+    await heartbeat("send_invoices", async () => {
+      // ... your async code here ...
+    })
+  }
+  ```
+  
+  If the promise is rejected, or if it never resolves, the finish event will
+  not be reported to AppSignal.
+- [9985d08](https://github.com/appsignal/appsignal-nodejs/commit/9985d08044c4cdd9ecdeff16ab40d68e852aa662) patch - Implement the `ignoreLogs` configuration option, which can also be configured as the `APPSIGNAL_IGNORE_LOGS` environment variable.
+  
+  The value of `ignoreLogs` is a list (comma-separated, when using the environment variable) of log line messages that should be ignored. For example, the value `"start"` will cause any message containing the word "start" to be ignored. Any log line message containing a value in `ignoreLogs` will not be reported to AppSignal.
+  
+  The values can use a small subset of regular expression syntax (specifically, `^`, `$` and `.*`) to narrow or expand the scope of lines that should be matched.
+  
+  For example, the value `"^start$"` can be used to ignore any message that is _exactly_ the word "start", but not messages that merely contain it, like "Process failed to start". The value `"Task .* succeeded"` can be used to ignore messages about task success regardless of the specific task name.
+
+### Changed
+
+- [6224018](https://github.com/appsignal/appsignal-nodejs/commit/62240184e81840a7c5722bde55e386ac15f88e0c) patch - `Appsignal.stop()` now returns a promise. For your application to wait until
+  AppSignal has been gracefully stopped, this promise must be awaited:
+  
+  ```javascript
+  import { Appsignal } from "@appsignal/nodejs"
+  
+  await Appsignal.stop()
+  process.exit(0)
+  ```
+  
+  In older Node.js versions where top-level await is not available, terminate
+  the application when the promise is settled:
+  
+  ```javascript
+  import { Appsignal } from "@appsignal/nodejs"
+  
+  Appsignal.stop().finally(() => {
+    process.exit(0)
+  })
+  ```
+
 ## 3.3.4
 
 _Published on 2024-04-19._
