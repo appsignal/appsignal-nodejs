@@ -35,9 +35,9 @@ describe("Span processor", () => {
     tracer = tracerProvider.getTracer("unknown-instrumentation")
   })
 
-  afterEach(() => {
-    tracerProvider.shutdown()
-    client.stop()
+  afterEach(async () => {
+    await tracerProvider.shutdown()
+    await client.stop()
   })
 
   it("processes unknown OpenTelemetry spans", () => {

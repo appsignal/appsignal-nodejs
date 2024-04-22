@@ -20,8 +20,8 @@ describe("BaseLogger", () => {
     })
   })
 
-  afterAll(() => {
-    client.stop()
+  afterAll(async () => {
+    await client.stop()
   })
 
   beforeEach(() => {

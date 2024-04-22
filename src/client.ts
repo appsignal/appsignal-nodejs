@@ -43,6 +43,7 @@ import {
   LayerType as RestifyLayerType
 } from "@opentelemetry/instrumentation-restify"
 import { SpanProcessor, TestModeSpanProcessor } from "./span_processor"
+import { Heartbeat } from "./heartbeat"
 
 const DefaultInstrumentations = {
   "@opentelemetry/instrumentation-express": ExpressInstrumentation,
@@ -206,16 +207,17 @@ export class Client {
    * Call this before the end of your program to make sure the
    * agent is stopped as well.
    */
-  public stop(calledBy?: string): void {
+  public async stop(calledBy?: string): Promise<void> {
     if (calledBy) {
       console.log(`Stopping AppSignal (${calledBy})`)
     } else {
       console.log("Stopping AppSignal")
     }
 
-    this.#sdk?.shutdown()
+    await this.#sdk?.shutdown()
     this.metrics().probes().stop()
     this.extension.stop()
+    await Heartbeat.shutdown()
   }
 
   /**
