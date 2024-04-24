@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.4.1
+
+_Published on 2024-04-24._
+
+### Fixed
+
+- [7e6f79d](https://github.com/appsignal/appsignal-nodejs/commit/7e6f79d2fdec659eb469cdc08c1c493145752356) patch - Fix an issue where internal Next.js traces were not correctly ignored in certain circumstances.
+
 ## 3.4.0
 
 _Published on 2024-04-22._
