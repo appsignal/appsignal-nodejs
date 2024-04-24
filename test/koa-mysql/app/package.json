@@ -14,7 +14,7 @@
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "mysql": "^2.18.1",
-    "mysql2": "^3.9.4",
+    "mysql2": "^3.9.7",
     "tslib": "^2.4.0"
   },
   "devDependencies": {
