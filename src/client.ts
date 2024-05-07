@@ -13,7 +13,7 @@ import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api"
 import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics"
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto"
 
-import { Instrumentation } from "@opentelemetry/instrumentation"
+import type { Instrumentation } from "@opentelemetry/instrumentation"
 import { AmqplibInstrumentation } from "@opentelemetry/instrumentation-amqplib"
 import {
   ExpressInstrumentation,
