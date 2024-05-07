@@ -1,5 +1,16 @@
 # AppSignal for Node.js Changelog
 
+## 3.4.2
+
+### Added
+
+- [3868536](https://github.com/appsignal/appsignal-nodejs/commit/3868536ec201fb66dcb1a44352356f9fd74e0547) patch - Ignore AMQP spans if they're root spans.
+- [27c1ca7](https://github.com/appsignal/appsignal-nodejs/commit/27c1ca7027fb65289d2980e7173d07cca1c1454d) patch - The AMQP protocol is now instrumented when using amqplib. The AppSignal client automatically instruments and creates spans when using `amqplib`. Packages using amqplib such as Rascal are supported.
+
+### Changed
+
+- [3868536](https://github.com/appsignal/appsignal-nodejs/commit/3868536ec201fb66dcb1a44352356f9fd74e0547) patch - Log debug messages when metrics are received for easier debugging.
+
 ## 3.4.1
 
 _Published on 2024-04-24._
