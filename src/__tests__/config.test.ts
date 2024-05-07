@@ -477,25 +477,30 @@ describe("Configuration", () => {
     })
   })
 
-  describe(".isValid", () => {
-    it("is valid if pushApiKey is present", () => {
-      config = new Configuration({ pushApiKey })
-      expect(config.isValid).toBeTruthy()
+  describe(".validationError", () => {
+    it("is valid if pushApiKey is present and active is not false", () => {
+      config = new Configuration({ pushApiKey: "something", active: true })
+      expect(config.validationError()).toBeFalsy()
     })
 
     it("is invalid if pushApiKey is not present", () => {
-      config = new Configuration({ name })
-      expect(config.isValid).toBeFalsy()
+      config = new Configuration({ active: true })
+      expect(config.validationError()).toEqual("Push API key is not present")
     })
 
     it("is invalid if pushApiKey is an empty string", () => {
-      config = new Configuration({ name, pushApiKey: "" })
-      expect(config.isValid).toBeFalsy()
+      config = new Configuration({ pushApiKey: "", active: true })
+      expect(config.validationError()).toEqual("Push API key is not present")
     })
 
     it("is invalid if pushApiKey is a string with only whitespaces", () => {
-      config = new Configuration({ name, pushApiKey: "  " })
-      expect(config.isValid).toBeFalsy()
+      config = new Configuration({ pushApiKey: "  ", active: true })
+      expect(config.validationError()).toEqual("Push API key is not present")
+    })
+
+    it("is invalid if active is false", () => {
+      config = new Configuration({ pushApiKey: "something", active: false })
+      expect(config.validationError()).toEqual("AppSignal is not active")
     })
   })
 })

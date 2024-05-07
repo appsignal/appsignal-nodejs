@@ -1,28 +1,38 @@
 import fs from "fs"
 import { Extension } from "../extension"
+import { Client } from "../client"
 import {
   reportPath,
   processTarget
 } from "../../scripts/extension/support/helpers"
 
+const CLIENT_OPTIONS = {
+  name: "app",
+  pushApiKey: "yes",
+  active: true
+}
+
 describe("Extension", () => {
   let ext: Extension
+  let client: Client | undefined
 
   beforeEach(() => {
     ext = new Extension()
+    client = undefined
   })
 
   afterEach(() => {
     ext.stop()
+    if (client) client.stop()
   })
 
-  it("logs an error when the module is required", () => {
+  it("logs an error when an active client is initialised", () => {
     const errorSpy = jest.spyOn(console, "error")
 
     jest.resetModules()
-    require("../extension")
+    client = new Client(CLIENT_OPTIONS)
 
-    expect(errorSpy).toHaveBeenLastCalledWith(
+    expect(errorSpy).toHaveBeenCalledWith(
       "[appsignal][ERROR] AppSignal failed to load the extension. Please run the diagnose tool and email us at support@appsignal.com: https://docs.appsignal.com/nodejs/3.x/command-line/diagnose.html\n",
       expect.any(Object)
     )
@@ -56,9 +66,9 @@ describe("Extension", () => {
       const arch = process.arch
 
       jest.resetModules()
-      require("../extension")
+      client = new Client(CLIENT_OPTIONS)
 
-      expect(errorSpy).toHaveBeenLastCalledWith(
+      expect(errorSpy).toHaveBeenCalledWith(
         `[appsignal][ERROR] The AppSignal extension was installed for architecture 'dummyArch-dummyTarget', but the current architecture is '${arch}-${target}'. Please reinstall the AppSignal package on the host the app is started.`
       )
     })
@@ -82,13 +92,13 @@ describe("Extension", () => {
       const errorSpy = jest.spyOn(console, "error")
 
       jest.resetModules()
-      require("../extension")
+      client = new Client(CLIENT_OPTIONS)
 
       expect(errorSpy).toHaveBeenCalledWith(
         "[appsignal][ERROR] Unable to fetch install report:",
         expect.any(Object)
       )
-      expect(errorSpy).toHaveBeenLastCalledWith(
+      expect(errorSpy).toHaveBeenCalledWith(
         "[appsignal][ERROR] AppSignal failed to load the extension. Please run the diagnose tool and email us at support@appsignal.com: https://docs.appsignal.com/nodejs/3.x/command-line/diagnose.html\n",
         expect.any(Object)
       )

@@ -43,10 +43,19 @@ export class Configuration {
   }
 
   /**
-   * Returns `true` if the current configuration is valid.
+   * Returns a (truthy) validation error message string if the current
+   * configuration is invalid, or `false` if the configuration is valid.
    */
-  public get isValid(): boolean {
-    return (this.data.pushApiKey || "").trim() !== ""
+  public validationError(): string | false {
+    if (this.data.active === false) {
+      return "AppSignal is not active"
+    }
+
+    if ((this.data.pushApiKey || "").trim() === "") {
+      return "Push API key is not present"
+    }
+
+    return false
   }
 
   public get logFilePath(): string | undefined {

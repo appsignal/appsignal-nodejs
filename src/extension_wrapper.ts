@@ -27,25 +27,6 @@ try {
   mod = require("../build/Release/extension.node") as ExtensionWrapper
   mod.isLoaded = true
 } catch (error) {
-  const [installArch, installTarget] = fetchInstalledArch()
-  const arch = process.arch
-  const target = processTarget()
-
-  if (
-    installArch &&
-    installTarget &&
-    (arch !== installArch || target !== installTarget)
-  ) {
-    console.error(
-      `[appsignal][ERROR] The AppSignal extension was installed for architecture '${installArch}-${installTarget}', but the current architecture is '${arch}-${target}'. Please reinstall the AppSignal package on the host the app is started.`
-    )
-  } else {
-    console.error(
-      "[appsignal][ERROR] AppSignal failed to load the extension. Please run the diagnose tool and email us at support@appsignal.com: https://docs.appsignal.com/nodejs/3.x/command-line/diagnose.html\n",
-      error
-    )
-  }
-
   mod = {
     isLoaded: false,
     extension: {
@@ -66,6 +47,26 @@ try {
       },
       log() {
         return
+      },
+      logLoadingErrors() {
+        const [installArch, installTarget] = fetchInstalledArch()
+        const arch = process.arch
+        const target = processTarget()
+
+        if (
+          installArch &&
+          installTarget &&
+          (arch !== installArch || target !== installTarget)
+        ) {
+          console.error(
+            `[appsignal][ERROR] The AppSignal extension was installed for architecture '${installArch}-${installTarget}', but the current architecture is '${arch}-${target}'. Please reinstall the AppSignal package on the host the app is started.`
+          )
+        } else {
+          console.error(
+            "[appsignal][ERROR] AppSignal failed to load the extension. Please run the diagnose tool and email us at support@appsignal.com: https://docs.appsignal.com/nodejs/3.x/command-line/diagnose.html\n",
+            error
+          )
+        }
       }
     }
   } as ExtensionWrapper
