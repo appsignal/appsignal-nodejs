@@ -106,6 +106,55 @@ blocks:
     - name: Fastify
       commands:
       - script/integration_test_app fastify
+- name: Node.js 22 - Build
+  dependencies:
+  - Validation
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '22'
+    prologue:
+      commands:
+      - cache restore
+      - mono bootstrap --ci
+      - cache store
+    jobs:
+    - name: Build
+      commands:
+      - mono build
+      - cache delete $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache store  $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID dist
+      - cache delete $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache store  $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID ext
+      - cache delete $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache store  $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID build
+      - 'cat ext/install.report; cat ext/install.report | grep ''"status": "success"'''
+- name: Node.js 22 - Tests
+  dependencies:
+  - Node.js 22 - Build
+  task:
+    env_vars:
+    - name: NODE_VERSION
+      value: '22'
+    - name: _APPSIGNAL_EXTENSION_INSTALL
+      value: 'false'
+    prologue:
+      commands:
+      - cache restore
+      - cache restore $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache restore $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - cache restore $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
+      - mono bootstrap --ci
+    jobs:
+    - name: Test package
+      commands:
+      - mono test
+      - npm run test:failure
+    - name: Extra test - diagnose
+      commands: &1
+      - git submodule init
+      - git submodule update
+      - LANGUAGE=nodejs test/integration/diagnose/bin/test
 - name: Node.js 20 - Build
   dependencies:
   - Validation
@@ -151,10 +200,7 @@ blocks:
       - mono test
       - npm run test:failure
     - name: Extra test - diagnose
-      commands: &1
-      - git submodule init
-      - git submodule update
-      - LANGUAGE=nodejs test/integration/diagnose/bin/test
+      commands: *1
 - name: Node.js 18 - Build
   dependencies:
   - Validation
@@ -185,52 +231,6 @@ blocks:
     env_vars:
     - name: NODE_VERSION
       value: '18'
-    - name: _APPSIGNAL_EXTENSION_INSTALL
-      value: 'false'
-    prologue:
-      commands:
-      - cache restore
-      - cache restore $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
-      - cache restore $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
-      - cache restore $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
-      - mono bootstrap --ci
-    jobs:
-    - name: Test package
-      commands:
-      - mono test
-      - npm run test:failure
-    - name: Extra test - diagnose
-      commands: *1
-- name: Node.js 16 - Build
-  dependencies:
-  - Validation
-  task:
-    env_vars:
-    - name: NODE_VERSION
-      value: '16'
-    prologue:
-      commands:
-      - cache restore
-      - mono bootstrap --ci
-      - cache store
-    jobs:
-    - name: Build
-      commands:
-      - mono build
-      - cache delete $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
-      - cache store  $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID dist
-      - cache delete $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
-      - cache store  $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID ext
-      - cache delete $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID
-      - cache store  $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID build
-      - 'cat ext/install.report; cat ext/install.report | grep ''"status": "success"'''
-- name: Node.js 16 - Tests
-  dependencies:
-  - Node.js 16 - Build
-  task:
-    env_vars:
-    - name: NODE_VERSION
-      value: '16'
     - name: _APPSIGNAL_EXTENSION_INSTALL
       value: 'false'
     prologue:
