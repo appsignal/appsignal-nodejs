@@ -43,6 +43,7 @@ import {
   RestifyInstrumentation,
   LayerType as RestifyLayerType
 } from "@opentelemetry/instrumentation-restify"
+import { UndiciInstrumentation } from "@opentelemetry/instrumentation-undici"
 import { SpanProcessor, TestModeSpanProcessor } from "./span_processor"
 import { Heartbeat } from "./heartbeat"
 
@@ -64,6 +65,7 @@ const DefaultInstrumentations = {
   "@opentelemetry/instrumentation-redis": RedisInstrumentation,
   "@opentelemetry/instrumentation-redis-4": Redis4Instrumentation,
   "@opentelemetry/instrumentation-restify": RestifyInstrumentation,
+  "@opentelemetry/instrumentation-undici": UndiciInstrumentation,
   "@prisma/instrumentation": PrismaInstrumentation
 }
 
@@ -343,6 +345,9 @@ export class Client {
             setParams(params, span)
           }
         }
+      },
+      "@opentelemetry/instrumentation-undici": {
+        requireParentforSpans: true
       },
       "@prisma/instrumentation": {
         middleware: true
