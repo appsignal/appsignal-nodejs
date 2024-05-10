@@ -100,6 +100,7 @@ export class Client {
   #metrics: Metrics
   #sdk?: NodeSDK
   #additionalInstrumentations: NodeSDKInstrumentationsOption
+  #isActive: boolean
 
   /**
    * Global accessors for the AppSignal client
@@ -142,7 +143,9 @@ export class Client {
   }
 
   /**
-   * Creates a new instance of the `Appsignal` object
+   * Starts AppSignal with the given configuration. If no configuration is set
+   * yet it will try to automatically load the configuration using the
+   * environment loaded from environment variables.
    */
   constructor(options: Partial<Options> = {}) {
     this.#additionalInstrumentations = options.additionalInstrumentations || []
@@ -152,55 +155,49 @@ export class Client {
     this.internalLogger = this.setupInternalLogger()
     this.storeInGlobal()
 
-    if (this.isActive) {
-      if (process.env._APPSIGNAL_DIAGNOSE === "true") {
-        Client.internalLogger.info(
-          "Diagnose mode is enabled, not starting extension, SDK and probes"
-        )
-        this.#metrics = new NoopMetrics()
-      } else {
-        this.start()
-        this.#metrics = new Metrics()
-        if (this.config.data.initializeOpentelemetrySdk) {
-          this.#sdk = this.initOpenTelemetry()
-          this.setUpOpenTelemetryLogger()
-        }
-      }
-    } else {
-      this.#metrics = new NoopMetrics()
-      console.error("AppSignal not starting, no valid configuration found")
+    // These will be overwritten if AppSignal can be started
+    this.#metrics = new NoopMetrics()
+    this.#isActive = false
+
+    if (process.env._APPSIGNAL_DIAGNOSE === "true") {
+      this.internalLogger.info(
+        "AppSignal not starting: running in diagnose mode"
+      )
+
+      return
+    }
+
+    const validationError = this.config.validationError()
+
+    if (validationError) {
+      console.info(`AppSignal not starting: ${validationError}`)
+
+      return
+    }
+
+    if (!Extension.isLoaded) {
+      this.extension.logLoadingErrors()
+
+      console.error("AppSignal not starting: extension failed to load")
+
+      return
+    }
+
+    this.extension.start()
+
+    this.#metrics = new Metrics()
+    this.#isActive = true
+
+    if (this.config.data.initializeOpentelemetrySdk) {
+      this.#sdk = this.initOpenTelemetry()
+      this.setUpOpenTelemetryLogger()
     }
 
     this.initCoreProbes()
   }
 
-  /**
-   * Returns `true` if the extension is loaded and configuration is valid
-   */
-  get isActive(): boolean {
-    return (
-      Extension.isLoaded &&
-      this.config.isValid &&
-      (this.config.data.active ?? false)
-    )
-  }
-
-  set isActive(arg) {
-    console.warn("Cannot set isActive property")
-  }
-
-  /**
-   * Starts AppSignal with the given configuration. If no configuration is set
-   * yet it will try to automatically load the configuration using the
-   * environment loaded from environment variables and the current working
-   * directory.
-   */
-  public start(): void {
-    if (this.config.isValid) {
-      this.extension.start()
-    } else {
-      console.error("Not starting, no valid AppSignal configuration found")
-    }
+  public get isActive(): boolean {
+    return this.#isActive
   }
 
   /**

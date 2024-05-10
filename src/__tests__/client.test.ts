@@ -27,19 +27,19 @@ describe("Client", () => {
     await client.stop()
   })
 
-  it("starts the client", () => {
+  it("starts the extension when the client is active", () => {
     const startSpy = jest.spyOn(Extension.prototype, "start")
-    client.start()
+    client = new Client({ ...DEFAULT_OPTS, active: true })
     expect(startSpy).toHaveBeenCalled()
   })
 
-  it("stops the client", async () => {
+  it("stops the extension when the client is stopped", async () => {
     const extensionStopSpy = jest.spyOn(Extension.prototype, "stop")
     await client.stop()
     expect(extensionStopSpy).toHaveBeenCalled()
   })
 
-  it("stops the probes when the client is active", async () => {
+  it("starts and stops the probes when the client is active", async () => {
     client = new Client({ ...DEFAULT_OPTS, active: true })
     const probes = client.metrics().probes()
     expect(probes.isRunning).toEqual(true)

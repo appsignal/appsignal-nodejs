@@ -86,4 +86,8 @@ export class Extension {
   public runningInContainer(): boolean {
     return extension.runningInContainer()
   }
+
+  public logLoadingErrors() {
+    extension.logLoadingErrors()
+  }
 }
