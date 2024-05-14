@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.4.4
+
+_Published on 2024-05-14._
+
+### Added
+
+- [138f01f](https://github.com/appsignal/appsignal-nodejs/commit/138f01ff69ca252319643907c9c221faf465fa27) patch - Instrument calls to `fetch` in Node.js. Requests made using Node.js' global `fetch`, or through the underlying `undici` library, will be automatically instrumented and shown as events in your performance samples' event timeline.
+
 ## 3.4.3
 
 _Published on 2024-05-14._
