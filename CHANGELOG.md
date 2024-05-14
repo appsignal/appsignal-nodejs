@@ -1,5 +1,26 @@
 # AppSignal for Node.js Changelog
 
+## 3.4.3
+
+_Published on 2024-05-14._
+
+### Added
+
+- [cca6741](https://github.com/appsignal/appsignal-nodejs/commit/cca6741208253bae4e9716d6ffcb439711283403) patch - Instrument calls to `fetch` in Node.js. Requests made using Node.js' global `fetch`, or through the underlying `undici` library, will be automatically instrumented and shown as events in your performance samples' event timeline.
+- [cca6741](https://github.com/appsignal/appsignal-nodejs/commit/cca6741208253bae4e9716d6ffcb439711283403) patch - Support Kamal-based deployments. Read the `KAMAL_VERSION` environment variable, which Kamal exposes within the deployed container, if present, and use it as the application revision if it is not set. This will automatically report deploy markers for applications using Kamal.
+
+### Changed
+
+- [6bf596c](https://github.com/appsignal/appsignal-nodejs/commit/6bf596c7f07fec6652e8c9aa64cc1604b9e984b3) patch - ### Improve error reporting during initialisation
+  
+  Do not report an error with the extension installation when AppSignal is imported -- instead, report it when attempting to initialise AppSignal. Do not report an error with the extension if AppSignal is not configured to be active.
+  
+  When AppSignal does not start due to its configuration (`active` is set to `false`, or the push API key is missing) report the specific reason why.
+
+### Fixed
+
+- [24a8701](https://github.com/appsignal/appsignal-nodejs/commit/24a87016077207a2c02590f8b1bab09c8b57e8ce) patch - Improve compatibility with alternative package managers. Fix an issue where AppSignal would fail to install with Yarn when using package managers that require transitive dependencies to be declared.
+
 ## 3.4.2
 
 ### Added
