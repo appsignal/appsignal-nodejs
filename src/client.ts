@@ -15,6 +15,7 @@ import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto"
 
 import type { Instrumentation } from "@opentelemetry/instrumentation"
 import { AmqplibInstrumentation } from "@opentelemetry/instrumentation-amqplib"
+import { BullMQInstrumentation } from "@appsignal/opentelemetry-instrumentation-bullmq"
 import {
   ExpressInstrumentation,
   ExpressLayerType
@@ -48,6 +49,7 @@ import { SpanProcessor, TestModeSpanProcessor } from "./span_processor"
 import { Heartbeat } from "./heartbeat"
 
 const DefaultInstrumentations = {
+  "@appsignal/opentelemetry-instrumentation-bullmq": BullMQInstrumentation,
   "@opentelemetry/instrumentation-amqplib": AmqplibInstrumentation,
   "@opentelemetry/instrumentation-express": ExpressInstrumentation,
   "@opentelemetry/instrumentation-fastify": FastifyInstrumentation,
@@ -279,6 +281,11 @@ export class Client {
     const requestHeaders = this.config.data.requestHeaders
 
     return {
+      "@appsignal/opentelemetry-instrumentation-bullmq": {
+        emitCreateSpansForBulk: false,
+        emitCreateSpansForFlow: true,
+        requireParentSpanForPublish: true
+      },
       "@opentelemetry/instrumentation-express": {
         requestHook: function (_span, info) {
           if (info.layerType === ExpressLayerType.REQUEST_HANDLER) {
