@@ -1,5 +1,29 @@
 # AppSignal for Node.js Changelog
 
+## 3.4.5
+
+_Published on 2024-06-12._
+
+### Added
+
+- [388cade](https://github.com/appsignal/appsignal-nodejs/commit/388cade65ac36114854e95321d608031091c1156) patch - Add BullMQ support through the `@appsignal/opentelemetry-instrumentation-bullmq` instrumentation. AppSignal will automatically instrument the use of BullMQ in your application.
+  
+  Calls to functions that enqueue jobs, such as `Queue.add` and others, will be instrumented as an event in the event timeline for the performance sample in which it takes place.
+  
+  When a BullMQ `Worker` processes a job, this will result in a performance sample in the `background` namespace.
+- [388cade](https://github.com/appsignal/appsignal-nodejs/commit/388cade65ac36114854e95321d608031091c1156) patch - Add basic OpenTelemetry messaging support. This adds support for any OpenTelemetry instrumentation that complies with the OpenTelemetry Semantic Conventions specification for messaging.
+
+### Changed
+
+- [388cade](https://github.com/appsignal/appsignal-nodejs/commit/388cade65ac36114854e95321d608031091c1156) patch - Rename the `hostname` tag, which contains the host of the URI that an HTTP request was made against, to `request_host`.
+  
+  This fixes an issue where the `hostname` tag would later be internally overriden to the hostname of the machine processing the request, but notifications would still be emitted containing the previous `hostname` value.
+- [1a01c5d](https://github.com/appsignal/appsignal-nodejs/commit/1a01c5d7a2e8676f3fecada994d7c2599b17a2a5) patch - Improve the amqlib instrumentation by parsing it like other messaging spans following the OpenTelemetry messaging spec.
+
+### Fixed
+
+- [1a01c5d](https://github.com/appsignal/appsignal-nodejs/commit/1a01c5d7a2e8676f3fecada994d7c2599b17a2a5) patch - Fix an issue where Redis events are misidentified as HTTP events.
+
 ## 3.4.4
 
 _Published on 2024-05-14._
