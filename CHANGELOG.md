@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.4.6
+
+_Published on 2024-06-14._
+
+### Fixed
+
+- [0d60a9b](https://github.com/appsignal/appsignal-nodejs/commit/0d60a9bc05a4dd792ea69485b30219d1dfef0655) patch - Fix an issue where a later span close time than accurate, and therefore a longer span duration, is reported to AppSignal under certain circumstances.
+
 ## 3.4.5
 
 _Published on 2024-06-12._
