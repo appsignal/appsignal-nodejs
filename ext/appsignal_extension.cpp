@@ -358,6 +358,23 @@ Napi::Value CloseSpan(const Napi::CallbackInfo &info) {
   return env.Null();
 }
 
+Napi::Value CloseSpanWithTimestamp(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+
+  Napi::External<appsignal_span_t> span =
+      info[0].As<Napi::External<appsignal_span_t>>();
+
+  Napi::Number endTimeSec = info[1].As<Napi::Number>();
+  Napi::Number endTimeNsec = info[2].As<Napi::Number>();
+
+  appsignal_close_span_with_timestamp(span.Data(),
+    endTimeSec.Int64Value(),
+    endTimeNsec.Int32Value()
+  );
+
+  return env.Null();
+}
+
 // Metrics
 
 Napi::Value SetGauge(const Napi::CallbackInfo &info) {
@@ -494,6 +511,8 @@ Napi::Object CreateSpanObject(Napi::Env env, Napi::Object exports) {
 
   span.Set(Napi::String::New(env, "closeSpan"),
            Napi::Function::New(env, CloseSpan));
+  span.Set(Napi::String::New(env, "closeSpanWithTimestamp"),
+           Napi::Function::New(env, CloseSpanWithTimestamp));
   span.Set(Napi::String::New(env, "addSpanError"),
            Napi::Function::New(env, AddSpanError));
   span.Set(Napi::String::New(env, "spanToJSON"),
