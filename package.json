@@ -1,6 +1,6 @@
 {
   "name": "@appsignal/nodejs",
-  "version": "3.4.6",
+  "version": "3.4.7",
   "main": "dist/index",
   "types": "dist/index",
   "license": "MIT",
@@ -21,7 +21,7 @@
     "@opentelemetry/instrumentation-amqplib": ">= 0.36.0 < 0.37",
     "@opentelemetry/instrumentation-graphql": ">= 0.35.2 < 0.36",
     "@opentelemetry/instrumentation-http": ">= 0.47.0 < 0.48",
-    "@opentelemetry/instrumentation-ioredis": ">= 0.35.3 < 0.36",
+    "@opentelemetry/instrumentation-ioredis": ">= 0.40.0 < 0.41.0",
     "@opentelemetry/instrumentation-knex": ">= 0.32.3 < 0.33",
     "@opentelemetry/instrumentation-koa": ">= 0.36.2 < 0.37",
     "@opentelemetry/instrumentation-mongodb": ">= 0.37.0 < 0.38",
