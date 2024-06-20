@@ -77,6 +77,9 @@ describe("Probes", () => {
         enableMinutelyProbes
       })
       expect(client.metrics()).toBeInstanceOf(Metrics)
+      // Stop client so it doesn't actually export any metrics, which would
+      // cause the entire test to fail as the agent's not running
+      client.stop()
 
       probes = client.metrics().probes()
     }
