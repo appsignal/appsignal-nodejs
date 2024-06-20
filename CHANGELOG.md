@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.4.7
+
+_Published on 2024-06-20._
+
+### Changed
+
+- [b22eecd](https://github.com/appsignal/appsignal-nodejs/commit/b22eecd5d507f5297869fca219ca930a150b1390) patch - Update OpenTelemetry dependencies.
+
 ## 3.4.6
 
 _Published on 2024-06-14._
