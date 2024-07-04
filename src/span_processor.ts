@@ -60,7 +60,7 @@ export class SpanProcessor implements OpenTelemetrySpanProcessor {
       }
     })
 
-    opentelemetrySpan.close({ timestamp: [span.endTime[0], span.endTime[1]] })
+    opentelemetrySpan.close()
   }
 
   shutdown(): Promise<void> {

@@ -26,12 +26,8 @@ export class Span {
     this.#ref = ref
   }
 
-  public close({ timestamp }: { timestamp?: [number, number] } = {}): this {
-    if (timestamp !== undefined) {
-      span.closeSpanWithTimestamp(this.#ref, timestamp[0], timestamp[1])
-    } else {
-      span.closeSpan(this.#ref)
-    }
+  public close(): this {
+    span.closeSpan(this.#ref)
     return this
   }
 
