@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.4.8
+
+_Published on 2024-07-04._
+
+### Fixed
+
+- Fix different spans of the same category incorrectly being reported with the same body. (patch [100e964](https://github.com/appsignal/appsignal-nodejs/commit/100e964310b56b1efc32459ac83d7b6a3c77be65))
+
 ## 3.4.7
 
 _Published on 2024-06-20._
