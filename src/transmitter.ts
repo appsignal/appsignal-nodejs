@@ -6,6 +6,9 @@ import { Configuration } from "./config"
 import { URL, URLSearchParams } from "url"
 import { Client } from "./client"
 
+import { context } from "@opentelemetry/api"
+import { suppressTracing } from "@opentelemetry/core"
+
 const REDIRECT_COUNT = Symbol("redirect-count")
 
 type TransmitterRequestOptions = {
@@ -101,32 +104,34 @@ export class Transmitter {
   }
 
   public request(requestOptions: TransmitterRequestOptions) {
-    const { method, params = new URLSearchParams(), onError } = requestOptions
+    context.with(suppressTracing(context.active()), () => {
+      const { method, params = new URLSearchParams(), onError } = requestOptions
 
-    const initialOptions = {
-      method,
-      ...this.urlRequestOptions()
-    }
+      const initialOptions = {
+        method,
+        ...this.urlRequestOptions()
+      }
 
-    const { protocol, path } = initialOptions
+      const { protocol, path } = initialOptions
 
-    const options = {
-      ...initialOptions,
-      ...this.paramsRequestOptions(path ?? "", params),
-      ...this.bodyRequestOptions(method),
-      ...this.caRequestOptions(protocol ?? "")
-    }
+      const options = {
+        ...initialOptions,
+        ...this.paramsRequestOptions(path ?? "", params),
+        ...this.bodyRequestOptions(method),
+        ...this.caRequestOptions(protocol ?? "")
+      }
 
-    const module = this.requestModule(protocol ?? "")
+      const module = this.requestModule(protocol ?? "")
 
-    const callback = this.handleRedirectsCallback(requestOptions)
+      const callback = this.handleRedirectsCallback(requestOptions)
 
-    const request = module.request(options, callback)
+      const request = module.request(options, callback)
 
-    request.on("error", onError)
+      request.on("error", onError)
 
-    this.writeRequest(method, request)
-    request.end()
+      this.writeRequest(method, request)
+      request.end()
+    })
   }
 
   private handleRedirectsCallback({
