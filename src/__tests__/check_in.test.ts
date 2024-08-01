@@ -21,8 +21,12 @@ function mockCronCheckInRequest(
   { delay } = { delay: 0 }
 ): Scope {
   return nock("https://appsignal-endpoint.net:443")
-    .post("/checkins/cron/json", body => {
-      return body.name === "test-cron-checkin" && body.kind === kind
+    .post("/check_ins/json", body => {
+      return (
+        body.identifier === "test-cron-checkin" &&
+        body.kind === kind &&
+        body.check_in_type === "cron"
+      )
     })
     .query({
       api_key: "test-push-api-key",

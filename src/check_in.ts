@@ -5,10 +5,11 @@ import { Client } from "./client"
 export type EventKind = "start" | "finish"
 
 export type Event = {
-  name: string
-  id: string
+  identifier: string
+  digest: string
   kind: EventKind
   timestamp: number
+  check_in_type: "cron"
 }
 
 class PendingPromiseSet<T> extends Set<Promise<T>> {
@@ -48,10 +49,11 @@ export class Cron {
 
   private event(kind: EventKind): Event {
     return {
-      name: this.name,
-      id: this.id,
+      identifier: this.name,
+      digest: this.id,
       kind: kind,
-      timestamp: Math.floor(Date.now() / 1000)
+      timestamp: Math.floor(Date.now() / 1000),
+      check_in_type: "cron"
     }
   }
 
@@ -64,7 +66,7 @@ export class Cron {
     }
 
     const promise = new Transmitter(
-      `${Client.config.data.loggingEndpoint}/checkins/cron/json`,
+      `${Client.config.data.loggingEndpoint}/check_ins/json`,
       JSON.stringify(event)
     ).transmit()
 
@@ -72,7 +74,7 @@ export class Cron {
       .then(({ status }: { status: number }) => {
         if (status >= 200 && status <= 299) {
           Client.internalLogger.trace(
-            `Transmitted cron check-in \`${event.name}\` (${event.id}) ${event.kind} event`
+            `Transmitted cron check-in \`${event.identifier}\` (${event.digest}) ${event.kind} event`
           )
         } else {
           Client.internalLogger.warn(
