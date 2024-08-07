@@ -46,7 +46,7 @@ import {
 } from "@opentelemetry/instrumentation-restify"
 import { UndiciInstrumentation } from "@opentelemetry/instrumentation-undici"
 import { SpanProcessor, TestModeSpanProcessor } from "./span_processor"
-import { Heartbeat } from "./heartbeat"
+import { Cron } from "./check_in"
 
 const DefaultInstrumentations = {
   "@appsignal/opentelemetry-instrumentation-bullmq": BullMQInstrumentation,
@@ -220,7 +220,7 @@ export class Client {
     await this.#sdk?.shutdown()
     this.metrics().probes().stop()
     this.extension.stop()
-    await Heartbeat.shutdown()
+    await Cron.shutdown()
   }
 
   /**
