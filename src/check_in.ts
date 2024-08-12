@@ -27,12 +27,12 @@ class PendingPromiseSet<T> extends Set<Promise<T>> {
 export class Cron {
   private static cronPromises = new PendingPromiseSet<any>()
 
-  name: string
-  id: string
+  identifier: string
+  digest: string
 
-  constructor(name: string) {
-    this.name = name
-    this.id = crypto.randomBytes(8).toString("hex")
+  constructor(identifier: string) {
+    this.identifier = identifier
+    this.digest = crypto.randomBytes(8).toString("hex")
   }
 
   public static async shutdown() {
@@ -49,8 +49,8 @@ export class Cron {
 
   private event(kind: EventKind): Event {
     return {
-      identifier: this.name,
-      digest: this.id,
+      identifier: this.identifier,
+      digest: this.digest,
       kind: kind,
       timestamp: Math.floor(Date.now() / 1000),
       check_in_type: "cron"
@@ -96,10 +96,10 @@ export class Cron {
   }
 }
 
-export function cron(name: string): void
-export function cron<T>(name: string, fn: () => T): T
-export function cron<T>(name: string, fn?: () => T): T | undefined {
-  const cron = new Cron(name)
+export function cron(identifier: string): void
+export function cron<T>(identifier: string, fn: () => T): T
+export function cron<T>(identifier: string, fn?: () => T): T | undefined {
+  const cron = new Cron(identifier)
   let output
 
   if (fn) {
