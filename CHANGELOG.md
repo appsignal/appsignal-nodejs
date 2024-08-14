@@ -1,5 +1,39 @@
 # AppSignal for Node.js Changelog
 
+## 3.4.9
+
+_Published on 2024-08-14._
+
+### Changed
+
+- Rename heartbeats to cron check-ins. Calls to `Appsignal.heartbeat` and `Appsignal.Heartbeat` should be replaced with calls to `Appsignal.checkIn.cron` and `Appsignal.checkIn.Cron`, for example:
+
+  ```js
+  // Before
+  import { heartbeat } from "@appsignal/nodejs"
+
+  heartbeat("do_something", () => {
+    do_something()
+  })
+
+  // After
+  import { checkIn } from "@appsignal/nodejs"
+
+  checkIn.cron("do_something", () => {
+    do_something
+  })
+  ```
+
+  (patch [fc9abba](https://github.com/appsignal/appsignal-nodejs/commit/fc9abbab04d071edea36ec7440236165529e57be))
+
+### Deprecated
+
+- Calls to `Appsignal.heartbeat` and to the `Appsignal.Heartbeat` constructor will emit a deprecation warning. (patch [fc9abba](https://github.com/appsignal/appsignal-nodejs/commit/fc9abbab04d071edea36ec7440236165529e57be))
+
+### Fixed
+
+- Prevent internal AppSignal requests from being instrumented and appearing in the "Slow API requests" panel. (patch [95bf139](https://github.com/appsignal/appsignal-nodejs/commit/95bf1397226864704843a6354fe49e3971511e72))
+
 ## 3.4.8
 
 _Published on 2024-07-04._
