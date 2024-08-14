@@ -1,115 +1,65 @@
-import crypto from "crypto"
-import { Transmitter } from "./transmitter"
 import { Client } from "./client"
+import { cron, Cron } from "./check_in"
+export type { Event, EventKind } from "./check_in"
 
-export type EventKind = "start" | "finish"
-
-export type Event = {
-  name: string
-  id: string
-  kind: EventKind
-  timestamp: number
+type OnceFn = {
+  (): void
+  reset(): void
 }
 
-class PendingPromiseSet<T> extends Set<Promise<T>> {
-  add(promise: Promise<T>) {
-    super.add(promise)
-    promise.finally(() => this.delete(promise))
-    return this
-  }
+function once<T extends (...args: any[]) => void>(
+  fn: T,
+  ...args: Parameters<T>
+): OnceFn {
+  let done = false
 
-  async allSettled() {
-    await Promise.allSettled(this)
-  }
-}
-
-export class Heartbeat {
-  private static heartbeatPromises = new PendingPromiseSet<any>()
-
-  name: string
-  id: string
-
-  constructor(name: string) {
-    this.name = name
-    this.id = crypto.randomBytes(8).toString("hex")
-  }
-
-  public static async shutdown() {
-    await Heartbeat.heartbeatPromises.allSettled()
-  }
-
-  public start(): Promise<void> {
-    return this.transmit(this.event("start"))
-  }
-
-  public finish(): Promise<void> {
-    return this.transmit(this.event("finish"))
-  }
-
-  private event(kind: EventKind): Event {
-    return {
-      name: this.name,
-      id: this.id,
-      kind: kind,
-      timestamp: Math.floor(Date.now() / 1000)
+  const onceFn = function () {
+    if (!done) {
+      fn(...args)
+      done = true
     }
   }
 
-  private transmit(event: Event): Promise<void> {
-    if (Client.client === undefined || !Client.client.isActive) {
-      Client.internalLogger.debug(
-        "AppSignal not active, not transmitting heartbeat event"
-      )
-      return Promise.resolve()
-    }
-
-    const promise = new Transmitter(
-      `${Client.config.data.loggingEndpoint}/heartbeats/json`,
-      JSON.stringify(event)
-    ).transmit()
-
-    const handledPromise = promise
-      .then(({ status }: { status: number }) => {
-        if (status >= 200 && status <= 299) {
-          Client.internalLogger.trace(
-            `Transmitted heartbeat \`${event.name}\` (${event.id}) ${event.kind} event`
-          )
-        } else {
-          Client.internalLogger.warn(
-            `Failed to transmit heartbeat event: status code was ${status}`
-          )
-        }
-      })
-      .catch(({ error }: { error: Error }) => {
-        Client.internalLogger.warn(
-          `Failed to transmit heartbeat event: ${error.message}`
-        )
-
-        return Promise.resolve()
-      })
-
-    Heartbeat.heartbeatPromises.add(handledPromise)
-
-    return handledPromise
+  onceFn.reset = () => {
+    done = false
   }
+
+  return onceFn
 }
+
+function consoleAndLoggerWarn(message: string) {
+  console.warn(`appsignal WARNING: ${message}`)
+  Client.internalLogger.warn(message)
+}
+
+export const heartbeatClassWarnOnce = once(
+  consoleAndLoggerWarn,
+  "The class `Heartbeat` has been deprecated. " +
+    "Please update uses of the class `new Heartbeat(...)` to `new checkIn.Cron(...)`, " +
+    'importing it as `import { checkIn } from "@appsignal/nodejs"`, ' +
+    "in order to remove this message."
+)
+
+export const heartbeatHelperWarnOnce = once(
+  consoleAndLoggerWarn,
+  "The helper `heartbeat` has been deprecated. " +
+    "Please update uses of the helper `heartbeat(...)` to `checkIn.cron(...)`, " +
+    'importing it as `import { checkIn } from "@appsignal/nodejs"`, ' +
+    "in order to remove this message."
+)
 
 export function heartbeat(name: string): void
 export function heartbeat<T>(name: string, fn: () => T): T
 export function heartbeat<T>(name: string, fn?: () => T): T | undefined {
-  const heartbeat = new Heartbeat(name)
-  let output
+  heartbeatHelperWarnOnce()
 
-  if (fn) {
-    heartbeat.start()
-    output = fn()
-  }
-
-  if (output instanceof Promise) {
-    output.then(() => heartbeat.finish()).catch(() => {})
-  } else {
-    heartbeat.finish()
-  }
-
-  return output
+  return (cron as (name: string, fn?: () => T) => T | undefined)(name, fn)
 }
+
+export const Heartbeat = new Proxy(Cron, {
+  construct(target, args: ConstructorParameters<typeof Cron>) {
+    heartbeatClassWarnOnce()
+
+    return new target(...args)
+  }
+})
