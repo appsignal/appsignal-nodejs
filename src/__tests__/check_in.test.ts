@@ -1,5 +1,12 @@
-import nock, { Scope } from "nock"
-import { cron, Cron, EventKind } from "../check_in"
+import nock from "nock"
+import { cron, Cron, Event, EventKind } from "../check_in"
+import {
+  scheduler,
+  resetScheduler,
+  setDebounceTime,
+  resetDebounceTime,
+  debounceTime
+} from "../check_in/scheduler"
 import { Client, Options } from "../client"
 import {
   heartbeat,
@@ -7,6 +14,8 @@ import {
   heartbeatClassWarnOnce,
   heartbeatHelperWarnOnce
 } from "../heartbeat"
+import { ndjsonParse } from "../utils"
+import type { InternalLogger } from "../internal_logger"
 
 const DEFAULT_CLIENT_CONFIG: Partial<Options> = {
   active: true,
@@ -16,33 +25,38 @@ const DEFAULT_CLIENT_CONFIG: Partial<Options> = {
   hostname: "test-hostname"
 }
 
-function mockCronCheckInRequest(
-  kind: EventKind,
-  { delay } = { delay: 0 }
-): Scope {
-  return nock("https://appsignal-endpoint.net:443")
-    .post("/check_ins/json", body => {
-      return (
-        body.identifier === "test-cron-checkin" &&
-        body.kind === kind &&
-        body.check_in_type === "cron"
-      )
-    })
-    .query({
-      api_key: "test-push-api-key",
-      name: "Test App",
-      environment: "test",
-      hostname: "test-hostname"
-    })
-    .delay(delay)
-    .reply(200, "")
+type Request = Event[]
+
+function mockCheckInRequests(): Request[] {
+  const requests: Request[] = []
+
+  const appendCheckInRequests = async () => {
+    requests.push(await mockOneCheckInRequest())
+    appendCheckInRequests()
+  }
+
+  appendCheckInRequests()
+
+  return requests
 }
 
-function nextTick(fn: () => void): Promise<void> {
+function mockOneCheckInRequest(
+  customReply?: (interceptor: nock.Interceptor) => nock.Scope
+): Promise<Request> {
+  const reply = customReply || (scope => scope.reply(200, ""))
+
   return new Promise(resolve => {
-    process.nextTick(() => {
-      fn()
-      resolve()
+    const interceptor = nock("https://appsignal-endpoint.net:443")
+      .post("/check_ins/json")
+      .query({
+        api_key: "test-push-api-key",
+        name: "Test App",
+        environment: "test",
+        hostname: "test-hostname"
+      })
+    const scope = reply(interceptor)
+    scope.on("request", (_req, _interceptor, body: string) => {
+      resolve(ndjsonParse(body) as Event[])
     })
   })
 }
@@ -53,17 +67,50 @@ function sleep(ms: number): Promise<void> {
   })
 }
 
-function interceptRequestBody(scope: Scope): Promise<string> {
-  return new Promise(resolve => {
-    scope.on("request", (_req, _interceptor, body: string) => {
-      resolve(body)
-    })
-  })
+function expectEvents(actual: Event[], expected: Partial<Event>[]): void {
+  expect(actual).toHaveLength(expected.length)
+
+  for (let i = 0; i < expected.length; i++) {
+    const event = actual[i]
+    const expectedEvent = expected[i]
+
+    for (const key in expectedEvent) {
+      expect(event[key as keyof Event]).toEqual(
+        expectedEvent[key as keyof Event]
+      )
+    }
+  }
+}
+
+function expectCronEvents(actual: Event[], expected: EventKind[]): void {
+  expectEvents(
+    actual,
+    expected.map(kind => ({
+      identifier: "test-cron-checkin",
+      kind,
+      check_in_type: "cron"
+    }))
+  )
+}
+
+function spyOnInternalLogger(
+  client: Client
+): Record<keyof InternalLogger, jest.SpyInstance> {
+  const spies: Partial<Record<keyof InternalLogger, jest.SpyInstance>> = {}
+
+  for (const level of ["error", "warn", "info", "debug", "trace"] as const) {
+    spies[level] = jest
+      .spyOn(client.internalLogger, level as keyof InternalLogger)
+      .mockImplementation()
+  }
+
+  return spies as Required<typeof spies>
 }
 
 describe("checkIn.Cron", () => {
   let client: Client
   let theCron: Cron
+  let requests: Request[]
 
   beforeAll(() => {
     theCron = new Cron("test-cron-checkin")
@@ -73,18 +120,24 @@ describe("checkIn.Cron", () => {
     }
   })
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await resetScheduler()
+    resetDebounceTime()
+
     client = new Client(DEFAULT_CLIENT_CONFIG)
 
-    nock.cleanAll()
     nock.disableNetConnect()
+    requests = mockCheckInRequests()
   })
 
-  afterEach(() => {
-    client.stop()
+  afterEach(async () => {
+    await client.stop()
+    nock.cleanAll()
   })
 
-  afterAll(() => {
+  afterAll(async () => {
+    await resetScheduler()
+    resetDebounceTime()
     nock.restore()
   })
 
@@ -95,92 +148,267 @@ describe("checkIn.Cron", () => {
       active: false
     })
 
-    const startScope = mockCronCheckInRequest("start")
-    const finishScope = mockCronCheckInRequest("finish")
+    const internalLoggerSpies = spyOnInternalLogger(client)
 
-    await expect(theCron.start()).resolves.toBeUndefined()
-    await expect(theCron.finish()).resolves.toBeUndefined()
+    theCron.start()
+    theCron.finish()
 
-    expect(startScope.isDone()).toBe(false)
-    expect(finishScope.isDone()).toBe(false)
+    expect(internalLoggerSpies.debug).toHaveBeenCalledTimes(2)
+    internalLoggerSpies.debug.mock.calls.forEach(call => {
+      expect(call[0]).toMatch(/^Cannot schedule cron check-in/)
+      expect(call[0]).toMatch(/: AppSignal is not active$/)
+    })
+
+    await scheduler.shutdown()
+
+    expect(requests).toHaveLength(0)
+  })
+
+  it("does not transmit any events when AppSignal is shutting down", async () => {
+    await scheduler.shutdown()
+
+    const internalLoggerSpies = spyOnInternalLogger(client)
+
+    theCron.start()
+    theCron.finish()
+
+    expect(internalLoggerSpies.debug).toHaveBeenCalledTimes(2)
+    internalLoggerSpies.debug.mock.calls.forEach(call => {
+      expect(call[0]).toMatch(/^Cannot schedule cron check-in/)
+      expect(call[0]).toMatch(/: AppSignal is stopped$/)
+    })
+
+    expect(requests).toHaveLength(0)
   })
 
   it("cron.start() sends a cron check-in start event", async () => {
-    const scope = mockCronCheckInRequest("start")
+    const internalLoggerSpies = spyOnInternalLogger(client)
 
-    await expect(theCron.start()).resolves.toBeUndefined()
+    theCron.start()
 
-    scope.done()
+    expect(internalLoggerSpies.trace).toHaveBeenCalledTimes(1)
+    expect(internalLoggerSpies.trace.mock.calls[0][0]).toMatch(
+      /^Scheduling cron check-in `test-cron-checkin` start event/
+    )
+
+    await scheduler.shutdown()
+
+    expect(internalLoggerSpies.trace).toHaveBeenCalledTimes(2)
+    expect(internalLoggerSpies.trace.mock.calls[1][0]).toMatch(
+      /^Transmitted cron check-in `test-cron-checkin` start event/
+    )
+
+    expect(requests).toHaveLength(1)
+    expectCronEvents(requests[0], ["start"])
   })
 
   it("cron.finish() sends a cron check-in finish event", async () => {
-    const scope = mockCronCheckInRequest("finish")
+    const internalLoggerSpies = spyOnInternalLogger(client)
 
-    await expect(theCron.finish()).resolves.toBeUndefined()
+    theCron.finish()
 
-    scope.done()
+    expect(internalLoggerSpies.trace).toHaveBeenCalledTimes(1)
+    expect(internalLoggerSpies.trace.mock.calls[0][0]).toMatch(
+      /^Scheduling cron check-in `test-cron-checkin` finish event/
+    )
+
+    await scheduler.shutdown()
+
+    expect(internalLoggerSpies.trace).toHaveBeenCalledTimes(2)
+    expect(internalLoggerSpies.trace.mock.calls[1][0]).toMatch(
+      /^Transmitted cron check-in `test-cron-checkin` finish event/
+    )
+
+    expect(requests).toHaveLength(1)
+    expectCronEvents(requests[0], ["finish"])
   })
 
-  it("Cron.shutdown() awaits pending cron check-in event promises", async () => {
-    const startScope = mockCronCheckInRequest("start", { delay: 100 })
-    const finishScope = mockCronCheckInRequest("finish", { delay: 200 })
-
-    let finishPromiseResolved = false
-    let shutdownPromiseResolved = false
-
-    const startPromise = theCron.start()
-
-    theCron.finish().then(() => {
-      finishPromiseResolved = true
+  describe("Scheduler", () => {
+    beforeEach(() => {
+      // Remove the persistent mock for all requests.
+      // These tests will mock requests one by one, so that
+      // they can await their responses.
+      nock.cleanAll()
+      setDebounceTime(() => 20)
     })
 
-    const shutdownPromise = Cron.shutdown().then(() => {
-      shutdownPromiseResolved = true
+    it("transmits events close to each other in time in a single request", async () => {
+      const request = mockOneCheckInRequest()
+
+      theCron.start()
+      theCron.finish()
+
+      const internalLoggerSpies = spyOnInternalLogger(client)
+
+      const events = await request
+      expectCronEvents(events, ["start", "finish"])
+
+      await scheduler.allSettled()
+
+      expect(internalLoggerSpies.trace).toHaveBeenCalledTimes(1)
+      expect(internalLoggerSpies.trace).toHaveBeenLastCalledWith(
+        "Transmitted 2 check-in events"
+      )
     })
 
-    await expect(startPromise).resolves.toBeUndefined()
+    it("transmits events far apart in time in separate requests", async () => {
+      let request = mockOneCheckInRequest()
 
-    // The finish promise should still be pending, so the shutdown promise
-    // should not be resolved yet.
-    await nextTick(() => {
-      expect(finishPromiseResolved).toBe(false)
-      expect(shutdownPromiseResolved).toBe(false)
+      theCron.start()
+
+      let events = await request
+      expectCronEvents(events, ["start"])
+
+      request = mockOneCheckInRequest()
+
+      theCron.finish()
+
+      events = await request
+      expectCronEvents(events, ["finish"])
     })
 
-    startScope.done()
+    it("does not transmit redundant events in the same request", async () => {
+      const request = mockOneCheckInRequest()
 
-    // The shutdown promise should not resolve until the finish promise
-    // resolves.
-    await expect(shutdownPromise).resolves.toBeUndefined()
+      theCron.start()
 
-    await nextTick(() => {
-      expect(finishPromiseResolved).toBe(true)
+      const internalLoggerSpies = spyOnInternalLogger(client)
+
+      theCron.start()
+
+      expect(internalLoggerSpies.trace).toHaveBeenCalledTimes(1)
+      expect(internalLoggerSpies.trace.mock.calls[0][0]).toMatch(
+        /^Scheduling cron check-in `test-cron-checkin` start event/
+      )
+
+      expect(internalLoggerSpies.debug).toHaveBeenCalledTimes(1)
+      expect(internalLoggerSpies.debug.mock.calls[0][0]).toMatch(
+        /^Replacing previously scheduled cron check-in `test-cron-checkin` start event/
+      )
+
+      const events = await request
+      expectCronEvents(events, ["start"])
+      await scheduler.allSettled()
+
+      expect(internalLoggerSpies.trace).toHaveBeenCalledTimes(2)
+      expect(internalLoggerSpies.trace.mock.calls[1][0]).toMatch(
+        /^Transmitted cron check-in `test-cron-checkin` start event/
+      )
     })
 
-    finishScope.done()
+    it("logs an error when the request returns a non-2xx status code", async () => {
+      const request = mockOneCheckInRequest(interceptor =>
+        interceptor.reply(500, "")
+      )
+
+      theCron.start()
+
+      const internalLoggerSpies = spyOnInternalLogger(client)
+
+      await request
+      await scheduler.allSettled()
+
+      expect(internalLoggerSpies.error).toHaveBeenCalledTimes(1)
+      expect(internalLoggerSpies.error.mock.calls[0][0]).toMatch(
+        /^Failed to transmit cron check-in `test-cron-checkin` start event/
+      )
+      expect(internalLoggerSpies.error.mock.calls[0][0]).toMatch(
+        /: status code was 500$/
+      )
+    })
+
+    it("logs an error when the request fails", async () => {
+      const request = mockOneCheckInRequest(interceptor =>
+        interceptor.replyWithError("something went wrong")
+      )
+
+      theCron.start()
+
+      const internalLoggerSpies = spyOnInternalLogger(client)
+
+      await request
+      await scheduler.allSettled()
+
+      expect(internalLoggerSpies.error).toHaveBeenCalledTimes(1)
+      expect(internalLoggerSpies.error.mock.calls[0][0]).toMatch(
+        /^Failed to transmit cron check-in `test-cron-checkin` start event/
+      )
+      expect(internalLoggerSpies.error.mock.calls[0][0]).toMatch(
+        /: something went wrong$/
+      )
+    })
+
+    it("transmits scheduled events when the scheduler is shut down", async () => {
+      // Set a very long debounce time to ensure that the scheduler
+      // is not awaiting it, but rather sending the events immediately
+      // on shutdown.
+      setDebounceTime(() => 10000)
+
+      theCron.start()
+
+      const request = mockOneCheckInRequest()
+
+      await scheduler.shutdown()
+
+      const events = await request
+      expectCronEvents(events, ["start"])
+    })
+
+    it("uses the last transmission time to calculate the debounce", async () => {
+      const request = mockOneCheckInRequest()
+
+      const debounceTime = jest.fn(_lastTransmission => 0)
+      setDebounceTime(debounceTime)
+
+      theCron.start()
+
+      expect(debounceTime).toHaveBeenCalledTimes(1)
+      expect(debounceTime).toHaveBeenLastCalledWith(undefined)
+
+      await request
+      const expectedLastTransmission = Date.now()
+
+      theCron.finish()
+
+      expect(debounceTime).toHaveBeenCalledTimes(2)
+      expect(debounceTime).not.toHaveBeenLastCalledWith(undefined)
+      // Allow for some margin of error in the timing of the tests.
+      expect(debounceTime.mock.calls[1][0]).toBeGreaterThan(
+        expectedLastTransmission - 20
+      )
+    })
+
+    describe("debounce time", () => {
+      beforeEach(resetDebounceTime)
+
+      it("is short when no last transmission time is given", () => {
+        expect(debounceTime(undefined)).toBe(100)
+      })
+
+      it("is short when the last transmission time was a long time ago", () => {
+        expect(debounceTime(0)).toBe(100)
+      })
+
+      it("is long when the last transmission time is very recent", () => {
+        // Allow for some margin of error in the timing of the tests.
+        expect(debounceTime(Date.now())).toBeLessThanOrEqual(10000)
+        expect(debounceTime(Date.now())).toBeGreaterThan(10000 - 20)
+      })
+    })
   })
 
   describe("Appsignal.checkIn.cron()", () => {
     it("without a function, sends a cron check-in finish event", async () => {
-      const startScope = mockCronCheckInRequest("start")
-      const finishScope = mockCronCheckInRequest("finish")
-
       expect(cron("test-cron-checkin")).toBeUndefined()
 
-      await nextTick(() => {
-        expect(startScope.isDone()).toBe(false)
-        finishScope.done()
-      })
+      await scheduler.shutdown()
+
+      expect(requests).toHaveLength(1)
+      expectCronEvents(requests[0], ["finish"])
     })
 
     describe("with a function", () => {
       it("sends cron check-in start and finish events", async () => {
-        const startScope = mockCronCheckInRequest("start")
-        const startBody = interceptRequestBody(startScope)
-
-        const finishScope = mockCronCheckInRequest("finish")
-        const finishBody = interceptRequestBody(finishScope)
-
         expect(
           cron("test-cron-checkin", () => {
             const thisSecond = Math.floor(Date.now() / 1000)
@@ -197,51 +425,39 @@ describe("checkIn.Cron", () => {
           })
         ).toBe("output")
 
-        // Since the function is synchronous and deadlocks, the start and
-        // finish events' requests are actually initiated simultaneously
-        // afterwards, when the function finishes and the event loop ticks.
-        await nextTick(() => {
-          startScope.done()
-          finishScope.done()
-        })
+        await scheduler.shutdown()
 
-        expect(JSON.parse(await finishBody).timestamp).toBeGreaterThan(
-          JSON.parse(await startBody).timestamp
-        )
+        expect(requests).toHaveLength(1)
+        expectCronEvents(requests[0], ["start", "finish"])
+        expect(requests[0][0].timestamp).toBeLessThan(requests[0][1].timestamp)
       })
 
       it("does not send a finish event when the function throws an error", async () => {
-        const startScope = mockCronCheckInRequest("start")
-        const finishScope = mockCronCheckInRequest("finish")
-
         expect(() => {
           cron("test-cron-checkin", () => {
             throw new Error("thrown")
           })
         }).toThrow("thrown")
 
-        await nextTick(() => {
-          startScope.done()
-          expect(finishScope.isDone()).toBe(false)
-        })
+        await scheduler.shutdown()
+
+        expect(requests).toHaveLength(1)
+        expectCronEvents(requests[0], ["start"])
       })
     })
 
     describe("with an async function", () => {
       it("sends cron check-in start and finish events", async () => {
-        const startScope = mockCronCheckInRequest("start")
-        const startBody = interceptRequestBody(startScope)
-
-        const finishScope = mockCronCheckInRequest("finish")
-        const finishBody = interceptRequestBody(finishScope)
+        // Set a debounce time larger than the maximum sleep time.
+        // This is to ensure that the scheduler will not send the start and
+        // finish events together at shutdown, rather than in separate
+        // requests.
+        setDebounceTime(() => {
+          return 10000
+        })
 
         await expect(
           cron("test-cron-checkin", async () => {
-            await nextTick(() => {
-              startScope.done()
-              expect(finishScope.isDone()).toBe(false)
-            })
-
             const millisecondsToNextSecond = 1000 - (Date.now() % 1000)
             await sleep(millisecondsToNextSecond)
 
@@ -249,35 +465,30 @@ describe("checkIn.Cron", () => {
           })
         ).resolves.toBe("output")
 
-        await nextTick(() => {
-          startScope.done()
-          finishScope.done()
-        })
+        await scheduler.shutdown()
 
-        expect(JSON.parse(await finishBody).timestamp).toBeGreaterThan(
-          JSON.parse(await startBody).timestamp
-        )
+        expect(requests).toHaveLength(1)
+        expectCronEvents(requests[0], ["start", "finish"])
+        expect(requests[0][0].timestamp).toBeLessThan(requests[0][1].timestamp)
       })
 
       it("does not send a finish event when the promise returned is rejected", async () => {
-        const startScope = mockCronCheckInRequest("start")
-        const finishScope = mockCronCheckInRequest("finish")
+        // Set a debounce time larger than the maximum sleep time.
+        // This is to ensure that the scheduler will not send the start and
+        // finish events together at shutdown, rather than in separate
+        // requests.
+        setDebounceTime(() => 10000)
 
         await expect(
           cron("test-cron-checkin", async () => {
-            await nextTick(() => {
-              startScope.done()
-              expect(finishScope.isDone()).toBe(false)
-            })
-
             throw new Error("rejected")
           })
         ).rejects.toThrow("rejected")
 
-        await nextTick(() => {
-          startScope.done()
-          expect(finishScope.isDone()).toBe(false)
-        })
+        await scheduler.shutdown()
+
+        expect(requests).toHaveLength(1)
+        expectCronEvents(requests[0], ["start"])
       })
     })
   })
@@ -288,15 +499,12 @@ describe("checkIn.Cron", () => {
     })
 
     it("behaves like Appsignal.checkIn.cron", async () => {
-      const startScope = mockCronCheckInRequest("start")
-      const finishScope = mockCronCheckInRequest("finish")
-
       expect(heartbeat("test-cron-checkin")).toBeUndefined()
 
-      await nextTick(() => {
-        expect(startScope.isDone()).toBe(false)
-        finishScope.done()
-      })
+      await scheduler.shutdown()
+
+      expect(requests).toHaveLength(1)
+      expectCronEvents(requests[0], ["finish"])
     })
 
     it("emits a warning when called", async () => {
