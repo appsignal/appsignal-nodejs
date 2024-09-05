@@ -71,7 +71,7 @@ class BaseProbeRunner extends EventEmitter implements ProbeRunner {
   public register(name: string, fn: () => void): void {
     this.#timers.set(
       name,
-      setInterval(() => this.emit(name), 60 * 1000)
+      setInterval(() => this.emit(name), 60 * 1000).unref()
     )
 
     this.removeAllListeners(name)
