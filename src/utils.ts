@@ -59,3 +59,11 @@ function numberToHrtime(epochMillis: number) {
 export function processGetuid() {
   return (process.getuid ?? (() => -1))()
 }
+
+export function ndjsonStringify(elements: any[]): string {
+  return elements.map(element => JSON.stringify(element)).join("\n")
+}
+
+export function ndjsonParse(data: string): any[] {
+  return data.split("\n").map(line => JSON.parse(line))
+}

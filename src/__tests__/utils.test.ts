@@ -1,4 +1,9 @@
-import { getAgentTimestamps, hrTime } from "../utils"
+import {
+  getAgentTimestamps,
+  hrTime,
+  ndjsonStringify,
+  ndjsonParse
+} from "../utils"
 import perf_hooks from "perf_hooks"
 
 describe("Utils", () => {
@@ -25,6 +30,24 @@ describe("Utils", () => {
         sec: 1648719688 + 116,
         nsec: 126148939 + 931838240
       })
+    })
+  })
+
+  describe("ndjsonStringify", () => {
+    it("stringifies elements into NDJSON", () => {
+      const elements = [{ foo: "bar" }, { baz: "qux" }]
+      const result = ndjsonStringify(elements)
+
+      expect(result).toEqual('{"foo":"bar"}\n{"baz":"qux"}')
+    })
+  })
+
+  describe("ndjsonParse", () => {
+    it("parses NDJSON into elements", () => {
+      const data = '{"foo":"bar"}\n{"baz":"qux"}'
+      const result = ndjsonParse(data)
+
+      expect(result).toEqual([{ foo: "bar" }, { baz: "qux" }])
     })
   })
 })

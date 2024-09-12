@@ -46,7 +46,7 @@ import {
 } from "@opentelemetry/instrumentation-restify"
 import { UndiciInstrumentation } from "@opentelemetry/instrumentation-undici"
 import { SpanProcessor, TestModeSpanProcessor } from "./span_processor"
-import { Cron } from "./check_in"
+import { scheduler } from "./check_in/scheduler"
 
 const DefaultInstrumentations = {
   "@appsignal/opentelemetry-instrumentation-bullmq": BullMQInstrumentation,
@@ -217,10 +217,9 @@ export class Client {
       console.log("Stopping AppSignal")
     }
 
-    await this.#sdk?.shutdown()
     this.metrics().probes().stop()
+    await Promise.all([this.#sdk?.shutdown(), scheduler.shutdown()])
     this.extension.stop()
-    await Cron.shutdown()
   }
 
   /**
