@@ -67,3 +67,33 @@ export function ndjsonStringify(elements: any[]): string {
 export function ndjsonParse(data: string): any[] {
   return data.split("\n").map(line => JSON.parse(line))
 }
+
+export type Stub<F extends (...args: any[]) => any> = F & {
+  set: (fn: F) => void
+  reset: () => void
+}
+
+export function stubbable<T extends any[], U>(
+  original: (...args: T) => U
+): Stub<(...args: T) => U> {
+  let current: (...args: T) => U = original
+
+  const stub = {
+    [original.name]: function (...args: T): U {
+      return current(...args)
+    }
+  }[original.name] as Stub<(...args: T) => U>
+
+  function set(fn: (...args: T) => U) {
+    current = fn
+  }
+
+  function reset() {
+    current = original
+  }
+
+  stub.set = set
+  stub.reset = reset
+
+  return stub
+}

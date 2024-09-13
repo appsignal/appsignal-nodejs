@@ -1,6 +1,6 @@
 import { Client } from "./client"
 import { cron, Cron } from "./check_in"
-export type { Event, EventKind } from "./check_in"
+export type { Event, EventKind } from "./check_in/event"
 
 type OnceFn = {
   (): void
