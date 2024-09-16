@@ -1,4 +1,4 @@
-import type { Cron } from "./cron"
+import type { internal as internalCron } from "./cron"
 
 export type EventKind = "start" | "finish"
 export type EventCheckInType = "cron" | "heartbeat"
@@ -28,7 +28,7 @@ export class Event {
     this.check_in_type = check_in_type
   }
 
-  static cron(cron: Cron, kind: EventKind) {
+  static cron(cron: internalCron.Cron, kind: EventKind) {
     return new Event({
       identifier: cron.identifier,
       digest: cron.digest,

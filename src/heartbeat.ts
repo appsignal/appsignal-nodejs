@@ -1,5 +1,5 @@
 import { Client } from "./client"
-import { cron, Cron } from "./check_in"
+import { internal as checkIn } from "./check_in"
 export type { Event, EventKind } from "./check_in/event"
 
 type OnceFn = {
@@ -32,33 +32,35 @@ function consoleAndLoggerWarn(message: string) {
   Client.internalLogger.warn(message)
 }
 
-export const heartbeatClassWarnOnce = once(
-  consoleAndLoggerWarn,
-  "The class `Heartbeat` has been deprecated. " +
-    "Please update uses of the class `new Heartbeat(...)` to `new checkIn.Cron(...)`, " +
-    'importing it as `import { checkIn } from "@appsignal/nodejs"`, ' +
-    "in order to remove this message."
-)
+export namespace internal {
+  export const heartbeatClassWarnOnce = once(
+    consoleAndLoggerWarn,
+    "The class `Heartbeat` has been deprecated. " +
+      "Please update uses of the class `new Heartbeat(...)` to `new checkIn.Cron(...)`, " +
+      'importing it as `import { checkIn } from "@appsignal/nodejs"`, ' +
+      "in order to remove this message."
+  )
 
-export const heartbeatHelperWarnOnce = once(
-  consoleAndLoggerWarn,
-  "The helper `heartbeat` has been deprecated. " +
-    "Please update uses of the helper `heartbeat(...)` to `checkIn.cron(...)`, " +
-    'importing it as `import { checkIn } from "@appsignal/nodejs"`, ' +
-    "in order to remove this message."
-)
+  export const heartbeatHelperWarnOnce = once(
+    consoleAndLoggerWarn,
+    "The helper `heartbeat` has been deprecated. " +
+      "Please update uses of the helper `heartbeat(...)` to `checkIn.cron(...)`, " +
+      'importing it as `import { checkIn } from "@appsignal/nodejs"`, ' +
+      "in order to remove this message."
+  )
+}
 
 export function heartbeat(name: string): void
 export function heartbeat<T>(name: string, fn: () => T): T
 export function heartbeat<T>(name: string, fn?: () => T): T | undefined {
-  heartbeatHelperWarnOnce()
+  internal.heartbeatHelperWarnOnce()
 
-  return (cron as (name: string, fn?: () => T) => T | undefined)(name, fn)
+  return (checkIn.cron as (name: string, fn?: () => T) => T | undefined)(name, fn)
 }
 
-export const Heartbeat = new Proxy(Cron, {
-  construct(target, args: ConstructorParameters<typeof Cron>) {
-    heartbeatClassWarnOnce()
+export const Heartbeat = new Proxy(checkIn.Cron, {
+  construct(target, args: ConstructorParameters<typeof checkIn.Cron>) {
+    internal.heartbeatClassWarnOnce()
 
     return new target(...args)
   }

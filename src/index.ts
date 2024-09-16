@@ -11,5 +11,9 @@ export { expressErrorHandler } from "./instrumentation/express/error_handler"
 export { LoggerLevel, LoggerAttributes } from "./logger"
 export { WinstonTransport } from "./winston_transport"
 export * from "./helpers"
-export * as checkIn from "./check_in"
-export { Heartbeat, heartbeat } from "./heartbeat"
+
+import { internal as internalCheckIn } from "./check_in"
+export { internalCheckIn as checkIn }
+
+import { Heartbeat, heartbeat } from "./heartbeat"
+export { Heartbeat, heartbeat }
