@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@appsignal/nodejs": "^3.0.26",
-    "fastify": "^4.23.2",
+    "fastify": "^4.28.1",
     "tslib": "^2.4.0"
   },
   "devDependencies": {
