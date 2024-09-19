@@ -3,8 +3,10 @@ import v8 from "v8"
 import os from "os"
 import { Client } from "../../client"
 
+/** @internal */
 export const PROBE_NAME = "v8_stats"
 
+/** @internal */
 export function init(meter: Metrics) {
   function setGauge(key: string, value: number) {
     const hostname = Client.config.data.hostname || os.hostname()

@@ -43,6 +43,7 @@ export class Probes {
   }
 }
 
+/** @internal */
 type ProbeRunner = {
   readonly count: number
   register(name: string, fn: () => void): void
@@ -50,6 +51,7 @@ type ProbeRunner = {
   clear(): void
 }
 
+/** @internal */
 class BaseProbeRunner extends EventEmitter implements ProbeRunner {
   #timers = new Map<string, NodeJS.Timeout>()
 
@@ -98,6 +100,7 @@ class BaseProbeRunner extends EventEmitter implements ProbeRunner {
   }
 }
 
+/** @internal */
 class NoopProbeRunner implements ProbeRunner {
   readonly count: number = 0
 

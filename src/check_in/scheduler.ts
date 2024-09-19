@@ -6,6 +6,7 @@ import { ndjsonStringify, stubbable } from "../utils"
 const INITIAL_DEBOUNCE_MILLISECONDS = 100
 const BETWEEN_TRANSMISSIONS_DEBOUNCE_MILLISECONDS = 10_000
 
+/** @internal */
 export const debounceTime = stubbable(
   (lastTransmission: number | undefined): number => {
     if (lastTransmission === undefined) {
@@ -33,6 +34,7 @@ class PendingPromiseSet<T> extends Set<Promise<T>> {
   }
 }
 
+/** @internal */
 export class Scheduler {
   pendingTransmissions: PendingPromiseSet<any> = new PendingPromiseSet()
   events: Event[] = []
@@ -146,8 +148,10 @@ export class Scheduler {
   }
 }
 
+/** @internal */
 export let scheduler = new Scheduler()
 
+/** @internal */
 export async function resetScheduler() {
   await scheduler.shutdown()
   scheduler = new Scheduler()

@@ -1,6 +1,7 @@
 import { Metrics } from "../metrics"
 import { Probes } from "../probes"
 
+/** @internal */
 export class NoopMetrics extends Metrics {
   #probes = new Probes({ run: false })
 

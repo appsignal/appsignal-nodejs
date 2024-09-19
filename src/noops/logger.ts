@@ -1,5 +1,6 @@
 import { Logger, LoggerAttributes } from "../logger"
 
+/** @internal */
 export class NoopLogger implements Logger {
   trace(_message: string, _attributes?: LoggerAttributes) {
     // noop
@@ -21,4 +22,5 @@ export class NoopLogger implements Logger {
   }
 }
 
+/** @internal */
 export const noopLogger = new NoopLogger()

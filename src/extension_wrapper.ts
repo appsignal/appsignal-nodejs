@@ -72,4 +72,5 @@ try {
   } as ExtensionWrapper
 }
 
+/** @internal */
 export = mod
