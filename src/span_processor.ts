@@ -68,6 +68,7 @@ export class SpanProcessor implements OpenTelemetrySpanProcessor {
   }
 }
 
+/** @internal */
 export class TestModeSpanProcessor implements OpenTelemetrySpanProcessor {
   #filePath: string
 

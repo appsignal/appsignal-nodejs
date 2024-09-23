@@ -1,5 +1,6 @@
 import { InternalLogger } from "../internal_logger"
 
+/** @internal */
 export class NoopInternalLogger implements InternalLogger {
   error(_message: string) {
     // noop
@@ -18,4 +19,5 @@ export class NoopInternalLogger implements InternalLogger {
   }
 }
 
+/** @internal */
 export const noopInternalLogger = new NoopInternalLogger()

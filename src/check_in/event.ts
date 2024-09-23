@@ -1,8 +1,11 @@
 import type { Cron } from "./cron"
 
+/** @internal */
 export type EventKind = "start" | "finish"
+/** @internal */
 export type EventCheckInType = "cron" | "heartbeat"
 
+/** @internal */
 export class Event {
   identifier: string
   digest?: string

@@ -1,5 +1,6 @@
 import { datamap, dataarray } from "../extension_wrapper"
 
+/** @internal */
 export class Data {
   public static generate(data: Array<any> | Record<string, any>) {
     if (data.constructor.name === "Object") {
