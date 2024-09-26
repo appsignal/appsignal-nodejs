@@ -1,5 +1,44 @@
 # AppSignal for Node.js Changelog
 
+## 3.5.0
+
+_Published on 2024-09-26._
+
+### Added
+
+- Add support for heartbeat check-ins.
+
+  Use the `checkIn.heartbeat` method to send a single heartbeat check-in event from your application. This can be used, for example, in your application's main loop:
+
+  ```js
+  import { checkIn } from "@appsignal/nodejs"
+
+  while (true) {
+    checkIn.heartbeat("job_processor")
+    await processJob()
+  }
+  ```
+
+  Heartbeats are deduplicated and sent asynchronously, without blocking the current thread. Regardless of how often the `.heartbeat` method is called, at most one heartbeat with the same identifier will be sent every ten seconds.
+
+  Pass `{continuous: true}` as the second argument to send heartbeats continuously during the entire lifetime of the current process. This can be used, for example, after your application has finished its boot process:
+
+  ```js
+  import { checkIn } from "@appsignal/nodejs"
+
+  function main() {
+    checkIn.heartbeat("job_processor", {continuous: true})
+    startApp()
+  }
+  ```
+
+  (minor [839073e](https://github.com/appsignal/appsignal-nodejs/commit/839073e8c3a13956e7ec5019039095e15a7cf402))
+
+### Changed
+
+- Send check-ins concurrently. When calling `Appsignal.checkIn.cron`, instead of blocking the current process while the check-in events are sent, schedule them to be sent in a separate process. (patch [a61d16b](https://github.com/appsignal/appsignal-nodejs/commit/a61d16b46b5db519db87db1dd0e93b52bb65f908))
+- Do not block Node.js shutdown. It is no longer necessary to call `Appsignal.stop` for the Node.js engine to allow itself to shut down. It should still be called and awaited in production scenarios and at the end of scripts, as it ensures that scheduled check-ins are delivered. (patch [0f438d6](https://github.com/appsignal/appsignal-nodejs/commit/0f438d65c87c5f43955f696f3d4feed397e673c3))
+
 ## 3.4.9
 
 _Published on 2024-08-14._
