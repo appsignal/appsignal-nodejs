@@ -1,21 +1,20 @@
 import nock from "nock"
-import { cron, Cron, Event, EventKind } from "../check_in"
-import {
-  scheduler,
-  resetScheduler,
-  setDebounceTime,
-  resetDebounceTime,
-  debounceTime
-} from "../check_in/scheduler"
+import { cron, Cron, heartbeat } from "../check_in"
+import { Event, EventKind } from "../check_in/event"
+import { scheduler, resetScheduler, debounceTime } from "../check_in/scheduler"
 import { Client, Options } from "../client"
 import {
-  heartbeat,
+  heartbeat as deprecatedHeartbeat,
   Heartbeat,
   heartbeatClassWarnOnce,
   heartbeatHelperWarnOnce
 } from "../heartbeat"
 import { ndjsonParse } from "../utils"
 import type { InternalLogger } from "../internal_logger"
+import {
+  heartbeatInterval,
+  killContinuousHeartbeats
+} from "../check_in/heartbeat"
 
 const DEFAULT_CLIENT_CONFIG: Partial<Options> = {
   active: true,
@@ -107,7 +106,7 @@ function spyOnInternalLogger(
   return spies as Required<typeof spies>
 }
 
-describe("checkIn.Cron", () => {
+describe("Check-ins", () => {
   let client: Client
   let theCron: Cron
   let requests: Request[]
@@ -122,7 +121,7 @@ describe("checkIn.Cron", () => {
 
   beforeEach(async () => {
     await resetScheduler()
-    resetDebounceTime()
+    debounceTime.reset()
 
     client = new Client(DEFAULT_CLIENT_CONFIG)
 
@@ -137,7 +136,7 @@ describe("checkIn.Cron", () => {
 
   afterAll(async () => {
     await resetScheduler()
-    resetDebounceTime()
+    debounceTime.reset()
     nock.restore()
   })
 
@@ -229,7 +228,7 @@ describe("checkIn.Cron", () => {
       // These tests will mock requests one by one, so that
       // they can await their responses.
       nock.cleanAll()
-      setDebounceTime(() => 20)
+      debounceTime.set(() => 20)
     })
 
     it("transmits events close to each other in time in a single request", async () => {
@@ -342,7 +341,7 @@ describe("checkIn.Cron", () => {
       // Set a very long debounce time to ensure that the scheduler
       // is not awaiting it, but rather sending the events immediately
       // on shutdown.
-      setDebounceTime(() => 10000)
+      debounceTime.set(() => 10000)
 
       theCron.start()
 
@@ -357,29 +356,29 @@ describe("checkIn.Cron", () => {
     it("uses the last transmission time to calculate the debounce", async () => {
       const request = mockOneCheckInRequest()
 
-      const debounceTime = jest.fn(_lastTransmission => 0)
-      setDebounceTime(debounceTime)
+      const debounceTimeMock = jest.fn(_lastTransmission => 0)
+      debounceTime.set(debounceTimeMock)
 
       theCron.start()
 
-      expect(debounceTime).toHaveBeenCalledTimes(1)
-      expect(debounceTime).toHaveBeenLastCalledWith(undefined)
+      expect(debounceTimeMock).toHaveBeenCalledTimes(1)
+      expect(debounceTimeMock).toHaveBeenLastCalledWith(undefined)
 
       await request
       const expectedLastTransmission = Date.now()
 
       theCron.finish()
 
-      expect(debounceTime).toHaveBeenCalledTimes(2)
-      expect(debounceTime).not.toHaveBeenLastCalledWith(undefined)
+      expect(debounceTimeMock).toHaveBeenCalledTimes(2)
+      expect(debounceTimeMock).not.toHaveBeenLastCalledWith(undefined)
       // Allow for some margin of error in the timing of the tests.
-      expect(debounceTime.mock.calls[1][0]).toBeGreaterThan(
+      expect(debounceTimeMock.mock.calls[1][0]).toBeGreaterThan(
         expectedLastTransmission - 20
       )
     })
 
     describe("debounce time", () => {
-      beforeEach(resetDebounceTime)
+      beforeEach(debounceTime.reset)
 
       it("is short when no last transmission time is given", () => {
         expect(debounceTime(undefined)).toBe(100)
@@ -452,7 +451,7 @@ describe("checkIn.Cron", () => {
         // This is to ensure that the scheduler will not send the start and
         // finish events together at shutdown, rather than in separate
         // requests.
-        setDebounceTime(() => {
+        debounceTime.set(() => {
           return 10000
         })
 
@@ -477,7 +476,7 @@ describe("checkIn.Cron", () => {
         // This is to ensure that the scheduler will not send the start and
         // finish events together at shutdown, rather than in separate
         // requests.
-        setDebounceTime(() => 10000)
+        debounceTime.set(() => 10000)
 
         await expect(
           cron("test-cron-checkin", async () => {
@@ -493,13 +492,63 @@ describe("checkIn.Cron", () => {
     })
   })
 
+  describe("Appsignal.checkIn.heartbeat()", () => {
+    beforeAll(() => {
+      heartbeatInterval.set(() => 20)
+    })
+
+    afterEach(() => {
+      killContinuousHeartbeats()
+    })
+
+    afterAll(() => {
+      heartbeatInterval.reset()
+    })
+
+    it("sends a heartbeat event", async () => {
+      heartbeat("test-heartbeat")
+
+      await scheduler.shutdown()
+
+      expect(requests).toHaveLength(1)
+      expectEvents(requests[0], [
+        {
+          identifier: "test-heartbeat",
+          check_in_type: "heartbeat"
+        }
+      ])
+    })
+
+    describe("with the `continuous: true` option", () => {
+      it("sends heartbeat events continuously", async () => {
+        debounceTime.set(() => 20)
+
+        heartbeat("test-heartbeat", { continuous: true })
+
+        await sleep(60)
+        await scheduler.shutdown()
+
+        expect(requests.length).toBeGreaterThanOrEqual(2)
+
+        for (const request of requests) {
+          expectEvents(request, [
+            {
+              identifier: "test-heartbeat",
+              check_in_type: "heartbeat"
+            }
+          ])
+        }
+      })
+    })
+  })
+
   describe("Appsignal.heartbeat (deprecated)", () => {
     beforeEach(() => {
       heartbeatHelperWarnOnce.reset()
     })
 
     it("behaves like Appsignal.checkIn.cron", async () => {
-      expect(heartbeat("test-cron-checkin")).toBeUndefined()
+      expect(deprecatedHeartbeat("test-cron-checkin")).toBeUndefined()
 
       await scheduler.shutdown()
 
@@ -513,7 +562,7 @@ describe("checkIn.Cron", () => {
         .spyOn(Client.internalLogger, "warn")
         .mockImplementation()
 
-      expect(heartbeat("test-cron-checkin")).toBeUndefined()
+      expect(deprecatedHeartbeat("test-cron-checkin")).toBeUndefined()
 
       for (const spy of [consoleWarnSpy, internalLoggerWarnSpy]) {
         expect(spy.mock.calls).toHaveLength(1)
@@ -529,7 +578,7 @@ describe("checkIn.Cron", () => {
         .spyOn(Client.internalLogger, "warn")
         .mockImplementation()
 
-      expect(heartbeat("test-cron-checkin")).toBeUndefined()
+      expect(deprecatedHeartbeat("test-cron-checkin")).toBeUndefined()
 
       for (const spy of [consoleWarnSpy, internalLoggerWarnSpy]) {
         expect(spy.mock.calls).toHaveLength(1)
@@ -539,7 +588,7 @@ describe("checkIn.Cron", () => {
         spy.mockClear()
       }
 
-      expect(heartbeat("test-cron-checkin")).toBeUndefined()
+      expect(deprecatedHeartbeat("test-cron-checkin")).toBeUndefined()
 
       for (const spy of [consoleWarnSpy, internalLoggerWarnSpy]) {
         expect(spy.mock.calls).toHaveLength(0)

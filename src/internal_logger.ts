@@ -9,6 +9,7 @@ export interface InternalLogger {
   trace(message: string): void
 }
 
+/** @internal */
 export class BaseInternalLogger {
   type: string
   level: string

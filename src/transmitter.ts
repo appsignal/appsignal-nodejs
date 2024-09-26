@@ -36,6 +36,7 @@ class MaxRedirectsError extends Error {
   }
 }
 
+/** @internal */
 export class Transmitter {
   #config: Configuration
   #url: string

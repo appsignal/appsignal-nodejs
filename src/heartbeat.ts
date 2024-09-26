@@ -1,6 +1,5 @@
 import { Client } from "./client"
 import { cron, Cron } from "./check_in"
-export type { Event, EventKind } from "./check_in"
 
 type OnceFn = {
   (): void
@@ -32,6 +31,7 @@ function consoleAndLoggerWarn(message: string) {
   Client.internalLogger.warn(message)
 }
 
+/** @internal */
 export const heartbeatClassWarnOnce = once(
   consoleAndLoggerWarn,
   "The class `Heartbeat` has been deprecated. " +
@@ -40,6 +40,7 @@ export const heartbeatClassWarnOnce = once(
     "in order to remove this message."
 )
 
+/** @internal */
 export const heartbeatHelperWarnOnce = once(
   consoleAndLoggerWarn,
   "The helper `heartbeat` has been deprecated. " +
@@ -48,6 +49,7 @@ export const heartbeatHelperWarnOnce = once(
     "in order to remove this message."
 )
 
+/** @deprecated Use `checkIn.cron` (`import { checkIn } from "@appsignal/nodejs"`) instead. */
 export function heartbeat(name: string): void
 export function heartbeat<T>(name: string, fn: () => T): T
 export function heartbeat<T>(name: string, fn?: () => T): T | undefined {
@@ -56,6 +58,7 @@ export function heartbeat<T>(name: string, fn?: () => T): T | undefined {
   return (cron as (name: string, fn?: () => T) => T | undefined)(name, fn)
 }
 
+/** @deprecated Use `checkIn.Cron` (`import { checkIn } from "@appsignal/nodejs"`) instead. */
 export const Heartbeat = new Proxy(Cron, {
   construct(target, args: ConstructorParameters<typeof Cron>) {
     heartbeatClassWarnOnce()

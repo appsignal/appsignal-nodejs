@@ -10,6 +10,7 @@ const SECOND_TO_NANOSECONDS = Math.pow(10, NANOSECOND_DIGITS)
  * seconds and nanoseconds.
  *
  * @function
+ * @internal
  */
 export function getAgentTimestamps(timestamp: number) {
   const sec = Math.round(timestamp / 1000)
@@ -21,6 +22,7 @@ export function getAgentTimestamps(timestamp: number) {
 
 /**
  * Checks if the given path is writable by the process.
+ * @internal
  */
 export function isWritable(path: string) {
   try {
@@ -35,6 +37,7 @@ export function isWritable(path: string) {
  * Returns a high-resolution time tuple containing the current time in seconds and nanoseconds.
  *
  * @function
+ * @internal
  */
 export function hrTime(performance = perf_hooks.performance): {
   sec: number
@@ -56,14 +59,49 @@ function numberToHrtime(epochMillis: number) {
   return [seconds, nanoseconds]
 }
 
+/** @internal */
 export function processGetuid() {
   return (process.getuid ?? (() => -1))()
 }
 
+/** @internal */
 export function ndjsonStringify(elements: any[]): string {
   return elements.map(element => JSON.stringify(element)).join("\n")
 }
 
+/** @internal */
 export function ndjsonParse(data: string): any[] {
   return data.split("\n").map(line => JSON.parse(line))
+}
+
+/** @internal */
+export type Stub<F extends (...args: any[]) => any> = F & {
+  set: (fn: F) => void
+  reset: () => void
+}
+
+/** @internal */
+export function stubbable<T extends any[], U>(
+  original: (...args: T) => U
+): Stub<(...args: T) => U> {
+  let current: (...args: T) => U = original
+
+  const stub = {
+    [original.name]: function (...args: T): U {
+      return current(...args)
+    }
+  }[original.name] as Stub<(...args: T) => U>
+
+  function set(fn: (...args: T) => U) {
+    current = fn
+  }
+
+  function reset() {
+    current = original
+  }
+
+  stub.set = set
+  stub.reset = reset
+
+  return stub
 }

@@ -1,5 +1,6 @@
 import type { AppsignalOptions } from "./options"
 
+/** @internal */
 export const ENV_TO_KEY_MAPPING = {
   APPSIGNAL_ACTIVE: "active",
   APPSIGNAL_APP_ENV: "environment",
@@ -42,6 +43,7 @@ export const ENV_TO_KEY_MAPPING = {
   APP_REVISION: "revision"
 } satisfies Record<string, keyof AppsignalOptions>
 
+/** @internal */
 export const PRIVATE_ENV_MAPPING: Record<string, keyof AppsignalOptions> = {
   _APPSIGNAL_ACTIVE: "active",
   _APPSIGNAL_APP_ENV: "environment",
@@ -79,6 +81,7 @@ export const PRIVATE_ENV_MAPPING: Record<string, keyof AppsignalOptions> = {
   _APP_REVISION: "revision"
 }
 
+/** @internal */
 export const JS_TO_RUBY_MAPPING: Record<keyof AppsignalOptions, string> = {
   active: "active",
   bindAddress: "bind_address",
@@ -121,6 +124,7 @@ export const JS_TO_RUBY_MAPPING: Record<keyof AppsignalOptions, string> = {
   workingDirectoryPath: "working_directory_path"
 }
 
+/** @internal */
 export const BOOL_KEYS: (keyof typeof ENV_TO_KEY_MAPPING)[] = [
   "APPSIGNAL_ACTIVE",
   "APPSIGNAL_ENABLE_HOST_METRICS",
@@ -135,6 +139,7 @@ export const BOOL_KEYS: (keyof typeof ENV_TO_KEY_MAPPING)[] = [
   "APPSIGNAL_SEND_SESSION_DATA"
 ]
 
+/** @internal */
 export const STRING_KEYS: (keyof typeof ENV_TO_KEY_MAPPING)[] = [
   "APPSIGNAL_APP_ENV",
   "APPSIGNAL_APP_NAME",
@@ -156,6 +161,7 @@ export const STRING_KEYS: (keyof typeof ENV_TO_KEY_MAPPING)[] = [
   "APP_REVISION"
 ]
 
+/** @internal */
 export const LIST_KEYS: (keyof typeof ENV_TO_KEY_MAPPING)[] = [
   "APPSIGNAL_DNS_SERVERS",
   "APPSIGNAL_FILTER_PARAMETERS",
@@ -167,10 +173,12 @@ export const LIST_KEYS: (keyof typeof ENV_TO_KEY_MAPPING)[] = [
   "APPSIGNAL_REQUEST_HEADERS"
 ]
 
+/** @internal */
 export const LIST_OR_BOOL_KEYS: (keyof typeof ENV_TO_KEY_MAPPING)[] = [
   "APPSIGNAL_DISABLE_DEFAULT_INSTRUMENTATIONS"
 ]
 
+/** @internal */
 export const FLOAT_KEYS: (keyof typeof ENV_TO_KEY_MAPPING)[] = [
   "APPSIGNAL_CPU_COUNT"
 ]

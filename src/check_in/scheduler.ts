@@ -1,33 +1,26 @@
-import type { Event } from "./cron"
+import { Event } from "./event"
 import { Transmitter } from "../transmitter"
 import { Client } from "../client"
-import { ndjsonStringify } from "../utils"
+import { ndjsonStringify, stubbable } from "../utils"
 
 const INITIAL_DEBOUNCE_MILLISECONDS = 100
 const BETWEEN_TRANSMISSIONS_DEBOUNCE_MILLISECONDS = 10_000
 
-const originalDebounceTime = (lastTransmission: number | undefined): number => {
-  if (lastTransmission === undefined) {
-    return INITIAL_DEBOUNCE_MILLISECONDS
+/** @internal */
+export const debounceTime = stubbable(
+  (lastTransmission: number | undefined): number => {
+    if (lastTransmission === undefined) {
+      return INITIAL_DEBOUNCE_MILLISECONDS
+    }
+
+    const elapsed = Date.now() - lastTransmission
+
+    return Math.max(
+      INITIAL_DEBOUNCE_MILLISECONDS,
+      BETWEEN_TRANSMISSIONS_DEBOUNCE_MILLISECONDS - elapsed
+    )
   }
-
-  const elapsed = Date.now() - lastTransmission
-
-  return Math.max(
-    INITIAL_DEBOUNCE_MILLISECONDS,
-    BETWEEN_TRANSMISSIONS_DEBOUNCE_MILLISECONDS - elapsed
-  )
-}
-
-export let debounceTime: typeof originalDebounceTime = originalDebounceTime
-
-export function setDebounceTime(fn: typeof originalDebounceTime) {
-  debounceTime = fn
-}
-
-export function resetDebounceTime() {
-  debounceTime = originalDebounceTime
-}
+)
 
 class PendingPromiseSet<T> extends Set<Promise<T>> {
   add(promise: Promise<T>) {
@@ -41,6 +34,7 @@ class PendingPromiseSet<T> extends Set<Promise<T>> {
   }
 }
 
+/** @internal */
 export class Scheduler {
   pendingTransmissions: PendingPromiseSet<any> = new PendingPromiseSet()
   events: Event[] = []
@@ -61,19 +55,19 @@ export class Scheduler {
   schedule(event: Event) {
     if (Client.client === undefined || !Client.client.isActive) {
       Client.internalLogger.debug(
-        `Cannot schedule ${this.describe([event])}: AppSignal is not active`
+        `Cannot schedule ${Event.describe([event])}: AppSignal is not active`
       )
       return
     }
 
     if (this.isShuttingDown) {
       Client.internalLogger.debug(
-        `Cannot schedule ${this.describe([event])}: AppSignal is stopped`
+        `Cannot schedule ${Event.describe([event])}: AppSignal is stopped`
       )
       return
     }
 
-    Client.internalLogger.trace(`Scheduling ${this.describe([event])}`)
+    Client.internalLogger.trace(`Scheduling ${Event.describe([event])}`)
 
     this.addEvent(event)
     this.scheduleWaker()
@@ -83,31 +77,17 @@ export class Scheduler {
     // Remove redundant events, keeping the newly added one, which
     // should be the one with the most recent timestamp.
     this.events = this.events.filter(existingEvent => {
-      return !this.isRedundantEvent(existingEvent, event)
+      const isRedundant = existingEvent.isRedundant(event)
+
+      if (isRedundant) {
+        Client.internalLogger.debug(
+          `Replacing previously scheduled ${Event.describe([existingEvent])}`
+        )
+      }
+
+      return !isRedundant
     })
     this.events.push(event)
-  }
-
-  private isRedundantEvent(existingEvent: Event, newEvent: Event): boolean {
-    let isRedundant = false
-
-    if (newEvent.check_in_type === "cron") {
-      // Consider any existing cron check-in event redundant if it has the
-      // same identifier, digest and kind as the one we're adding.
-      isRedundant =
-        existingEvent.identifier === newEvent.identifier &&
-        existingEvent.kind === newEvent.kind &&
-        existingEvent.digest === newEvent.digest &&
-        existingEvent.check_in_type === "cron"
-    }
-
-    if (isRedundant) {
-      Client.internalLogger.debug(
-        `Replacing previously scheduled ${this.describe([existingEvent])}`
-      )
-    }
-
-    return isRedundant
   }
 
   private scheduleWaker() {
@@ -139,7 +119,7 @@ export class Scheduler {
   }
 
   private transmit(events: Event[]) {
-    const description = this.describe(events)
+    const description = Event.describe(events)
 
     const promise = new Transmitter(
       `${Client.config.data.loggingEndpoint}/check_ins/json`,
@@ -166,35 +146,12 @@ export class Scheduler {
 
     this.pendingTransmissions.add(handledPromise)
   }
-
-  private describe(events: Event[]): string {
-    const count = events.length
-    if (count === 0) {
-      // This shouldn't happen.
-      return "no check-in events"
-    } else if (count === 1) {
-      const event = events[0]
-      if (event.check_in_type === "cron") {
-        return (
-          "cron check-in `" +
-          (event.identifier || "unknown") +
-          "` " +
-          (event.kind || "unknown") +
-          " event (digest " +
-          (event.digest || "unknown") +
-          ")"
-        )
-      } else {
-        return "unknown check-in event"
-      }
-    } else {
-      return `${count} check-in events`
-    }
-  }
 }
 
+/** @internal */
 export let scheduler = new Scheduler()
 
+/** @internal */
 export async function resetScheduler() {
   await scheduler.shutdown()
   scheduler = new Scheduler()
