@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "./config_helper"
+require_relative "config_helper"
 
 class Span
   class << self
@@ -50,7 +50,7 @@ class Span
     end
 
     def root!
-      raise "There is no root span" if roots.length.zero?
+      raise "There is no root span" if roots.empty?
       raise "There is more than one root span" if roots.length > 1
 
       root

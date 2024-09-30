@@ -1,0 +1,468 @@
+# DO NOT EDIT
+# This is a generated file by the `rake build_matrix:github:generate` task.
+# See `build_matrix.yml` for the build matrix.
+# Generate this file with `rake build_matrix:github:generate`.
+---
+name: Node.js package CI
+'on':
+  push:
+    branches:
+    - main
+    - develop
+  pull_request:
+    types:
+    - opened
+    - reopened
+    - synchronize
+  schedule:
+  - cron: 0 0 * * 1-5
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: "${{ !contains(github.ref, 'main')}}"
+env:
+  RUNNING_IN_CI: 'true'
+  NODE_ENV: test
+jobs:
+  validation:
+    name: Validation
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+    - name: Validate CI setup
+      run: rake build_matrix:github:validate
+  lint-git:
+    name: Git linter (Lintje)
+    needs: validation
+    runs-on: ubuntu-latest
+    if: "${{ github.event_name != 'schedule' }}"
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Run Git linter
+      uses: lintje/action@v0.11
+  lint-ruby:
+    name: Ruby linter (RuboCop)
+    needs: validation
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+    - name: Install Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.3'
+        bundler-cache: true
+    - name: Run RuboCop
+      run: bundle exec rubocop
+  lint-js:
+    name: JavaScript linter (Prettier)
+    needs: validation
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+    - name: Checkout Mono
+      uses: actions/checkout@v4
+      with:
+        repository: appsignal/mono
+        path: tmp/mono
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: npm
+        cache-dependency-path: package-lock.json
+    - name: Install dependencies
+      run: tmp/mono/bin/mono bootstrap
+    - name: Node.js Lint (Prettier)
+      run: npm run lint
+  integration-tests:
+    name: Integration tests (${{matrix.name}})
+    needs: validation
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - name: Express + Redis
+          test-app: express-redis
+        - name: Express + Knex.js
+          test-app: express-knex
+        - name: Koa + MySQL
+          test-app: koa-mysql
+        - name: Koa + Mongo
+          test-app: koa-mongo
+        - name: Express + Mongoose
+          test-app: express-mongoose
+        - name: Express + Postgres
+          test-app: express-postgres
+        - name: Express + Apollo
+          test-app: express-apollo
+        - name: Express + Yoga
+          test-app: express-yoga
+        - name: Express + Prisma + Postgres
+          test-app: express-prisma-postgres
+        - name: Express + Prisma + Mongo
+          test-app: express-prisma-mongo
+        - name: Next.js
+          test-app: nextjs
+        - name: Nest.js
+          test-app: nestjs
+        - name: Fastify
+          test-app: fastify
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+    - name: Run integration tests
+      run: script/integration_test_app ${{matrix.test-app}}
+  build_22:
+    name: Node.js 22 - Build
+    runs-on: ubuntu-latest
+    needs: validation
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+    - name: Checkout Mono
+      uses: actions/checkout@v4
+      with:
+        repository: appsignal/mono
+        path: tmp/mono
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: npm
+        cache-dependency-path: package-lock.json
+    - name: Install dependencies
+      run: tmp/mono/bin/mono bootstrap --ci
+    - name: Build package
+      run: tmp/mono/bin/mono build
+    - name: Check install report
+      run: 'cat ext/install.report; cat ext/install.report | grep ''"status": "success"'''
+    - name: Save build cache
+      uses: actions/cache/save@v4
+      with:
+        key: v1-package-build-22-${{github.run_id}}
+        path: |
+          build/
+          dist/
+          ext/
+  test_22_unit:
+    name: Node.js 22 - Tests
+    needs: build_22
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+    - name: Checkout Mono
+      uses: actions/checkout@v4
+      with:
+        repository: appsignal/mono
+        path: tmp/mono
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: npm
+        cache-dependency-path: package-lock.json
+    - name: Restore build cache
+      uses: actions/cache/restore@v4
+      with:
+        fail-on-cache-miss: true
+        key: v1-package-build-22-${{github.run_id}}
+        path: |
+          build/
+          dist/
+          ext/
+    - name: Install dependencies
+      run: tmp/mono/bin/mono bootstrap --ci
+    - name: Run tests
+      run: tmp/mono/bin/mono test
+    - name: Run tests for install failure
+      run: npm run test:failure
+  test_22_extra_diagnose:
+    name: Node.js 22 - Extra test - diagnose
+    needs: build_22
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+    - name: Checkout Mono
+      uses: actions/checkout@v4
+      with:
+        repository: appsignal/mono
+        path: tmp/mono
+    - name: Install Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.3'
+        bundler-cache: true
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: npm
+        cache-dependency-path: package-lock.json
+    - name: Restore build cache
+      uses: actions/cache/restore@v4
+      with:
+        fail-on-cache-miss: true
+        key: v1-package-build-22-${{github.run_id}}
+        path: |
+          build/
+          dist/
+          ext/
+    - name: Install dependencies
+      run: tmp/mono/bin/mono bootstrap --ci
+    - name: Run tests
+      run: LANGUAGE=nodejs test/integration/diagnose/bin/test
+  cleanup_22:
+    name: Node.js 22 - Clean up
+    needs:
+    - test_22_unit
+    - test_22_extra_diagnose
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+    - name: Delete build cache
+      run: gh cache delete v1-package-build-22-${{github.run_id}}
+      env:
+        GH_TOKEN: "${{secrets.GITHUB_TOKEN}}"
+  build_20:
+    name: Node.js 20 - Build
+    runs-on: ubuntu-latest
+    needs: validation
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+    - name: Checkout Mono
+      uses: actions/checkout@v4
+      with:
+        repository: appsignal/mono
+        path: tmp/mono
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: npm
+        cache-dependency-path: package-lock.json
+    - name: Install dependencies
+      run: tmp/mono/bin/mono bootstrap --ci
+    - name: Build package
+      run: tmp/mono/bin/mono build
+    - name: Check install report
+      run: 'cat ext/install.report; cat ext/install.report | grep ''"status": "success"'''
+    - name: Save build cache
+      uses: actions/cache/save@v4
+      with:
+        key: v1-package-build-20-${{github.run_id}}
+        path: |
+          build/
+          dist/
+          ext/
+  test_20_unit:
+    name: Node.js 20 - Tests
+    needs: build_20
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+    - name: Checkout Mono
+      uses: actions/checkout@v4
+      with:
+        repository: appsignal/mono
+        path: tmp/mono
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: npm
+        cache-dependency-path: package-lock.json
+    - name: Restore build cache
+      uses: actions/cache/restore@v4
+      with:
+        fail-on-cache-miss: true
+        key: v1-package-build-20-${{github.run_id}}
+        path: |
+          build/
+          dist/
+          ext/
+    - name: Install dependencies
+      run: tmp/mono/bin/mono bootstrap --ci
+    - name: Run tests
+      run: tmp/mono/bin/mono test
+    - name: Run tests for install failure
+      run: npm run test:failure
+  test_20_extra_diagnose:
+    name: Node.js 20 - Extra test - diagnose
+    needs: build_20
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+    - name: Checkout Mono
+      uses: actions/checkout@v4
+      with:
+        repository: appsignal/mono
+        path: tmp/mono
+    - name: Install Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.3'
+        bundler-cache: true
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: npm
+        cache-dependency-path: package-lock.json
+    - name: Restore build cache
+      uses: actions/cache/restore@v4
+      with:
+        fail-on-cache-miss: true
+        key: v1-package-build-20-${{github.run_id}}
+        path: |
+          build/
+          dist/
+          ext/
+    - name: Install dependencies
+      run: tmp/mono/bin/mono bootstrap --ci
+    - name: Run tests
+      run: LANGUAGE=nodejs test/integration/diagnose/bin/test
+  cleanup_20:
+    name: Node.js 20 - Clean up
+    needs:
+    - test_20_unit
+    - test_20_extra_diagnose
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+    - name: Delete build cache
+      run: gh cache delete v1-package-build-20-${{github.run_id}}
+      env:
+        GH_TOKEN: "${{secrets.GITHUB_TOKEN}}"
+  build_18:
+    name: Node.js 18 - Build
+    runs-on: ubuntu-latest
+    needs: validation
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+    - name: Checkout Mono
+      uses: actions/checkout@v4
+      with:
+        repository: appsignal/mono
+        path: tmp/mono
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: npm
+        cache-dependency-path: package-lock.json
+    - name: Install dependencies
+      run: tmp/mono/bin/mono bootstrap --ci
+    - name: Build package
+      run: tmp/mono/bin/mono build
+    - name: Check install report
+      run: 'cat ext/install.report; cat ext/install.report | grep ''"status": "success"'''
+    - name: Save build cache
+      uses: actions/cache/save@v4
+      with:
+        key: v1-package-build-18-${{github.run_id}}
+        path: |
+          build/
+          dist/
+          ext/
+  test_18_unit:
+    name: Node.js 18 - Tests
+    needs: build_18
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+    - name: Checkout Mono
+      uses: actions/checkout@v4
+      with:
+        repository: appsignal/mono
+        path: tmp/mono
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: npm
+        cache-dependency-path: package-lock.json
+    - name: Restore build cache
+      uses: actions/cache/restore@v4
+      with:
+        fail-on-cache-miss: true
+        key: v1-package-build-18-${{github.run_id}}
+        path: |
+          build/
+          dist/
+          ext/
+    - name: Install dependencies
+      run: tmp/mono/bin/mono bootstrap --ci
+    - name: Run tests
+      run: tmp/mono/bin/mono test
+    - name: Run tests for install failure
+      run: npm run test:failure
+  test_18_extra_diagnose:
+    name: Node.js 18 - Extra test - diagnose
+    needs: build_18
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+    - name: Checkout Mono
+      uses: actions/checkout@v4
+      with:
+        repository: appsignal/mono
+        path: tmp/mono
+    - name: Install Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.3'
+        bundler-cache: true
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: npm
+        cache-dependency-path: package-lock.json
+    - name: Restore build cache
+      uses: actions/cache/restore@v4
+      with:
+        fail-on-cache-miss: true
+        key: v1-package-build-18-${{github.run_id}}
+        path: |
+          build/
+          dist/
+          ext/
+    - name: Install dependencies
+      run: tmp/mono/bin/mono bootstrap --ci
+    - name: Run tests
+      run: LANGUAGE=nodejs test/integration/diagnose/bin/test
+  cleanup_18:
+    name: Node.js 18 - Clean up
+    needs:
+    - test_18_unit
+    - test_18_extra_diagnose
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+    - name: Delete build cache
+      run: gh cache delete v1-package-build-18-${{github.run_id}}
+      env:
+        GH_TOKEN: "${{secrets.GITHUB_TOKEN}}"

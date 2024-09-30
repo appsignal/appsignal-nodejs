@@ -6,6 +6,8 @@ AllCops:
   Exclude:
     - "node_modules/**/*"
     - "test/integration/diagnose/**/*"
+    - "tmp/**/*"
+    - "vendor/**/*"
 
 Style/Documentation:
   Enabled: false
