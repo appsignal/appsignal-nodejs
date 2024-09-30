@@ -3,149 +3,236 @@
 require "set"
 require "yaml"
 
+CACHE_VERSION = "v1"
+CI_WORKFLOW_FILE = ".github/workflows/ci.yml"
+
 namespace :build_matrix do
-  namespace :semaphore do
+  namespace :github do
     task :generate do
       yaml = YAML.load_file("build_matrix.yml")
       matrix = yaml["matrix"]
-      semaphore = yaml["semaphore"]
-      builds = []
+      github = yaml["github"]
+      jobs = {}
       matrix["nodejs"].each do |nodejs|
         nodejs_version = nodejs["nodejs"]
-        setup = nodejs.fetch("setup", [])
-        env_vars = nodejs.fetch("env_vars", [])
 
-        build_block_name = "Node.js #{nodejs_version} - Build"
-        build_block = build_semaphore_task(
-          "name" => build_block_name,
-          "dependencies" => ["Validation"],
-          "task" => {
-            "env_vars" => env_vars + [
-              {
-                "name" => "NODE_VERSION",
-                "value" => nodejs_version
-              }
-            ],
-            "prologue" => {
-              "commands" => setup + [
-                "cache restore",
-                "mono bootstrap --ci",
-                "cache store"
-              ]
+        job_name = "Node.js #{nodejs_version}"
+        build_job_key = "build_#{nodejs_version}"
+        build_cache_key = "#{CACHE_VERSION}-package-build-#{nodejs_version}-${{github.run_id}}"
+        jobs[build_job_key] = {
+          "name" => "#{job_name} - Build",
+          "runs-on" => "ubuntu-latest",
+          "needs" => "validation",
+          "steps" => [
+            {
+              "name" => "Checkout project",
+              "uses" => "actions/checkout@v4"
             },
-            "jobs" => [
-              build_semaphore_job(
-                "name" => "Build",
-                "commands" => [
-                  "mono build",
-                  "cache delete $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID",
-                  "cache store  $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID dist",
-                  "cache delete $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID",
-                  "cache store  $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID ext",
-                  "cache delete $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID",
-                  "cache store  $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID build",
-                  "cat ext/install.report; cat ext/install.report | grep '\"status\": \"success\"'"
-                ]
-              )
-            ]
-          }
-        )
-        builds << build_block
+            {
+              "name" => "Checkout Mono",
+              "uses" => "actions/checkout@v4",
+              "with" => {
+                "repository" => "appsignal/mono",
+                "path" => "tmp/mono"
+              }
+            },
+            {
+              "name" => "Install Node.js",
+              "uses" => "actions/setup-node@v4",
+              "with" => {
+                "node-version" => nodejs_version,
+                "cache" => "npm",
+                "cache-dependency-path" => "package-lock.json"
+              }
+            },
+            {
+              "name" => "Install dependencies",
+              "run" => "tmp/mono/bin/mono bootstrap --ci"
+            },
+            {
+              "name" => "Build package",
+              "run" => "tmp/mono/bin/mono build"
+            },
+            {
+              "name" => "Check install report",
+              "run" =>
+                "cat ext/install.report; cat ext/install.report | grep '\"status\": \"success\"'"
+            },
+            {
+              "name" => "Save build cache",
+              "uses" => "actions/cache/save@v4",
+              "with" => {
+                "key" => build_cache_key,
+                "path" => <<~PATHS
+                  build/
+                  dist/
+                  ext/
+                PATHS
+              }
+            }
+          ]
+        }
 
-        primary_block_name = "Node.js #{nodejs_version} - Tests"
-        primary_jobs = []
-        package = matrix["package"]
-        primary_jobs << build_semaphore_job(
-          "name" => "Test package",
-          "commands" => ([
-            "mono test"
-          ] + package.fetch("extra_commands", [])).compact
-        )
+        unit_test_job_key = "test_#{nodejs_version}_unit"
+        jobs[unit_test_job_key] = {
+          "name" => "#{job_name} - Tests",
+          "needs" => build_job_key,
+          "runs-on" => "ubuntu-latest",
+          "steps" => [
+            {
+              "name" => "Checkout project",
+              "uses" => "actions/checkout@v4"
+            },
+            {
+              "name" => "Checkout Mono",
+              "uses" => "actions/checkout@v4",
+              "with" => {
+                "repository" => "appsignal/mono",
+                "path" => "tmp/mono"
+              }
+            },
+            {
+              "name" => "Install Node.js",
+              "uses" => "actions/setup-node@v4",
+              "with" => {
+                "node-version" => nodejs_version,
+                "cache" => "npm",
+                "cache-dependency-path" => "package-lock.json"
+              }
+            },
+            {
+              "name" => "Restore build cache",
+              "uses" => "actions/cache/restore@v4",
+              "with" => {
+                "fail-on-cache-miss" => true,
+                "key" => build_cache_key,
+                "path" => <<~PATHS
+                  build/
+                  dist/
+                  ext/
+                PATHS
+              }
+            },
+            {
+              "name" => "Install dependencies",
+              "run" => "tmp/mono/bin/mono bootstrap --ci"
+            },
+            {
+              "name" => "Run tests",
+              "run" => "tmp/mono/bin/mono test"
+            },
+            {
+              "name" => "Run tests for install failure",
+              "run" => "npm run test:failure"
+            }
+          ]
+        }
 
         # Run extra tests against specific package versions. If configured,
         # run the extra tests configured for the package.
-        package.fetch("extra_tests", []).each do |test_name, extra_tests|
-          primary_jobs << build_semaphore_job(
-            "name" => "Extra test - #{test_name}",
-            "commands" => extra_tests
-          )
-        end
-        primary_block =
-          build_semaphore_task(
-            "name" => primary_block_name,
-            "dependencies" => [build_block_name],
-            "task" => {
-              "env_vars" => env_vars + [
-                {
-                  "name" => "NODE_VERSION",
-                  "value" => nodejs_version
-                },
-                {
-                  "name" => "_APPSIGNAL_EXTENSION_INSTALL",
-                  "value" => "false"
-                }
-              ],
-              "prologue" => {
-                "commands" => setup + [
-                  "cache restore",
-                  "cache restore $_PACKAGE_CACHE-dist-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID",
-                  "cache restore $_PACKAGE_CACHE-ext-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID",
-                  "cache restore $_PACKAGE_CACHE-build-v$NODE_VERSION-$SEMAPHORE_WORKFLOW_ID",
-                  "mono bootstrap --ci"
-                ]
-              },
-              "jobs" => primary_jobs
+        test_key = "diagnose"
+        diagnose_job_key = "test_#{nodejs_version}_extra_#{test_key}"
+        jobs[diagnose_job_key] = {
+          "name" => "#{job_name} - Extra test - #{test_key}",
+          "needs" => build_job_key,
+          "runs-on" => "ubuntu-latest",
+          "steps" => [
+            {
+              "name" => "Checkout project",
+              "uses" => "actions/checkout@v4",
+              "with" => { "submodules" => true }
+            },
+            {
+              "name" => "Checkout Mono",
+              "uses" => "actions/checkout@v4",
+              "with" => {
+                "repository" => "appsignal/mono",
+                "path" => "tmp/mono"
+              }
+            },
+            {
+              "name" => "Install Ruby",
+              "uses" => "ruby/setup-ruby@v1",
+              "with" => {
+                "ruby-version" => "3.3",
+                "bundler-cache" => true
+              }
+            },
+            {
+              "name" => "Install Node.js",
+              "uses" => "actions/setup-node@v4",
+              "with" => {
+                "node-version" => nodejs_version,
+                "cache" => "npm",
+                "cache-dependency-path" => "package-lock.json"
+              }
+            },
+            {
+              "name" => "Restore build cache",
+              "uses" => "actions/cache/restore@v4",
+              "with" => {
+                "fail-on-cache-miss" => true,
+                "key" => build_cache_key,
+                "path" => <<~PATHS
+                  build/
+                  dist/
+                  ext/
+                PATHS
+              }
+            },
+            {
+              "name" => "Install dependencies",
+              "run" => "tmp/mono/bin/mono bootstrap --ci"
+            },
+            {
+              "name" => "Run tests",
+              "run" => "LANGUAGE=nodejs test/integration/diagnose/bin/test"
             }
-          )
-        builds << primary_block
+          ]
+        }
+
+        jobs["cleanup_#{nodejs_version}"] = {
+          "name" => "#{job_name} - Clean up",
+          "needs" => [
+            unit_test_job_key,
+            diagnose_job_key
+          ],
+          "runs-on" => "ubuntu-latest",
+          "steps" => [
+            {
+              "name" => "Checkout project",
+              "uses" => "actions/checkout@v4"
+            },
+            {
+              "name" => "Delete build cache",
+              "run" => "gh cache delete #{build_cache_key}",
+              "env" => {
+                "GH_TOKEN" => "${{secrets.GITHUB_TOKEN}}"
+              }
+            }
+          ]
+        }
       end
 
-      semaphore["blocks"] += builds
+      github["jobs"].merge!(jobs)
 
       header = "# DO NOT EDIT\n" \
-        "# This is a generated file by the `rake build_matrix:semaphore:generate` task.\n" \
+        "# This is a generated file by the `rake build_matrix:github:generate` task.\n" \
         "# See `build_matrix.yml` for the build matrix.\n" \
-        "# Generate this file with `rake build_matrix:semaphore:generate`.\n"
-      generated_yaml = header + YAML.dump(semaphore)
-      File.write(".semaphore/semaphore.yml", generated_yaml)
-      puts "Generated `.semaphore/semaphore.yml`"
-      puts "Task count: #{builds.length}"
-      puts "Job count: #{builds.sum { |block| block["task"]["jobs"].count }}"
+        "# Generate this file with `rake build_matrix:github:generate`.\n"
+      generated_yaml = header + YAML.dump(github)
+      File.write(CI_WORKFLOW_FILE, generated_yaml)
+      puts "Generated `#{CI_WORKFLOW_FILE}`"
+      puts "Job count: #{jobs.length}"
     end
 
     task :validate => :generate do
-      `git status | grep .semaphore/semaphore.yml 2>&1`
+      `git status | grep #{CI_WORKFLOW_FILE} 2>&1`
       if $?.exitstatus.zero? # rubocop:disable Style/SpecialGlobalVars
-        puts "The `.semaphore/semaphore.yml` is modified. The changes were not committed."
-        puts "Please run `rake build_matrix:semaphore:generate` and commit the changes."
+        puts "The `#{CI_WORKFLOW_FILE}` is modified. The changes were not committed."
+        puts "Please run `rake build_matrix:github:generate` and commit the changes."
         exit 1
       end
     end
   end
-end
-
-def build_semaphore_task(task_hash)
-  {
-    "name" => task_hash.delete("name") { raise "`name` key not found for task" },
-    "dependencies" => [],
-    "task" => task_hash.delete("task") { raise "`task` key not found for task" }
-  }.merge(task_hash)
-end
-
-def build_semaphore_job(job_hash)
-  {
-    "name" => job_hash.delete("name") { "`name` key not found" },
-    "commands" => []
-  }.merge(job_hash)
-end
-
-def package_has_tests?(package)
-  test_dir = File.join(package, "src/__tests__")
-  # Has a dedicated test dir and it contains files
-  return true if Dir.exist?(test_dir) && Dir.glob(File.join(test_dir, "**", "*.*s")).any?
-
-  Dir
-    .glob(File.join(package, "**/*.test.*s"))
-    .reject { |file| file.include?("/node_modules/") }
-    .any?
 end

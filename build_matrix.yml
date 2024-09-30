@@ -1,118 +1,137 @@
-semaphore: # Default `.semaphore/semaphore.yml` contents
-  version: v1.0
-  name: AppSignal for Node.js
-  agent:
-    machine:
-      type: e1-standard-2
-      os_image: ubuntu2004
-  auto_cancel:
-    running:
-      when: branch != 'main' AND branch != 'develop'
-  global_job_config:
-    env_vars:
-    - name: RUNNING_IN_CI
-      value: 'true'
-    - name: NODE_ENV
-      value: test
-    - name: _PACKAGE_CACHE
-      value: v3
-    - name: _BUNDLER_CACHE
-      value: v2
-    prologue:
-      commands:
-        - checkout
-        - "[ -n \"$NODE_VERSION\" ] && sem-version node $NODE_VERSION || echo Skipping Node.js install"
-        -  npm i -g npm@9.9.2
+github: # Default `.github/workflows/ci.yml` contents
+  name: Node.js package CI
+  "on":
+    push:
+      branches:
+        - main
+        - develop
+    pull_request:
+      types:
+        - opened
+        - reopened
+        - synchronize
+    schedule:
+      - cron: 0 0 * * 1-5
 
-        # Mono setup
-        - script/setup
-        - source ~/.bashrc
-  blocks:
-    - name: Validation
-      dependencies: []
-      task:
-        jobs:
+  concurrency:
+    group: "${{ github.workflow }}-${{ github.ref }}"
+    cancel-in-progress: "${{ !contains(github.ref, 'main')}}"
+
+  env:
+    RUNNING_IN_CI: "true"
+    NODE_ENV: test
+
+  jobs:
+    validation:
+      name: Validation
+      runs-on: ubuntu-latest
+      steps:
+        - name: "Checkout project"
+          uses: actions/checkout@v4
+
         - name: Validate CI setup
-          commands:
-            - rake build_matrix:semaphore:validate
-    - name: Linters
-      dependencies: []
-      task:
-        jobs:
-        - name: Ruby Lint (RuboCop)
-          commands:
-            - cache restore $_BUNDLER_CACHE-bundler-$(checksum Gemfile.lock)
-            - bundle config set clean 'true'
-            - bundle config set path .bundle
-            - bundle install --jobs=3 --retry=3
-            - cache store $_BUNDLER_CACHE-bundler-$(checksum Gemfile.lock) .bundle
-            - bundle exec rubocop
-        - name: Node.js Lint (Prettier)
-          env_vars:
-            - name: NODE_VERSION
-              value: "18"
-          commands:
-            - cache restore
-            - mono bootstrap --ci
-            - cache store
-            - npm run lint
-        - name: Git Lint (Lintje)
-          commands:
-            - script/lint_git
-    - name: Integration tests
-      dependencies: ["Validation"]
-      task:
-        jobs:
-        - name: Express + Redis
-          commands:
-            - script/integration_test_app express-redis
-        - name: Express + Knex.js
-          commands:
-            - script/integration_test_app express-knex
-        - name: Koa + MySQL
-          commands:
-            - script/integration_test_app koa-mysql
-        - name: Koa + Mongo
-          commands:
-            - script/integration_test_app koa-mongo
-        - name: Express + Mongoose
-          commands:
-            - script/integration_test_app express-mongoose
-        - name: Express + Postgres
-          commands:
-            - script/integration_test_app express-postgres
-        - name: Express + Apollo
-          commands:
-            - script/integration_test_app express-apollo
-        - name: Express + Yoga
-          commands:
-            - script/integration_test_app express-yoga
-        - name: Express + Prisma + Postgres
-          commands:
-            - script/integration_test_app express-prisma-postgres
-        - name: Express + Prisma + Mongo
-          commands:
-            - script/integration_test_app express-prisma-mongo
-        - name: Next.js
-          commands:
-            - script/integration_test_app nextjs
-        - name: Nest.js
-          commands:
-            - script/integration_test_app nestjs
-        - name: Fastify
-          commands:
-            - script/integration_test_app fastify
+          run: "rake build_matrix:github:validate"
+
+    lint-git:
+      name: Git linter (Lintje)
+      needs: validation
+      runs-on: ubuntu-latest
+      if: "${{ github.event_name != 'schedule' }}"
+      steps:
+        - name: "Checkout project"
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+        - name: Run Git linter
+          uses: lintje/action@v0.11
+
+    lint-ruby:
+      name: Ruby linter (RuboCop)
+      needs: validation
+      runs-on: ubuntu-latest
+      steps:
+        - name: "Checkout project"
+          uses: actions/checkout@v4
+
+        - name: "Install Ruby"
+          uses: ruby/setup-ruby@v1
+          with:
+            ruby-version: "3.3"
+            bundler-cache: true
+
+        - name: "Run RuboCop"
+          run: bundle exec rubocop
+
+    lint-js:
+      name: JavaScript linter (Prettier)
+      needs: validation
+      runs-on: ubuntu-latest
+      steps:
+        - name: "Checkout project"
+          uses: actions/checkout@v4
+
+        - name: "Checkout Mono"
+          uses: actions/checkout@v4
+          with:
+            repository: appsignal/mono
+            path: "tmp/mono"
+
+        - name: "Install Node.js"
+          uses: actions/setup-node@v4
+          with:
+            node-version: 22
+            cache: "npm"
+            cache-dependency-path: "package-lock.json"
+
+        - name: "Install dependencies"
+          run: tmp/mono/bin/mono bootstrap
+
+        - name: "Node.js Lint (Prettier)"
+          run: npm run lint
+
+    integration-tests:
+      name: Integration tests (${{matrix.name}})
+      needs: validation
+      runs-on: ubuntu-latest
+      strategy:
+        fail-fast: false
+        matrix:
+          include:
+            - name: Express + Redis
+              test-app: express-redis
+            - name: Express + Knex.js
+              test-app: express-knex
+            - name: Koa + MySQL
+              test-app: koa-mysql
+            - name: Koa + Mongo
+              test-app: koa-mongo
+            - name: Express + Mongoose
+              test-app: express-mongoose
+            - name: Express + Postgres
+              test-app: express-postgres
+            - name: Express + Apollo
+              test-app: express-apollo
+            - name: Express + Yoga
+              test-app: express-yoga
+            - name: Express + Prisma + Postgres
+              test-app: express-prisma-postgres
+            - name: Express + Prisma + Mongo
+              test-app: express-prisma-mongo
+            - name: Next.js
+              test-app: nextjs
+            - name: Nest.js
+              test-app: nestjs
+            - name: Fastify
+              test-app: fastify
+      steps:
+        - name: "Checkout project"
+          uses: actions/checkout@v4
+
+        - name: "Run integration tests"
+          run: script/integration_test_app ${{matrix.test-app}}
 
 matrix:
   nodejs:
     - nodejs: "22"
     - nodejs: "20"
     - nodejs: "18"
-  package:
-    extra_commands: # Run in the package's job
-      - npm run test:failure
-    extra_tests: # Run as separate jobs for package
-      diagnose:
-        - git submodule init
-        - git submodule update
-        - LANGUAGE=nodejs test/integration/diagnose/bin/test
