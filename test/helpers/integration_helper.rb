@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "./config_helper"
+require_relative "config_helper"
 
 module IntegrationHelper
   def self.wait_for_start

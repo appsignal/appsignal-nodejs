@@ -2,33 +2,34 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
-    json (2.6.2)
-    parallel (1.22.1)
-    parser (3.1.2.1)
+    json (2.7.2)
+    language_server-protocol (3.17.0.3)
+    parallel (1.26.3)
+    parser (3.3.5.0)
       ast (~> 2.4.1)
+      racc
+    racc (1.8.1)
     rainbow (3.1.1)
-    regexp_parser (2.6.0)
-    rexml (3.3.6)
-      strscan
-    rubocop (1.39.0)
+    regexp_parser (2.9.2)
+    rubocop (1.66.1)
       json (~> 2.3)
+      language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
-      parser (>= 3.1.2.1)
+      parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 1.8, < 3.0)
-      rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.23.0, < 2.0)
+      regexp_parser (>= 2.4, < 3.0)
+      rubocop-ast (>= 1.32.2, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.23.0)
-      parser (>= 3.1.1.0)
-    ruby-progressbar (1.11.0)
-    strscan (3.1.0)
-    unicode-display_width (2.3.0)
+      unicode-display_width (>= 2.4.0, < 3.0)
+    rubocop-ast (1.32.3)
+      parser (>= 3.3.1.0)
+    ruby-progressbar (1.13.0)
+    unicode-display_width (2.6.0)
 
 PLATFORMS
   aarch64-linux
   arm64-darwin-21
+  arm64-darwin-23
   x86_64-darwin-19
   x86_64-darwin-20
   x86_64-linux
