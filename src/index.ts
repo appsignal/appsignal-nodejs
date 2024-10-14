@@ -13,3 +13,6 @@ export { WinstonTransport } from "./winston_transport"
 export * from "./helpers"
 export * as checkIn from "./check_in"
 export { Heartbeat, heartbeat } from "./heartbeat"
+
+import AppsignalPinoTransport from "./pino_transport"
+export { AppsignalPinoTransport }
