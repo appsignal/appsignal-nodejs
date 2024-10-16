@@ -1,5 +1,29 @@
 # AppSignal for Node.js Changelog
 
+## 3.5.1
+
+_Published on 2024-10-16._
+
+### Added
+
+- [46a6ad1](https://github.com/appsignal/appsignal-nodejs/commit/46a6ad14a51cd157ae3fbafe8f2e3e8959b2e89b) patch - A Pino transport is now available. If Pino is your main logger, you can now use the AppSignal pino transport to send those logs to AppSignal.
+  
+  ```js
+  import pino from "pino"
+  import { Appsignal, AppsignalPinoTransport } from "@appsignal/nodejs"
+  
+  const logger = pino(
+    AppsignalPinoTransport({
+      client: Appsignal.client,
+      group: "application",
+    })
+  )
+  ```
+
+### Changed
+
+- [1bafde8](https://github.com/appsignal/appsignal-nodejs/commit/1bafde8010cebe3705812311387c2559e372c25f) patch - Change the primary download mirror for integrations.
+
 ## 3.5.0
 
 _Published on 2024-09-26._
