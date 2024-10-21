@@ -226,6 +226,8 @@ jobs:
     needs:
     - test_22_unit
     - test_22_extra_diagnose
+    if: github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork
+      == false
     runs-on: ubuntu-latest
     steps:
     - name: Checkout project
@@ -342,6 +344,8 @@ jobs:
     needs:
     - test_20_unit
     - test_20_extra_diagnose
+    if: github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork
+      == false
     runs-on: ubuntu-latest
     steps:
     - name: Checkout project
@@ -458,6 +462,8 @@ jobs:
     needs:
     - test_18_unit
     - test_18_extra_diagnose
+    if: github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork
+      == false
     runs-on: ubuntu-latest
     steps:
     - name: Checkout project
