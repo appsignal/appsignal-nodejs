@@ -197,6 +197,10 @@ namespace :build_matrix do
             unit_test_job_key,
             diagnose_job_key
           ],
+          # Skip this job for dependabot and forked PRs as they do not
+          # have write permissions to the repository to delete caches
+          "if" => "github.actor != 'dependabot[bot]' && " \
+            "github.event.pull_request.head.repo.fork == false",
           "runs-on" => "ubuntu-latest",
           "steps" => [
             {
