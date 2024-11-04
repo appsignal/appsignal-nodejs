@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.5.2
+
+_Published on 2024-11-04._
+
+### Added
+
+- [e20653b](https://github.com/appsignal/appsignal-nodejs/commit/e20653bcd6343bd55ac9fccdfe383cb94af019db) patch - Add Fastify v5 compatibility
+
 ## 3.5.1
 
 _Published on 2024-10-16._
