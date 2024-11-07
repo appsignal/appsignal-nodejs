@@ -1,5 +1,17 @@
 # AppSignal for Node.js Changelog
 
+## 3.5.3
+
+_Published on 2024-11-07._
+
+### Added
+
+- Set the app revision config option for Scalingo deploys automatically. If the `CONTAINER_VERSION` system environment variable is present, it will use used to set the `revision` config option automatically. Overwrite it's value by configuring the `revision` config option for your application. (patch [5b90b64](https://github.com/appsignal/appsignal-nodejs/commit/5b90b64215ef753a32da60cb51f6b8d41a5a5890))
+
+### Fixed
+
+- Fix an issue where the extension fails to build on ARM64 Linux. (patch [69fcdcf](https://github.com/appsignal/appsignal-nodejs/commit/69fcdcf72616520f34e72dfc68af8e003f3c40e0))
+
 ## 3.5.2
 
 _Published on 2024-11-04._
