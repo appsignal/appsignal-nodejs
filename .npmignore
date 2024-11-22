@@ -1,5 +1,6 @@
 *
 !/dist/**/*
+!/pino/**/*
 !/scripts/**/*
 scripts/**/*.test.js
 !/ext/appsignal_extension.cpp

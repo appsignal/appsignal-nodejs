@@ -1,44 +1,47 @@
-import { LOGGER_LEVEL_SEVERITY } from "./logger"
+import { LOGGER_LEVEL_SEVERITY, LOGGER_FORMAT } from "./logger"
 import build from "pino-abstract-transport"
-import { Client } from "./client"
+import { Extension } from "./extension"
 
 type PinoTransportOptions = {
-  client: Client
-  group: string
+  group?: string
 }
 
-const appsignalPinoTransport = ({
-  client,
-  group = "app"
-}: PinoTransportOptions) => {
+type LogData = {
+  severity: number
+  message: string
+  attributes: Record<string, any>
+}
+
+const appsignalPinoTransport = ({ group = "app" }: PinoTransportOptions) => {
   return build(async (source: any) => {
+    // We expect this code to be running in a worker thread and for the
+    // extension to have already been loaded and started on the main thread.
+    // Since we expect the extension to already have been initialised, we
+    // pass `{ active: false }` to avoid initialising it again.
+    const extension = new Extension({ active: false })
+
     for await (const obj of source) {
-      sendLogs(parseInfo(obj, group), client)
+      sendLogs(extension, group, parseInfo(obj))
     }
   })
-
-  async function sendLogs(data: Record<string, any>, client: Client) {
-    client.extension.log(
-      data.group || "app",
-      data.severity,
-      0,
-      data.msg,
-      data.attributes
-    )
-  }
 }
 
-function parseInfo(
-  obj: Record<string, any>,
-  group: string
-): Record<string, any> {
-  const { hostname, level, msg, ...attributes } = obj
+async function sendLogs(extension: Extension, group: string, data: LogData) {
+  extension.log(
+    group,
+    data.severity,
+    LOGGER_FORMAT.plaintext,
+    data.message,
+    data.attributes
+  )
+}
+
+function parseInfo(obj: Record<string, any>): LogData {
+  const { level, msg, ...attributes } = obj
 
   return {
     severity: getSeverity(level),
-    hostname,
-    group,
-    msg,
+    message: msg,
     attributes: flattenAttributes(attributes)
   }
 }
