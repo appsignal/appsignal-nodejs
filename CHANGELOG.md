@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.5.5
+
+_Published on 2024-12-20._
+
+### Fixed
+
+- Fix a performance issue when sanitising `INSERT INTO ... VALUES` queries. (patch [9772e93](https://github.com/appsignal/appsignal-nodejs/commit/9772e9316db5fb7c73cdf29dd9441708ea65cf74))
+
 ## 3.5.4
 
 _Published on 2024-11-22._
