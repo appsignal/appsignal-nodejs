@@ -10,7 +10,7 @@ function setAttribute(attribute: string, value: AttributeValue, span?: Span) {
   } else {
     const splitAttributes = attribute.split(".")
     const attributeSuffix = splitAttributes[splitAttributes.length - 1]
-    Client.internalLogger.debug(
+    Client.internalLogger.warn(
       `There is no active span, cannot set \`${attributeSuffix}\``
     )
   }
