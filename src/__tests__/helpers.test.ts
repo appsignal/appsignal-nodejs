@@ -126,11 +126,11 @@ describe("Helpers", () => {
   })
 
   it("logs a debug warning when there is no active span", () => {
-    const debugMock = jest.spyOn(Client.internalLogger, "debug")
+    const warnMock = jest.spyOn(Client.internalLogger, "warn")
 
     setCustomData({ chunky: "bacon" })
 
-    expect(debugMock).toHaveBeenCalledWith(
+    expect(warnMock).toHaveBeenCalledWith(
       "There is no active span, cannot set `custom_data`"
     )
   })
