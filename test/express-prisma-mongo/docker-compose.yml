@@ -24,6 +24,7 @@ services:
       - PORT=4001
       - _APPSIGNAL_TEST_MODE=true
       - _APPSIGNAL_TEST_MODE_FILE_PATH=/spans/spans.json
+      - DATABASE_URL=mongodb://mongo:27017/prisma
       - DATABASE_HOST=mongo
     working_dir: /
     volumes:
