@@ -1,5 +1,19 @@
 # AppSignal for Node.js Changelog
 
+## 3.6.0
+
+_Published on 2025-02-24._
+
+### Changed
+
+- [e2498ad](https://github.com/appsignal/appsignal-nodejs/commit/e2498ad0462f453e10689558646d2967445baa7e) patch - Update span recognition following the OpenTelemetry Semantic Conventions 1.30 database specification. We now also sanitize SQL queries in the `db.query.text` attribute and Redis queries in the `db.operation.name` attribute.
+- [282d9ac](https://github.com/appsignal/appsignal-nodejs/commit/282d9ac048b5284d3376b95fe08b23ec5f69f041) patch - Bump the log message when no span is active and one of our sample data helpers are used like `setParams`, `setSessionData`, `setCustomData`, etc from debug to warning.
+- [753a630](https://github.com/appsignal/appsignal-nodejs/commit/753a6304d72c93081a92bea46968e57cdc17d283) patch - Update bundled trusted root certificates
+
+### Removed
+
+- [e2498ad](https://github.com/appsignal/appsignal-nodejs/commit/e2498ad0462f453e10689558646d2967445baa7e) minor - Remove the OpenTelemetry beta feature in favor of the new [AppSignal collector](https://docs.appsignal.com/collector). If you are using the AppSignal agent to send OpenTelemetry data in our public beta through the `/enriched` endpoint on the agent's HTTP server, please migrate to the collector to continue using the beta. The collector has a much better implementation of this feature for the beta.
+
 ## 3.5.5
 
 _Published on 2024-12-20._
