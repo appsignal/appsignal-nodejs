@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.6.1
+
+_Published on 2025-02-27._
+
+### Changed
+
+- Update Prisma instrumentation to version 6.4. This improves compatibility with new Prisma versions. (patch [930b3db](https://github.com/appsignal/appsignal-nodejs/commit/930b3db2bb9cca504184a8931acea1434caded12), [61316bf](https://github.com/appsignal/appsignal-nodejs/commit/61316bff15200a72859e717d88a68c929abb97f4))
+
 ## 3.6.0
 
 _Published on 2025-02-24._
