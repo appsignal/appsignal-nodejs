@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.6.3
+
+_Published on 2025-03-14._
+
+### Changed
+
+- Improve SQL sanitisation for functions and numbered placeholders. (patch [b01e6c6](https://github.com/appsignal/appsignal-nodejs/commit/b01e6c64c65921ca04a324e02e7c0cd65d4e3848))
+
 ## 3.6.2
 
 _Published on 2025-03-11._
