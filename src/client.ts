@@ -10,7 +10,11 @@ import { VERSION } from "./version"
 import { setParams, setSessionData } from "./helpers"
 import { BaseLogger, Logger, LoggerFormat, LoggerLevel } from "./logger"
 import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api"
-import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics"
+import {
+  PeriodicExportingMetricReader,
+  AggregationTemporality,
+  InstrumentType
+} from "@opentelemetry/sdk-metrics"
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto"
 
 import type { Instrumentation } from "@opentelemetry/instrumentation"
@@ -407,7 +411,7 @@ export class Client {
     let metricReader
     if (this.config.data["enableOpentelemetryHttp"]) {
       metricReader = new PeriodicExportingMetricReader({
-        exporter: new OTLPMetricExporter({
+        exporter: new PatchedOTLPMetricExporter({
           url: `http://localhost:${this.config.data["opentelemetryPort"]}/v1/metrics`
         })
       })
@@ -466,5 +470,28 @@ export class Client {
       "The `appsignal.tracer()` function was called, but it has been removed in AppSignal for Node.js package version 3.x. Please read our migration guide to upgrade to this new version of our package: https://docs.appsignal.com/nodejs/3.x/migration-guide.html. It is also possible to downgrade to version 2.x, after which this code will work again."
     )
     return () => {}
+  }
+}
+
+// Custom metrics aggregation temporality selector
+// This requires a patch because the Node.js exporter doesn't allow this to be
+// specified per metric type.
+const customAggregationTemporality: Partial<
+  Record<InstrumentType, AggregationTemporality>
+> = {
+  COUNTER: AggregationTemporality.DELTA,
+  UP_DOWN_COUNTER: AggregationTemporality.DELTA,
+  OBSERVABLE_COUNTER: AggregationTemporality.DELTA,
+  OBSERVABLE_GAUGE: AggregationTemporality.CUMULATIVE,
+  OBSERVABLE_UP_DOWN_COUNTER: AggregationTemporality.DELTA,
+  HISTOGRAM: AggregationTemporality.DELTA
+}
+
+class PatchedOTLPMetricExporter extends OTLPMetricExporter {
+  override selectAggregationTemporality(instrumentType: InstrumentType) {
+    const aggregationTemporality = customAggregationTemporality[instrumentType]
+    return aggregationTemporality != undefined
+      ? aggregationTemporality
+      : super.selectAggregationTemporality(instrumentType)
   }
 }
