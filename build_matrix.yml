@@ -132,6 +132,7 @@ github: # Default `.github/workflows/ci.yml` contents
 
 matrix:
   nodejs:
+    - nodejs: "23"
     - nodejs: "22"
     - nodejs: "20"
     - nodejs: "18"
