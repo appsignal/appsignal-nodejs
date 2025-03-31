@@ -83,7 +83,7 @@
     "lint:write": "eslint --fix ."
   },
   "engines": {
-    "node": ">= 12"
+    "node": ">= 18"
   },
   "publishConfig": {
     "access": "public"
