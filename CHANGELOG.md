@@ -1,5 +1,18 @@
 # AppSignal for Node.js Changelog
 
+## 3.6.4
+
+_Published on 2025-03-31._
+
+### Added
+
+- Add support for OpenTelemetry histograms. (patch [2ff4e94](https://github.com/appsignal/appsignal-nodejs/commit/2ff4e94e69479b3dfdfd07b4130d6e787f959671))
+- Add support for Node.js 23 (patch [2bd47b9](https://github.com/appsignal/appsignal-nodejs/commit/2bd47b9b1664f3024109c123eb226f37f9557c70))
+
+### Removed
+
+- Drop support for Node.js 16 (patch [0e1e97f](https://github.com/appsignal/appsignal-nodejs/commit/0e1e97f030d5024ead2457ee16b7c35a1c1f3115))
+
 ## 3.6.3
 
 _Published on 2025-03-14._
