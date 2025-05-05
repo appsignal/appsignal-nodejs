@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.6.5
+
+_Published on 2025-05-05._
+
+### Changed
+
+- Remove redundant cron check-in pairs. When more than one pair of start and finish cron check-in events is reported for the same identifier in the same period, only one of them will be reported to AppSignal. (patch [1cfcc0a](https://github.com/appsignal/appsignal-nodejs/commit/1cfcc0a506971b293bb18a313d0b6e91776aabab))
+
 ## 3.6.4
 
 _Published on 2025-03-31._
