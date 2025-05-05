@@ -111,6 +111,7 @@ export class Scheduler {
     }
 
     const events = this.events
+    Event.deduplicateCron(events)
     this.events = []
     if (events.length !== 0) {
       // The events array may be empty when this function is called on shutdown.

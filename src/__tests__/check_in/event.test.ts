@@ -1,5 +1,15 @@
 import { Event, EventCheckInType } from "../../check_in/event"
 
+const permutations = (arr: Event[]): Event[][] => {
+  if (arr.length === 0) return [[]]
+  return arr.flatMap((item, i) =>
+    permutations([...arr.slice(0, i), ...arr.slice(i + 1)]).map(perm => [
+      item,
+      ...perm
+    ])
+  )
+}
+
 describe("Event", () => {
   describe(".describe()", () => {
     it("describes an empty list of events", () => {
@@ -141,6 +151,117 @@ describe("Event", () => {
       })
 
       expect(event.isRedundant(newEvent)).toBe(true)
+    })
+  })
+
+  describe(".deduplicateCron()", () => {
+    it("removes redundant pairs of cron events", () => {
+      const firstStart = new Event({
+        identifier: "checkin-name",
+        digest: "first",
+        kind: "start",
+        check_in_type: "cron"
+      })
+      const firstFinish = new Event({
+        identifier: "checkin-name",
+        digest: "first",
+        kind: "finish",
+        check_in_type: "cron"
+      })
+      const secondStart = new Event({
+        identifier: "checkin-name",
+        digest: "second",
+        kind: "start",
+        check_in_type: "cron"
+      })
+      const secondFinish = new Event({
+        identifier: "checkin-name",
+        digest: "second",
+        kind: "finish",
+        check_in_type: "cron"
+      })
+
+      const events = [firstStart, firstFinish, secondStart, secondFinish]
+
+      for (const perm of permutations(events)) {
+        Event.deduplicateCron(perm)
+
+        expect(perm.length).toBe(2)
+        const [keptFinish, keptStart] = perm.sort((a, b) =>
+          (a.kind || "") > (b.kind || "") ? 1 : -1
+        )
+        expect(keptStart.kind).toBe("start")
+        expect(keptFinish.kind).toBe("finish")
+        expect(keptStart.digest).toBe(keptFinish.digest)
+      }
+    })
+
+    it("does not remove pairs with different identifiers", () => {
+      const firstStart = new Event({
+        identifier: "checkin-name",
+        digest: "first",
+        kind: "start",
+        check_in_type: "cron"
+      })
+      const firstFinish = new Event({
+        identifier: "checkin-name",
+        digest: "first",
+        kind: "finish",
+        check_in_type: "cron"
+      })
+      const secondStart = new Event({
+        identifier: "other-checkin",
+        digest: "second",
+        kind: "start",
+        check_in_type: "cron"
+      })
+      const secondFinish = new Event({
+        identifier: "other-checkin",
+        digest: "second",
+        kind: "finish",
+        check_in_type: "cron"
+      })
+
+      const events = [firstStart, firstFinish, secondStart, secondFinish]
+
+      for (const perm of permutations(events)) {
+        Event.deduplicateCron(perm)
+        expect(new Set(perm)).toEqual(new Set(events))
+      }
+    })
+
+    it("does not remove unmatched pairs", () => {
+      const firstStart = new Event({
+        identifier: "checkin-name",
+        digest: "first",
+        kind: "start",
+        check_in_type: "cron"
+      })
+      const secondStart = new Event({
+        identifier: "checkin-name",
+        digest: "second",
+        kind: "start",
+        check_in_type: "cron"
+      })
+      const secondFinish = new Event({
+        identifier: "checkin-name",
+        digest: "second",
+        kind: "finish",
+        check_in_type: "cron"
+      })
+      const thirdFinish = new Event({
+        identifier: "checkin-name",
+        digest: "third",
+        kind: "finish",
+        check_in_type: "cron"
+      })
+
+      const events = [firstStart, secondStart, secondFinish, thirdFinish]
+
+      for (const perm of permutations(events)) {
+        Event.deduplicateCron(perm)
+        expect(new Set(perm)).toEqual(new Set(events))
+      }
     })
   })
 
