@@ -1,5 +1,18 @@
 # AppSignal for Node.js Changelog
 
+## 3.6.6
+
+_Published on 2025-05-08._
+
+### Changed
+
+- Allow overriding namespaces that are automatically set by the AppSignal agent based on the OpenTelemetry instrumentation that emitted the span, such as the `graphql` or `background` namespaces. (patch [4c9aae1](https://github.com/appsignal/appsignal-nodejs/commit/4c9aae11a04996eec522abd848e4b0db03cc4be8))
+- Log a debug message when the reported error is ignored by the `ignore_errors` config option. (patch [4c9aae1](https://github.com/appsignal/appsignal-nodejs/commit/4c9aae11a04996eec522abd848e4b0db03cc4be8))
+
+### Fixed
+
+- Update `mysql2` and `pg` instrumentations. This fixes an issue where queries performed using promises with `mysql2@3.11.5` are not instrumented, as well as an issue where `pg` is not instrumented under certain bundlers and runtimes. (patch [e2d73ab](https://github.com/appsignal/appsignal-nodejs/commit/e2d73ab01c03a61f7dd45b850f1a046a66636d36))
+
 ## 3.6.5
 
 _Published on 2025-05-05._
