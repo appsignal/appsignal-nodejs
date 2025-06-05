@@ -155,12 +155,14 @@ describe("Configuration", () => {
       process.env["APPSIGNAL_ENABLE_HOST_METRICS"] = "false"
       process.env["APPSIGNAL_DNS_SERVERS"] = "8.8.8.8,8.8.4.4"
       process.env["APPSIGNAL_CPU_COUNT"] = "1.5"
+      process.env["APPSIGNAL_NGINX_PORT"] = "8080"
 
       const envOptions = {
         enableStatsd: true,
         enableHostMetrics: false,
         dnsServers: ["8.8.8.8", "8.8.4.4"],
-        cpuCount: 1.5
+        cpuCount: 1.5,
+        nginxPort: "8080"
       }
 
       const expectedConfig = {
@@ -422,7 +424,8 @@ describe("Configuration", () => {
           runningInContainer: true,
           workingDirectoryPath: "/my/path",
           revision: "my-revision",
-          statsdPort: "3000"
+          statsdPort: "3000",
+          nginxPort: "8080"
         })
       })
 
@@ -473,6 +476,7 @@ describe("Configuration", () => {
         expect(env("_APPSIGNAL_WORKING_DIRECTORY_PATH")).toEqual("/my/path")
         expect(env("_APPSIGNAL_WORKING_DIR_PATH")).toBeUndefined()
         expect(env("_APP_REVISION")).toEqual("my-revision")
+        expect(env("_APPSIGNAL_NGINX_PORT")).toEqual("8080")
       })
     })
   })
