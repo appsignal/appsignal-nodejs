@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.6.7
+
+_Published on 2025-06-06._
+
+### Added
+
+- Add `nginxPort` configuration option. This configuration option can be used to customize the port on which the AppSignal integration exposes [the NGINX metrics server](https://docs.appsignal.com/metrics/nginx.html). (patch [30490f3](https://github.com/appsignal/appsignal-nodejs/commit/30490f3fac60650c6ec7fb02874b09d03d599355), [0085686](https://github.com/appsignal/appsignal-nodejs/commit/0085686f540eb520302f6141ba716d5a58156cf9), [f5b20bc](https://github.com/appsignal/appsignal-nodejs/commit/f5b20bc046b3d55778ff33e314ad438235ce2a52))
+
 ## 3.6.6
 
 _Published on 2025-05-08._
