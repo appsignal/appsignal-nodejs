@@ -15,6 +15,7 @@ import {
   AggregationTemporality,
   InstrumentType
 } from "@opentelemetry/sdk-metrics"
+import { CompositePropagator } from "@opentelemetry/core"
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto"
 
 import type { Instrumentation } from "@opentelemetry/instrumentation"
@@ -420,7 +421,8 @@ export class Client {
     const sdk = new NodeSDK({
       instrumentations,
       spanProcessor,
-      metricReader
+      metricReader,
+      textMapPropagator: new CompositePropagator()
     })
 
     sdk.start()
