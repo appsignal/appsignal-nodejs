@@ -15,6 +15,9 @@ import {
   AggregationTemporality,
   InstrumentType
 } from "@opentelemetry/sdk-metrics"
+import { CompositePropagator } from "@opentelemetry/core"
+import { B3Propagator, B3InjectEncoding } from "@opentelemetry/propagator-b3"
+import { W3CBaggagePropagator } from "@opentelemetry/core"
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto"
 
 import type { Instrumentation } from "@opentelemetry/instrumentation"
@@ -420,7 +423,14 @@ export class Client {
     const sdk = new NodeSDK({
       instrumentations,
       spanProcessor,
-      metricReader
+      metricReader,
+      textMapPropagator: new CompositePropagator({
+        propagators: [
+          new W3CBaggagePropagator(),
+          new B3Propagator(),
+          new B3Propagator({ injectEncoding: B3InjectEncoding.MULTI_HEADER })
+        ]
+      })
     })
 
     sdk.start()
