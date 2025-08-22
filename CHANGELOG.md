@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.7.0
+
+_Published on 2025-08-22._
+
+### Changed
+
+- Disable the OpenTelemetry trace context propagation across applications. If multiple applications are instrumented with AppSignal for Node.js using OpenTelemetry, the propagation across applications could lead to application data being reported the wrong application in AppSignal. (minor [7fc85b8](https://github.com/appsignal/appsignal-nodejs/commit/7fc85b86cfba976ef6e9c41032775b40d4a9e8d9), [7ddcbec](https://github.com/appsignal/appsignal-nodejs/commit/7ddcbecf10e7cd97f93b1a5faeafa175b44b69e9))
+
 ## 3.6.7
 
 _Published on 2025-06-06._
