@@ -2,3 +2,5 @@
 language: nodejs
 repo: "https://github.com/appsignal/appsignal-nodejs"
 npm_client: "npm"
+git-commit:
+  pre: "npm install"
