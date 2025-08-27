@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.7.1
+
+_Published on 2025-08-27._
+
+### Changed
+
+- Update the OpenTelemetry dependency to version 1.9 of the OpenTelemetry API. This improves compatibility with instrumentation libraries that depend on this version of the API. (patch [4cc4257](https://github.com/appsignal/appsignal-nodejs/commit/4cc4257215fb5e6b9518f1ec06654e5a3d445192))
+
 ## 3.7.0
 
 _Published on 2025-08-22._
