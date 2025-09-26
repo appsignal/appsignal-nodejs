@@ -52,7 +52,7 @@ describe("BaseLogger", () => {
     ).toEqual(6)
   })
 
-  it("defaults to a plaintext logger format", () => {
+  it("defaults to the autodetect logger format", () => {
     expect(logger.format).toEqual(3)
     expect(client.internalLogger.warn).not.toHaveBeenCalled()
   })
