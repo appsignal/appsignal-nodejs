@@ -19,12 +19,13 @@ function severity(level: LoggerLevel) {
   return LOGGER_LEVEL_SEVERITY[level] ?? UNKNOWN_SEVERITY
 }
 
-export type LoggerFormat = "plaintext" | "logfmt" | "json"
+export type LoggerFormat = "plaintext" | "logfmt" | "json" | "autodetect"
 
 export const LOGGER_FORMAT: Record<LoggerFormat, number> = {
   plaintext: 0,
   logfmt: 1,
-  json: 2
+  json: 2,
+  autodetect: 3
 }
 
 const UNKNOWN_FORMAT = -1
@@ -52,7 +53,7 @@ export class BaseLogger implements Logger {
     client: Client,
     group: string,
     level: LoggerLevel = "info",
-    format: LoggerFormat = "plaintext"
+    format: LoggerFormat = "autodetect"
   ) {
     if (typeof group != "string") {
       throw new TypeError(
@@ -75,10 +76,10 @@ export class BaseLogger implements Logger {
 
     if (this.format == UNKNOWN_FORMAT) {
       this.#client.internalLogger.warn(
-        `Logger format must be "plaintext", "logfmt", or "json", ` +
-          `but "${format}" was given. Logger format set to "plaintext".`
+        `Logger format must be "plaintext", "logfmt", "json", or "autodetect", ` +
+          `but "${format}" was given. Logger format set to "autodetect".`
       )
-      this.format = 0
+      this.format = 3
     }
   }
 
