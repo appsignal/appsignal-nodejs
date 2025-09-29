@@ -6,6 +6,8 @@ updates:
       interval: "weekly"
     ignore:
       - dependency-name: "*"
+        # Ignore patch updates
+        update-types: ["version-update:semver-patch"]
   - package-ecosystem: "npm"
     directory: "/test"
     schedule:
