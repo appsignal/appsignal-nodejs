@@ -144,7 +144,7 @@ export class Client {
   static logger(
     group: string,
     level: LoggerLevel = "info",
-    format: LoggerFormat = "plaintext"
+    format: LoggerFormat = "autodetect"
   ): Logger {
     if (this.client) {
       return this.client.logger(group, level, format)

@@ -52,19 +52,19 @@ describe("BaseLogger", () => {
     ).toEqual(6)
   })
 
-  it("defaults to a plaintext logger format", () => {
-    expect(logger.format).toEqual(0)
+  it("defaults to the autodetect logger format", () => {
+    expect(logger.format).toEqual(3)
     expect(client.internalLogger.warn).not.toHaveBeenCalled()
   })
 
-  it("sets a plaintext format level when the format is unknown and logs a warning", () => {
+  it("sets the autodetect format level when the format is unknown and logs a warning", () => {
     logger = new BaseLogger(
       client,
       "groupname",
       "trace" as LoggerLevel,
       "bacon" as LoggerFormat
     )
-    expect(logger.format).toEqual(0)
+    expect(logger.format).toEqual(3)
     expect(client.internalLogger.warn).toHaveBeenCalledWith(
       expect.stringContaining(`"bacon"`)
     )
@@ -80,6 +80,9 @@ describe("BaseLogger", () => {
     expect(new BaseLogger(client, "groupname", "trace", "json").format).toEqual(
       2
     )
+    expect(
+      new BaseLogger(client, "groupname", "trace", "autodetect").format
+    ).toEqual(3)
   })
 
   it("logs to the extension if at or above the logger level", () => {
@@ -96,28 +99,28 @@ describe("BaseLogger", () => {
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       3,
-      0,
+      3,
       "info message",
       attributes
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       4,
-      0,
+      3,
       "log message",
       attributes
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       5,
-      0,
+      3,
       "warn message",
       attributes
     )
     expect(client.extension.log).toHaveBeenCalledWith(
       "groupname",
       6,
-      0,
+      3,
       "error message",
       attributes
     )

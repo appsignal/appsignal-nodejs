@@ -1,6 +1,9 @@
 import Transport, { TransportStreamOptions } from "winston-transport"
 import { Client } from "./client"
-import { LOGGER_LEVEL_SEVERITY as RUST_LOGGER_LEVEL_SECURITY } from "./logger"
+import {
+  LOGGER_LEVEL_SEVERITY as RUST_LOGGER_LEVEL_SECURITY,
+  LOGGER_FORMAT
+} from "./logger"
 
 const NPM_LOGGER_LEVEL_SEVERITY = {
   error: 6,
@@ -76,7 +79,7 @@ export class WinstonTransport extends Transport {
     client.extension.log(
       group || this.#group,
       levelSeverity,
-      0,
+      LOGGER_FORMAT.autodetect,
       message,
       attributes
     )
