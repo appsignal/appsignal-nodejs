@@ -30,7 +30,7 @@ async function sendLogs(extension: Extension, group: string, data: LogData) {
   extension.log(
     group,
     data.severity,
-    LOGGER_FORMAT.plaintext,
+    LOGGER_FORMAT.autodetect,
     data.message,
     data.attributes
   )
