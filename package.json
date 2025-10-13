@@ -26,7 +26,7 @@
     "@opentelemetry/instrumentation-koa": ">= 0.41.0 < 0.46.0",
     "@opentelemetry/instrumentation-mongodb": ">= 0.45.0 < 0.50.0",
     "@opentelemetry/instrumentation-mongoose": ">= 0.39.0 < 0.44.0",
-    "@opentelemetry/instrumentation-mysql": ">= 0.39.0 < 0.44.0",
+    "@opentelemetry/instrumentation-mysql": ">= 0.39.0 < 0.53.0",
     "@opentelemetry/instrumentation-mysql2": ">= 0.45.0 < 0.50.0",
     "@opentelemetry/instrumentation-nestjs-core": ">= 0.38.0 < 0.43.0",
     "@opentelemetry/instrumentation-pg": ">= 0.51.0 < 0.56.0",
