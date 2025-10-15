@@ -1,5 +1,29 @@
 # AppSignal for Node.js Changelog
 
+## 3.7.2
+
+_Published on 2025-10-15._
+
+### Added
+
+- Add a log format option for autodetection the log format. (patch [48a1bde](https://github.com/appsignal/appsignal-nodejs/commit/48a1bde062469ebf3b166f6e9323bf6c4c20f584))
+- Add support for native OpenTelemetry spans from `@elastic/transport` package in Node.js. (patch [663e5b5](https://github.com/appsignal/appsignal-nodejs/commit/663e5b56912008167a82dba77e49031c66840f67))
+
+### Changed
+
+- Detect the log format automatically. We now detect if a log line is in the JSON, Logfmt, or plaintext format. No further config needed when calling our logger, like so:
+
+  ```javascript
+  const logger = Appsignal.logger("app");
+  logger.info("message");
+  ```
+
+  (patch [0ccc052](https://github.com/appsignal/appsignal-nodejs/commit/0ccc0521703b0801b4d8fc0fccf51b4ce12c0fbb))
+
+### Fixed
+
+- Fix 'unknown' events being reported for some HTTP routes. (patch [87867bb](https://github.com/appsignal/appsignal-nodejs/commit/87867bbbf0c10ecc0f3527d97fb2cc37fc82ad95))
+
 ## 3.7.1
 
 _Published on 2025-08-27._
