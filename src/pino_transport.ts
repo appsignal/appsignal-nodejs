@@ -36,8 +36,12 @@ async function sendLogs(extension: Extension, group: string, data: LogData) {
   )
 }
 
-function parseInfo(obj: Record<string, any>): LogData {
-  const { level, msg, ...attributes } = obj
+function parseInfo(obj: {
+  level?: number
+  msg?: string
+  [key: string]: unknown
+}): LogData {
+  const { level = 0, msg = "", ...attributes } = obj
 
   return {
     severity: getSeverity(level),
