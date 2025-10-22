@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.7.3
+
+_Published on 2025-10-22._
+
+### Fixed
+
+- Handle `pino` logs without a `msg` attribute. (patch [13e34b0](https://github.com/appsignal/appsignal-nodejs/commit/13e34b05f8c5895d94db8ecd907b2f5b7dd0ec54))
+
 ## 3.7.2
 
 _Published on 2025-10-15._
