@@ -325,10 +325,12 @@ export class Client {
       "@opentelemetry/instrumentation-http": {
         headersToSpanAttributes: {
           server: { requestHeaders }
-        }
+        },
+        requireParentforOutgoingSpans: true
       },
       "@opentelemetry/instrumentation-ioredis": {
-        dbStatementSerializer: RedisDbStatementSerializer
+        dbStatementSerializer: RedisDbStatementSerializer,
+        requireParentSpan: true
       },
       "@opentelemetry/instrumentation-koa": {
         requestHook: function (span, info) {
@@ -338,11 +340,19 @@ export class Client {
           }
         }
       },
+      "@opentelemetry/instrumentation-mongoose": {
+        requireParentSpan: true
+      },
+      "@opentelemetry/instrumentation-pg": {
+        requireParentSpan: true
+      },
       "@opentelemetry/instrumentation-redis": {
-        dbStatementSerializer: RedisDbStatementSerializer
+        dbStatementSerializer: RedisDbStatementSerializer,
+        requireParentSpan: true
       },
       "@opentelemetry/instrumentation-redis-4": {
-        dbStatementSerializer: RedisDbStatementSerializer
+        dbStatementSerializer: RedisDbStatementSerializer,
+        requireParentSpan: true
       },
       "@opentelemetry/instrumentation-restify": {
         requestHook: (span, info) => {
