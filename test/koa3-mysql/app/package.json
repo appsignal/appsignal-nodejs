@@ -1,5 +1,5 @@
 {
-  "name": "koa-mysql-example",
+  "name": "koa3-mysql-example",
   "private": true,
   "version": "1.0.0",
   "main": "dist/app.js",
@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@appsignal/nodejs": "^3.0.26",
-    "@koa/router": "^10.1.1",
-    "koa": "^2.16.1",
+    "@koa/router": "^15.0.1",
+    "koa": "^3.0.1",
     "koa-bodyparser": "^4.3.0",
     "mysql": "^2.18.1",
     "mysql2": "^3.9.8",
