@@ -130,9 +130,13 @@ describe("Probes", () => {
       ]
 
       gaugeNames.forEach(gaugeName => {
-        expect(setGaugeMock).toBeCalledWith(gaugeName, expect.any(Number), {
-          hostname: "MyHostname"
-        })
+        expect(setGaugeMock).toHaveBeenCalledWith(
+          gaugeName,
+          expect.any(Number),
+          {
+            hostname: "MyHostname"
+          }
+        )
       })
     })
 
@@ -141,7 +145,7 @@ describe("Probes", () => {
 
       jest.runOnlyPendingTimers()
 
-      expect(setGaugeMock).toBeCalledWith(
+      expect(setGaugeMock).toHaveBeenCalledWith(
         expect.any(String),
         expect.any(Number),
         {
