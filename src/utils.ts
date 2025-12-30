@@ -28,7 +28,7 @@ export function isWritable(path: string) {
   try {
     fs.accessSync(path, fs.constants.W_OK)
     return true
-  } catch (e) {
+  } catch (_) {
     return false
   }
 }
