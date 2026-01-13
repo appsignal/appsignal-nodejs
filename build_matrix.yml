@@ -105,6 +105,8 @@ github: # Default `.github/workflows/ci.yml` contents
               test-app: koa-mysql
             - name: Koa + Mongo
               test-app: koa-mongo
+            - name: Koa v3 + MySQL
+              test-app: koa3-mysql
             - name: Express + Mongoose
               test-app: express-mongoose
             - name: Express + Postgres
