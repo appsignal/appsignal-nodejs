@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^6.4.0",
-    "@appsignal/nodejs": "^3.0.26",
+    "@appsignal/nodejs": "^3.7.3",
     "prisma": "^6.4.0",
     "express": "^4.22.1",
     "tslib": "^2.8.0"
