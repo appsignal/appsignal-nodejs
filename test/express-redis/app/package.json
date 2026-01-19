@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@opentelemetry/api": ">= 1.6.0 < 1.7",
-    "@appsignal/nodejs": "^3.0.26",
+    "@appsignal/nodejs": "^3.7.3",
     "cookie-parser": "^1.4.7",
     "express": "^4.22.1",
     "ioredis": "^4.28.5",
