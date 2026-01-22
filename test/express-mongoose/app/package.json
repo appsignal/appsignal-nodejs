@@ -11,7 +11,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@appsignal/nodejs": "^3.0.26",
+    "@appsignal/nodejs": "^3.7.3",
     "express": "^4.21.2",
     "mongoose": "^6.13.6",
     "tslib": "^2.4.0"
