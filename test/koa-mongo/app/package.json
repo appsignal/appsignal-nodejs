@@ -9,7 +9,7 @@
     "seed": "node dist/seed.js"
   },
   "dependencies": {
-    "@appsignal/nodejs": "^3.0.26",
+    "@appsignal/nodejs": "^3.7.3",
     "@koa/router": "^10.1.1",
     "koa": "^2.16.1",
     "mongodb": "^4.17.0",
