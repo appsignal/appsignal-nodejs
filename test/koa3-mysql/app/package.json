@@ -9,7 +9,7 @@
     "server": "node --require ./dist/appsignal.js dist/app.js"
   },
   "dependencies": {
-    "@appsignal/nodejs": "^3.0.26",
+    "@appsignal/nodejs": "^3.7.3",
     "@koa/router": "^15.0.1",
     "koa": "^3.0.1",
     "koa-bodyparser": "^4.3.0",
