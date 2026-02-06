@@ -6,14 +6,19 @@ import { Client } from "../client"
 
 describe("Probes", () => {
   let probes: Probes
+  let client: Client | null = null
 
   beforeEach(() => {
     jest.useFakeTimers()
     probes = new Probes()
   })
 
-  afterEach(() => {
+  afterEach(async () => {
     jest.clearAllTimers()
+    if (client) {
+      await client.stop()
+      client = null
+    }
   })
 
   function registerMockProbe(): jest.Mock {
@@ -71,7 +76,7 @@ describe("Probes", () => {
 
   describe("Metrics integration test", () => {
     function initialiseMetrics(enableMinutelyProbes = true) {
-      const client = new Client({
+      client = new Client({
         active: true,
         pushApiKey: "TEST_API_KEY",
         enableMinutelyProbes
