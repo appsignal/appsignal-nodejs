@@ -17,14 +17,6 @@ module.exports = {
   },
   plugins: ["@typescript-eslint", "prettier", "jest"],
   rules: {
-    "@typescript-eslint/ban-types": [
-      "error",
-      {
-        types: {
-          Function: false
-        }
-      }
-    ],
     "@typescript-eslint/no-empty-function": [
       "error",
       {
@@ -32,10 +24,13 @@ module.exports = {
       }
     ],
     "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-require-imports": "off",
+    "@typescript-eslint/no-unsafe-function-type": "off",
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {
-        argsIgnorePattern: "^_"
+        argsIgnorePattern: "^_",
+        caughtErrorsIgnorePattern: "^_"
       }
     ],
     "@typescript-eslint/no-var-requires": "off",
