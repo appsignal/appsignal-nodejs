@@ -14,7 +14,7 @@
   "dependencies": {
     "@appsignal/nodejs": "^3.7.3",
     "graphql-yoga": "^4.0.0",
-    "express": "^4.21.2",
+    "express": "^4.22.1",
     "tslib": "^2.4.0"
   },
   "devDependencies": {
