@@ -11,35 +11,35 @@ describe("BaseInternalLogger", () => {
     const errMock = jest.spyOn(logger.logger, "error")
     logger.error("Hi, I'm error")
 
-    expect(errMock).toBeCalledWith("Hi, I'm error")
+    expect(errMock).toHaveBeenCalledWith("Hi, I'm error")
   })
 
   it("sends warnings to winston", () => {
     const warnMock = jest.spyOn(logger.logger, "warn")
     logger.warn("Hi, I'm warning")
 
-    expect(warnMock).toBeCalledWith("Hi, I'm warning")
+    expect(warnMock).toHaveBeenCalledWith("Hi, I'm warning")
   })
 
   it("sends info to winston", () => {
     const infoMock = jest.spyOn(logger.logger, "info")
     logger.info("Hi, I'm info")
 
-    expect(infoMock).toBeCalledWith("Hi, I'm info")
+    expect(infoMock).toHaveBeenCalledWith("Hi, I'm info")
   })
 
   it("sends debugs to winston", () => {
     const debugMock = jest.spyOn(logger.logger, "debug")
     logger.debug("Hi, I'm debug")
 
-    expect(debugMock).toBeCalledWith("Hi, I'm debug")
+    expect(debugMock).toHaveBeenCalledWith("Hi, I'm debug")
   })
 
   it("sends traces to winston", () => {
     const sillyMock = jest.spyOn(logger.logger, "silly")
     logger.trace("Hi, I'm trace")
 
-    expect(sillyMock).toBeCalledWith("Hi, I'm trace")
+    expect(sillyMock).toHaveBeenCalledWith("Hi, I'm trace")
   })
 
   it("sets the proper npm log levels from our log levels", () => {
