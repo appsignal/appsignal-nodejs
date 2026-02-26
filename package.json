@@ -20,7 +20,7 @@
     "@opentelemetry/instrumentation-express": ">= 0.40.1 < 0.53.0",
     "@opentelemetry/instrumentation-fastify": ">= 0.41.0 < 0.43.0",
     "@opentelemetry/instrumentation-graphql": ">= 0.41.0 < 0.46.0",
-    "@opentelemetry/instrumentation-http": ">= 0.52.0 < 0.204.0",
+    "@opentelemetry/instrumentation-http": ">= 0.52.0 < 0.213.0",
     "@opentelemetry/instrumentation-ioredis": ">= 0.41.0 < 0.46.0",
     "@opentelemetry/instrumentation-knex": ">= 0.37.0 < 0.42.0",
     "@opentelemetry/instrumentation-koa": ">= 0.54.0 < 0.58.0",
