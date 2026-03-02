@@ -35,7 +35,7 @@
     "@opentelemetry/instrumentation-restify": ">= 0.39.0 < 0.44.0",
     "@opentelemetry/instrumentation-undici": ">= 0.3.0 < 0.7.0",
     "@opentelemetry/sdk-metrics": ">= 1.25.0 < 1.31.0",
-    "@opentelemetry/sdk-node": ">= 0.52.0 < 0.57.0",
+    "@opentelemetry/sdk-node": ">= 0.52.0 < 0.213.0",
     "@opentelemetry/sdk-trace-base": ">= 1.25.0 < 1.31.0",
     "@prisma/instrumentation": ">= 6.3.0 < 6.5.0",
     "node-addon-api": "^8.3.0",
