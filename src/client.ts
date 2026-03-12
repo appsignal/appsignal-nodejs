@@ -45,7 +45,6 @@ import { NestInstrumentation } from "@opentelemetry/instrumentation-nestjs-core"
 import { PgInstrumentation } from "@opentelemetry/instrumentation-pg"
 import { PrismaInstrumentation } from "@prisma/instrumentation"
 import { RedisDbStatementSerializer } from "./instrumentation/redis/serializer"
-import { RedisInstrumentation as Redis4Instrumentation } from "@opentelemetry/instrumentation-redis-4"
 import { RedisInstrumentation } from "@opentelemetry/instrumentation-redis"
 import {
   RestifyInstrumentation,
@@ -72,7 +71,6 @@ const DefaultInstrumentations = {
   "@opentelemetry/instrumentation-nestjs-core": NestInstrumentation,
   "@opentelemetry/instrumentation-pg": PgInstrumentation,
   "@opentelemetry/instrumentation-redis": RedisInstrumentation,
-  "@opentelemetry/instrumentation-redis-4": Redis4Instrumentation,
   "@opentelemetry/instrumentation-restify": RestifyInstrumentation,
   "@opentelemetry/instrumentation-undici": UndiciInstrumentation,
   "@prisma/instrumentation": PrismaInstrumentation
@@ -350,10 +348,6 @@ export class Client {
         dbStatementSerializer: RedisDbStatementSerializer,
         requireParentSpan: true
       },
-      "@opentelemetry/instrumentation-redis-4": {
-        dbStatementSerializer: RedisDbStatementSerializer,
-        requireParentSpan: true
-      },
       "@opentelemetry/instrumentation-restify": {
         requestHook: (span, info) => {
           if (
@@ -372,9 +366,7 @@ export class Client {
       "@opentelemetry/instrumentation-undici": {
         requireParentforSpans: true
       },
-      "@prisma/instrumentation": {
-        middleware: true
-      }
+      "@prisma/instrumentation": {}
     }
   }
 
