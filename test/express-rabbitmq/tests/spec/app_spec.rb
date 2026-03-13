@@ -9,7 +9,7 @@ RSpec.describe "RabbitMQ app" do
     it "adds params to the HTTP root span" do
       response = HTTP.get("#{@test_app_url}?param1=user&param2=password")
       expect(response.status).to eq(200)
-      expect(Span.root!).to be_http_span_with_route("GET /")
+      expect(Span.root!).to be_http_span_with_route("GET")
 
       expected_request_parameters = {
         "param1" => "user",
@@ -52,7 +52,7 @@ RSpec.describe "RabbitMQ app" do
       expect(Span.root!).to be_http_span_with_route("GET /rabbitmq")
       expect("/rabbitmq").to have_express_request_handler
 
-      expect("<default> -> queue send").to have_rabbitmq_span
+      expect("publish <default>").to have_rabbitmq_span
       expect("queue process").to have_rabbitmq_span
     end
   end
@@ -72,10 +72,11 @@ RSpec.describe "RabbitMQ app" do
       response = HTTP.get("#{@test_app_url}/custom")
       expect(response.status).to eq(200)
 
-      expect(Span.root!).to match_custom_data({ "custom" => "data" })
+      request_handler_span = Span.find_by_attribute("express.type", "request_handler")
+      expect(request_handler_span).to match_custom_data({ "custom" => "data" })
 
       custom_span = Span.find_by_name!("Custom span")
-      expect(custom_span.parent.id).to eql(Span.root.id)
+      expect(Span.root!.transitive_parent_of?(custom_span)).to be(true)
       expect(custom_span.attributes["appsignal.tag.custom"]).to eql("tag")
     end
   end

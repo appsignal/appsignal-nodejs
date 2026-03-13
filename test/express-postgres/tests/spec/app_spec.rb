@@ -11,7 +11,7 @@ RSpec.describe "Postgres app" do
       expect(Span.root!).to be_http_span_with_route("GET /pg-query")
       expect("/pg-query").to have_express_request_handler
       expect(response.status).to eq(200)
-      parent_span = Span.find_by_name!("GET /pg-query")
+      parent_span = Span.find_by_attribute("express.type", "request_handler")
       # Found if it doesn't fail
       parent_span.sql_child_by_library_and_type(
         :library => "@opentelemetry/instrumentation-pg",

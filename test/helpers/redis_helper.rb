@@ -8,7 +8,7 @@ RSpec::Matchers.define :have_redis_4_span do
     command = actual.split.first
 
     redis_span.name == "redis-#{command}" &&
-      redis_span.instrumentation_library_name == "@opentelemetry/instrumentation-redis-4"
+      redis_span.instrumentation_library_name == "@opentelemetry/instrumentation-redis"
   end
 end
 

@@ -32,7 +32,7 @@ export class SpanProcessor implements OpenTelemetrySpanProcessor {
 
     const opentelemetrySpan = this.client.extension.createOpenTelemetrySpan(
       span.spanContext().spanId,
-      span.parentSpanId || "",
+      span.parentSpanContext?.spanId || "",
       span.spanContext().traceId,
       span.startTime[0],
       span.startTime[1],
@@ -40,7 +40,7 @@ export class SpanProcessor implements OpenTelemetrySpanProcessor {
       span.endTime[1],
       span.name,
       spanAttributes,
-      span.instrumentationLibrary.name
+      span.instrumentationScope.name
     )
 
     const errors = span.events.filter(event => event.name == "exception")
@@ -94,8 +94,8 @@ export class TestModeSpanProcessor implements OpenTelemetrySpanProcessor {
       name: span.name,
       spanId: span._spanContext.spanId,
       traceId: span._spanContext.traceId,
-      parentSpanId: span.parentSpanId,
-      instrumentationLibrary: span.instrumentationLibrary,
+      parentSpanId: span.parentSpanContext?.spanId,
+      instrumentationLibrary: span.instrumentationScope,
       startTime: span.startTime,
       endTime: span.endTime
     }
