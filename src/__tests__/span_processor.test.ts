@@ -1,8 +1,8 @@
 import { SpanTestRegistry } from "../../test/span_registry"
 import { Client } from "../client"
 import { SpanProcessor } from "../span_processor"
-import { Tracer, BasicTracerProvider } from "@opentelemetry/sdk-trace-base"
-import { trace, context } from "@opentelemetry/api"
+import { BasicTracerProvider } from "@opentelemetry/sdk-trace-base"
+import { Tracer, trace, context } from "@opentelemetry/api"
 
 describe("Span processor", () => {
   let tracer: Tracer
@@ -29,8 +29,9 @@ describe("Span processor", () => {
 
     const spanProcessor = new SpanProcessor(client)
 
-    tracerProvider = new BasicTracerProvider()
-    tracerProvider.addSpanProcessor(spanProcessor)
+    tracerProvider = new BasicTracerProvider({
+      spanProcessors: [spanProcessor]
+    })
 
     tracer = tracerProvider.getTracer("unknown-instrumentation")
   })

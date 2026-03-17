@@ -24,7 +24,11 @@ app.get("/error", (_req: any, _res: any) => {
 
 app.get("/rabbitmq", async (_req: any, res: any, next: any) => {
   try {
-    const connection = await client.connect(`amqp://guest:guest@rabbitmq:5672`)
+    // frameMax must be >= 8192 (RabbitMQ 4.x minimum); default amqplib value of
+    // 4096 causes the connection to be rejected.
+    const connection = await client.connect(
+      `amqp://guest:guest@rabbitmq:5672?frameMax=131072`
+    )
     const channel = await connection.createChannel()
 
     channel.assertQueue("queue")
