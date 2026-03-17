@@ -1,5 +1,21 @@
 # AppSignal for Node.js Changelog
 
+## 3.8.0
+
+_Published on 2026-03-17._
+
+### Changed
+
+- Update OpenTelemetry dependencies to v2. All bundled OpenTelemetry packages have been updated to their OpenTelemetry v2-compatible versions. This resolves compatibility issues when third-party span processors or instrumentations are used alongside AppSignal, which could cause spans to silently drop due to v1/v2 incompatibilities. The `@opentelemetry/instrumentation-redis-4` package has been removed. Redis v4 instrumentation is now handled by `@opentelemetry/instrumentation-redis`, which supports both Redis v3 and v4. (minor [efbcc4a](https://github.com/appsignal/appsignal-nodejs/commit/efbcc4a9b7bef3890d82b4aea906e6f037bf2d10))
+- Update Prisma instrumentation to v7. The `@prisma/instrumentation` package has been updated from v6 to v7. The `middleware` config option has been removed, as Prisma dropped its middleware API in Prisma v5. Prisma's native tracing is now the only supported instrumentation method. (minor [efbcc4a](https://github.com/appsignal/appsignal-nodejs/commit/efbcc4a9b7bef3890d82b4aea906e6f037bf2d10))
+- Bundled certificates have been updated. (patch [498c087](https://github.com/appsignal/appsignal-nodejs/commit/498c087ea1fc25215df7a65a18facd95fc213370))
+- Update BullMQ OpenTelemetry extractor to support new messaging semantic conventions. (patch [3702e4d](https://github.com/appsignal/appsignal-nodejs/commit/3702e4d32719a909c68269010fd0c5d6e8d88e20))
+- Use system-specific operation name in messaging span names.
+
+  When `messaging.operation.name` is present (e.g. `Queue.add`), it is used directly as the span name prefix: `Queue.add (myQueue)`. When only the generic `messaging.operation.type` is available (e.g. `send`), the word "message" is added for clarity: `send message (myQueue)`.
+
+  (patch [3702e4d](https://github.com/appsignal/appsignal-nodejs/commit/3702e4d32719a909c68269010fd0c5d6e8d88e20))
+
 ## 3.7.4
 
 _Published on 2026-02-05._
