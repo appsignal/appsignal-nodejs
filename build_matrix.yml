@@ -22,6 +22,9 @@ github: # Default `.github/workflows/ci.yml` contents
     NODE_ENV: test
 
   jobs:
+    validate-changesets:
+      uses: ./.github/workflows/validate_changesets.yml
+
     validation:
       name: Validation
       runs-on: ubuntu-latest
