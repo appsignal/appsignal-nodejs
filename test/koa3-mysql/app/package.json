@@ -11,7 +11,7 @@
   "dependencies": {
     "@appsignal/nodejs": "^3.7.3",
     "@koa/router": "^15.0.1",
-    "koa": "^3.0.1",
+    "koa": "^3.1.2",
     "koa-bodyparser": "^4.3.0",
     "mysql": "^2.18.1",
     "mysql2": "^3.9.8",
