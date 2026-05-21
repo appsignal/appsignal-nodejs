@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "Prisma app" do
+RSpec.describe "Express Prisma Mongo app" do
   before(:all) do
     @test_app_url = ConfigHelper.test_app_url
   end
