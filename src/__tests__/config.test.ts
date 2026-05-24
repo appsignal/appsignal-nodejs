@@ -392,6 +392,24 @@ describe("Configuration", () => {
       expect(env("_APPSIGNAL_APP_PATH")).toEqual(process.cwd())
     })
 
+    it("clears private env values when a later config omits them", () => {
+      new Configuration({
+        name,
+        active: true,
+        pushApiKey
+      })
+
+      expect(env("_APPSIGNAL_APP_NAME")).toEqual(name)
+
+      config = new Configuration({
+        active: true,
+        pushApiKey
+      })
+
+      expect(config.data.name).toBeUndefined()
+      expect(env("_APPSIGNAL_APP_NAME")).toBeUndefined()
+    })
+
     describe("with config options set to non-default values", () => {
       beforeEach(() => {
         jest.spyOn(fs, "accessSync").mockImplementation(() => {})

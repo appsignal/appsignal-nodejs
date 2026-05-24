@@ -250,6 +250,8 @@ export class Configuration {
     const logFilePath = this.logFilePath
     if (logFilePath) {
       process.env["_APPSIGNAL_LOG_FILE_PATH"] = logFilePath
+    } else {
+      delete process.env["_APPSIGNAL_LOG_FILE_PATH"]
     }
 
     // write to a "private" environment variable if it exists in the
@@ -257,13 +259,19 @@ export class Configuration {
     Object.entries(PRIVATE_ENV_MAPPING).forEach(([k, v]) => {
       const current = config[v]
 
-      if (current && Array.isArray(current)) {
-        if (current.length === 0) return
+      if (Array.isArray(current)) {
+        if (current.length === 0) {
+          delete process.env[k]
+          return
+        }
         process.env[k] = current.join(",")
+        return
       }
 
       if (current || typeof current === "boolean") {
         process.env[k] = String(current)
+      } else {
+        delete process.env[k]
       }
     })
   }
