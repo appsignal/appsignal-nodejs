@@ -4,19 +4,9 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    exclude-paths:
+      - "test/**"
     ignore:
       - dependency-name: "*"
         # Ignore patch updates
         update-types: ["version-update:semver-patch"]
-  - package-ecosystem: "npm"
-    directory: "/test"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 0
-    ignore:
-      - dependency-name: "*"
-        # Ignore updates
-        update-types:
-          - "version-update:semver-major"
-          - "version-update:semver-minor"
-          - "version-update:semver-patch"
