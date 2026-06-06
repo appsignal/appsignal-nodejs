@@ -39,7 +39,7 @@
     "@prisma/instrumentation": ">= 7.0.0 < 7.5.0",
     "node-addon-api": "^8.3.0",
     "node-gyp": "^11.1.0",
-    "pino-abstract-transport": "^2.0.0",
+    "pino-abstract-transport": "^3.0.0",
     "tslib": "^2.8.0",
     "winston": "^3.6.0"
   },
