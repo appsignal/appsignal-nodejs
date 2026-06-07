@@ -123,8 +123,11 @@ export function sendError(error: Error, fn: () => void = () => {}) {
       .getTracer("Appsignal.sendError")
       .startActiveSpan(error.name, { root: true }, span => {
         setError(error)
-        fn()
-        span.end()
+        try {
+          fn()
+        } finally {
+          span.end()
+        }
       })
   } else {
     Client.internalLogger.debug(
