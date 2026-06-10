@@ -219,6 +219,31 @@ describe("Helpers", () => {
       })
     })
 
+    it("still ends the error span if the callback throws", () => {
+      let callbackError: Error | undefined
+
+      try {
+        throwError()
+      } catch (err) {
+        try {
+          sendError(err as Error, () => {
+            throw new Error("Callback failure")
+          })
+        } catch (callbackThrownError) {
+          callbackError = callbackThrownError as Error
+        }
+      }
+
+      expect(callbackError).toMatchObject({
+        message: "Callback failure"
+      })
+
+      expect(spans.length).toEqual(1)
+      expect(spans[0].name).toEqual("Error")
+      expect(spans[0].events.length).toEqual(1)
+      expectErrorEvent(spans[0].events[0])
+    })
+
     it("logs a debug warning when the value is not an error", () => {
       const debugMock = jest.spyOn(Client.internalLogger, "debug")
 
