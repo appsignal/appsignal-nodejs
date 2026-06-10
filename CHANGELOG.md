@@ -1,5 +1,19 @@
 # AppSignal for Node.js Changelog
 
+## 3.8.1
+
+_Published on 2026-06-10._
+
+### Fixed
+
+- Continue reporting non-disk host metrics when a mount is frozen. (patch [a4a652d](https://github.com/appsignal/appsignal-nodejs/commit/a4a652d445f4e25690edb1d787538e411724c270))
+- Fix host-metrics leaking zombie `[timeout]` processes in Alpine linux containers.
+
+  Before this release AppSignal agent relied on a proper init process that reaps child processes killed by system `timeout`. Now the agent terminates and reaps unresponsive child processes in host-metrics collection and a subreaper is no longer required.
+
+  (patch [5c334bc](https://github.com/appsignal/appsignal-nodejs/commit/5c334bc65f040701a4f48816b1da855d0c3d1227))
+- Ensure `sendError` ends its span even when the callback throws. (patch [e9c0209](https://github.com/appsignal/appsignal-nodejs/commit/e9c0209861ce7bc5de3ab90b86b216a0f10f9685))
+
 ## 3.8.0
 
 _Published on 2026-03-17._
