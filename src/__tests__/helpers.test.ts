@@ -125,6 +125,18 @@ describe("Helpers", () => {
     })
   })
 
+  it("handles BigInt values without throwing a TypeError", () => {
+    trace.getTracer("test").startActiveSpan("Some span", span => {
+      setCustomData({ userId: BigInt("123456789012345678") })
+      span.end()
+    })
+
+    expect(spans.length).toEqual(1)
+    expect(spans[0].attributes).toMatchObject({
+      "appsignal.custom_data": '{"userId":"123456789012345678"}'
+    })
+  })
+
   it("logs a debug warning when there is no active span", () => {
     const warnMock = jest.spyOn(Client.internalLogger, "warn")
 
