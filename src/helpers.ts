@@ -20,6 +20,10 @@ function circularReplacer() {
   const seenValue: any[] = []
   const seenKey: string[] = []
   return (key: string, value: any) => {
+    if (typeof value === "bigint") {
+      return value.toString()
+    }
+
     if (typeof value === "object" && value !== null) {
       const i = seenValue.indexOf(value)
       if (i !== -1) {
