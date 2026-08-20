@@ -24,9 +24,9 @@ end
 
 def redis_command_span_by_statement(statement)
   redis_span = Span.all.find do |span|
-    next unless span.attributes["db.system"] == "redis"
+    next unless span.attributes["db.system.name"] == "redis"
 
-    span.attributes["db.statement"] == statement
+    span.attributes["db.query.text"] == statement
   end
   raise "No Redis span with statement `#{statement}` found" unless redis_span
 

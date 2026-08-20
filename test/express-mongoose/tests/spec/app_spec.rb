@@ -11,7 +11,7 @@ RSpec.describe "Express Mongoose app" do
       expect(Span.root!).to be_http_span_with_route("GET /")
       expect("/").to have_express_request_handler
       expect(response.status).to eq(200)
-      Span.find_by_name!("mongoose.Post.find")
+      Span.find_by_name!("find posts")
     end
   end
 end
