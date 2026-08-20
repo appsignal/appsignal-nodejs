@@ -92,6 +92,22 @@ github: # Default `.github/workflows/ci.yml` contents
         - name: "Node.js Lint (Prettier)"
           run: npm run lint
 
+    check-otel-resolution:
+      name: OpenTelemetry resolution check
+      needs: validation
+      runs-on: ubuntu-latest
+      steps:
+        - name: "Checkout project"
+          uses: actions/checkout@v4
+
+        - name: "Install Node.js"
+          uses: actions/setup-node@v4
+          with:
+            node-version: 22
+
+        - name: "Check that one copy of @opentelemetry/api is resolved"
+          run: node scripts/check_otel_resolution.js
+
     integration-tests:
       name: Integration tests (${{matrix.name}})
       needs: validation
