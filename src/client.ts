@@ -16,7 +16,6 @@ import {
   InstrumentType
 } from "@opentelemetry/sdk-metrics"
 import { CompositePropagator } from "@opentelemetry/core"
-import { B3Propagator, B3InjectEncoding } from "@opentelemetry/propagator-b3"
 import { W3CBaggagePropagator } from "@opentelemetry/core"
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto"
 
@@ -426,12 +425,11 @@ export class Client {
       instrumentations,
       spanProcessor,
       metricReader,
+      // Propagate baggage, but not the trace context. Two applications that
+      // both report to AppSignal must not end up sharing a trace, or the
+      // second one's data is reported against the first one's application.
       textMapPropagator: new CompositePropagator({
-        propagators: [
-          new W3CBaggagePropagator(),
-          new B3Propagator(),
-          new B3Propagator({ injectEncoding: B3InjectEncoding.MULTI_HEADER })
-        ]
+        propagators: [new W3CBaggagePropagator()]
       })
     })
 

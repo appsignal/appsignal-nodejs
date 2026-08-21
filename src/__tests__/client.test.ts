@@ -7,6 +7,12 @@ import { Client } from "../client"
 import { Metrics } from "../metrics"
 import { NoopInternalLogger, NoopLogger, NoopMetrics } from "../noops"
 import { Instrumentation } from "@opentelemetry/instrumentation"
+import {
+  propagation,
+  trace,
+  ROOT_CONTEXT,
+  TraceFlags
+} from "@opentelemetry/api"
 import { BaseInternalLogger } from "../internal_logger"
 import { BaseLogger } from "../logger"
 
@@ -31,6 +37,31 @@ describe("Client", () => {
     const startSpy = jest.spyOn(Extension.prototype, "start")
     client = new Client({ ...DEFAULT_OPTS, active: true })
     expect(startSpy).toHaveBeenCalled()
+  })
+
+  it("propagates baggage, and nothing else", () => {
+    client = new Client({ ...DEFAULT_OPTS, active: true })
+
+    const context = trace.setSpanContext(
+      propagation.setBaggage(
+        ROOT_CONTEXT,
+        propagation.createBaggage({ user_id: { value: "123" } })
+      ),
+      {
+        traceId: "d4cda95b652f4a1592b449d5929fda1b",
+        spanId: "6e0c63257de34c92",
+        traceFlags: TraceFlags.SAMPLED
+      }
+    )
+
+    const carrier: Record<string, string> = {}
+    propagation.inject(context, carrier)
+
+    // A trace context header here means two applications that both report to
+    // AppSignal can end up sharing a trace. `traceparent` was disabled on
+    // purpose; the B3 headers went on sending the trace context anyway, for a
+    // year, because they were configured by accident.
+    expect(Object.keys(carrier).sort()).toEqual(["baggage"])
   })
 
   it("stops the extension when the client is stopped", async () => {
