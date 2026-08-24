@@ -24,5 +24,10 @@ npm link @appsignal/nodejs
 echo "Build Nestjs app"
 npm run build
 
+echo "Checking that one version of @opentelemetry/api is resolved"
+# Two copies means the app reports nothing and the suite fails with an empty
+# spans file, which says nothing about why.
+node /integration/scripts/check_otel_duplicates.js /app --api-only || exit 1
+
 echo "Starting test app server"
 npm run start:prod
