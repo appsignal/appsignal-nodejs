@@ -14,6 +14,7 @@ import {
   TraceFlags
 } from "@opentelemetry/api"
 import { BaseInternalLogger } from "../internal_logger"
+import * as otelApiCopies from "../otel_api_copies"
 import { BaseLogger } from "../logger"
 
 describe("Client", () => {
@@ -31,6 +32,44 @@ describe("Client", () => {
 
   afterEach(async () => {
     await client.stop()
+  })
+
+  describe("duplicate @opentelemetry/api warning", () => {
+    beforeEach(() => {
+      otelApiCopies.resetDuplicateOpenTelemetryApiWarning()
+    })
+
+    it("says nothing when only one copy is loaded", () => {
+      jest
+        .spyOn(otelApiCopies, "duplicateOpenTelemetryApiWarningOnce")
+        .mockReturnValue(undefined)
+      const consoleWarn = jest.spyOn(console, "warn").mockImplementation()
+      const loggerWarn = jest
+        .spyOn(BaseInternalLogger.prototype, "warn")
+        .mockImplementation()
+
+      client = new Client({ ...DEFAULT_OPTS, active: true })
+
+      expect(consoleWarn).not.toHaveBeenCalled()
+      expect(loggerWarn).not.toHaveBeenCalled()
+    })
+
+    it("warns to the console and the internal logger", () => {
+      jest
+        .spyOn(otelApiCopies, "duplicateOpenTelemetryApiWarningOnce")
+        .mockReturnValue("two copies of the API")
+      const consoleWarn = jest.spyOn(console, "warn").mockImplementation()
+      const loggerWarn = jest
+        .spyOn(BaseInternalLogger.prototype, "warn")
+        .mockImplementation()
+
+      client = new Client({ ...DEFAULT_OPTS, active: true })
+
+      expect(consoleWarn).toHaveBeenCalledWith(
+        "appsignal WARNING: two copies of the API"
+      )
+      expect(loggerWarn).toHaveBeenCalledWith("two copies of the API")
+    })
   })
 
   it("starts the extension when the client is active", () => {
