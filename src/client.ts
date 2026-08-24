@@ -9,6 +9,7 @@ import { demo } from "./demo"
 import { VERSION } from "./version"
 import { setParams, setSessionData } from "./helpers"
 import { BaseLogger, Logger, LoggerFormat, LoggerLevel } from "./logger"
+import { duplicateOpenTelemetryApiWarningOnce } from "./otel_api_copies"
 import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api"
 import {
   PeriodicExportingMetricReader,
@@ -199,9 +200,27 @@ export class Client {
     if (this.config.data.initializeOpentelemetrySdk) {
       this.#sdk = this.initOpenTelemetry()
       this.setUpOpenTelemetryLogger()
+      this.warnAboutDuplicateOpenTelemetryApi()
     }
 
     this.initCoreProbes()
+  }
+
+  /**
+   * Warns when the process has loaded more than one incompatible copy of
+   * `@opentelemetry/api`.
+   *
+   * Nothing else reports this. The copy that loses the version comparison is
+   * handed a tracer that drops every span, which looks the same as an
+   * application that produces no spans. It is said once per process, however
+   * many clients are built.
+   */
+  private warnAboutDuplicateOpenTelemetryApi() {
+    const warning = duplicateOpenTelemetryApiWarningOnce()
+    if (!warning) return
+
+    console.warn(`appsignal WARNING: ${warning}`)
+    Client.internalLogger.warn(warning)
   }
 
   public get isActive(): boolean {
