@@ -92,6 +92,31 @@ github: # Default `.github/workflows/ci.yml` contents
         - name: "Node.js Lint (Prettier)"
           run: npm run lint
 
+    check-otel-resolution:
+      name: OpenTelemetry resolution check (Node.js ${{matrix.nodejs}})
+      needs: validation
+      runs-on: ubuntu-latest
+      strategy:
+        fail-fast: false
+        matrix:
+          # npm decides how the tree is laid out, and it is npm that differs
+          # between these two, not Node.js: 20 ships npm 10 and 24 ships npm 11.
+          # Peer dependency resolution changed between those majors, and
+          # `@opentelemetry/api` is a peer dependency of every OpenTelemetry
+          # package.
+          nodejs: ["20", "24"]
+      steps:
+        - name: "Checkout project"
+          uses: actions/checkout@v4
+
+        - name: "Install Node.js"
+          uses: actions/setup-node@v4
+          with:
+            node-version: ${{matrix.nodejs}}
+
+        - name: "Check how the OpenTelemetry packages resolve"
+          run: node scripts/check_otel_resolution.js
+
     integration-tests:
       name: Integration tests (${{matrix.name}})
       needs: validation

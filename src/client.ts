@@ -9,6 +9,7 @@ import { demo } from "./demo"
 import { VERSION } from "./version"
 import { setParams, setSessionData } from "./helpers"
 import { BaseLogger, Logger, LoggerFormat, LoggerLevel } from "./logger"
+import { duplicateOpenTelemetryApiWarningOnce } from "./otel_api_copies"
 import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api"
 import {
   PeriodicExportingMetricReader,
@@ -16,7 +17,6 @@ import {
   InstrumentType
 } from "@opentelemetry/sdk-metrics"
 import { CompositePropagator } from "@opentelemetry/core"
-import { B3Propagator, B3InjectEncoding } from "@opentelemetry/propagator-b3"
 import { W3CBaggagePropagator } from "@opentelemetry/core"
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-proto"
 
@@ -200,9 +200,27 @@ export class Client {
     if (this.config.data.initializeOpentelemetrySdk) {
       this.#sdk = this.initOpenTelemetry()
       this.setUpOpenTelemetryLogger()
+      this.warnAboutDuplicateOpenTelemetryApi()
     }
 
     this.initCoreProbes()
+  }
+
+  /**
+   * Warns when the process has loaded more than one incompatible copy of
+   * `@opentelemetry/api`.
+   *
+   * Nothing else reports this. The copy that loses the version comparison is
+   * handed a tracer that drops every span, which looks the same as an
+   * application that produces no spans. It is said once per process, however
+   * many clients are built.
+   */
+  private warnAboutDuplicateOpenTelemetryApi() {
+    const warning = duplicateOpenTelemetryApiWarningOnce()
+    if (!warning) return
+
+    console.warn(`appsignal WARNING: ${warning}`)
+    Client.internalLogger.warn(warning)
   }
 
   public get isActive(): boolean {
@@ -426,12 +444,11 @@ export class Client {
       instrumentations,
       spanProcessor,
       metricReader,
+      // Propagate baggage, but not the trace context. Two applications that
+      // both report to AppSignal must not end up sharing a trace, or the
+      // second one's data is reported against the first one's application.
       textMapPropagator: new CompositePropagator({
-        propagators: [
-          new W3CBaggagePropagator(),
-          new B3Propagator(),
-          new B3Propagator({ injectEncoding: B3InjectEncoding.MULTI_HEADER })
-        ]
+        propagators: [new W3CBaggagePropagator()]
       })
     })
 

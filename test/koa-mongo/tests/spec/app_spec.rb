@@ -13,9 +13,9 @@ RSpec.describe "Koa + Mongo app" do
       expect(Span.root!).to be_http_span_with_route("GET /")
       expect("/").to have_koa_router_span
 
-      mongodb_span = Span.find_by_name!("mongodb.find")
+      mongodb_span = Span.find_by_name!("find posts")
       expect(mongodb_span.attributes).to include({
-        "db.mongodb.collection" => "posts"
+        "db.collection.name" => "posts"
       })
     end
   end

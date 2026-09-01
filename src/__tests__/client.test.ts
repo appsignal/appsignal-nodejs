@@ -7,7 +7,14 @@ import { Client } from "../client"
 import { Metrics } from "../metrics"
 import { NoopInternalLogger, NoopLogger, NoopMetrics } from "../noops"
 import { Instrumentation } from "@opentelemetry/instrumentation"
+import {
+  propagation,
+  trace,
+  ROOT_CONTEXT,
+  TraceFlags
+} from "@opentelemetry/api"
 import { BaseInternalLogger } from "../internal_logger"
+import * as otelApiCopies from "../otel_api_copies"
 import { BaseLogger } from "../logger"
 
 describe("Client", () => {
@@ -27,10 +34,73 @@ describe("Client", () => {
     await client.stop()
   })
 
+  describe("duplicate @opentelemetry/api warning", () => {
+    beforeEach(() => {
+      otelApiCopies.resetDuplicateOpenTelemetryApiWarning()
+    })
+
+    it("says nothing when only one copy is loaded", () => {
+      jest
+        .spyOn(otelApiCopies, "duplicateOpenTelemetryApiWarningOnce")
+        .mockReturnValue(undefined)
+      const consoleWarn = jest.spyOn(console, "warn").mockImplementation()
+      const loggerWarn = jest
+        .spyOn(BaseInternalLogger.prototype, "warn")
+        .mockImplementation()
+
+      client = new Client({ ...DEFAULT_OPTS, active: true })
+
+      expect(consoleWarn).not.toHaveBeenCalled()
+      expect(loggerWarn).not.toHaveBeenCalled()
+    })
+
+    it("warns to the console and the internal logger", () => {
+      jest
+        .spyOn(otelApiCopies, "duplicateOpenTelemetryApiWarningOnce")
+        .mockReturnValue("two copies of the API")
+      const consoleWarn = jest.spyOn(console, "warn").mockImplementation()
+      const loggerWarn = jest
+        .spyOn(BaseInternalLogger.prototype, "warn")
+        .mockImplementation()
+
+      client = new Client({ ...DEFAULT_OPTS, active: true })
+
+      expect(consoleWarn).toHaveBeenCalledWith(
+        "appsignal WARNING: two copies of the API"
+      )
+      expect(loggerWarn).toHaveBeenCalledWith("two copies of the API")
+    })
+  })
+
   it("starts the extension when the client is active", () => {
     const startSpy = jest.spyOn(Extension.prototype, "start")
     client = new Client({ ...DEFAULT_OPTS, active: true })
     expect(startSpy).toHaveBeenCalled()
+  })
+
+  it("propagates baggage, and nothing else", () => {
+    client = new Client({ ...DEFAULT_OPTS, active: true })
+
+    const context = trace.setSpanContext(
+      propagation.setBaggage(
+        ROOT_CONTEXT,
+        propagation.createBaggage({ user_id: { value: "123" } })
+      ),
+      {
+        traceId: "d4cda95b652f4a1592b449d5929fda1b",
+        spanId: "6e0c63257de34c92",
+        traceFlags: TraceFlags.SAMPLED
+      }
+    )
+
+    const carrier: Record<string, string> = {}
+    propagation.inject(context, carrier)
+
+    // A trace context header here means two applications that both report to
+    // AppSignal can end up sharing a trace. `traceparent` was disabled on
+    // purpose; the B3 headers went on sending the trace context anyway, for a
+    // year, because they were configured by accident.
+    expect(Object.keys(carrier).sort()).toEqual(["baggage"])
   })
 
   it("stops the extension when the client is stopped", async () => {
