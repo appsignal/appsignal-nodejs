@@ -15,7 +15,7 @@ RSpec.describe "Express Knex app" do
       span = Span.find_by_name!("first defaultdb.posts")
       expect(span.name).to eq("first defaultdb.posts")
       expect(span.attributes).to include(
-        "db.statement" => %(select * from "posts" order by "id" desc limit ?)
+        "db.query.text" => %(select * from "posts" order by "id" desc limit ?)
       )
     end
   end
@@ -29,12 +29,12 @@ RSpec.describe "Express Knex app" do
 
       count_span = Span.find_by_name!("select defaultdb.posts")
       expect(count_span.attributes).to include(
-        "db.statement" => %(select count("id") from "posts")
+        "db.query.text" => %(select count("id") from "posts")
       )
 
       insert_span = Span.find_by_name!("insert defaultdb.posts")
       expect(insert_span.attributes).to include(
-        "db.statement" => %(insert into "posts" ("body", "title") values (?, ?), (?, ?))
+        "db.query.text" => %(insert into "posts" ("body", "title") values (?, ?), (?, ?))
       )
     end
   end

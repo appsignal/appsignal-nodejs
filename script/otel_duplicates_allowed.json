@@ -1,0 +1,26 @@
+[
+  {
+    "package": "@opentelemetry/instrumentation",
+    "cause": "@prisma/instrumentation",
+    "reason": "@prisma/instrumentation depends on ^0.207.0, many minor versions behind the release this package bundles.",
+    "removeWhen": "Prisma widens that range, or we stop depending on @prisma/instrumentation."
+  },
+  {
+    "package": "@opentelemetry/api-logs",
+    "cause": "@prisma/instrumentation",
+    "reason": "api-logs is a dependency of @opentelemetry/instrumentation, so it duplicates wherever that does.",
+    "removeWhen": "The @opentelemetry/instrumentation entry for @prisma/instrumentation is removed."
+  },
+  {
+    "package": "@opentelemetry/instrumentation",
+    "cause": "@opentelemetry/instrumentation-fastify",
+    "reason": "instrumentation-fastify is held at 0.57.0, which depends on ^0.213.0, because the package is deprecated in favour of @fastify/otel.",
+    "removeWhen": "We migrate to @fastify/otel."
+  },
+  {
+    "package": "@opentelemetry/api-logs",
+    "cause": "@opentelemetry/instrumentation-fastify",
+    "reason": "api-logs is a dependency of @opentelemetry/instrumentation, so it duplicates wherever that does.",
+    "removeWhen": "The @opentelemetry/instrumentation entry for @opentelemetry/instrumentation-fastify is removed."
+  }
+]

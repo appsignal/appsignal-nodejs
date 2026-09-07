@@ -6,6 +6,22 @@ updates:
       interval: "weekly"
     exclude-paths:
       - "test/**"
+    # Move our version bounds up rather than widening them. The default for a
+    # library is to widen, which turns a bound like `>= 0.213.0 < 0.214.0` into
+    # `>= 0.213.0 < 0.222.0`. That defeats the reason those bounds are narrow:
+    # they exist so that all the OpenTelemetry packages released together
+    # resolve to one version of each, and a widened bound lets npm pick a
+    # different one for each dependent.
+    versioning-strategy: "increase"
+    groups:
+      # The OpenTelemetry packages have to move together, so propose them as one
+      # update. Separately they produce a pull request per package, each of which
+      # leaves the others behind.
+      opentelemetry:
+        patterns:
+          - "@opentelemetry/*"
+          - "@appsignal/opentelemetry-instrumentation-*"
+          - "@prisma/instrumentation"
     ignore:
       - dependency-name: "*"
         # Ignore patch updates
