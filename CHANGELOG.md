@@ -1,5 +1,69 @@
 # AppSignal for Node.js Changelog
 
+## 3.9.0
+
+_Published on 2026-09-08._
+
+### Added
+
+- Report queue events from applications that use BullMQ's own telemetry, which is
+  what BullMQ version 6 and newer offer through the `bullmq-otel` package. These
+  were previously reported as uncategorised events named after the raw span,
+  because BullMQ describes its spans with its own attributes rather than the
+  OpenTelemetry messaging conventions. They are now named and categorised the same
+  way as events from the `@appsignal/opentelemetry-instrumentation-bullmq` package.
+
+  (minor [96d9030](https://github.com/appsignal/appsignal-nodejs/commit/96d90300c44059d93e2b4c5635332ea696cb84c7))
+- Warn when your application loads more than one version of
+  `@opentelemetry/api`, warning about potential data loss, as older versions
+  fail to send data through global values configured by newer versions.
+  The warning names the versions and where they were loaded from.
+
+  (patch [3994b08](https://github.com/appsignal/appsignal-nodejs/commit/3994b08a8136d4d639c88c6f3ac6aaf65fc8ee8e))
+
+### Changed
+
+- Update the bundled OpenTelemetry packages to their current versions. This
+  resolves two reported vulnerabilities:
+
+  - CVE-2026-59892 in `@opentelemetry/propagator-jaeger`, which this integration
+    does not use but did bundle through `@opentelemetry/sdk-node`.
+  - CVE-2026-54285 in `@opentelemetry/core`, which applies to the W3C baggage
+    propagation that this integration does use.
+
+  (minor [3994b08](https://github.com/appsignal/appsignal-nodejs/commit/3994b08a8136d4d639c88c6f3ac6aaf65fc8ee8e))
+- Update the agent to handle high traffic apps. On high-traffic apps that would exceed the maximum accepted internal payload size, send data to the Push API more frequently. (patch [96d9030](https://github.com/appsignal/appsignal-nodejs/commit/96d90300c44059d93e2b4c5635332ea696cb84c7))
+- Allow any 1.x version of `@opentelemetry/api` from 1.9.0 onwards. This prevents
+  an issue where npm installs a second copy of the package for AppSignal alone,
+  which can stop spans from being reported without any error.
+
+  (patch [3994b08](https://github.com/appsignal/appsignal-nodejs/commit/3994b08a8136d4d639c88c6f3ac6aaf65fc8ee8e))
+
+### Removed
+
+- Drop support for Node.js 18. The minimum supported version is now Node.js
+  20.6.0, which is what the bundled OpenTelemetry packages require.
+
+  (minor [3994b08](https://github.com/appsignal/appsignal-nodejs/commit/3994b08a8136d4d639c88c6f3ac6aaf65fc8ee8e))
+
+### Fixed
+
+- Keep naming MongoDB events after the operation they perform when the
+  `@opentelemetry/instrumentation-mongodb` package is version 0.74.0 or newer.
+  That version renames its spans to follow the stable database semantic
+  conventions, and events from it were being named `unknown.mongodb` as a result.
+
+  (patch [96d9030](https://github.com/appsignal/appsignal-nodejs/commit/96d90300c44059d93e2b4c5635332ea696cb84c7))
+- Report the queue name on BullMQ events as the `queue` tag. It was being reported
+  as the `message_destination` tag instead.
+
+  (patch [96d9030](https://github.com/appsignal/appsignal-nodejs/commit/96d90300c44059d93e2b4c5635332ea696cb84c7))
+- Do not emit B3 trace context propagation headers. If you relied on AppSignal to
+  send the trace context in the `b3` or `x-b3-*` headers, you can configure that
+  yourself by passing your own `textMapPropagator` to the OpenTelemetry SDK.
+
+  (patch [3994b08](https://github.com/appsignal/appsignal-nodejs/commit/3994b08a8136d4d639c88c6f3ac6aaf65fc8ee8e))
+
 ## 3.8.1
 
 _Published on 2026-06-10._
