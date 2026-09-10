@@ -1,5 +1,17 @@
 # AppSignal for Node.js Changelog
 
+## 3.9.1
+
+_Published on 2026-09-10._
+
+### Fixed
+
+- Fix the sanitization of function arguments in SQL statements.
+
+  Before this release, SQL sanitization of function arguments stripped out parts of the SQL statement after the function argument list.
+
+  (patch [3f41a3b](https://github.com/appsignal/appsignal-nodejs/commit/3f41a3b23c1a225d422f23fce79e2e1f099de4b6))
+
 ## 3.9.0
 
 _Published on 2026-09-08._
