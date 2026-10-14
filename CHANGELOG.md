@@ -1,5 +1,24 @@
 # AppSignal for Node.js Changelog
 
+## 3.9.2
+
+_Published on 2026-10-14._
+
+### Added
+
+- Automatically detect the application's revision from the `HEROKU_BUILD_COMMIT`
+  environment variable, which is set by Heroku at build time [when the
+  `runtime-dyno-build-metadata` Heroku Labs
+  feature](https://devcenter.heroku.com/articles/dyno-metadata) is enabled.
+
+  (patch [cb2bf69](https://github.com/appsignal/appsignal-nodejs/commit/cb2bf6945233b72e0350642935b9e4c6665e1658))
+
+### Fixed
+
+- Improve handling of the extension internal queue when full. (patch [30f9e93](https://github.com/appsignal/appsignal-nodejs/commit/30f9e937168c9ffa0b55a479c2acfba3d078e5f3))
+- Fix issues in the extension that lead to gaps in data reporting. (patch [3a91e18](https://github.com/appsignal/appsignal-nodejs/commit/3a91e18e5393f186f8e4e714bd02c76381166c2f))
+- Fix an extension crash when the same span is used from multiple threads at the same time. (patch [582483d](https://github.com/appsignal/appsignal-nodejs/commit/582483d94020fb2422e5b199e8ffddc9a13f95ff))
+
 ## 3.9.1
 
 _Published on 2026-09-10._
