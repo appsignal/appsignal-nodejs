@@ -1,5 +1,13 @@
 # AppSignal for Node.js Changelog
 
+## 3.9.3
+
+_Published on 2026-10-22._
+
+### Security
+
+- Stop trusting certificates issued under the eMudhra intermediate certificate authorities whose private keys were [compromised in October 2026](https://bugzilla.mozilla.org/show_bug.cgi?id=2083449). The bundled CA certificates no longer include the emSign ECC Root CA - G3 root certificate, which those intermediates chain to. (patch [498c087](https://github.com/appsignal/appsignal-nodejs/commit/498c087ea1fc25215df7a65a18facd95fc213370), [0178413](https://github.com/appsignal/appsignal-nodejs/commit/01784135551d5ad83a7210db3d2b1e9a52104ee2), [b9cbfeb](https://github.com/appsignal/appsignal-nodejs/commit/b9cbfebefb22661dca7ca1de31f07b7812e3b013))
+
 ## 3.9.2
 
 _Published on 2026-10-14._
