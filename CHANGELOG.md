@@ -1,5 +1,18 @@
 # AppSignal for Node.js Changelog
 
+## 3.9.4
+
+_Published on 2026-10-23._
+
+### Security
+
+- Bump the bundled certificates that the agent uses when it can't open the
+  configured CA file. They no longer include the emSign ECC Root CA - G3 and AAA
+  Certificate Services root certificates, which [compromised eMudhra intermediate
+  certificates](https://bugzilla.mozilla.org/show_bug.cgi?id=2083449) chain to.
+
+  (patch [498c087](https://github.com/appsignal/appsignal-nodejs/commit/498c087ea1fc25215df7a65a18facd95fc213370), [0178413](https://github.com/appsignal/appsignal-nodejs/commit/01784135551d5ad83a7210db3d2b1e9a52104ee2), [b9cbfeb](https://github.com/appsignal/appsignal-nodejs/commit/b9cbfebefb22661dca7ca1de31f07b7812e3b013), [a8d1ce4](https://github.com/appsignal/appsignal-nodejs/commit/a8d1ce46dedd5b1da7994dfb80b14dafe1db9979), [dc88605](https://github.com/appsignal/appsignal-nodejs/commit/dc88605880ff025f2e45569926c845fe821b26f8), [5d60637](https://github.com/appsignal/appsignal-nodejs/commit/5d60637461548bba80a3a12f5483a12ee610cd08))
+
 ## 3.9.3
 
 _Published on 2026-10-22._
