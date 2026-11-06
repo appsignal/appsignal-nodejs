@@ -1,7 +1,8 @@
 ---
 bump: patch
 type: fix
-integrations: all
 ---
 
-Fix BigInt serialization crash in helper functions. BigInt values passed to `setCustomData`, `setParams`, or `setSessionData` no longer throw a TypeError.
+Fix a crash when `setCustomData`, `setParams` or `setSessionData` is called with
+a value that contains a `BigInt`.  `BigInt` values are now stored as
+`"bigint:<n>"`, the same format used for metric tags and log attributes.

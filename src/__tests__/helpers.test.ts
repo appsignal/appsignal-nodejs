@@ -125,15 +125,25 @@ describe("Helpers", () => {
     })
   })
 
-  it("handles BigInt values without throwing a TypeError", () => {
+  it("serialises BigInt values", () => {
     trace.getTracer("test").startActiveSpan("Some span", span => {
-      setCustomData({ userId: BigInt("123456789012345678") })
+      setCustomData({
+        id: BigInt("123456789012345678"),
+        nested: { id: BigInt(1) },
+        list: [BigInt(2), "2", 2]
+      })
+      setParams({ id: BigInt(3) })
+      setSessionData({ id: BigInt(4) })
+
       span.end()
     })
 
     expect(spans.length).toEqual(1)
     expect(spans[0].attributes).toMatchObject({
-      "appsignal.custom_data": '{"userId":"123456789012345678"}'
+      "appsignal.custom_data":
+        '{"id":"bigint:123456789012345678","nested":{"id":"bigint:1"},"list":["bigint:2","2",2]}',
+      "appsignal.request.parameters": '{"id":"bigint:3"}',
+      "appsignal.request.session_data": '{"id":"bigint:4"}'
     })
   })
 
