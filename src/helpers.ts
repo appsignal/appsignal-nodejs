@@ -16,12 +16,20 @@ function setAttribute(attribute: string, value: AttributeValue, span?: Span) {
   }
 }
 
+function isBigInt(value: unknown): value is bigint {
+  return typeof value === "bigint"
+}
+
+function serialiseBigInt(value: bigint): string {
+  return `bigint:${value}`
+}
+
 function circularReplacer() {
   const seenValue: any[] = []
   const seenKey: string[] = []
   return (key: string, value: any) => {
-    if (typeof value === "bigint") {
-      return `bigint:${value}`
+    if (isBigInt(value)) {
+      return serialiseBigInt(value)
     }
 
     if (typeof value === "object" && value !== null) {
@@ -68,8 +76,13 @@ export function setCustomData(customData: any, span?: Span) {
   setSerialisedAttribute("appsignal.custom_data", customData, span)
 }
 
-export function setTag(tag: string, value: AttributeValue, span?: Span) {
-  setPrefixedAttribute("appsignal.tag", tag, value, span)
+export function setTag(
+  tag: string,
+  value: AttributeValue | bigint,
+  span?: Span
+) {
+  const tagValue = isBigInt(value) ? serialiseBigInt(value) : value
+  setPrefixedAttribute("appsignal.tag", tag, tagValue, span)
 }
 
 export function setHeader(header: string, value: AttributeValue, span?: Span) {

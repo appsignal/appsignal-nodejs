@@ -134,6 +134,7 @@ describe("Helpers", () => {
       })
       setParams({ id: BigInt(3) })
       setSessionData({ id: BigInt(4) })
+      setTag("large_number", BigInt("123456789012345678"))
 
       span.end()
     })
@@ -143,7 +144,8 @@ describe("Helpers", () => {
       "appsignal.custom_data":
         '{"id":"bigint:123456789012345678","nested":{"id":"bigint:1"},"list":["bigint:2","2",2]}',
       "appsignal.request.parameters": '{"id":"bigint:3"}',
-      "appsignal.request.session_data": '{"id":"bigint:4"}'
+      "appsignal.request.session_data": '{"id":"bigint:4"}',
+      "appsignal.tag.large_number": "bigint:123456789012345678"
     })
   })
 
