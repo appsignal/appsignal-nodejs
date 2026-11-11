@@ -1,5 +1,17 @@
 # AppSignal for Node.js Changelog
 
+## 3.9.5
+
+_Published on 2026-11-11._
+
+### Fixed
+
+- Fix a crash when `setCustomData`, `setParams` or `setSessionData` is called with
+  a value that contains a `BigInt`.  `BigInt` values are now stored as
+  `"bigint:<n>"`, the same format used for metric tags and log attributes.
+
+  (patch [3873a46](https://github.com/appsignal/appsignal-nodejs/commit/3873a46d6db184dcdb7d834f7e9aa5bc58bdc281), [5ec6b95](https://github.com/appsignal/appsignal-nodejs/commit/5ec6b956b784e69a4b0994dcde10c5532af0c332))
+
 ## 3.9.4
 
 _Published on 2026-10-23._
